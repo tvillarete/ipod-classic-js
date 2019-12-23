@@ -2,6 +2,13 @@ import { ScrollWheel, Unit } from "components";
 import React, { useState, useCallback } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 
+enum WHEEL_QUADRANT {
+  TOP = 1,
+  BOTTOM = 2,
+  LEFT = 3,
+  RIGHT = 4
+}
+
 const GlobalStyles = createGlobalStyle`
    body {
       height: 100%;
@@ -10,15 +17,12 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 const Shell = styled.div`
   position: relative;
-  height: 38em;
-  max-height: 100%;
+  height: 100vh;
+  max-height: 37em;
   width: 370px;
   border-radius: 30px;
   border: 1px solid gray;
@@ -52,13 +56,49 @@ const Screen = styled.div`
 const App: React.FC = () => {
   const [count, setCount] = useState(0);
 
-  const handleScroll = useCallback((val: number) => {
-    console.log(val);
-    setCount(val);
-  }, []);
+  const handleClockwiseScroll = () => {
+    console.log("SCROLL CLOCKWISE");
+  };
 
-  const handleClick = () => {
-    console.log("CLICKED");
+  const handleCounterClockwiseScroll = () => {
+    console.log("SCROLL COUNTER-CLOCKWISE");
+  };
+
+  const handleScroll = useCallback(
+    (val: number) => {
+      if (val === 0 && count === 100) {
+        handleClockwiseScroll();
+      } else if (val === 100 && count === 0) {
+        handleCounterClockwiseScroll();
+      } else if (val > count) {
+        handleClockwiseScroll();
+      } else if (val < count) {
+        handleCounterClockwiseScroll();
+      }
+      setCount(val);
+    },
+    [count]
+  );
+
+  const handleWheelClick = (quadrant: number) => {
+    switch (quadrant) {
+      case WHEEL_QUADRANT.TOP:
+        console.log("CLICKED MENU");
+        break;
+      case WHEEL_QUADRANT.BOTTOM:
+        console.log("CLICKED PLAY/PAUSE");
+        break;
+      case WHEEL_QUADRANT.LEFT:
+        console.log("CLICKED REWIND");
+        break;
+      case WHEEL_QUADRANT.RIGHT:
+        console.log("CLICKED FAST FORWARD");
+        break;
+    }
+  };
+
+  const handleCenterClick = () => {
+    console.log("CLICKED CENTER BUTTON");
   };
 
   return (
@@ -68,7 +108,6 @@ const App: React.FC = () => {
         <Screen />
         <ScrollWheel
           value={count}
-          onClick={handleClick}
           min={0}
           max={100}
           width={220}
@@ -77,6 +116,8 @@ const App: React.FC = () => {
           fgColor="transparent"
           bgColor={"white"}
           thickness={0.6}
+          onClick={handleCenterClick}
+          onWheelClick={handleWheelClick}
           onChange={handleScroll}
         />
       </Shell>

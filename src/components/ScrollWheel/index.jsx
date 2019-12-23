@@ -9,6 +9,20 @@ const Container = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
+  margin: auto 0;
+`;
+
+const CanvasContainer = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: ${props => props.width}px;
+  height: ${props => props.height}px;
+`;
+
+const Canvas = styled.canvas`
+  border-radius: 50%;
 `;
 
 const CenterButton = styled.div`
@@ -27,11 +41,24 @@ const CenterButton = styled.div`
   }
 `;
 
+const WheelButton = styled.img`
+  position: absolute;
+  margin: ${props => props.margin};
+  top: ${props => props.top};
+  bottom: ${props => props.bottom};
+  left: ${props => props.left};
+  right: ${props => props.right};
+  user-select: none;
+  pointer-events: none;
+  max-height: 13px;
+`;
+
 class Knob extends React.Component {
   static propTypes = {
     value: PropTypes.number.isRequired,
     onChange: PropTypes.func.isRequired,
     onClick: PropTypes.func,
+    onWheelClick: PropTypes.func,
     onChangeEnd: PropTypes.func,
     min: PropTypes.number,
     max: PropTypes.number,
@@ -49,19 +76,18 @@ class Knob extends React.Component {
     clockwise: PropTypes.bool,
     cursor: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
     stopper: PropTypes.bool,
-    readOnly: PropTypes.bool,
     disableTextInput: PropTypes.bool,
     displayInput: PropTypes.bool,
     displayCustom: PropTypes.func,
     angleArc: PropTypes.number,
     angleOffset: PropTypes.number,
-    disableMouseWheel: PropTypes.bool,
     className: PropTypes.string,
     canvasClassName: PropTypes.string
   };
 
   static defaultProps = {
     onChangeEnd: () => {},
+    onWheelClick: () => {},
     onClick: () => {},
     min: 0,
     max: 100,
@@ -79,12 +105,10 @@ class Knob extends React.Component {
     clockwise: true,
     cursor: false,
     stopper: true,
-    readOnly: false,
     disableTextInput: false,
     displayInput: true,
     angleArc: 360,
     angleOffset: 0,
-    disableMouseWheel: false,
     className: null,
     canvasClassName: null
   };
@@ -108,11 +132,9 @@ class Knob extends React.Component {
 
   componentDidMount() {
     this.drawCanvas();
-    if (!this.props.readOnly) {
-      this.canvasRef.addEventListener("touchstart", this.handleTouchStart, {
-        passive: false
-      });
-    }
+    this.canvasRef.addEventListener("touchstart", this.handleTouchStart, {
+      passive: false
+    });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -208,20 +230,53 @@ class Knob extends React.Component {
   handleMouseDown = e => {
     this.props.onChange(this.eventToValue(e));
     document.addEventListener("mousemove", this.handleMouseMove);
-    document.addEventListener("mouseup", this.handleMouseUp);
-    document.addEventListener("keyup", this.handleEsc);
+    document.addEventListener("mouseup", this.handleMouseUpNoMove);
   };
 
   handleMouseMove = e => {
     e.preventDefault();
-    this.props.onChange(this.eventToValue(e));
+    const val = this.eventToValue(e);
+
+    if (val !== this.props.value) {
+      this.props.onChange(this.eventToValue(e));
+    }
+
+    document.removeEventListener("mouseup", this.handleMouseUpNoMove);
+    document.addEventListener("mouseup", this.handleMouseUp);
   };
 
   handleMouseUp = e => {
     this.props.onChangeEnd(this.eventToValue(e));
     document.removeEventListener("mousemove", this.handleMouseMove);
     document.removeEventListener("mouseup", this.handleMouseUp);
-    document.removeEventListener("keyup", this.handleEsc);
+  };
+
+  findClickQuadrant = (rectSize, x, y) => {
+    if (y < rectSize / 4) {
+      return 1;
+    } else if (y > rectSize * 0.75) {
+      return 2;
+    } else if (x < rectSize / 4) {
+      return 3;
+    } else if (x > rectSize * 0.75) {
+      return 4;
+    }
+    return -1;
+  };
+
+  handleMouseUpNoMove = e => {
+    const rect = e.target.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const rectWidth = rect.width;
+    const quadrant = this.findClickQuadrant(rectWidth, x, y);
+    if (quadrant > 0 && quadrant <= 4) {
+      this.props.onWheelClick(quadrant);
+    }
+
+    document.removeEventListener("mousemove", this.handleMouseMove);
+    document.removeEventListener("mouseup", this.handleMouseUp);
+    document.removeEventListener("mouseup", this.handleMouseUpNoMove);
   };
 
   handleTouchStart = e => {
@@ -355,58 +410,26 @@ class Knob extends React.Component {
     ctx.stroke();
   }
 
-  renderCenter = () => {
-    const {
-      displayCustom,
-      displayInput,
-      disableTextInput,
-      readOnly,
-      value
-    } = this.props;
-
-    if (displayInput) {
-      return (
-        <input
-          style={this.inputStyle()}
-          type="text"
-          value={value}
-          onChange={this.handleTextInput}
-          onKeyDown={this.handleArrowKey}
-          readOnly={readOnly || disableTextInput}
-        />
-      );
-    } else if (displayCustom && typeof displayCustom === "function") {
-      return displayCustom();
-    }
-    return null;
-  };
-
   render() {
-    const {
-      canvasClassName,
-      className,
-      disableMouseWheel,
-      readOnly,
-      onClick
-    } = this.props;
+    const { canvasClassName, onClick } = this.props;
 
     return (
       <Container>
-        <div
-          className={className}
-          style={{ width: this.w, height: this.h, display: "inline-block" }}
-          onWheel={readOnly || disableMouseWheel ? null : this.handleWheel}
-        >
-          <canvas
+        <CanvasContainer width={this.w} height={this.h}>
+          <Canvas
             ref={ref => {
               this.canvasRef = ref;
             }}
             className={canvasClassName}
             style={{ width: "100%", height: "100%" }}
-            onMouseDown={readOnly ? null : this.handleMouseDown}
+            onMouseDown={this.handleMouseDown}
           />
           <CenterButton onClick={onClick} size={this.w} />
-        </div>
+          <WheelButton top="8%" margin="0 auto" src="menu.svg" />
+          <WheelButton right="8%" margin="auto 0" src="fast_forward.svg" />
+          <WheelButton left="8%" margin="auto 0" src="rewind.svg" />
+          <WheelButton bottom="8%" margin="0 auto" src="play_pause.svg" />
+        </CanvasContainer>
       </Container>
     );
   }
