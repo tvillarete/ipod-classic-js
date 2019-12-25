@@ -37,6 +37,17 @@ const WindowContainer = styled.div<WindowContainerProps>`
   left: 0;
   right: 0;
   background: white;
+  overflow: auto;
+`;
+
+/** Prevents the user from scrolling the display with a mouse. */
+const Mask = styled.div`
+  z-index: 100;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 `;
 
 const Interface = () => {
@@ -44,6 +55,7 @@ const Interface = () => {
 
   return (
     <Container>
+      <Mask />
       {windowStack.map((window, index) => (
         <WindowContainer key={`window-${index}`} index={index}>
           <window.component />

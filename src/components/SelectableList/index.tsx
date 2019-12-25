@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
 import SelectableListItem from "./SelectableListItem";
+import { LoadingIndicator } from "components";
 
 export interface SelectableListOption {
   label: string;
@@ -15,22 +16,25 @@ const Container = styled.div`
 interface Props {
   options: SelectableListOption[];
   activeIndex: number;
+  loading?: boolean;
 }
 
-const SelectableList = ({ options, activeIndex }: Props) => {
+const SelectableList = ({ options, activeIndex, loading }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   /** Always make sure the selected item is within the screen's view. */
   useEffect(() => {
-    if (containerRef.current) {
+    if (containerRef.current && options.length) {
       const { children } = containerRef.current;
       children[activeIndex].scrollIntoView({
         block: "nearest"
       });
     }
-  }, [activeIndex]);
+  }, [activeIndex, options.length]);
 
-  return (
+  return loading ? (
+    <LoadingIndicator />
+  ) : (
     <Container ref={containerRef}>
       {options.map((option, index) => (
         <SelectableListItem

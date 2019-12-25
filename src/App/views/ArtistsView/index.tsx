@@ -1,19 +1,46 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { SelectableList, SelectableListOption } from "components";
 import { useScrollHandler } from "hooks";
 import ViewIds from "..";
+import { gql } from "apollo-boost";
+import { useQuery } from "@apollo/react-hooks";
 
-const options: SelectableListOption[] = [
+type ArtistsQuery = {
+  artists: [
+    {
+      artist: string;
+    }
+  ];
+};
+
+const ARTISTS = gql`
   {
-    label: "Hi",
-    value: () => ArtistsView()
+    artists {
+      artist
+    }
   }
-];
+`;
 
 const ArtistsView = () => {
+  const { loading, error, data } = useQuery<ArtistsQuery>(ARTISTS);
+  const [options, setOptions] = useState<SelectableListOption[]>([]);
+
+  useEffect(() => {
+    if (data && data.artists && !error) {
+      setOptions(
+        data.artists.map(result => ({
+          label: result.artist,
+          value: "hi"
+        }))
+      );
+    }
+  }, [data, error]);
+
   const [index] = useScrollHandler(ViewIds.artists, options);
 
-  return <SelectableList options={options} activeIndex={index} />;
+  return (
+    <SelectableList loading={loading} options={options} activeIndex={index} />
+  );
 };
 
 export default ArtistsView;
