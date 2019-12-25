@@ -35,6 +35,7 @@ const CenterButton = styled.div`
   width: ${props => props.size / 2.5}px;
   height: ${props => props.size / 2.5}px;
   border-radius: 50%;
+  box-shadow: rgb(191, 191, 191) 0px 1em 3em inset;
   background: rgb(225, 225, 225);
   :active {
     filter: brightness(0.9);

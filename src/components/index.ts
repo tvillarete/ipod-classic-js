@@ -1,7 +1,10 @@
 import * as Unit from "./constants/Unit";
-import * as Screen from './constants/Screen';
+import * as Screen from "./constants/Screen";
 
-export { default as ScrollWheel } from "./ScrollWheel/index.jsx";
+export * from "./SelectableList";
+
+export { default as ScrollWheel } from "./ScrollWheel";
+export { default as SelectableList } from "./SelectableList";
 
 // Constants
 export { Unit, Screen };
