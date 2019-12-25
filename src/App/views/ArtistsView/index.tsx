@@ -30,6 +30,7 @@ const ArtistsView = () => {
       setOptions(
         data.artists.map(result => ({
           label: result.artist,
+          viewId: ViewIds.artist,
           value: () => <ArtistView name={result.artist} />
         }))
       );

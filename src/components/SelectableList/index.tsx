@@ -6,6 +6,7 @@ import { LoadingIndicator } from "components";
 export interface SelectableListOption {
   label: string;
   value: any;
+  viewId?: string;
   image?: string;
 }
 

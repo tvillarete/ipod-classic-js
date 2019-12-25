@@ -1,7 +1,7 @@
 import React from "react";
 import { SelectableList, SelectableListOption } from "components";
 import { useScrollHandler } from "hooks";
-import ViewIds, { MusicView, ArtistsView, BrickGameView } from "App/views";
+import ViewIds, { MusicView, ArtistsView, GamesView } from "App/views";
 
 const options: SelectableListOption[] = [
   {
@@ -13,8 +13,8 @@ const options: SelectableListOption[] = [
     value: () => <ArtistsView />
   },
   {
-    label: "Brick",
-    value: () => <BrickGameView />
+    label: "Games",
+    value: () => <GamesView />
   }
 ];
 

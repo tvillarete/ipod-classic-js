@@ -29,11 +29,13 @@ const useScrollHandler = (
   const centerClick = useCallback(() => {
     if (!isActive) return;
 
-    const View = options[index].value;
+    const option = options[index];
+    const View = option.value;
+    const viewId = option.viewId || option.label;
 
     showWindow({
       type: WINDOW_TYPE.FULL,
-      id: options[index].label,
+      id: viewId,
       component: View
     });
   }, [index, isActive, options, showWindow]);

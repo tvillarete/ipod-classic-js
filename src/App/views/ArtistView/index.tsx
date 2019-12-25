@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { SelectableList, SelectableListOption } from "components";
 import { useScrollHandler } from "hooks";
-import ViewIds from "..";
+import ViewIds, { AlbumView } from "App/views";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 
@@ -41,8 +41,9 @@ const ArtistView = ({ name }: Props) => {
       setOptions(
         data.artist.map(result => ({
           label: result.album,
-          value: "Artist",
-          image: getArtwork(result.artwork)
+          value: () => <AlbumView name={result.album} />,
+          image: getArtwork(result.artwork),
+          viewId: "Album"
         }))
       );
     }
