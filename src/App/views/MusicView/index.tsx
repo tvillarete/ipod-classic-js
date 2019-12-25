@@ -7,7 +7,7 @@ import { ArtistsView } from "App/views";
 const options: SelectableListOption[] = [
   {
     label: "Artists",
-    value: () => ArtistsView()
+    value: () => <ArtistsView />
   }
 ];
 

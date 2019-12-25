@@ -8,7 +8,8 @@ interface ContainerProps {
 }
 
 const Container = styled.div<ContainerProps>`
-  padding: ${Unit.XXS};
+  display: flex;
+  align-items: center;
   overflow: auto;
 
   ${props =>
@@ -19,8 +20,14 @@ const Container = styled.div<ContainerProps>`
     `};
 `;
 
+const Image = styled.img`
+  height: 3rem;
+  width: 3rem;
+`;
+
 const Label = styled.h3`
   margin: 0;
+  padding: ${Unit.XXS};
   font-size: ${Unit.MD};
 `;
 
@@ -32,6 +39,7 @@ interface Props {
 const SelectableListItem = ({ option, isActive }: Props) => {
   return (
     <Container isActive={isActive}>
+      {option.image && <Image src={option.image} />}
       <Label>{option.label}</Label>
     </Container>
   );

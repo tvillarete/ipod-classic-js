@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { SelectableList, SelectableListOption } from "components";
 import { useScrollHandler } from "hooks";
-import ViewIds from "..";
+import ViewIds, { ArtistView } from "..";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 
@@ -30,7 +30,7 @@ const ArtistsView = () => {
       setOptions(
         data.artists.map(result => ({
           label: result.artist,
-          value: "hi"
+          value: () => <ArtistView name={result.artist} />
         }))
       );
     }

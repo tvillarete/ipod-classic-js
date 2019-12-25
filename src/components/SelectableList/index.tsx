@@ -6,6 +6,7 @@ import { LoadingIndicator } from "components";
 export interface SelectableListOption {
   label: string;
   value: any;
+  image?: string;
 }
 
 const Container = styled.div`
@@ -38,7 +39,7 @@ const SelectableList = ({ options, activeIndex, loading }: Props) => {
     <Container ref={containerRef}>
       {options.map((option, index) => (
         <SelectableListItem
-          key={`option-${option.label}`}
+          key={`option-${option.label}-${index}`}
           option={option}
           isActive={index === activeIndex}
         />
