@@ -28,6 +28,7 @@ const Audio = () => {
   return source ? (
     <audio
       ref={audioRef}
+      id="ipodAudio"
       src={`http://tannerv.ddns.net:12345/SpotiFree/${encodeURI(source.url)}`}
     />
   ) : null;

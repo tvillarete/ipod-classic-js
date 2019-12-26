@@ -80,7 +80,7 @@ const ScrollWheel = () => {
           handleCenterClick();
           break;
         case KEY_CODE.SPACE:
-          // Handle play/pause
+          togglePause();
           break;
         case KEY_CODE.ESC:
           handleWheelClick(WHEEL_QUADRANT.TOP);
@@ -91,6 +91,7 @@ const ScrollWheel = () => {
       handleCounterClockwiseScroll,
       handleClockwiseScroll,
       handleCenterClick,
+      togglePause,
       handleWheelClick
     ]
   );

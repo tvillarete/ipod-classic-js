@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import { Song, useAudioService } from "services/audio";
+import { useAudioService } from "services/audio";
 import styled from "styled-components";
 import { getUrlFromPath } from "utils";
-import { Unit } from "components";
+import { Unit, Controls } from "components";
 
 const Container = styled.div`
   height: 100%;
@@ -46,6 +46,8 @@ const Subtext = styled(Text)`
 `;
 
 const ControlsContainer = styled.div`
+  display: flex;
+  align-items: center;
   height: 30%;
 `;
 
@@ -67,7 +69,9 @@ const NowPlayingView = () => {
           <Subtext>{`${songIndex + 1} of 10`}</Subtext>
         </InfoContainer>
       </MetadataContainer>
-      <ControlsContainer>Controls</ControlsContainer>
+      <ControlsContainer>
+        <Controls />
+      </ControlsContainer>
     </Container>
   ) : null;
 };
