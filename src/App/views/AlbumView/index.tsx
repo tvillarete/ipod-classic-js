@@ -39,7 +39,7 @@ const AlbumView = ({ name }: Props) => {
       setOptions(
         data.album.map(song => ({
           label: song.name,
-          value: () => <NowPlayingView song={song} />,
+          value: () => <NowPlayingView />,
           viewId: ViewIds.nowPlaying,
           song
         }))

@@ -34,6 +34,7 @@ const AudioContext = createContext<AudioContextType>([
 
 export interface AudioServiceHook {
   source?: Song;
+  songIndex: number;
   playing: boolean;
   play: (playlist: Song[], index?: number) => void;
   togglePause: () => void;
@@ -66,6 +67,7 @@ export const useAudioService = (): AudioServiceHook => {
 
   return {
     source: audioState.source,
+    songIndex: audioState.songIndex,
     playing: audioState.playing,
     play,
     togglePause

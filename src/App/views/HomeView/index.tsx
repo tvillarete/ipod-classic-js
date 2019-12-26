@@ -39,7 +39,7 @@ const HomeView = () => {
         ...options,
         {
           label: strings.nowPlaying,
-          value: () => <NowPlayingView song={source} />
+          value: () => <NowPlayingView />
         }
       ]);
     }
