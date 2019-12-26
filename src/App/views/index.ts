@@ -3,6 +3,7 @@ export { default as MusicView } from "./MusicView";
 export { default as ArtistsView } from "./ArtistsView";
 export { default as ArtistView } from "./ArtistView";
 export { default as AlbumView } from "./AlbumView";
+export { default as NowPlayingView } from "./NowPlayingView";
 export { default as GamesView } from "./GamesView";
 export { default as BrickGameView } from "./BrickGameView";
 
@@ -12,6 +13,7 @@ const ViewIds: Record<string, string> = {
   artists: "Artists",
   artist: "Artist",
   album: "Album",
+  nowPlaying: "Now Playing",
   games: "Games",
   brickGame: "Brick"
 };

@@ -2,12 +2,18 @@ import { ScrollWheel } from "components";
 import React from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import WindowProvider from "services/window";
+import AudioProvider from "services/audio";
 import Interface from "./Interface";
+import Audio from "./Audio";
 
 const GlobalStyles = createGlobalStyle`
    body {
       height: 100%;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+      @media (prefers-color-scheme: dark) {
+        background: black;
+      }
    }
 `;
 
@@ -27,12 +33,15 @@ const App: React.FC = () => {
   return (
     <>
       <GlobalStyles />
-      <WindowProvider>
-        <Shell>
-          <Interface />
-          <ScrollWheel />
-        </Shell>
-      </WindowProvider>
+      <AudioProvider>
+        <WindowProvider>
+          <Shell>
+            <Interface />
+            <ScrollWheel />
+            <Audio />
+          </Shell>
+        </WindowProvider>
+      </AudioProvider>
     </>
   );
 };

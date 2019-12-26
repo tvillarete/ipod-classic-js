@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import Knob from "./Knob";
 import { useWindowService } from "services/window";
 import { useEventListener } from "hooks";
+import { useAudioService } from "services/audio";
 
 enum WHEEL_QUADRANT {
   TOP = 1,
@@ -27,6 +28,7 @@ const backwardScrollEvent = new Event("backwardscroll");
 const ScrollWheel = () => {
   const [count, setCount] = useState(0);
   const { hideWindow } = useWindowService();
+  const { togglePause } = useAudioService();
 
   const handleCenterClick = useCallback(
     () => window.dispatchEvent(centerClickEvent),
@@ -49,7 +51,7 @@ const ScrollWheel = () => {
           hideWindow();
           break;
         case WHEEL_QUADRANT.BOTTOM:
-          console.log("CLICKED PLAY/PAUSE");
+          togglePause();
           break;
         case WHEEL_QUADRANT.LEFT:
           console.log("CLICKED REWIND");
@@ -59,7 +61,7 @@ const ScrollWheel = () => {
           break;
       }
     },
-    [hideWindow]
+    [hideWindow, togglePause]
   );
 
   /** Allows for keyboard navigation. */

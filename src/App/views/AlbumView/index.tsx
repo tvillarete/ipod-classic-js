@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { SelectableList, SelectableListOption } from "components";
 import { useScrollHandler } from "hooks";
-import ViewIds from "..";
+import ViewIds, { NowPlayingView } from "App/views";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
+import { Song } from "services/audio";
 
 type AlbumQuery = {
-  album: [
-    {
-      id: string;
-      name: string;
-    }
-  ];
+  album: Song[];
 };
 
 const ALBUM = gql`
   query Album($name: String!) {
     album(name: $name) {
       id
-      name 
+      name
+      artist
+      album
+      artwork
+      track
+      url
     }
   }
 `;
@@ -36,9 +37,11 @@ const AlbumView = ({ name }: Props) => {
   useEffect(() => {
     if (data && data.album && !error) {
       setOptions(
-        data.album.map(result => ({
-          label: result.name,
-          value: "Artist",
+        data.album.map(song => ({
+          label: song.name,
+          value: () => <NowPlayingView song={song} />,
+          viewId: ViewIds.nowPlaying,
+          song
         }))
       );
     }

@@ -2,14 +2,16 @@ import { useState, useCallback } from "react";
 import { SelectableListOption } from "components";
 import { useWindowService, WINDOW_TYPE } from "services/window";
 import useEventListener from "./useEventListener";
+import { useAudioService } from "services/audio";
 
 const useScrollHandler = (
-  /** This should match the id of the view (to enable/disable events). */
+  /** This should match the view's viewId (to enable/disable events for hidden views). */
   id: string,
   /** A list of all scrollable items. Used to cap the scrolling to the last element. */
   options: SelectableListOption[]
 ): [number] => {
   const { showWindow, windowStack } = useWindowService();
+  const { play } = useAudioService();
   const [index, setIndex] = useState(0);
   /** Only fire events on the top-most view. */
   const isActive = windowStack[windowStack.length - 1].id === id;
@@ -26,19 +28,28 @@ const useScrollHandler = (
     }
   }, [index, isActive]);
 
+  /** Parses the selected option for a new view to show or song to play. */
   const centerClick = useCallback(() => {
-    if (!isActive) return;
-
     const option = options[index];
+    if (!isActive || !option) return;
+
     const View = option.value;
     const viewId = option.viewId || option.label;
 
-    showWindow({
-      type: WINDOW_TYPE.FULL,
-      id: viewId,
-      component: View
-    });
-  }, [index, isActive, options, showWindow]);
+    /** If a viewId is found, that means there's a new view to show. */
+    if (viewId) {
+      showWindow({
+        type: WINDOW_TYPE.FULL,
+        id: viewId,
+        component: View
+      });
+    }
+
+    /** If a song is found, play the song. */
+    if (option.song) {
+      play([option.song]);
+    }
+  }, [index, isActive, options, play, showWindow]);
 
   useEventListener("centerclick", centerClick);
   useEventListener("forwardscroll", forwardSCroll);

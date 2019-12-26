@@ -2,12 +2,14 @@ import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
 import SelectableListItem from "./SelectableListItem";
 import { LoadingIndicator } from "components";
+import { Song } from "services/audio";
 
 export interface SelectableListOption {
   label: string;
   value: any;
   viewId?: string;
   image?: string;
+  song?: Song;
 }
 
 const Container = styled.div`
