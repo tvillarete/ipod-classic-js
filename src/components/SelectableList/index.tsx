@@ -9,7 +9,8 @@ export interface SelectableListOption {
   value: any;
   viewId?: string;
   image?: string;
-  song?: Song;
+  songIndex?: number;
+  playlist?: Song[];
 }
 
 const Container = styled.div`

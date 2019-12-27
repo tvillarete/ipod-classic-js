@@ -28,7 +28,7 @@ const backwardScrollEvent = new Event("backwardscroll");
 const ScrollWheel = () => {
   const [count, setCount] = useState(0);
   const { hideWindow } = useWindowService();
-  const { togglePause } = useAudioService();
+  const { togglePause, nextSong } = useAudioService();
 
   const handleCenterClick = useCallback(
     () => window.dispatchEvent(centerClickEvent),
@@ -57,11 +57,11 @@ const ScrollWheel = () => {
           console.log("CLICKED REWIND");
           break;
         case WHEEL_QUADRANT.RIGHT:
-          console.log("CLICKED FAST FORWARD");
+          nextSong();
           break;
       }
     },
-    [hideWindow, togglePause]
+    [hideWindow, nextSong, togglePause]
   );
 
   /** Allows for keyboard navigation. */

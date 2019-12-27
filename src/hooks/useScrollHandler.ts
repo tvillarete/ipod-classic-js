@@ -4,6 +4,7 @@ import { useWindowService, WINDOW_TYPE } from "services/window";
 import useEventListener from "./useEventListener";
 import { useAudioService } from "services/audio";
 
+/** Accepts a list of options and will maintain a scroll index capped at the list's length. */
 const useScrollHandler = (
   /** This should match the view's viewId (to enable/disable events for hidden views). */
   id: string,
@@ -46,8 +47,8 @@ const useScrollHandler = (
     }
 
     /** If a song is found, play the song. */
-    if (option.song) {
-      play([option.song]);
+    if (option.playlist) {
+      play(option.playlist, option.songIndex);
     }
   }, [index, isActive, options, play, showWindow]);
 

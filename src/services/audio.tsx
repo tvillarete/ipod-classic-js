@@ -38,6 +38,7 @@ export interface AudioServiceHook {
   playing: boolean;
   play: (playlist: Song[], index?: number) => void;
   togglePause: () => void;
+  nextSong: () => void;
 }
 
 export const useAudioService = (): AudioServiceHook => {
@@ -65,12 +66,32 @@ export const useAudioService = (): AudioServiceHook => {
     }
   }, [audioState.source, setAudioState]);
 
+  const nextSong = useCallback(() => {
+    if (audioState.source) {
+      setAudioState(prevState => {
+        const newIndex = prevState.songIndex + 1;
+        const endOfPlaylist = newIndex === prevState.playlist.length - 1;
+        const newSource = endOfPlaylist
+          ? prevState.source
+          : prevState.playlist[newIndex];
+
+        return {
+          ...prevState,
+          playing: !endOfPlaylist,
+          songIndex: endOfPlaylist ? prevState.songIndex : newIndex,
+          source: newSource
+        };
+      });
+    }
+  }, [audioState.source, setAudioState]);
+
   return {
     source: audioState.source,
     songIndex: audioState.songIndex,
     playing: audioState.playing,
     play,
-    togglePause
+    togglePause,
+    nextSong
   };
 };
 

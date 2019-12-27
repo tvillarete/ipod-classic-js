@@ -37,11 +37,12 @@ const AlbumView = ({ name }: Props) => {
   useEffect(() => {
     if (data && data.album && !error) {
       setOptions(
-        data.album.map(song => ({
+        data.album.map((song, index) => ({
           label: song.name,
           value: () => <NowPlayingView />,
           viewId: ViewIds.nowPlaying,
-          song
+          songIndex: index,
+          playlist: data.album
         }))
       );
     }

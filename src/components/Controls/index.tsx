@@ -25,7 +25,7 @@ const Controls = () => {
   );
 
   /** Update the progress bar every second. */
-  useInterval(() => refresh(), 1000);
+  useInterval(refresh, 1000);
 
   useEffect(() => refresh(true), [refresh]);
 

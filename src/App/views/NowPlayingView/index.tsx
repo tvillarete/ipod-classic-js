@@ -3,6 +3,7 @@ import { useAudioService } from "services/audio";
 import styled from "styled-components";
 import { getUrlFromPath } from "utils";
 import { Unit, Controls } from "components";
+import { useWindowService } from "services/window";
 
 const Container = styled.div`
   height: 100%;
@@ -53,8 +54,13 @@ const ControlsContainer = styled.div`
 
 const NowPlayingView = () => {
   const { source, songIndex } = useAudioService();
-  // const [index] = useScrollHandler(ViewIds.nowPlaying, options);
-  useEffect(() => {}, []);
+  const { hideWindow } = useWindowService();
+
+  useEffect(() => {
+    if (!source) {
+      hideWindow();
+    }
+  }, [hideWindow, source]);
 
   return source ? (
     <Container>

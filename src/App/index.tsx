@@ -22,7 +22,7 @@ const GlobalStyles = createGlobalStyle`
 const Shell = styled.div`
   position: relative;
   height: 100vh;
-  max-height: 37em;
+  max-height: 36.5em;
   width: 370px;
   border-radius: 30px;
   border: 1px solid gray;
