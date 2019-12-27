@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { formatTime } from "utils";
 import { Unit } from "components";
+import { useAudioService } from "services/audio";
+import { useInterval } from "hooks";
 
 const Container = styled.div`
   position: relative;
@@ -48,22 +50,36 @@ const Progress = styled.div<ProgressProps>`
   transition: width 0.1s;
 `;
 
-interface Props {
-  size: number;
-  current: number;
-}
+const ProgressBar = () => {
+  const [currentTime, setCurrentTime] = useState(0);
+  const [maxTime, setMaxTime] = useState(0);
+  const { playing } = useAudioService();
+  const percent = Math.round((currentTime / maxTime) * 100);
 
-const ProgressBar = ({ size, current }: Props) => {
-  const percent = Math.round((current / size) * 100);
+  const refresh = useCallback(
+    (force?: boolean) => {
+      if (playing || force) {
+        const audio = document.getElementById("ipodAudio") as HTMLAudioElement;
+        setCurrentTime(audio.currentTime);
+        setMaxTime(audio.duration);
+      }
+    },
+    [playing]
+  );
+
+  /** Update the progress bar every second. */
+  useInterval(refresh, 1000);
+
+  useEffect(() => refresh(true), [refresh]);
 
   return (
     <Container>
-      <Label textAlign="left">{formatTime(current)}</Label>
+      <Label textAlign="left">{formatTime(currentTime)}</Label>
       <ProgressContainer>
         <Gloss />
         <Progress percent={percent} />
       </ProgressContainer>
-      <Label textAlign="right">-{formatTime(size - current)}</Label>
+      <Label textAlign="right">-{formatTime(maxTime - currentTime)}</Label>
     </Container>
   );
 };

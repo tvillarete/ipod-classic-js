@@ -36,6 +36,7 @@ export interface AudioServiceHook {
   source?: Song;
   songIndex: number;
   playing: boolean;
+  playlist: Song[];
   play: (playlist: Song[], index?: number) => void;
   togglePause: () => void;
   nextSong: () => void;
@@ -88,6 +89,7 @@ export const useAudioService = (): AudioServiceHook => {
   return {
     source: audioState.source,
     songIndex: audioState.songIndex,
+    playlist: audioState.playlist,
     playing: audioState.playing,
     play,
     togglePause,

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Unit } from "components";
+import { Unit, Screen } from "components";
 import { useWindowService } from "services/window";
 
 const Container = styled.div`
@@ -14,8 +14,10 @@ const Container = styled.div`
   overflow: hidden;
   animation: fadeFromBlack 0.5s;
 
-  > div {
-    user-select: none;
+  ${Screen.SM} {
+    @media screen and (max-height: 750px) {
+      margin: ${Unit.SM} ${Unit.SM} ${Unit.XL};
+    }
   }
 
   @keyframes fadeFromBlack {

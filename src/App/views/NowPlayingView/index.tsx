@@ -53,7 +53,7 @@ const ControlsContainer = styled.div`
 `;
 
 const NowPlayingView = () => {
-  const { source, songIndex } = useAudioService();
+  const { source, songIndex, playlist } = useAudioService();
   const { hideWindow } = useWindowService();
 
   useEffect(() => {
@@ -72,7 +72,7 @@ const NowPlayingView = () => {
           <Text>{source.name}</Text>
           <Subtext>{source.artist}</Subtext>
           <Subtext>{source.album}</Subtext>
-          <Subtext>{`${songIndex + 1} of 10`}</Subtext>
+          <Subtext>{`${songIndex + 1} of ${playlist.length}`}</Subtext>
         </InfoContainer>
       </MetadataContainer>
       <ControlsContainer>

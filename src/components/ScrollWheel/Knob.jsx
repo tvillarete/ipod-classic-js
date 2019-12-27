@@ -10,6 +10,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   margin: auto 0;
+  touch-action: none;
 `;
 
 const CanvasContainer = styled.div`
@@ -23,6 +24,7 @@ const CanvasContainer = styled.div`
 
 const Canvas = styled.canvas`
   border-radius: 50%;
+  background: white;
 `;
 
 const CenterButton = styled.div`
@@ -234,6 +236,14 @@ class Knob extends React.Component {
     document.addEventListener("mouseup", this.handleMouseUpNoMove);
   };
 
+  handleTouchStart = e => {
+    this.props.onChange(this.eventToValue(e));
+    document.addEventListener("touchmove", this.handleTouchMove, {
+      passive: false
+    });
+    document.addEventListener("touchend", this.handleTouchEndNoMove);
+  };
+
   handleMouseMove = e => {
     e.preventDefault();
     const val = this.eventToValue(e);
@@ -246,10 +256,30 @@ class Knob extends React.Component {
     document.addEventListener("mouseup", this.handleMouseUp);
   };
 
+  handleTouchMove = e => {
+    e.preventDefault();
+    const touchIndex = e.targetTouches.length - 1;
+    const val = this.eventToValue(e.targetTouches[touchIndex]);
+
+    if (val !== this.props.value) {
+      this.props.onChange(val);
+    }
+
+    document.removeEventListener("touchend", this.handleTouchEndNoMove);
+    document.addEventListener("touchend", this.handleTouchEnd);
+  };
+
   handleMouseUp = e => {
     this.props.onChangeEnd(this.eventToValue(e));
     document.removeEventListener("mousemove", this.handleMouseMove);
     document.removeEventListener("mouseup", this.handleMouseUp);
+  };
+
+  handleTouchEnd = e => {
+    const touchIndex = e.targetTouches.length - 1;
+    this.props.onChangeEnd(e.targetTouches[touchIndex]);
+    document.removeEventListener("touchmove", this.handleTouchMove);
+    document.removeEventListener("touchend", this.handleTouchEnd);
   };
 
   findClickQuadrant = (rectSize, x, y) => {
@@ -280,27 +310,19 @@ class Knob extends React.Component {
     document.removeEventListener("mouseup", this.handleMouseUpNoMove);
   };
 
-  handleTouchStart = e => {
-    e.preventDefault();
-    this.touchIndex = e.targetTouches.length - 1;
-    this.props.onChange(this.eventToValue(e.targetTouches[this.touchIndex]));
-    document.addEventListener("touchmove", this.handleTouchMove, {
-      passive: false
-    });
-    document.addEventListener("touchend", this.handleTouchEnd);
-    document.addEventListener("touchcancel", this.handleTouchEnd);
-  };
+  handleTouchEndNoMove = e => {
+    const rect = e.target.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const rectWidth = rect.width;
+    const quadrant = this.findClickQuadrant(rectWidth, x, y);
+    if (quadrant > 0 && quadrant <= 4) {
+      this.props.onWheelClick(quadrant);
+    }
 
-  handleTouchMove = e => {
-    e.preventDefault();
-    this.props.onChange(this.eventToValue(e.targetTouches[this.touchIndex]));
-  };
-
-  handleTouchEnd = e => {
-    this.props.onChangeEnd(this.eventToValue(e));
     document.removeEventListener("touchmove", this.handleTouchMove);
     document.removeEventListener("touchend", this.handleTouchEnd);
-    document.removeEventListener("touchcancel", this.handleTouchEnd);
+    document.removeEventListener("touchend", this.handleTouchEndNoMove);
   };
 
   handleEsc = e => {
