@@ -15,21 +15,26 @@ export enum WINDOW_TYPE {
 
 type ViewOption = {
   id: string;
+  title: string;
   type: WINDOW_TYPE;
 };
 
 export const ViewOptions: Record<string, ViewOption> = {
   // Split Screen Views
-  home: { id: "home", type: WINDOW_TYPE.SPLIT },
-  music: { id: "music", type: WINDOW_TYPE.SPLIT },
-  games: { id: "games", type: WINDOW_TYPE.SPLIT },
+  home: { id: "home", title: "iPod", type: WINDOW_TYPE.SPLIT },
+  music: { id: "music", title: "Music", type: WINDOW_TYPE.SPLIT },
+  games: { id: "games", title: "Games", type: WINDOW_TYPE.SPLIT },
 
   // Fullscreen Views
-  artists: { id: "artists", type: WINDOW_TYPE.FULL },
-  artist: { id: "artist", type: WINDOW_TYPE.FULL },
-  album: { id: "album", type: WINDOW_TYPE.FULL },
-  nowPlaying: { id: "nowPlaying", type: WINDOW_TYPE.FULL },
-  brickGame: { id: "brickGame", type: WINDOW_TYPE.FULL }
+  artists: { id: "artists", title: "Artists", type: WINDOW_TYPE.FULL },
+  artist: { id: "artist", title: "Artist", type: WINDOW_TYPE.FULL },
+  album: { id: "album", title: "Album", type: WINDOW_TYPE.FULL },
+  nowPlaying: {
+    id: "nowPlaying",
+    title: "Now Playing",
+    type: WINDOW_TYPE.FULL
+  },
+  brickGame: { id: "brickGame", title: "Brick", type: WINDOW_TYPE.FULL }
 };
 
 export default ViewOptions;

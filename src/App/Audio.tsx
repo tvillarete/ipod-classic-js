@@ -1,9 +1,8 @@
-import React, { useRef, useEffect, useCallback, useState } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import { useAudioService } from "services/audio";
 
 const Audio = () => {
-  const { source, playing, nextSong } = useAudioService();
-  const [loading, setLoading] = useState(false);
+  const { source, playing, nextSong, loading, setLoading } = useAudioService();
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const handlePlay = useCallback(async () => {
@@ -20,11 +19,11 @@ const Audio = () => {
 
   const handleLoadStart = useCallback(() => {
     setLoading(true);
-  }, []);
+  }, [setLoading]);
 
   const handleLoadEnd = useCallback(() => {
     setLoading(false);
-  }, []);
+  }, [setLoading]);
 
   useEffect(() => {
     if (playing && audioRef.current && !loading) {

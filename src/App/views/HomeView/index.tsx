@@ -43,7 +43,7 @@ const HomeView = () => {
         {
           label: strings.nowPlaying,
           value: () => <NowPlayingView />,
-          viewId: "nowPlaying"
+          viewId: ViewOptions.nowPlaying.id
         }
       ]);
     }

@@ -68,7 +68,8 @@ export const useWindowService = (): WindowServiceHook => {
     (window: WindowOptions) => {
       setWindowState(prevWindowState => ({
         ...prevWindowState,
-        windowStack: [...prevWindowState.windowStack, window]
+        windowStack: [...prevWindowState.windowStack, window],
+        headerTitle: ViewOptions[window.id].title
       }));
     },
     [setWindowState]
@@ -77,14 +78,20 @@ export const useWindowService = (): WindowServiceHook => {
   const hideWindow = useCallback(
     (id?: string) => {
       if (windowState.windowStack.length === 1) return;
-      setWindowState(prevWindowState => ({
-        ...prevWindowState,
-        windowStack: id
+      setWindowState(prevWindowState => {
+        const newWindowStack = id
           ? prevWindowState.windowStack.filter(
               (window: WindowOptions) => window.id !== id
             )
-          : prevWindowState.windowStack.slice(0, -1)
-      }));
+          : prevWindowState.windowStack.slice(0, -1);
+
+        return {
+          ...prevWindowState,
+          windowStack: newWindowStack,
+          headerTitle:
+            ViewOptions[newWindowStack[newWindowStack.length - 1].id].title
+        };
+      });
     },
     [setWindowState, windowState.windowStack.length]
   );

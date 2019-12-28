@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { formatTime } from "utils";
-import { Unit } from "components";
+import { Unit, LoadingIndicator } from "components";
 import { useAudioService } from "services/audio";
 import { useInterval } from "hooks";
 
@@ -12,6 +12,11 @@ const Container = styled.div`
   height: 1em;
   padding: 0 ${Unit.SM};
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(60%, transparent), to(rgba(250, 250, 250, 0.1)));
+`;
+
+const LoadingContainer = styled.div`
+  position: relative;
+  width: 24px;
 `;
 
 interface LabelProps {
@@ -53,7 +58,7 @@ const Progress = styled.div<ProgressProps>`
 const ProgressBar = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [maxTime, setMaxTime] = useState(0);
-  const { playing } = useAudioService();
+  const { playing, loading } = useAudioService();
   const percent = Math.round((currentTime / maxTime) * 100);
 
   const refresh = useCallback(
@@ -74,10 +79,16 @@ const ProgressBar = () => {
 
   return (
     <Container>
-      <Label textAlign="left">{formatTime(currentTime)}</Label>
+      {loading ? (
+        <LoadingContainer>
+          <LoadingIndicator size={14} />
+        </LoadingContainer>
+      ) : (
+        <Label textAlign="left">{formatTime(currentTime)}</Label>
+      )}
       <ProgressContainer>
         <Gloss />
-        <Progress percent={percent} />
+        <Progress percent={loading ? 0 : percent} />
       </ProgressContainer>
       <Label textAlign="right">-{formatTime(maxTime - currentTime)}</Label>
     </Container>

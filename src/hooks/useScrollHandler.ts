@@ -38,9 +38,10 @@ const useScrollHandler = (
     /** If a viewId is found, that means there's a new view to show. */
     if (option.viewId) {
       const View = option.value;
+      const viewOptions = ViewOptions[option.viewId];
 
       showWindow({
-        type: ViewOptions[option.viewId].type,
+        type: viewOptions.type,
         id: option.viewId,
         component: View
       });

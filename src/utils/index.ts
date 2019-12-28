@@ -9,7 +9,7 @@ export const formatTime = (seconds = 0, guide = seconds) => {
   const gh = Math.floor(guide / 3600);
 
   if (isNaN(seconds) || seconds === Infinity) {
-    h = m = s = "0";
+    h = m = s = "-";
   }
 
   h = h > 0 || gh > 0 ? `${h}:` : "";

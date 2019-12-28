@@ -13,7 +13,11 @@ const Container = styled.div`
   margin: auto;
 `;
 
-const LoadingIndicator = () => {
+interface Props {
+  size?: number;
+}
+
+const LoadingIndicator = ({ size }: Props) => {
   return (
     <Container>
       <svg
@@ -21,8 +25,8 @@ const LoadingIndicator = () => {
         x="0px"
         y="0px"
         viewBox="0 0 2400 2400"
-        width="24"
-        height="24"
+        width={size || 24}
+        height={size || 24}
       >
         <g
           strokeWidth="200"
