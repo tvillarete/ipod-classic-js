@@ -24,11 +24,17 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media screen and (min-width: 750px) {
+    height: 100vh;
+    display: flex;
+  }
 `;
 
 const Shell = styled.div`
   position: relative;
   height: 100vh;
+  margin: auto;
   max-height: 36.5em;
   width: 370px;
   border-radius: 30px;

@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useCallback, useContext, useState } from 'react';
+
+import { setDocumentSongTitle } from 'utils';
 
 export type Song = {
   id: string;
@@ -58,6 +60,7 @@ export const useAudioService = (): AudioServiceHook => {
         songIndex: index,
         source: playlist[index]
       });
+      setDocumentSongTitle(playlist[index]);
     },
     [audioState, setAudioState]
   );
@@ -79,6 +82,7 @@ export const useAudioService = (): AudioServiceHook => {
         const newSource = endOfPlaylist
           ? prevState.source
           : prevState.playlist[newIndex];
+        setDocumentSongTitle(newSource);
 
         return {
           ...prevState,

@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
-import ViewOptions, * as Views from "App/views";
-import { WINDOW_TYPE } from "App/views";
+import React, { createContext, useCallback, useContext, useState } from 'react';
+
+import ViewOptions, * as Views from 'App/views';
 
 export type WindowOptions<TComponent extends React.ComponentType<any> = any> = {
   /** A unique ID for each window. */
   id: string;
   /** The style of window that should be opened. */
-  type: WINDOW_TYPE;
+  type: Views.WINDOW_TYPE;
   /** The React component that will be rendered in the window. */
   component: TComponent;
   /** Props that will be passed to the component. */
@@ -30,7 +30,7 @@ type WindowContextType = [
 const WindowContext = createContext<WindowContextType>([
   {
     windowStack: [],
-    headerTitle: "iPod"
+    headerTitle: ViewOptions.home.title
   },
   () => {}
 ]);
@@ -133,13 +133,13 @@ const WindowProvider = ({ children }: Props) => {
   const windowStack: WindowOptions[] = [
     {
       id: ViewOptions.home.id,
-      type: WINDOW_TYPE.SPLIT,
+      type: Views.WINDOW_TYPE.SPLIT,
       component: Views.HomeView
     }
   ];
   const [windowState, setWindowState] = useState<WindowState>({
     windowStack,
-    headerTitle: "iPod"
+    headerTitle: ViewOptions.home.title
   });
 
   return (

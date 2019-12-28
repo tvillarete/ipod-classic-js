@@ -22,7 +22,7 @@ type ViewOption = {
 
 export const ViewOptions: Record<string, ViewOption> = {
   // Split Screen Views
-  home: { id: "home", title: "iPod", type: WINDOW_TYPE.SPLIT },
+  home: { id: "home", title: "iPod.js", type: WINDOW_TYPE.SPLIT },
   music: { id: "music", title: "Music", type: WINDOW_TYPE.SPLIT },
   games: { id: "games", title: "Games", type: WINDOW_TYPE.SPLIT },
 
