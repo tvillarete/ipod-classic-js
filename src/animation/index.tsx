@@ -19,7 +19,10 @@ export const noAnimation = {
   variants: {
     closed: {},
     open: {},
-    closing: {}
+    closing: {
+      opacity: 0,
+      transition: { duration: 0.3, type: "tween" }
+    }
   },
   initial: "closed",
   animate: "open",

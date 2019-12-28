@@ -2,7 +2,7 @@ const app = {
   init: function() {
     this.canvas = document.querySelector("#brickBreakerCanvas");
     this.context = this.canvas ? this.canvas.getContext("2d") : null;
-    this.context.scale(0.39, 0.53);
+    this.context.scale(0.39, 0.49);
 
     if (!this.context) {
       console.log("Error getting application context");

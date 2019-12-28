@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { WindowOptions } from "services/window";
 import { AnimatePresence } from "framer-motion";
 import Window from "App/Interface/Window";
+import { Header } from "components";
 
 interface ContainerProps {
   isHidden: boolean;
@@ -27,6 +28,7 @@ const FullScreenInterface = ({ windowStack }: Props) => {
 
   return (
     <Container isHidden={isHidden}>
+      <Header />
       <AnimatePresence>
         {windowStack.map((window, index) => (
           <Window

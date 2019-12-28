@@ -45,7 +45,7 @@ const useScrollHandler = (
         component: View
       });
     } else {
-      console.warn("Now viewId:", option)
+      console.warn("Now viewId:", option);
     }
 
     /** If a song is found, play the song. */

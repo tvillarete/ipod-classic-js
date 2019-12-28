@@ -29,7 +29,7 @@ export const ViewOptions: Record<string, ViewOption> = {
   artist: { id: "artist", type: WINDOW_TYPE.FULL },
   album: { id: "album", type: WINDOW_TYPE.FULL },
   nowPlaying: { id: "nowPlaying", type: WINDOW_TYPE.FULL },
-  brickGame: { id: "brick", type: WINDOW_TYPE.FULL }
+  brickGame: { id: "brickGame", type: WINDOW_TYPE.FULL }
 };
 
 export default ViewOptions;

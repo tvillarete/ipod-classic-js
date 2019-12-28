@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { WindowOptions } from "services/window";
 import Window from "App/Interface/Window";
 import { AnimatePresence } from "framer-motion";
+import { Header } from "components";
 
 const Container = styled.div`
   z-index: 2;
@@ -42,6 +43,7 @@ const SplitScreenInterface = ({ windowStack, isHidden }: Props) => {
   return (
     <Container>
       <LeftPanel isHidden={isHidden}>
+        <Header />
         <AnimatePresence>
           {windowStack.map((window, index) => (
             <Window

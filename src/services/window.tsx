@@ -19,6 +19,7 @@ export type WindowOptions<TComponent extends React.ComponentType<any> = any> = {
 
 interface WindowState {
   windowStack: WindowOptions[];
+  headerTitle?: string;
 }
 
 type WindowContextType = [
@@ -28,7 +29,8 @@ type WindowContextType = [
 
 const WindowContext = createContext<WindowContextType>([
   {
-    windowStack: []
+    windowStack: [],
+    headerTitle: "iPod"
   },
   () => {}
 ]);
@@ -44,6 +46,8 @@ export interface WindowServiceHook {
    * Useful for enabling/disabling scrolling if a window is hidden.
    */
   isWindowActive: (id: string) => boolean;
+  headerTitle?: string;
+  setHeaderTitle: (title?: string) => void;
 }
 
 /**
@@ -94,11 +98,23 @@ export const useWindowService = (): WindowServiceHook => {
     [windowState]
   );
 
+  const setHeaderTitle = useCallback(
+    (title?: string) => {
+      setWindowState({
+        ...windowState,
+        headerTitle: title
+      });
+    },
+    [setWindowState, windowState]
+  );
+
   return {
     showWindow,
     hideWindow,
     isWindowActive,
-    windowStack: windowState.windowStack
+    windowStack: windowState.windowStack,
+    headerTitle: windowState.headerTitle,
+    setHeaderTitle
   };
 };
 
@@ -115,7 +131,8 @@ const WindowProvider = ({ children }: Props) => {
     }
   ];
   const [windowState, setWindowState] = useState<WindowState>({
-    windowStack
+    windowStack,
+    headerTitle: "iPod"
   });
 
   return (
