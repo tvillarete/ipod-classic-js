@@ -18,7 +18,7 @@ const useScrollHandler = (
   /** Only fire events on the top-most view. */
   const isActive = windowStack[windowStack.length - 1].id === id;
 
-  const forwardSCroll = useCallback(() => {
+  const forwardScroll = useCallback(() => {
     if (index < options.length - 1 && isActive) {
       setIndex(index + 1);
     }
@@ -56,7 +56,7 @@ const useScrollHandler = (
   }, [index, isActive, options, play, showWindow]);
 
   useEventListener("centerclick", centerClick);
-  useEventListener("forwardscroll", forwardSCroll);
+  useEventListener("forwardscroll", forwardScroll);
   useEventListener("backwardscroll", backwardScroll);
 
   return [index];

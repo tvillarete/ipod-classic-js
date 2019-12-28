@@ -24,6 +24,7 @@ enum KEY_CODE {
 const centerClickEvent = new Event("centerclick");
 const forwardScrollEvent = new Event("forwardscroll");
 const backwardScrollEvent = new Event("backwardscroll");
+const wheelClickEvent = new Event("wheelclick");
 
 const ScrollWheel = () => {
   const [count, setCount] = useState(0);
@@ -46,6 +47,8 @@ const ScrollWheel = () => {
 
   const handleWheelClick = useCallback(
     (quadrant: number) => {
+      window.dispatchEvent(wheelClickEvent);
+
       switch (quadrant) {
         case WHEEL_QUADRANT.TOP:
           hideWindow();
