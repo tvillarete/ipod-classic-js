@@ -1,7 +1,9 @@
-import React from "react";
-import styled from "styled-components";
-import { Unit } from "components";
-import ProgressBar from "./ProgressBar";
+import React from 'react';
+
+import { Unit } from 'components';
+import styled from 'styled-components';
+
+import ProgressBar from './ProgressBar';
 
 const Container = styled.div`
   position: relative;
@@ -15,7 +17,7 @@ const Container = styled.div`
 const Icon = styled.img`
   font-size: 12px;
   margin: auto 0;
-  width: 35px;
+  width: 30px;
   height: 16px;
 `;
 

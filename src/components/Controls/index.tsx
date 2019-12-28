@@ -1,11 +1,15 @@
-import React from "react";
-import styled from "styled-components";
-import TrackProgress from "./TrackProgress";
-import VolumeBar from "./VolumeBar";
-import { useVolumeHandler } from "hooks";
+import React from 'react';
+
+import { Unit } from 'components';
+import { useVolumeHandler } from 'hooks';
+import styled from 'styled-components';
+
+import TrackProgress from './TrackProgress';
+import VolumeBar from './VolumeBar';
 
 const Container = styled.div`
   width: 100%;
+  padding: 0 ${Unit};
 `;
 
 const Controls = () => {

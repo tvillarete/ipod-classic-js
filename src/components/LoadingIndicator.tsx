@@ -1,7 +1,14 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
 
-const Container = styled.div`
+import { fade } from 'animation';
+import { motion } from 'framer-motion';
+import styled from 'styled-components';
+
+interface ContainerProps {
+  cover?: boolean;
+}
+
+const Container = styled(motion.div)<ContainerProps>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,15 +18,17 @@ const Container = styled.div`
   left: 0;
   right: 0;
   margin: auto;
+  background: ${props => props.cover && "white"};
 `;
 
 interface Props {
   size?: number;
+  cover?: boolean;
 }
 
-const LoadingIndicator = ({ size }: Props) => {
+const LoadingIndicator = ({ size, cover }: Props) => {
   return (
-    <Container>
+    <Container cover={cover} {...fade}>
       <svg
         version="1.1"
         x="0px"

@@ -132,7 +132,7 @@ var player = {
 
   size: {
     height: 10,
-    width: 50
+    width: 100
   },
 
   draw: function() {

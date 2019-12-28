@@ -1,10 +1,12 @@
-import React, { useState, useCallback, useEffect } from "react";
-import styled from "styled-components";
-import { formatTime } from "utils";
-import { Unit, LoadingIndicator } from "components";
-import { useAudioService } from "services/audio";
-import { useInterval } from "hooks";
-import ProgressBar from "./ProgressBar";
+import React, { useCallback, useEffect, useState } from 'react';
+
+import { LoadingIndicator, Unit } from 'components';
+import { useInterval } from 'hooks';
+import { useAudioService } from 'services/audio';
+import styled from 'styled-components';
+import { formatTime } from 'utils';
+
+import ProgressBar from './ProgressBar';
 
 const Container = styled.div`
   position: relative;
@@ -27,7 +29,7 @@ interface LabelProps {
 const Label = styled.h3<LabelProps>`
   font-size: 12px;
   margin: auto 0;
-  width: 35px;
+  width: 30px;
   text-align: ${props => props.textAlign};
 `;
 

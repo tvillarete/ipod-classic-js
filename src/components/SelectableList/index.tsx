@@ -1,9 +1,12 @@
-import React, { useRef, useEffect, useState } from "react";
-import styled from "styled-components";
-import SelectableListItem from "./SelectableListItem";
-import { LoadingIndicator } from "components";
-import { Song } from "services/audio";
-import { useInterval } from "hooks";
+import React, { useEffect, useRef, useState } from 'react';
+
+import { LoadingIndicator } from 'components';
+import { AnimatePresence } from 'framer-motion';
+import { useInterval } from 'hooks';
+import { Song } from 'services/audio';
+import styled from 'styled-components';
+
+import SelectableListItem from './SelectableListItem';
 
 export interface SelectableListOption {
   label: string;
@@ -44,18 +47,22 @@ const SelectableList = ({ options, activeIndex, loading }: Props) => {
     }
   }, [activeIndex, isMounted, options.length]);
 
-  return loading ? (
-    <LoadingIndicator />
-  ) : (
-    <Container ref={containerRef}>
-      {options.map((option, index) => (
-        <SelectableListItem
-          key={`option-${option.label}-${index}`}
-          option={option}
-          isActive={index === activeIndex}
-        />
-      ))}
-    </Container>
+  return (
+    <AnimatePresence>
+      {loading ? (
+        <LoadingIndicator />
+      ) : (
+        <Container ref={containerRef}>
+          {options.map((option, index) => (
+            <SelectableListItem
+              key={`option-${option.label}-${index}`}
+              option={option}
+              isActive={index === activeIndex}
+            />
+          ))}
+        </Container>
+      )}
+    </AnimatePresence>
   );
 };
 

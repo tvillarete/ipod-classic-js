@@ -1,7 +1,9 @@
-import React from "react";
-import styled, { css } from "styled-components";
-import { Unit } from "components";
-import { SelectableListOption } from ".";
+import React from 'react';
+
+import { Unit } from 'components';
+import styled, { css } from 'styled-components';
+
+import { SelectableListOption } from './';
 
 interface ContainerProps {
   isActive: boolean;
@@ -25,6 +27,10 @@ const Image = styled.img`
   width: 3rem;
 `;
 
+const Icon = styled.img`
+  margin-left: auto;
+`;
+
 const Label = styled.h3`
   margin: 0;
   padding: ${Unit.XXS};
@@ -41,6 +47,7 @@ const SelectableListItem = ({ option, isActive }: Props) => {
     <Container isActive={isActive}>
       {option.image && <Image src={option.image} />}
       <Label>{option.label}</Label>
+      {isActive && <Icon src="arrow_right.svg" />}
     </Container>
   );
 };
