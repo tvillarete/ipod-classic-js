@@ -11,6 +11,7 @@ import ViewOptions, { AlbumView } from '../';
 const AlbumsView = () => {
   const { loading, error, data } = useQuery<AlbumsQuery>(ALBUMS);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
+  const [index] = useScrollHandler(ViewOptions.albums.id, options);
 
   useEffect(() => {
     if (data && data.albums && !error) {
@@ -24,8 +25,6 @@ const AlbumsView = () => {
       );
     }
   }, [data, error]);
-
-  const [index] = useScrollHandler(ViewOptions.albums.id, options);
 
   return (
     <SelectableList loading={loading} options={options} activeIndex={index} />

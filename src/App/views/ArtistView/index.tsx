@@ -1,30 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { SelectableList, SelectableListOption } from "components";
-import { useScrollHandler } from "hooks";
-import ViewOptions, { AlbumView } from "App/views";
-import { gql } from "apollo-boost";
-import { useQuery } from "@apollo/react-hooks";
+import React, { useEffect, useState } from 'react';
 
-type ArtistQuery = {
-  artist: [
-    {
-      album: string;
-      artwork: string;
-    }
-  ];
-};
-
-const ARTIST = gql`
-  query Artist($name: String!) {
-    artist(name: $name) {
-      album
-      artwork
-    }
-  }
-`;
-
-const getArtwork = (filePath: string) =>
-  `http://tannerv.ddns.net:12345/SpotiFree/${filePath}`;
+import { useQuery } from '@apollo/react-hooks';
+import ViewOptions, { AlbumView } from 'App/views';
+import { SelectableList, SelectableListOption } from 'components';
+import { useScrollHandler } from 'hooks';
+import { ARTIST, ArtistQuery } from 'queries';
+import { getUrlFromPath } from 'utils';
 
 interface Props {
   name: string;
@@ -35,6 +16,7 @@ const ArtistView = ({ name }: Props) => {
     variables: { name }
   });
   const [options, setOptions] = useState<SelectableListOption[]>([]);
+  const [index] = useScrollHandler(ViewOptions.artist.id, options);
 
   useEffect(() => {
     if (data && data.artist && !error) {
@@ -42,14 +24,13 @@ const ArtistView = ({ name }: Props) => {
         data.artist.map(result => ({
           label: result.album,
           value: () => <AlbumView name={result.album} />,
-          image: getArtwork(result.artwork),
+          image: getUrlFromPath(result.artwork),
           viewId: ViewOptions.album.id
         }))
       );
     }
   }, [data, error]);
 
-  const [index] = useScrollHandler(ViewOptions.artist.id, options);
 
   return (
     <SelectableList loading={loading} options={options} activeIndex={index} />

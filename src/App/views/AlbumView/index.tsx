@@ -1,28 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { SelectableList, SelectableListOption } from "components";
-import { useScrollHandler } from "hooks";
-import ViewOptions, { NowPlayingView } from "App/views";
-import { gql } from "apollo-boost";
-import { useQuery } from "@apollo/react-hooks";
-import { Song } from "services/audio";
+import React, { useEffect, useState } from 'react';
 
-type AlbumQuery = {
-  album: Song[];
-};
-
-const ALBUM = gql`
-  query Album($name: String!) {
-    album(name: $name) {
-      id
-      name
-      artist
-      album
-      artwork
-      track
-      url
-    }
-  }
-`;
+import { useQuery } from '@apollo/react-hooks';
+import ViewOptions, { NowPlayingView } from 'App/views';
+import { SelectableList, SelectableListOption } from 'components';
+import { useScrollHandler } from 'hooks';
+import { ALBUM, AlbumQuery } from 'queries';
 
 interface Props {
   name: string;
@@ -33,6 +15,7 @@ const AlbumView = ({ name }: Props) => {
     variables: { name }
   });
   const [options, setOptions] = useState<SelectableListOption[]>([]);
+  const [index] = useScrollHandler(ViewOptions.album.id, options);
 
   useEffect(() => {
     if (data && data.album && !error) {
@@ -47,8 +30,6 @@ const AlbumView = ({ name }: Props) => {
       );
     }
   }, [data, error]);
-
-  const [index] = useScrollHandler(ViewOptions.album.id, options);
 
   return (
     <SelectableList loading={loading} options={options} activeIndex={index} />
