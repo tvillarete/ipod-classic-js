@@ -2,7 +2,7 @@ const app = {
   init: function() {
     this.canvas = document.querySelector("#brickBreakerCanvas");
     this.context = this.canvas ? this.canvas.getContext("2d") : null;
-    this.context.scale(0.39, 0.49);
+    this.context.scale(0.4, 0.49);
 
     if (!this.context) {
       console.log("Error getting application context");
@@ -11,9 +11,12 @@ const app = {
 
     window.addEventListener("forwardscroll", () => player.moveRight(), true);
     window.addEventListener("backwardscroll", () => player.moveLeft(), true);
+    window.addEventListener("centerclick", this.update);
 
     this.setupBricks();
-    this.update();
+    player.draw();
+    app.drawBricks();
+    ball.update();
 
     return;
   },
@@ -22,6 +25,7 @@ const app = {
     app.clearContext();
     window.removeEventListener("forwardscroll", () => player.moveRight());
     window.removeEventListener("backwardscroll", () => player.moveLeft());
+    window.removeEventListener("centerclick", this.update);
   },
 
   update: function() {
@@ -64,7 +68,7 @@ const app = {
     //Setup back row:
     for (i = 0; i < 10; i++) {
       const brick = new Brick();
-      brick.position.x = 150 + i * brick.size.width + i;
+      brick.position.x = 100 + i * brick.size.width + i;
       brick.position.y = brickTop;
       brick.health = 1;
       this.bricks.push(brick);
@@ -73,7 +77,7 @@ const app = {
     //Setup middle row:
     for (i = 0; i < 8; i++) {
       const brick = new Brick();
-      brick.position.x = 201 + i * brick.size.width + i;
+      brick.position.x = 150 + i * brick.size.width + i;
       brick.position.y = brickTop + brick.size.height + 1;
       brick.health = 2;
       this.bricks.push(brick);
@@ -82,7 +86,7 @@ const app = {
     //Setup front row:
     for (i = 0; i < 6; i++) {
       var brick = new Brick();
-      brick.position.x = 252 + i * brick.size.width + i;
+      brick.position.x = 200 + i * brick.size.width + i;
       brick.position.y = brickTop + 2 * brick.size.height + 1;
       brick.health = 3;
       this.bricks.push(brick);
@@ -118,7 +122,7 @@ const app = {
 var player = {
   // Defines initial position
   position: {
-    x: 375,
+    x: 200,
     y: 480
   },
 
@@ -131,12 +135,12 @@ var player = {
   },
 
   size: {
-    height: 10,
-    width: 100
+    height: 20,
+    width: 150
   },
 
   draw: function() {
-    app.context.fillStyle = "rgb(200, 0, 0)";
+    app.context.fillStyle = "black";
     app.context.fillRect(
       this.position.x,
       this.position.y,
@@ -144,16 +148,16 @@ var player = {
       this.size.height
     );
 
-    app.context.textAlign = "center";
-    app.context.fillStyle = "rgba(0, 0, 0, .2)";
+    // app.context.textAlign = "center";
+    // app.context.fillStyle = "rgba(0, 0, 0, .2)";
 
-    app.context.font = "18px sans-serif";
-    app.context.fillText("Lives", 40, 20);
-    app.context.fillText("Score", 40, 120);
+    // app.context.font = "18px sans-serif";
+    // app.context.fillText("Lives", 40, 20);
+    // app.context.fillText("Score", 40, 120);
 
-    app.context.font = "48px sans-serif";
-    app.context.fillText(this.lives, 40, 75);
-    app.context.fillText(this.score, 40, 175);
+    // app.context.font = "48px sans-serif";
+    // app.context.fillText(this.lives, 40, 75);
+    // app.context.fillText(this.score, 40, 175);
   },
 
   moveLeft: function() {
@@ -174,8 +178,8 @@ var player = {
 
 var ball = {
   position: {
-    x: 50,
-    y: 50
+    x: 0,
+    y: 250
   },
 
   size: {
@@ -193,13 +197,19 @@ var ball = {
   },
 
   draw: function() {
-    app.context.fillStyle = "rgb(200, 0, 0)";
-    app.context.fillRect(
-      this.position.x,
-      this.position.y,
-      this.size.width,
-      this.size.height
-    );
+    app.context.fillStyle = "transparent";
+    const context = app.context;
+    const centerX = this.position.x;
+    const centerY = this.position.y;
+    const radius = 10;
+
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = "black";
+    context.fill();
+    context.lineWidth = 5;
+    context.strokeStyle = "black";
+    context.stroke();
   },
 
   reset: function() {
@@ -288,8 +298,8 @@ var Brick = function() {
   this.health = 3;
 
   this.size = {
-    height: 30,
-    width: 50
+    height: 20,
+    width: 60
   };
 
   //Will be determined on setup
@@ -303,10 +313,10 @@ Brick.prototype.draw = function() {
   // eslint-disable-next-line default-case
   switch (this.health) {
     case 3:
-      app.context.fillStyle = "rgb(0, 200, 0)"; //Green
+      app.context.fillStyle = "rgb(0, 240, 0)"; //Green
       break;
     case 2:
-      app.context.fillStyle = "rgb(200, 200, 0)"; //Orange?
+      app.context.fillStyle = "rgb(255,140,0"; //Orange?
       break;
     case 1:
       app.context.fillStyle = "rgb(200, 0, 0)"; //Red
@@ -317,8 +327,8 @@ Brick.prototype.draw = function() {
     app.context.fillRect(
       this.position.x,
       this.position.y,
-      this.size.width,
-      this.size.height
+      this.size.width - 5,
+      this.size.height - 5
     );
 };
 
