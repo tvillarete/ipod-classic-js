@@ -1,10 +1,12 @@
-import { ScrollWheel, Screen } from "components";
-import React from "react";
-import styled, { createGlobalStyle } from "styled-components";
-import WindowProvider from "services/window";
-import AudioProvider from "services/audio";
-import Interface from "./Interface";
-import Audio from "./Audio";
+import React from 'react';
+
+import { Screen, ScrollWheel } from 'components';
+import AudioProvider from 'services/audio';
+import WindowProvider from 'services/window';
+import styled, { createGlobalStyle } from 'styled-components';
+
+import Audio from './Audio';
+import Interface from './Interface';
 
 const GlobalStyles = createGlobalStyle`
    body {
@@ -19,7 +21,6 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const Container = styled.div`
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,7 +28,7 @@ const Container = styled.div`
 
 const Shell = styled.div`
   position: relative;
-  height: 100%;
+  height: 100vh;
   max-height: 36.5em;
   width: 370px;
   border-radius: 30px;
@@ -39,7 +40,7 @@ const Shell = styled.div`
   ${Screen.SM} {
     @media screen and (max-height: 750px) {
       border-radius: 0;
-      max-height: none;
+      -webkit-box-reflect: unset;
     }
   }
 `;

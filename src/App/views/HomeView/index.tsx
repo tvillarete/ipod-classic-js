@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { SelectableList, SelectableListOption } from "components";
-import { useScrollHandler } from "hooks";
-import ViewOptions, { MusicView, ArtistsView, GamesView } from "App/views";
-import { useAudioService } from "services/audio";
-import NowPlayingView from "../NowPlayingView";
+import React, { useCallback, useEffect, useState } from 'react';
+
+import ViewOptions, { GamesView, MusicView } from 'App/views';
+import { SelectableList, SelectableListOption } from 'components';
+import { useScrollHandler } from 'hooks';
+import { useAudioService } from 'services/audio';
+
+import NowPlayingView from '../NowPlayingView';
 
 const strings = {
   nowPlaying: "Now Playing"
@@ -15,11 +17,6 @@ const HomeView = () => {
       label: "Music",
       value: () => <MusicView />,
       viewId: ViewOptions.music.id
-    },
-    {
-      label: "Artists",
-      value: () => <ArtistsView />,
-      viewId: ViewOptions.artists.id
     },
     {
       label: "Games",

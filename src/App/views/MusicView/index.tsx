@@ -1,8 +1,10 @@
-import React from "react";
-import { SelectableList, SelectableListOption } from "components";
-import { useScrollHandler } from "hooks";
-import ViewOptions from "..";
-import { ArtistsView } from "App/views";
+import React from 'react';
+
+import { AlbumsView, ArtistsView } from 'App/views';
+import { SelectableList, SelectableListOption } from 'components';
+import { useScrollHandler } from 'hooks';
+
+import ViewOptions from '../';
 
 const MusicView = () => {
   const options: SelectableListOption[] = [
@@ -10,6 +12,11 @@ const MusicView = () => {
       label: "Artists",
       value: () => <ArtistsView />,
       viewId: ViewOptions.artists.id
+    },
+    {
+      label: "Albums",
+      value: () => <AlbumsView />,
+      viewId: ViewOptions.albums.id
     }
   ];
   const [index] = useScrollHandler(ViewOptions.music.id, options);
