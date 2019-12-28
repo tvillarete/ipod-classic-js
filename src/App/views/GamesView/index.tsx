@@ -1,7 +1,7 @@
 import React from "react";
 import { SelectableList, SelectableListOption } from "components";
 import { useScrollHandler } from "hooks";
-import ViewIds, { BrickGameView } from "App/views";
+import ViewOptions, { BrickGameView } from "App/views";
 
 const options: SelectableListOption[] = [
   {
@@ -11,7 +11,7 @@ const options: SelectableListOption[] = [
 ];
 
 const GamesView = () => {
-  const [index] = useScrollHandler(ViewIds.games, options);
+  const [index] = useScrollHandler(ViewOptions.games.id, options);
 
   return <SelectableList options={options} activeIndex={index} />;
 };

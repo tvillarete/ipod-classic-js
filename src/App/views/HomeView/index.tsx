@@ -1,33 +1,36 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { SelectableList, SelectableListOption } from "components";
 import { useScrollHandler } from "hooks";
-import ViewIds, { MusicView, ArtistsView, GamesView } from "App/views";
+import ViewOptions, { MusicView, ArtistsView, GamesView } from "App/views";
 import { useAudioService } from "services/audio";
 import NowPlayingView from "../NowPlayingView";
-
-const initialOptions: SelectableListOption[] = [
-  {
-    label: "Music",
-    value: () => <MusicView />
-  },
-  {
-    label: "Artists",
-    value: () => <ArtistsView />
-  },
-  {
-    label: "Games",
-    value: () => <GamesView />
-  }
-];
 
 const strings = {
   nowPlaying: "Now Playing"
 };
 
 const HomeView = () => {
+  const initialOptions: SelectableListOption[] = [
+    {
+      label: "Music",
+      value: () => <MusicView />,
+      viewId: ViewOptions.music.id
+    },
+    {
+      label: "Artists",
+      value: () => <ArtistsView />,
+      viewId: ViewOptions.artists.id
+    },
+    {
+      label: "Games",
+      value: () => <GamesView />,
+      viewId: ViewOptions.games.id
+    }
+  ];
+
   const [options, setOptions] = useState(initialOptions);
   const { source } = useAudioService();
-  const [index] = useScrollHandler(ViewIds.home, options);
+  const [index] = useScrollHandler(ViewOptions.home.id, options);
 
   /** Append the "Now Playing" button to the list of options. */
   const showNowPlaying = useCallback(() => {
@@ -39,7 +42,8 @@ const HomeView = () => {
         ...options,
         {
           label: strings.nowPlaying,
-          value: () => <NowPlayingView />
+          value: () => <NowPlayingView />,
+          viewId: "nowPlaying"
         }
       ]);
     }

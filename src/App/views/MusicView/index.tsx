@@ -1,18 +1,18 @@
 import React from "react";
 import { SelectableList, SelectableListOption } from "components";
 import { useScrollHandler } from "hooks";
-import ViewIds from "..";
+import ViewOptions from "..";
 import { ArtistsView } from "App/views";
 
-const options: SelectableListOption[] = [
-  {
-    label: "Artists",
-    value: () => <ArtistsView />
-  }
-];
-
 const MusicView = () => {
-  const [index] = useScrollHandler(ViewIds.music, options);
+  const options: SelectableListOption[] = [
+    {
+      label: "Artists",
+      value: () => <ArtistsView />,
+      viewId: ViewOptions.artists.id
+    }
+  ];
+  const [index] = useScrollHandler(ViewOptions.music.id, options);
 
   return <SelectableList options={options} activeIndex={index} />;
 };

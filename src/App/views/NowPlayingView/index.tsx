@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useAudioService } from "services/audio";
 import styled from "styled-components";
 import { getUrlFromPath } from "utils";
@@ -55,12 +55,20 @@ const ControlsContainer = styled.div`
 const NowPlayingView = () => {
   const { source, songIndex, playlist } = useAudioService();
   const { hideWindow } = useWindowService();
+  const [windowHidden, setWindowHidden] = useState(false);
+
+  const handleWindowHide = useCallback(() => {
+    if (!windowHidden) {
+      hideWindow();
+      setWindowHidden(true);
+    }
+  }, [hideWindow, windowHidden]);
 
   useEffect(() => {
     if (!source) {
-      hideWindow();
+      handleWindowHide();
     }
-  }, [hideWindow, source]);
+  }, [handleWindowHide, hideWindow, source]);
 
   return source ? (
     <Container>

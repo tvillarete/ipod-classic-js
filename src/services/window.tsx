@@ -1,11 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
-import ViewIds, * as Views from "App/views";
-
-export enum WINDOW_TYPE {
-  SPLIT = "SPLIT",
-  FULL = "FULL",
-  COVER_FLOW = "COVER_FLOW"
-}
+import ViewOptions, * as Views from "App/views";
+import { WINDOW_TYPE } from "App/views";
 
 export type WindowOptions<TComponent extends React.ComponentType<any> = any> = {
   /** A unique ID for each window. */
@@ -22,13 +17,13 @@ export type WindowOptions<TComponent extends React.ComponentType<any> = any> = {
   onClose?: (...args: any[]) => void;
 };
 
-interface WindowStackMap {
+interface WindowState {
   windowStack: WindowOptions[];
 }
 
 type WindowContextType = [
-  WindowStackMap,
-  React.Dispatch<React.SetStateAction<WindowStackMap>>
+  WindowState,
+  React.Dispatch<React.SetStateAction<WindowState>>
 ];
 
 const WindowContext = createContext<WindowContextType>([
@@ -114,12 +109,12 @@ interface Props {
 const WindowProvider = ({ children }: Props) => {
   const windowStack: WindowOptions[] = [
     {
-      id: ViewIds.home,
-      type: WINDOW_TYPE.FULL,
+      id: ViewOptions.home.id,
+      type: WINDOW_TYPE.SPLIT,
       component: Views.HomeView
     }
   ];
-  const [windowState, setWindowState] = useState<WindowStackMap>({
+  const [windowState, setWindowState] = useState<WindowState>({
     windowStack
   });
 

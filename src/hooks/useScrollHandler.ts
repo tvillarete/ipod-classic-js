@@ -1,8 +1,9 @@
 import { useState, useCallback } from "react";
 import { SelectableListOption } from "components";
-import { useWindowService, WINDOW_TYPE } from "services/window";
+import { useWindowService } from "services/window";
 import useEventListener from "./useEventListener";
 import { useAudioService } from "services/audio";
+import ViewOptions from "App/views";
 
 /** Accepts a list of options and will maintain a scroll index capped at the list's length. */
 const useScrollHandler = (
@@ -34,16 +35,17 @@ const useScrollHandler = (
     const option = options[index];
     if (!isActive || !option) return;
 
-    const View = option.value;
-    const viewId = option.viewId || option.label;
-
     /** If a viewId is found, that means there's a new view to show. */
-    if (viewId) {
+    if (option.viewId) {
+      const View = option.value;
+
       showWindow({
-        type: WINDOW_TYPE.FULL,
-        id: viewId,
+        type: ViewOptions[option.viewId].type,
+        id: option.viewId,
         component: View
       });
+    } else {
+      console.warn("Now viewId:", option)
     }
 
     /** If a song is found, play the song. */

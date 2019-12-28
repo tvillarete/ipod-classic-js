@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { SelectableList, SelectableListOption } from "components";
 import { useScrollHandler } from "hooks";
-import ViewIds, { AlbumView } from "App/views";
+import ViewOptions, { AlbumView } from "App/views";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 
@@ -43,13 +43,13 @@ const ArtistView = ({ name }: Props) => {
           label: result.album,
           value: () => <AlbumView name={result.album} />,
           image: getArtwork(result.artwork),
-          viewId: "Album"
+          viewId: ViewOptions.album.id
         }))
       );
     }
   }, [data, error]);
 
-  const [index] = useScrollHandler(ViewIds.artist, options);
+  const [index] = useScrollHandler(ViewOptions.artist.id, options);
 
   return (
     <SelectableList loading={loading} options={options} activeIndex={index} />

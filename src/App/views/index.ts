@@ -7,15 +7,29 @@ export { default as NowPlayingView } from "./NowPlayingView";
 export { default as GamesView } from "./GamesView";
 export { default as BrickGameView } from "./BrickGameView";
 
-const ViewIds: Record<string, string> = {
-  home: "Home",
-  music: "Music",
-  artists: "Artists",
-  artist: "Artist",
-  album: "Album",
-  nowPlaying: "Now Playing",
-  games: "Games",
-  brickGame: "Brick"
+export enum WINDOW_TYPE {
+  SPLIT = "SPLIT",
+  FULL = "FULL",
+  COVER_FLOW = "COVER_FLOW"
+}
+
+type ViewOption = {
+  id: string;
+  type: WINDOW_TYPE;
 };
 
-export default ViewIds;
+export const ViewOptions: Record<string, ViewOption> = {
+  // Split Screen Views
+  home: { id: "home", type: WINDOW_TYPE.SPLIT },
+  music: { id: "music", type: WINDOW_TYPE.SPLIT },
+  games: { id: "games", type: WINDOW_TYPE.SPLIT },
+
+  // Fullscreen Views
+  artists: { id: "artists", type: WINDOW_TYPE.FULL },
+  artist: { id: "artist", type: WINDOW_TYPE.FULL },
+  album: { id: "album", type: WINDOW_TYPE.FULL },
+  nowPlaying: { id: "nowPlaying", type: WINDOW_TYPE.FULL },
+  brickGame: { id: "brick", type: WINDOW_TYPE.FULL }
+};
+
+export default ViewOptions;

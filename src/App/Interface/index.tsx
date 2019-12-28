@@ -2,44 +2,31 @@ import React from "react";
 import styled from "styled-components";
 import { Unit, Screen } from "components";
 import { useWindowService } from "services/window";
+import SplitScreenInterface from "./SplitScreenInterface";
+import FullScreenInterface from "./FullScreenInterface";
+import { WINDOW_TYPE } from "App/views";
 
 const Container = styled.div`
   position: relative;
-  display: flex;
   height: 260px;
   margin: ${Unit.LG} ${Unit.LG} ${Unit.XL};
   border: 4px solid black;
-  background: white;
   border-radius: ${Unit.XS};
   overflow: hidden;
+  background: white;
   animation: fadeFromBlack 0.5s;
-
-  ${Screen.SM} {
-    @media screen and (max-height: 750px) {
-      margin: ${Unit.SM} ${Unit.SM} ${Unit.XL};
-    }
-  }
 
   @keyframes fadeFromBlack {
     0% {
       filter: brightness(0);
     }
   }
-`;
 
-interface WindowContainerProps {
-  index: number;
-}
-
-const WindowContainer = styled.div<WindowContainerProps>`
-  z-index: ${props => props.index};
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  overflow: auto;
+  ${Screen.SM} {
+    @media screen and (max-height: 750px) {
+      margin: ${Unit.SM} ${Unit.SM} ${Unit.XL};
+    }
+  }
 `;
 
 /** Prevents the user from scrolling the display with a mouse. */
@@ -54,15 +41,24 @@ const Mask = styled.div`
 
 const Interface = () => {
   const { windowStack } = useWindowService();
+  const splitViewWindows = windowStack.filter(
+    window => window.type === WINDOW_TYPE.SPLIT
+  );
+  const fullViewWindows = windowStack.filter(
+    window => window.type === WINDOW_TYPE.FULL
+  );
+  const inCoverFlow = !!windowStack.find(
+    window => window.type === WINDOW_TYPE.COVER_FLOW
+  );
 
   return (
     <Container>
       <Mask />
-      {windowStack.map((window, index) => (
-        <WindowContainer key={`window-${index}`} index={index}>
-          <window.component />
-        </WindowContainer>
-      ))}
+      <SplitScreenInterface
+        windowStack={splitViewWindows}
+        isHidden={inCoverFlow || fullViewWindows.length > 0}
+      />
+      <FullScreenInterface windowStack={fullViewWindows} />
     </Container>
   );
 };

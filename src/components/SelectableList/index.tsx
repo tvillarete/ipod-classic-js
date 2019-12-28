@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import SelectableListItem from "./SelectableListItem";
 import { LoadingIndicator } from "components";
 import { Song } from "services/audio";
+import { useInterval } from "hooks";
 
 export interface SelectableListOption {
   label: string;
@@ -26,16 +27,22 @@ interface Props {
 
 const SelectableList = ({ options, activeIndex, loading }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useInterval(() => setIsMounted(true), 1000);
 
   /** Always make sure the selected item is within the screen's view. */
   useEffect(() => {
-    if (containerRef.current && options.length) {
+    // Delay "isMounted" so that the enter animation doesn't get interrupted.
+    // I was stuck on this for like 12 hours and was wondering why
+    // the animation wasn't finishing...
+    if (isMounted && containerRef.current && options.length) {
       const { children } = containerRef.current;
       children[activeIndex].scrollIntoView({
         block: "nearest"
       });
     }
-  }, [activeIndex, options.length]);
+  }, [activeIndex, isMounted, options.length]);
 
   return loading ? (
     <LoadingIndicator />

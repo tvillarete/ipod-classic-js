@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { SelectableList, SelectableListOption } from "components";
 import { useScrollHandler } from "hooks";
-import ViewIds, { NowPlayingView } from "App/views";
+import ViewOptions, { NowPlayingView } from "App/views";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 import { Song } from "services/audio";
@@ -40,7 +40,7 @@ const AlbumView = ({ name }: Props) => {
         data.album.map((song, index) => ({
           label: song.name,
           value: () => <NowPlayingView />,
-          viewId: ViewIds.nowPlaying,
+          viewId: ViewOptions.nowPlaying.id,
           songIndex: index,
           playlist: data.album
         }))
@@ -48,7 +48,7 @@ const AlbumView = ({ name }: Props) => {
     }
   }, [data, error]);
 
-  const [index] = useScrollHandler(ViewIds.album, options);
+  const [index] = useScrollHandler(ViewOptions.album.id, options);
 
   return (
     <SelectableList loading={loading} options={options} activeIndex={index} />
