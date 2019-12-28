@@ -1,5 +1,6 @@
-import { useState, useCallback, useRef, useEffect } from "react";
-import useEventListener from "./useEventListener";
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+import useEventListener from './useEventListener';
 
 interface VolumeHandlerHook {
   volume: number;
@@ -38,19 +39,19 @@ const useVolumeHandler = (): VolumeHandlerHook => {
   }, []);
 
   const increaseVolume = useCallback(() => {
+    setActiveState();
     if (volume === 100 || !enabled) return;
     const audio = document.getElementById("ipodAudio") as HTMLAudioElement;
 
-    setActiveState();
     audio.volume = (volume + 4) / 100;
     setVolume(volume + 4);
   }, [volume, enabled, setActiveState]);
 
   const decreaseVolume = useCallback(() => {
+    setActiveState();
     if (volume === 0 || !enabled) return;
     const audio = document.getElementById("ipodAudio") as HTMLAudioElement;
 
-    setActiveState();
     audio.volume = (volume - 4) / 100;
     setVolume(volume - 4);
   }, [volume, enabled, setActiveState]);

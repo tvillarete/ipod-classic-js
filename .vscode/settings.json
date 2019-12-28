@@ -1,0 +1,38 @@
+{
+  /**
+   * Import sorter
+   *
+   * Rules for sorting the imports. Sort the imports in a standardized manner.
+   * First react, then external imports, then folder imports
+   */
+
+  "importSorter.sortConfiguration.customOrderingRules.rules": [
+    {
+      "type": "importMember",
+      "regex": "^$",
+      "orderLevel": 10,
+      "disableSort": true
+    },
+    {
+      "regex": "^react",
+      "orderLevel": 20
+    },
+    {
+      "regex": "^([@]|[^.~])",
+      "orderLevel": 30
+    },
+    {
+      "regex": "^[~]",
+      "orderLevel": 40
+    },
+    {
+      "regex": "^[.]",
+      "orderLevel": 50
+    }
+  ],
+  "importSorter.generalConfiguration.sortOnBeforeSave": true,
+  "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.type": "newLineEachExpressionAfterCountLimitExceptIfOnlyOne",
+  "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.count": 80,
+  "importSorter.importStringConfiguration.tabSize": 2,
+  "importSorter.importStringConfiguration.trailingComma": "multiLine"
+}
