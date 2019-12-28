@@ -51,7 +51,7 @@ const SelectableList = ({ options, activeIndex, loading }: Props) => {
   return (
     <AnimatePresence>
       {loading ? (
-        <LoadingIndicator />
+        <LoadingIndicator backgroundColor="white" />
       ) : (
         <Container ref={containerRef}>
           {options.map((option, index) => (

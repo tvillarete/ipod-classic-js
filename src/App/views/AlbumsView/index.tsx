@@ -1,32 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
 import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
 import { SelectableList, SelectableListOption } from 'components';
 import { useScrollHandler } from 'hooks';
+import { ALBUMS, AlbumsQuery } from 'queries';
 import { getUrlFromPath } from 'utils';
 
 import ViewOptions, { AlbumView } from '../';
-
-type AlbumsQuery = {
-  albums: [
-    {
-      artist: string;
-      album: string;
-      artwork: string;
-    }
-  ];
-};
-
-const ALBUMS = gql`
-  {
-    albums {
-      artist
-      album
-      artwork
-    }
-  }
-`;
 
 const AlbumsView = () => {
   const { loading, error, data } = useQuery<AlbumsQuery>(ALBUMS);

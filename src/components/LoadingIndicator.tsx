@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
 interface ContainerProps {
-  cover?: boolean;
+  backgroundColor?: string;
 }
 
 const Container = styled(motion.div)<ContainerProps>`
@@ -18,17 +18,17 @@ const Container = styled(motion.div)<ContainerProps>`
   left: 0;
   right: 0;
   margin: auto;
-  background: ${props => props.cover && "white"};
+  background: ${props => props.backgroundColor};
 `;
 
 interface Props {
   size?: number;
-  cover?: boolean;
+  backgroundColor?: string;
 }
 
-const LoadingIndicator = ({ size, cover }: Props) => {
+const LoadingIndicator = ({ size, backgroundColor }: Props) => {
   return (
-    <Container cover={cover} {...fade}>
+    <Container {...fade} backgroundColor={backgroundColor}>
       <svg
         version="1.1"
         x="0px"

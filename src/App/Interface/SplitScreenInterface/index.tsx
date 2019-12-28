@@ -1,9 +1,11 @@
-import React from "react";
-import styled from "styled-components";
-import { WindowOptions } from "services/window";
-import Window from "App/Interface/Window";
-import { AnimatePresence } from "framer-motion";
-import { Header } from "components";
+import React from 'react';
+
+import Window from 'App/Interface/Window';
+import { MusicPreview } from 'App/previews';
+import { Header } from 'components';
+import { AnimatePresence } from 'framer-motion';
+import { WindowOptions } from 'services/window';
+import styled from 'styled-components';
 
 const Container = styled.div`
   z-index: 2;
@@ -29,6 +31,7 @@ const LeftPanel = styled.div<PanelProps>`
 `;
 
 const RightPanel = styled.div`
+  z-index: 0;
   position: relative;
   flex: 0 0 50%;
   background: white;
@@ -56,7 +59,7 @@ const SplitScreenInterface = ({ windowStack, isHidden }: Props) => {
         </AnimatePresence>
       </LeftPanel>
       <RightPanel>
-        <h3>Preview</h3>
+        <MusicPreview />
       </RightPanel>
     </Container>
   );
