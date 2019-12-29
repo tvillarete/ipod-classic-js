@@ -5,6 +5,7 @@ import ViewOptions, {
   GamesView,
   MusicView,
   NowPlayingView,
+  SettingsView,
 } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
 import { useScrollHandler } from 'hooks';
@@ -30,6 +31,11 @@ const HomeView = () => {
       label: "Games",
       value: () => <GamesView />,
       viewId: ViewOptions.games.id
+    },
+    {
+      label: "Settings",
+      value: () => <SettingsView />,
+      viewId: ViewOptions.settings.id
     }
   ];
 

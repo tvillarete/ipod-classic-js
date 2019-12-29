@@ -1,13 +1,12 @@
-import React from "react";
-import styled from "styled-components";
-import { Unit } from "components";
+import React from 'react';
+
+import styled from 'styled-components';
 
 const Container = styled.div`
   position: relative;
   display: flex;
   flex: 1;
   height: 1em;
-  padding: 0 ${Unit.SM};
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(60%, transparent), to(rgba(250, 250, 250, 0.1)));
 `;
 

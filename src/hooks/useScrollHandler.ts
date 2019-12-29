@@ -53,6 +53,10 @@ const useScrollHandler = (
     if (option.playlist) {
       play(option.playlist, option.songIndex);
     }
+
+    if (option.link) {
+      window.open(option.link, "_blank")
+    }
   }, [index, isActive, options, play, showWindow]);
 
   useEventListener("centerclick", centerClick);

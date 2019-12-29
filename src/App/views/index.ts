@@ -1,3 +1,4 @@
+export { default as AboutView } from "./AboutView";
 export { default as CoverFlowView } from "./CoverFlowView";
 export { default as HomeView } from "./HomeView";
 export { default as MusicView } from "./MusicView";
@@ -8,6 +9,7 @@ export { default as AlbumView } from "./AlbumView";
 export { default as NowPlayingView } from "./NowPlayingView";
 export { default as GamesView } from "./GamesView";
 export { default as BrickGameView } from "./BrickGameView";
+export { default as SettingsView } from "./SettingsView";
 
 export enum WINDOW_TYPE {
   SPLIT = "SPLIT",
@@ -26,8 +28,10 @@ export const ViewOptions: Record<string, ViewOption> = {
   home: { id: "home", title: "iPod.js", type: WINDOW_TYPE.SPLIT },
   music: { id: "music", title: "Music", type: WINDOW_TYPE.SPLIT },
   games: { id: "games", title: "Games", type: WINDOW_TYPE.SPLIT },
+  settings: { id: "settings", title: "Settings", type: WINDOW_TYPE.SPLIT },
 
   // Fullscreen Views
+  about: { id: "about", title: "About", type: WINDOW_TYPE.FULL },
   artists: { id: "artists", title: "Artists", type: WINDOW_TYPE.FULL },
   artist: { id: "artist", title: "Artist", type: WINDOW_TYPE.FULL },
   albums: { id: "albums", title: "Albums", type: WINDOW_TYPE.FULL },

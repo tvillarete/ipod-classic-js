@@ -12,6 +12,7 @@ export interface SelectableListOption {
   label: string;
   value: any;
   viewId?: string;
+  link?: string;
   image?: string;
   songIndex?: number;
   playlist?: Song[];

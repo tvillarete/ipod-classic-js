@@ -38,7 +38,7 @@ const Artwork = styled.img`
 
 const InfoContainer = styled.div`
   flex: 1;
-  margin: auto 0;
+  margin: auto 0 auto ${Unit.XS};
 `;
 
 const Text = styled.h3`
