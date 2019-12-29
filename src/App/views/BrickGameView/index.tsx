@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 
+import { useMenuHideWindow } from 'hooks';
 import styled from 'styled-components';
 
+import ViewOptions from '../';
 import Game from './Game';
 
 const Canvas = styled.canvas`
@@ -15,6 +17,7 @@ const Canvas = styled.canvas`
 `;
 
 const BrickGame = () => {
+  useMenuHideWindow(ViewOptions.brickGame.id);
   useEffect(() => {
     Game.init();
   }, []);

@@ -34,7 +34,10 @@ const Icon = styled.img`
 const Label = styled.h3`
   margin: 0;
   padding: ${Unit.XXS};
-  font-size: ${Unit.MD};
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 interface Props {

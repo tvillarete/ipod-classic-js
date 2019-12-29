@@ -1,3 +1,4 @@
+export { default as CoverFlowView } from "./CoverFlowView";
 export { default as HomeView } from "./HomeView";
 export { default as MusicView } from "./MusicView";
 export { default as ArtistsView } from "./ArtistsView";
@@ -36,7 +37,14 @@ export const ViewOptions: Record<string, ViewOption> = {
     title: "Now Playing",
     type: WINDOW_TYPE.FULL
   },
-  brickGame: { id: "brickGame", title: "Brick", type: WINDOW_TYPE.FULL }
+  brickGame: { id: "brickGame", title: "Brick", type: WINDOW_TYPE.FULL },
+
+  // CoverFlow view
+  coverFlow: {
+    id: "coverFlow",
+    title: "Cover Flow",
+    type: WINDOW_TYPE.COVER_FLOW
+  }
 };
 
 export default ViewOptions;

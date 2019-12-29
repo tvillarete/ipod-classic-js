@@ -1,10 +1,13 @@
-import React from "react";
-import styled from "styled-components";
-import { Unit, Screen } from "components";
-import { useWindowService } from "services/window";
-import SplitScreenInterface from "./SplitScreenInterface";
-import FullScreenInterface from "./FullScreenInterface";
-import { WINDOW_TYPE } from "App/views";
+import React from 'react';
+
+import { WINDOW_TYPE } from 'App/views';
+import { Screen, Unit } from 'components';
+import { useWindowService } from 'services/window';
+import styled from 'styled-components';
+
+import CoverFlowInterface from './CoverFlowInterface';
+import FullScreenInterface from './FullScreenInterface';
+import SplitScreenInterface from './SplitScreenInterface';
 
 const Container = styled.div`
   position: relative;
@@ -47,16 +50,18 @@ const Interface = () => {
   const fullViewWindows = windowStack.filter(
     window => window.type === WINDOW_TYPE.FULL
   );
-  const inCoverFlow = !!windowStack.find(
+  const coverFlowWindow = windowStack.find(
     window => window.type === WINDOW_TYPE.COVER_FLOW
   );
 
   return (
     <Container>
       <Mask />
+      <CoverFlowInterface window={coverFlowWindow} />
       <SplitScreenInterface
         windowStack={splitViewWindows}
-        isHidden={inCoverFlow || fullViewWindows.length > 0}
+        menuHidden={fullViewWindows.length > 0}
+        allHidden={!!coverFlowWindow}
       />
       <FullScreenInterface windowStack={fullViewWindows} />
     </Container>

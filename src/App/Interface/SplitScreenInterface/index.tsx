@@ -5,7 +5,7 @@ import { MusicPreview } from 'App/previews';
 import { Header } from 'components';
 import { AnimatePresence } from 'framer-motion';
 import { WindowOptions } from 'services/window';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const Container = styled.div`
   z-index: 2;
@@ -25,27 +25,47 @@ const LeftPanel = styled.div<PanelProps>`
   flex: 0 0 50%;
   box-shadow: 0 0 24px black;
   transition: all 0.35s;
-  transition-delay: 0.05s;
-  transform: ${props => props.isHidden && "translateX(-100%)"};
   overflow: hidden;
+
+  ${props =>
+    props.isHidden &&
+    css`
+      transition-delay: 0.05s;
+      transform: translateX(-100%);
+      box-shadow: none;
+    `};
 `;
 
-const RightPanel = styled.div`
+const RightPanel = styled.div<PanelProps>`
   z-index: 0;
   position: relative;
   flex: 0 0 50%;
   background: white;
+  transition: all 0.35s;
+
+  ${props =>
+    props.isHidden &&
+    css`
+      transform: translateX(100%);
+      opacity: 0;
+      overflow: hidden;
+    `};
 `;
 
 interface Props {
   windowStack: WindowOptions[];
-  isHidden: boolean;
+  menuHidden: boolean;
+  allHidden: boolean;
 }
 
-const SplitScreenInterface = ({ windowStack, isHidden }: Props) => {
+const SplitScreenInterface = ({
+  windowStack,
+  menuHidden,
+  allHidden
+}: Props) => {
   return (
     <Container>
-      <LeftPanel isHidden={isHidden}>
+      <LeftPanel isHidden={menuHidden || allHidden}>
         <Header />
         <AnimatePresence>
           {windowStack.map((window, index) => (
@@ -58,7 +78,7 @@ const SplitScreenInterface = ({ windowStack, isHidden }: Props) => {
           ))}
         </AnimatePresence>
       </LeftPanel>
-      <RightPanel>
+      <RightPanel isHidden={allHidden}>
         <MusicPreview />
       </RightPanel>
     </Container>

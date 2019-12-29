@@ -1,11 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import ViewOptions, { GamesView, MusicView } from 'App/views';
+import ViewOptions, {
+  CoverFlowView,
+  GamesView,
+  MusicView,
+  NowPlayingView,
+} from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
 import { useScrollHandler } from 'hooks';
 import { useAudioService } from 'services/audio';
-
-import NowPlayingView from '../NowPlayingView';
 
 const strings = {
   nowPlaying: "Now Playing"
@@ -13,6 +16,11 @@ const strings = {
 
 const HomeView = () => {
   const initialOptions: SelectableListOption[] = [
+    {
+      label: "Cover Flow",
+      value: () => <CoverFlowView />,
+      viewId: ViewOptions.coverFlow.id
+    },
     {
       label: "Music",
       value: () => <MusicView />,

@@ -2,11 +2,12 @@ import React from 'react';
 
 import { AlbumsView, ArtistsView } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
-import { useScrollHandler } from 'hooks';
+import { useMenuHideWindow, useScrollHandler } from 'hooks';
 
 import ViewOptions from '../';
 
 const MusicView = () => {
+  useMenuHideWindow(ViewOptions.music.id);
   const options: SelectableListOption[] = [
     {
       label: "Artists",

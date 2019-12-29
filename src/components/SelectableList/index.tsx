@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { LoadingIndicator } from 'components';
 import { AnimatePresence } from 'framer-motion';
-import { useInterval } from 'hooks';
+import { useTimeout } from 'hooks';
 import { Song } from 'services/audio';
 import styled from 'styled-components';
 
@@ -33,7 +33,7 @@ const SelectableList = ({ options, activeIndex, loading }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
 
-  useInterval(() => setIsMounted(true), 1000);
+  useTimeout(() => setIsMounted(true), 350);
 
   /** Always make sure the selected item is within the screen's view. */
   useEffect(() => {

@@ -1,9 +1,11 @@
-import React from "react";
-import { SelectableList, SelectableListOption } from "components";
-import { useScrollHandler } from "hooks";
-import ViewOptions, { BrickGameView } from "App/views";
+import React from 'react';
+
+import ViewOptions, { BrickGameView } from 'App/views';
+import { SelectableList, SelectableListOption } from 'components';
+import { useMenuHideWindow, useScrollHandler } from 'hooks';
 
 const GamesView = () => {
+  useMenuHideWindow(ViewOptions.games.id);
   const options: SelectableListOption[] = [
     {
       label: "Brick",

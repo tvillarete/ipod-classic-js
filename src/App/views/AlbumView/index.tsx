@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import ViewOptions, { NowPlayingView } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
-import { useScrollHandler } from 'hooks';
+import { useMenuHideWindow, useScrollHandler } from 'hooks';
 import { ALBUM, AlbumQuery } from 'queries';
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
 }
 
 const AlbumView = ({ name }: Props) => {
+  useMenuHideWindow(ViewOptions.album.id);
   const { loading, error, data } = useQuery<AlbumQuery>(ALBUM, {
     variables: { name }
   });

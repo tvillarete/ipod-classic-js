@@ -29,6 +29,21 @@ export const fade = {
   exit: "closing"
 };
 
+export const fadeScale = {
+  variants: {
+    closed: { opacity: 0, scale: 0.5 },
+    open: { opacity: 1, scale: 1 },
+    closing: {
+      opacity: 0,
+      scale: 0.5,
+      transition: { duration: 0.3, type: "tween" }
+    }
+  },
+  initial: "closed",
+  animate: "open",
+  exit: "closing"
+};
+
 export const noAnimation = {
   variants: {
     closed: {},

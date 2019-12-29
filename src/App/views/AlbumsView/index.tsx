@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 
 import { useQuery } from '@apollo/react-hooks';
 import { SelectableList, SelectableListOption } from 'components';
-import { useScrollHandler } from 'hooks';
+import { useMenuHideWindow, useScrollHandler } from 'hooks';
 import { ALBUMS, AlbumsQuery } from 'queries';
 import { getUrlFromPath } from 'utils';
 
 import ViewOptions, { AlbumView } from '../';
 
 const AlbumsView = () => {
+  useMenuHideWindow(ViewOptions.albums.id);
   const { loading, error, data } = useQuery<AlbumsQuery>(ALBUMS);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
   const [index] = useScrollHandler(ViewOptions.albums.id, options);

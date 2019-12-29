@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import ViewOptions, { AlbumView } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
-import { useScrollHandler } from 'hooks';
+import { useMenuHideWindow, useScrollHandler } from 'hooks';
 import { ARTIST, ArtistQuery } from 'queries';
 import { getUrlFromPath } from 'utils';
 
@@ -12,6 +12,7 @@ interface Props {
 }
 
 const ArtistView = ({ name }: Props) => {
+  useMenuHideWindow(ViewOptions.artist.id);
   const { loading, error, data } = useQuery<ArtistQuery>(ARTIST, {
     variables: { name }
   });
@@ -30,7 +31,6 @@ const ArtistView = ({ name }: Props) => {
       );
     }
   }, [data, error]);
-
 
   return (
     <SelectableList loading={loading} options={options} activeIndex={index} />

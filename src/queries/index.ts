@@ -1,14 +1,14 @@
 import { gql } from 'apollo-boost';
 import { Song } from 'services/audio';
 
+export type Album = {
+  artist: string;
+  album: string;
+  artwork: string;
+};
+
 export type AlbumsQuery = {
-  albums: [
-    {
-      artist: string;
-      album: string;
-      artwork: string;
-    }
-  ];
+  albums: Album[];
 };
 
 export type AlbumQuery = {

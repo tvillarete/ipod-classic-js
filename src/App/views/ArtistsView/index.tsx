@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { SelectableList, SelectableListOption } from "components";
-import { useScrollHandler } from "hooks";
-import ViewOptions, { ArtistView } from "..";
-import { gql } from "apollo-boost";
-import { useQuery } from "@apollo/react-hooks";
+import React, { useEffect, useState } from 'react';
+
+import { useQuery } from '@apollo/react-hooks';
+import { gql } from 'apollo-boost';
+import { SelectableList, SelectableListOption } from 'components';
+import { useMenuHideWindow, useScrollHandler } from 'hooks';
+
+import ViewOptions, { ArtistView } from '../';
 
 type ArtistsQuery = {
   artists: [
@@ -22,6 +24,7 @@ const ARTISTS = gql`
 `;
 
 const ArtistsView = () => {
+  useMenuHideWindow(ViewOptions.artists.id);
   const { loading, error, data } = useQuery<ArtistsQuery>(ARTISTS);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
 

@@ -30,7 +30,7 @@ type WindowContextType = [
 const WindowContext = createContext<WindowContextType>([
   {
     windowStack: [],
-    headerTitle: ViewOptions.home.title
+    headerTitle: "iPod.js"
   },
   () => {}
 ]);

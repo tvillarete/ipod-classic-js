@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from "react";
-import Knob from "./Knob";
-import { useWindowService } from "services/window";
-import { useEventListener } from "hooks";
-import { useAudioService } from "services/audio";
+import React, { useCallback, useState } from 'react';
+
+import { useEventListener } from 'hooks';
+import { useAudioService } from 'services/audio';
+
+import Knob from './Knob';
 
 enum WHEEL_QUADRANT {
   TOP = 1,
@@ -25,10 +26,10 @@ const centerClickEvent = new Event("centerclick");
 const forwardScrollEvent = new Event("forwardscroll");
 const backwardScrollEvent = new Event("backwardscroll");
 const wheelClickEvent = new Event("wheelclick");
+const menuClickEvent = new Event("menuclick");
 
 const ScrollWheel = () => {
   const [count, setCount] = useState(0);
-  const { hideWindow } = useWindowService();
   const { togglePause, nextSong } = useAudioService();
 
   const handleCenterClick = useCallback(
@@ -51,7 +52,7 @@ const ScrollWheel = () => {
 
       switch (quadrant) {
         case WHEEL_QUADRANT.TOP:
-          hideWindow();
+          window.dispatchEvent(menuClickEvent);
           break;
         case WHEEL_QUADRANT.BOTTOM:
           togglePause();
@@ -64,7 +65,7 @@ const ScrollWheel = () => {
           break;
       }
     },
-    [hideWindow, nextSong, togglePause]
+    [nextSong, togglePause]
   );
 
   /** Allows for keyboard navigation. */

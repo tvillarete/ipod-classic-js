@@ -1,9 +1,11 @@
-import React from "react";
-import styled from "styled-components";
-import { useWindowService } from "services/window";
-import { useAudioService } from "services/audio";
+import React from 'react';
 
-const Container = styled.div`
+import { useAudioService } from 'services/audio';
+import { useWindowService } from 'services/window';
+import styled from 'styled-components';
+
+const Container = styled.div` 
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -1,9 +1,11 @@
-import { useState, useCallback } from "react";
-import { SelectableListOption } from "components";
-import { useWindowService } from "services/window";
-import useEventListener from "./useEventListener";
-import { useAudioService } from "services/audio";
-import ViewOptions from "App/views";
+import { useCallback, useState } from 'react';
+
+import ViewOptions from 'App/views';
+import { SelectableListOption } from 'components';
+import { useAudioService } from 'services/audio';
+import { useWindowService } from 'services/window';
+
+import useEventListener from './useEventListener';
 
 /** Accepts a list of options and will maintain a scroll index capped at the list's length. */
 const useScrollHandler = (
@@ -45,8 +47,6 @@ const useScrollHandler = (
         id: option.viewId,
         component: View
       });
-    } else {
-      console.warn("Now viewId:", option);
     }
 
     /** If a song is found, play the song. */
