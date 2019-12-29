@@ -1,5 +1,6 @@
-import React, { useRef, useEffect, useCallback } from "react";
-import { useAudioService } from "services/audio";
+import React, { useCallback, useEffect, useRef } from 'react';
+
+import { useAudioService } from 'services/audio';
 
 const Audio = () => {
   const { source, playing, nextSong, loading, setLoading } = useAudioService();

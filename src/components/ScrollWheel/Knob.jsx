@@ -11,6 +11,7 @@ const Container = styled.div`
   justify-content: center;
   margin: auto 0;
   touch-action: none;
+  transform: translate3d(0,0,0);
 `;
 
 const CanvasContainer = styled.div`

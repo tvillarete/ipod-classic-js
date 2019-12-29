@@ -33,7 +33,7 @@ const AlbumsContainer = styled.div`
   perspective: 500px;
 `;
 
-const InfoContainer = styled.div`
+const InfoContainer = styled(motion.div)`
   z-index: 0;
   position: absolute;
   bottom: 0;
@@ -132,13 +132,14 @@ const CoverFlow = ({ albums }: Props) => {
           />
         ))}
       </AlbumsContainer>
-      {albums.length && !playingAlbum && (
-        <InfoContainer>
-          <Text>{albums[activeIndex].album}</Text>
-          <Text>{albums[activeIndex].artist}</Text>
-        </InfoContainer>
-      )}
+
       <AnimatePresence>
+        {albums.length && !playingAlbum && (
+          <InfoContainer {...fade}>
+            <Text>{albums[activeIndex].album}</Text>
+            <Text>{albums[activeIndex].artist}</Text>
+          </InfoContainer>
+        )}
         {playingAlbum && (
           <NowPlayingContainer {...fade}>
             <NowPlaying hideArtwork />

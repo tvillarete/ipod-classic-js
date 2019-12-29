@@ -11,9 +11,9 @@ import { Point } from './CoverFlow';
 
 const getOffsetPx = (offset: number, midpoint: number) => {
   if (offset === 0) return 0;
-  const val = midpoint - 60 + offset * 48;
+  const val = midpoint - 46 + offset * 48;
 
-  return val;
+  return val + (offset < 0 ? -48 : 24);
 };
 
 interface ContainerProps {
@@ -25,12 +25,11 @@ interface ContainerProps {
   offset: number;
   index: number;
   activeIndex: number;
-  artwork: string;
 }
 
 const Container = styled.div.attrs((props: ContainerProps) => ({
   style: {
-    background: `url("${props.artwork}")`,
+    background: "transparent",
     backgroundSize: "cover"
   }
 }))<ContainerProps>`
@@ -38,9 +37,10 @@ const Container = styled.div.attrs((props: ContainerProps) => ({
   position: absolute;
   height: 8em;
   width: 8em;
-  transition: transform 0.3s, opacity 0.3s;
+  transition: transform 0.35s, opacity 0.35s, background 0.35s;
   border: 1px solid rgb(230, 230, 230);
   transform-style: preserve-3d;
+  transform: translate3d(0, 0, 0);
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(70%, transparent), to(rgba(250, 250, 250, 0.1)));
   opacity: ${props => props.isHidden && 0};
 
@@ -48,7 +48,23 @@ const Container = styled.div.attrs((props: ContainerProps) => ({
     props.isActive &&
     css`
       transform: translateX(${props.midpoint.x - 60}px)
-        ${props.isSelected && "rotateY(-180deg) translateY(10%)"};
+        ${props.isSelected && "rotateY(-180deg) translateY(10%) scale(1)"};
+
+      ${props.isSelected &&
+        css`
+          border: none;
+          -webkit-box-reflect: none;
+          ${Artwork} {
+            opacity: 0;
+          }
+        `};
+
+      ${props.isPlaying &&
+        css`
+          ${Artwork} {
+            opacity: 1;
+          }
+        `};
     `};
 
   ${props =>
@@ -60,13 +76,20 @@ const Container = styled.div.attrs((props: ContainerProps) => ({
   ${props =>
     !props.isActive &&
     css`
-      transform: translateX(${props.offset}px)
+      transform: translateX(${props.offset}px) translateZ(-65px)
         rotateY(${props.index < props.activeIndex ? "70deg" : "-70deg"});
     `};
 `;
 
+const Artwork = styled.img`
+  z-index: 0;
+  position: absolute;
+  height: 8em;
+  width: 8em;
+  transition: opacity 0.35s;
+`;
+
 const Backside = styled(motion.div)`
-  z-index: 1;
   position: relative;
   height: 100%;
   width: 100%;
@@ -106,8 +129,8 @@ const AlbumCover = ({
       index={index}
       activeIndex={activeIndex}
       isPlaying={isSelected && playingAlbum}
-      artwork={getUrlFromPath(album.artwork)}
     >
+      <Artwork src={getUrlFromPath(album.artwork)} />
       <AnimatePresence>
         {isSelected && !playingAlbum && (
           <Backside {...fadeScale}>
