@@ -62,16 +62,13 @@ const Container = styled.div.attrs((props: ContainerProps) => ({
 
       ${props.isPlaying &&
         css`
+          transform: translate(${props.midpoint.x - 135}px, -10px)
+            rotateY(18deg);
+            
           ${Artwork} {
             opacity: 1;
           }
         `};
-    `};
-
-  ${props =>
-    props.isPlaying &&
-    css`
-      transform: translate(${props.midpoint.x - 135}px, -10px) rotateY(18deg);
     `};
 
   ${props =>
