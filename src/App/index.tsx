@@ -38,10 +38,13 @@ const Shell = styled.div`
   max-height: 36.5em;
   width: 370px;
   border-radius: 30px;
-  border: 1px solid gray;
   box-shadow: inset 0 0 2.4em #555;
-  background: rgb(225, 225, 225);
+  background: linear-gradient(180deg, #e3e3e3 0%, #d6d6d6 100%);
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, transparent), to(rgba(250, 250, 250, 0.3)));
+
+  @media (prefers-color-scheme: dark) {
+    box-shadow: inset 0 0 2.4em black;
+  }
 
   ${Screen.SM} {
     @media screen and (max-height: 750px) {

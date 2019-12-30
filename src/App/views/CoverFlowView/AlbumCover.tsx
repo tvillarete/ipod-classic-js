@@ -37,23 +37,24 @@ const Container = styled.div.attrs((props: ContainerProps) => ({
   position: absolute;
   height: 8em;
   width: 8em;
-  transition: transform 0.35s, opacity 0.35s, background 0.35s;
-  border: 1px solid rgb(230, 230, 230);
+  transition: transform 0.25s, opacity 0.35s, background 0.35s;
   transform-style: preserve-3d;
-  transform: translate3d(0, 0, 0);
-  -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(70%, transparent), to(rgba(250, 250, 250, 0.1)));
+  -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(70%, transparent), to(rgba(240, 240, 240, 0.2)));
   opacity: ${props => props.isHidden && 0};
 
   ${props =>
     props.isActive &&
     css`
-      transform: translateX(${props.midpoint.x - 60}px)
+      transition: transform 0.3s, opacity 0.35s, background 0.35s;
+      transform: translate3d(${props.midpoint.x - 60}px, 4px, 20px)
         ${props.isSelected && "rotateY(-180deg) translateY(10%) scale(1)"};
 
       ${props.isSelected &&
         css`
+          transition: transform 0.5s, opacity 0.35s, background 0.35s;
           border: none;
           -webkit-box-reflect: none;
+
           ${Artwork} {
             opacity: 0;
           }
@@ -76,7 +77,7 @@ const Container = styled.div.attrs((props: ContainerProps) => ({
   ${props =>
     !props.isActive &&
     css`
-      transform: translateX(${props.offset}px) translateZ(-65px)
+      transform: translateX(${props.offset}px) scale(1.1) translateZ(-65px)
         rotateY(${props.index < props.activeIndex ? "70deg" : "-70deg"});
     `};
 `;
@@ -86,7 +87,7 @@ const Artwork = styled.img`
   position: absolute;
   height: 8em;
   width: 8em;
-  transition: opacity 0.35s;
+  transition: opacity 0.5s;
 `;
 
 const Backside = styled(motion.div)`

@@ -11,7 +11,7 @@ const Container = styled.div`
   justify-content: center;
   margin: auto 0;
   touch-action: none;
-  transform: translate3d(0,0,0);
+  transform: translate3d(0, 0, 0);
 `;
 
 const CanvasContainer = styled.div`
@@ -25,6 +25,7 @@ const CanvasContainer = styled.div`
 
 const Canvas = styled.canvas`
   border-radius: 50%;
+  border: 1px solid #b9b9b9;
   background: white;
 `;
 
@@ -40,6 +41,8 @@ const CenterButton = styled.div`
   border-radius: 50%;
   box-shadow: rgb(191, 191, 191) 0px 1em 3em inset;
   background: rgb(225, 225, 225);
+  border: 1px solid #b9b9b9;
+  
   :active {
     filter: brightness(0.9);
   }

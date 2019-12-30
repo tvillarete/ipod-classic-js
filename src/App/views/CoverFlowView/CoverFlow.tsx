@@ -27,7 +27,7 @@ const AlbumsContainer = styled.div`
   display: flex;
   flex-wrap: nowrap;
   flex: 1;
-  padding-top: 10%;
+  padding-top: 8%;
   -webkit-overflow-scrolling: touch; /* [3] */
   -ms-overflow-style: -ms-autohiding-scrollbar;
   perspective: 500px;

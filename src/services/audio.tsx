@@ -78,9 +78,9 @@ export const useAudioService = (): AudioServiceHook => {
     if (audioState.source) {
       setAudioState(prevState => {
         const newIndex = prevState.songIndex + 1;
-        const endOfPlaylist = newIndex === prevState.playlist.length - 1;
+        const endOfPlaylist = newIndex >= prevState.playlist.length;
         const newSource = endOfPlaylist
-          ? prevState.source
+          ? undefined
           : prevState.playlist[newIndex];
         setDocumentSongTitle(newSource);
 

@@ -16,7 +16,7 @@ const Container = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
-  top: -35%;
+  top: -28%;
   bottom: -50%;
   left: -50%;
   right: -50%;
