@@ -1,4 +1,4 @@
-## iPod Classic.js
+![ipod_logo](https://user-images.githubusercontent.com/21055469/71596001-b6782200-2af2-11ea-830e-b5a5f793cf15.png)
 
 by Tanner Villarete | [LinkedIn](http://linkedin.com/in/tvillarete) | [Website](http://tannerv.com)
 
