@@ -11,7 +11,7 @@ interface VolumeHandlerHook {
 const useVolumeHandler = (): VolumeHandlerHook => {
   const [active, setActive] = useState(false);
   const [volume, setVolume] = useState(100);
-  const [enabled, setEnabled] = useState(true);
+  const [enabled, setIsEnabled] = useState(true);
   const timeoutIdRef = useRef<any>();
 
   useEffect(() => {
@@ -27,8 +27,23 @@ const useVolumeHandler = (): VolumeHandlerHook => {
     };
   }, []);
 
+  /** This is used to disable and reset the "active" timeout. */
+  const setEnabled = useCallback((val: boolean) => {
+    if (!val && timeoutIdRef.current) {
+      setActive(false);
+      setIsEnabled(false);
+      clearTimeout(timeoutIdRef.current);
+    } else {
+      setActive(false);
+      setIsEnabled(true);
+      clearTimeout(timeoutIdRef.current);
+    }
+  }, []);
+
   /** The volume bar is "active" for 3 seconds after the last volume update. */
   const setActiveState = useCallback(() => {
+    if (!enabled) return;
+
     setActive(true);
     if (timeoutIdRef.current) {
       clearTimeout(timeoutIdRef.current);
@@ -36,7 +51,7 @@ const useVolumeHandler = (): VolumeHandlerHook => {
     timeoutIdRef.current = setTimeout(() => {
       setActive(false);
     }, 3000);
-  }, []);
+  }, [enabled]);
 
   const increaseVolume = useCallback(() => {
     setActiveState();

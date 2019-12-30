@@ -142,7 +142,7 @@ const CoverFlow = ({ albums }: Props) => {
         )}
         {playingAlbum && (
           <NowPlayingContainer {...fade}>
-            <NowPlaying hideArtwork />
+            <NowPlaying hideArtwork onHide={handleMenuClick} />
           </NowPlayingContainer>
         )}
       </AnimatePresence>

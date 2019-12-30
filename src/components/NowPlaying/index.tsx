@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { Controls, Unit } from 'components';
 import { useAudioService } from 'services/audio';
+import { useWindowService } from 'services/window';
 import styled from 'styled-components';
 import { getUrlFromPath } from 'utils';
 
@@ -59,10 +60,26 @@ const ControlsContainer = styled.div`
 
 interface Props {
   hideArtwork?: boolean;
+  onHide: () => void;
 }
 
-const NowPlaying = ({ hideArtwork }: Props) => {
+const NowPlaying = ({ hideArtwork, onHide }: Props) => {
+  const { hideWindow } = useWindowService();
   const { source, songIndex, playlist } = useAudioService();
+  const [windowHidden, setWindowHidden] = useState(false);
+
+  const handleWindowHide = useCallback(() => {
+    if (!windowHidden) {
+      onHide();
+      setWindowHidden(true);
+    }
+  }, [onHide, windowHidden]);
+
+  useEffect(() => {
+    if (!source) {
+      handleWindowHide();
+    }
+  }, [handleWindowHide, hideWindow, source]);
 
   return source ? (
     <Container>

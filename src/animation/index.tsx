@@ -15,6 +15,23 @@ export const slideRightAnimation = {
   exit: "closing"
 };
 
+export const slideLeftAnimation = {
+  variants: {
+    closed: { x: "-110%" },
+    open: {
+      x: 0,
+      transition: { duration: 0.3, type: "tween" }
+    },
+    closing: {
+      x: "-110%",
+      transition: { duration: 0.3, type: "tween" }
+    }
+  },
+  initial: "closed",
+  animate: "open",
+  exit: "closing"
+};
+
 export const fade = {
   variants: {
     closed: { opacity: 0 },
