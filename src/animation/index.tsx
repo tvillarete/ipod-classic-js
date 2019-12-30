@@ -48,11 +48,15 @@ export const fade = {
 
 export const fadeScale = {
   variants: {
-    closed: { opacity: 0, scale: 0.5 },
-    open: { opacity: 1, scale: 1 },
+    closed: { opacity: 0, scale: 0.3 },
+    open: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.5, type: "tween" }
+    },
     closing: {
       opacity: 0,
-      scale: 0.5,
+      scale: 0.3,
       transition: { duration: 0.3, type: "tween" }
     }
   },
