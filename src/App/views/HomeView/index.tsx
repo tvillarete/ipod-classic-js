@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
+import { PREVIEW } from 'App/previews';
 import ViewOptions, {
   CoverFlowView,
   GamesView,
@@ -20,22 +21,26 @@ const HomeView = () => {
     {
       label: "Cover Flow",
       value: () => <CoverFlowView />,
-      viewId: ViewOptions.coverFlow.id
+      viewId: ViewOptions.coverFlow.id,
+      preview: PREVIEW.MUSIC
     },
     {
       label: "Music",
       value: () => <MusicView />,
-      viewId: ViewOptions.music.id
+      viewId: ViewOptions.music.id,
+      preview: PREVIEW.MUSIC
     },
     {
       label: "Games",
       value: () => <GamesView />,
-      viewId: ViewOptions.games.id
+      viewId: ViewOptions.games.id,
+      preview: PREVIEW.GAMES
     },
     {
       label: "Settings",
       value: () => <SettingsView />,
-      viewId: ViewOptions.settings.id
+      viewId: ViewOptions.settings.id,
+      preview: PREVIEW.SETTINGS
     }
   ];
 
@@ -54,7 +59,8 @@ const HomeView = () => {
         {
           label: strings.nowPlaying,
           value: () => <NowPlayingView />,
-          viewId: ViewOptions.nowPlaying.id
+          viewId: ViewOptions.nowPlaying.id,
+          preview: PREVIEW.NOW_PLAYING
         }
       ]);
     }

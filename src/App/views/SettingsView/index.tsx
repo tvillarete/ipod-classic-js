@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { PREVIEW } from 'App/previews';
 import ViewOptions, { AboutView } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';
@@ -10,7 +11,8 @@ const SettingsView = () => {
     {
       label: "About",
       value: () => <AboutView />,
-      viewId: ViewOptions.about.id
+      viewId: ViewOptions.about.id,
+      preview: PREVIEW.SETTINGS
     }
   ];
 

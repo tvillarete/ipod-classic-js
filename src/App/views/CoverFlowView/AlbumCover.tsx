@@ -52,6 +52,7 @@ const Container = styled.div.attrs((props: ContainerProps) => ({
       ${props.isSelected &&
         css`
           transition: transform 0.5s, opacity 0.35s, background 0.35s;
+          -webkit-box-reflect: none;
 
           ${Artwork} {
             opacity: 0;
@@ -62,7 +63,7 @@ const Container = styled.div.attrs((props: ContainerProps) => ({
         css`
           transform: translate(${props.midpoint.x - 135}px, -10px)
             rotateY(18deg);
-            
+
           ${Artwork} {
             opacity: 1;
           }

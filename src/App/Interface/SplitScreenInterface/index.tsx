@@ -1,11 +1,12 @@
 import React from 'react';
 
 import Window from 'App/Interface/Window';
-import { MusicPreview } from 'App/previews';
 import { Header } from 'components';
 import { AnimatePresence } from 'framer-motion';
 import { WindowOptions } from 'services/window';
 import styled, { css } from 'styled-components';
+
+import PreviewPanel from './PreviewPanel';
 
 const Container = styled.div`
   z-index: 2;
@@ -36,22 +37,6 @@ const LeftPanel = styled.div<PanelProps>`
     `};
 `;
 
-const RightPanel = styled.div<PanelProps>`
-  z-index: 0;
-  position: relative;
-  flex: 0 0 50%;
-  background: white;
-  transition: all 0.35s;
-
-  ${props =>
-    props.isHidden &&
-    css`
-      transform: translateX(100%);
-      opacity: 0;
-      overflow: hidden;
-    `};
-`;
-
 interface Props {
   windowStack: WindowOptions[];
   menuHidden: boolean;
@@ -78,9 +63,7 @@ const SplitScreenInterface = ({
           ))}
         </AnimatePresence>
       </LeftPanel>
-      <RightPanel isHidden={allHidden}>
-        <MusicPreview />
-      </RightPanel>
+      <PreviewPanel isHidden={allHidden} />
     </Container>
   );
 };

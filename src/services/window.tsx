@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 
+import { PREVIEW } from 'App/previews';
 import ViewOptions, * as Views from 'App/views';
 
 export type WindowOptions<TComponent extends React.ComponentType<any> = any> = {
@@ -20,6 +21,7 @@ export type WindowOptions<TComponent extends React.ComponentType<any> = any> = {
 interface WindowState {
   windowStack: WindowOptions[];
   headerTitle?: string;
+  preview: PREVIEW;
 }
 
 type WindowContextType = [
@@ -30,7 +32,8 @@ type WindowContextType = [
 const WindowContext = createContext<WindowContextType>([
   {
     windowStack: [],
-    headerTitle: "iPod.js"
+    headerTitle: "iPod.js",
+    preview: PREVIEW.MUSIC
   },
   () => {}
 ]);
@@ -45,9 +48,11 @@ export interface WindowServiceHook {
   /** Checks if the current window's id matches the given id.
    * Useful for enabling/disabling scrolling if a window is hidden.
    */
-  isWindowActive: (id: string) => boolean;
   headerTitle?: string;
+  preview: PREVIEW;
+  isWindowActive: (id: string) => boolean;
   setHeaderTitle: (title?: string) => void;
+  setPreview: (preview: PREVIEW) => void;
 }
 
 /**
@@ -115,13 +120,25 @@ export const useWindowService = (): WindowServiceHook => {
     [setWindowState, windowState]
   );
 
+  const setPreview = useCallback(
+    (preview: PREVIEW) => {
+      setWindowState({
+        ...windowState,
+        preview
+      });
+    },
+    [setWindowState, windowState]
+  );
+
   return {
     showWindow,
     hideWindow,
     isWindowActive,
     windowStack: windowState.windowStack,
     headerTitle: windowState.headerTitle,
-    setHeaderTitle
+    preview: windowState.preview,
+    setHeaderTitle,
+    setPreview
   };
 };
 
@@ -139,7 +156,8 @@ const WindowProvider = ({ children }: Props) => {
   ];
   const [windowState, setWindowState] = useState<WindowState>({
     windowStack,
-    headerTitle: ViewOptions.home.title
+    headerTitle: ViewOptions.home.title,
+    preview: PREVIEW.MUSIC
   });
 
   return (

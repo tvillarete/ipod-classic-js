@@ -65,6 +65,25 @@ export const fadeScale = {
   exit: "closing"
 };
 
+export const previewSlideRight = {
+  variants: {
+    closed: { x: "130%", opacity: 0 },
+    open: {
+      x: 0,
+      opacity: 1,
+      transition: { duration: 0.4, type: "tween" }
+    },
+    closing: {
+      x: "130%",
+      opacity: 0,
+      transition: { duration: 0.4, type: "tween" }
+    }
+  },
+  initial: "closed",
+  animate: "open",
+  exit: "closing"
+};
+
 export const noAnimation = {
   variants: {
     closed: {},

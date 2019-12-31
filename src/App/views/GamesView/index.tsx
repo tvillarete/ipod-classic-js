@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { PREVIEW } from 'App/previews';
 import ViewOptions, { BrickGameView } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';
@@ -10,7 +11,8 @@ const GamesView = () => {
     {
       label: "Brick",
       value: () => <BrickGameView />,
-      viewId: ViewOptions.brickGame.id
+      viewId: ViewOptions.brickGame.id,
+      preview: PREVIEW.GAMES
     }
   ];
 

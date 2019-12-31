@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+import { PREVIEW } from 'App/previews';
 import { LoadingIndicator } from 'components';
 import { AnimatePresence } from 'framer-motion';
 import { useTimeout } from 'hooks';
@@ -12,6 +13,7 @@ export interface SelectableListOption {
   label: string;
   value: any;
   viewId?: string;
+  preview?: PREVIEW;
   link?: string;
   image?: string;
   songIndex?: number;

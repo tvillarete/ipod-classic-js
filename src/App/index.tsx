@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Screen, ScrollWheel } from 'components';
+import { ScrollWheel } from 'components';
 import AudioProvider from 'services/audio';
 import WindowProvider from 'services/window';
 import styled, { createGlobalStyle } from 'styled-components';
@@ -41,15 +41,28 @@ const Shell = styled.div`
   box-shadow: inset 0 0 2.4em #555;
   background: linear-gradient(180deg, #e3e3e3 0%, #d6d6d6 100%);
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, transparent), to(rgba(250, 250, 250, 0.3)));
+  animation: descend 1.5s ease;
 
   @media (prefers-color-scheme: dark) {
     box-shadow: inset 0 0 2.4em black;
   }
 
-  ${Screen.SM} {
-    @media screen and (max-height: 750px) {
-      border-radius: 0;
-      -webkit-box-reflect: unset;
+  @media screen and (max-width: 400px) {
+    animation: none;
+    border-radius: 0;
+    -webkit-box-reflect: unset;
+    max-height: unset;
+  }
+
+  @keyframes descend {
+    0% {
+      transform: scale(0.3);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale(1);
+      opacity: 1;
     }
   }
 `;
