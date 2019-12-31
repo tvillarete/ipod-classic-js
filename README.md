@@ -1,4 +1,4 @@
-![ipod_og](https://user-images.githubusercontent.com/21055469/71597009-70bd5880-2af6-11ea-92ae-96b556516124.png)
+![ipod_og](https://user-images.githubusercontent.com/21055469/71636084-6081a800-2be0-11ea-98ee-9599a3396c84.png)
 
 ### by Tanner Villarete | [LinkedIn](http://linkedin.com/in/tvillarete) | [Website](http://tannerv.com)
 
