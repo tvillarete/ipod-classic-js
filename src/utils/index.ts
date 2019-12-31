@@ -22,5 +22,5 @@ export const formatTime = (seconds = 0, guide = seconds) => {
 };
 
 export const setDocumentSongTitle = (song?: Song) => {
-  document.title = song ? `${song.name} – iPod Classic.js` : "iPod Classic.js";
+  document.title = song ? `${song.name} – iPod.js` : "iPod.js";
 };
