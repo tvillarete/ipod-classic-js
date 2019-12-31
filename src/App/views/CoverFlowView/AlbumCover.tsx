@@ -52,8 +52,6 @@ const Container = styled.div.attrs((props: ContainerProps) => ({
       ${props.isSelected &&
         css`
           transition: transform 0.5s, opacity 0.35s, background 0.35s;
-          border: none;
-          -webkit-box-reflect: none;
 
           ${Artwork} {
             opacity: 0;
