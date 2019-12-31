@@ -7,6 +7,8 @@ import ViewOptions from '../';
 import Game from './Game';
 
 const Canvas = styled.canvas`
+  height: 100%;
+  width: 100%;
   background: rgb(2, 0, 36);
   background: linear-gradient(
     90deg,

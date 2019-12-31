@@ -2,37 +2,46 @@ const app = {
   init: function() {
     this.canvas = document.querySelector("#brickBreakerCanvas");
     this.context = this.canvas ? this.canvas.getContext("2d") : null;
-    this.context.scale(0.4, 0.49);
 
     if (!this.context) {
       console.log("Error getting application context");
       return; //TODO: notify user
     }
 
-    window.addEventListener("forwardscroll", () => player.moveRight(), true);
-    window.addEventListener("backwardscroll", () => player.moveLeft(), true);
-    window.addEventListener("centerclick", this.update);
+    window.addEventListener("centerclick", this.handleCenterClick);
+    this.inStasis = false;
 
-    this.setupBricks();
-    player.draw();
-    app.drawBricks();
-    ball.update();
+    if (!this.initialized) {
+      window.addEventListener("forwardscroll", () => player.moveRight(), true);
+      window.addEventListener("backwardscroll", () => player.moveLeft(), true);
+      window.addEventListener("menuclick", () => (this.inStasis = true));
+
+      this.waiting = true;
+      this.setupBricks();
+      player.draw();
+      this.drawBricks();
+      ball.update();
+      this.update();
+
+      this.initialized = true;
+    }
 
     return;
   },
 
-  destroy: function() {
-    app.clearContext();
-    window.removeEventListener("forwardscroll", () => player.moveRight());
-    window.removeEventListener("backwardscroll", () => player.moveLeft());
-    window.removeEventListener("centerclick", this.update);
+  handleCenterClick: function() {
+    if (app.waiting && !app.inStasis) {
+      app.waiting = false;
+    }
   },
+
+  enterStasis: function() {},
 
   update: function() {
     app.clearContext();
-
-    app.drawBricks();
     player.draw();
+    app.drawBricks();
+
     ball.update();
 
     requestAnimationFrame(app.update);
@@ -45,11 +54,13 @@ const app = {
 
   die: function() {
     //TODO: better death!
+    player.position.x = 200;
     player.lives -= 1;
 
     if (player.lives < 1) this.reset();
 
     ball.reset();
+    app.waiting = true;
   },
 
   drawBricks: function() {
@@ -106,19 +117,6 @@ const app = {
   timeout: 33
 };
 
-// var controller = {
-//   keypress: function(event) {
-//     switch (event.keyCode) {
-//       case 37:
-//         player.moveLeft();
-//         break;
-//       case 39:
-//         player.moveRight();
-//         break;
-//     }
-//   }
-// };
-
 var player = {
   // Defines initial position
   position: {
@@ -161,18 +159,22 @@ var player = {
   },
 
   moveLeft: function() {
-    if (this.position.x > 0) this.position.x -= this.physics.speed;
+    if (this.position.x > 0) this.position.x -= this.physics.speed * 1.5;
   },
 
   moveRight: function() {
     if (this.position.x < app.canvas.width - this.size.width)
-      this.position.x += this.physics.speed;
+      this.position.x += this.physics.speed * 1.5;
   },
 
   reset: function() {
     this.lives = 3;
     this.score = 0;
-    this.position.x = 100;
+    this.resetPosition();
+  },
+
+  resetPosition: function() {
+    this.position.x = 200;
   }
 };
 
@@ -213,8 +215,8 @@ var ball = {
   },
 
   reset: function() {
-    this.position.x = 50;
-    this.position.y = 50;
+    this.position.x = 0;
+    this.position.y = 250;
     this.direction.x = 1;
     this.direction.y = 1;
   },
@@ -233,11 +235,13 @@ var ball = {
       //Bottom Bounds
       app.die(); //TODO: die
 
-    this.checkCollisionWithPlayer();
-    this.checkCollisionWithBricks();
+    if (!app.waiting && !app.inStasis) {
+      this.checkCollisionWithPlayer();
+      this.checkCollisionWithBricks();
 
-    this.position.x += this.physics.speed * this.direction.x;
-    this.position.y += this.physics.speed * this.direction.y;
+      this.position.x += this.physics.speed * this.direction.x;
+      this.position.y += this.physics.speed * this.direction.y;
+    }
 
     this.draw();
   },
