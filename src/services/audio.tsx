@@ -45,6 +45,7 @@ export interface AudioServiceHook {
   play: (playlist: Song[], index?: number) => void;
   togglePause: () => void;
   nextSong: () => void;
+  prevSong: () => void;
   setLoading: (value: boolean) => void;
 }
 
@@ -94,6 +95,23 @@ export const useAudioService = (): AudioServiceHook => {
     }
   }, [audioState.source, setAudioState]);
 
+  const prevSong = useCallback(() => {
+    if (audioState.source && audioState.songIndex > 0) {
+      setAudioState(prevState => {
+        const newIndex = prevState.songIndex - 1;
+        const newSource = prevState.playlist[newIndex];
+        setDocumentSongTitle(newSource);
+
+        return {
+          ...prevState,
+          playing: true,
+          songIndex: newIndex,
+          source: newSource
+        };
+      });
+    }
+  }, [audioState.songIndex, audioState.source, setAudioState]);
+
   const setLoading = useCallback(
     (value: boolean) => setAudioState({ ...audioState, loading: value }),
     [audioState, setAudioState]
@@ -108,6 +126,7 @@ export const useAudioService = (): AudioServiceHook => {
     play,
     togglePause,
     nextSong,
+    prevSong,
     setLoading
   };
 };

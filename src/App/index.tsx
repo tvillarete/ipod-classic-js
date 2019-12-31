@@ -51,7 +51,6 @@ const Shell = styled.div`
     animation: none;
     border-radius: 0;
     -webkit-box-reflect: unset;
-    max-height: unset;
   }
 
   @keyframes descend {

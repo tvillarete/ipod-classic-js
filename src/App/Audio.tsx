@@ -1,9 +1,17 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 
+import { useEventListener } from 'hooks';
 import { useAudioService } from 'services/audio';
 
 const Audio = () => {
-  const { source, playing, nextSong, loading, setLoading } = useAudioService();
+  const {
+    source,
+    playing,
+    nextSong,
+    prevSong,
+    loading,
+    setLoading
+  } = useAudioService();
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const handlePlay = useCallback(async () => {
@@ -17,6 +25,16 @@ const Audio = () => {
       audioRef.current.pause();
     }
   }, []);
+
+  const handleBackClick = useCallback(() => {
+    if (source && audioRef.current) {
+      if (audioRef.current.currentTime < 3) {
+        prevSong();
+      } else {
+        audioRef.current.currentTime = 0;
+      }
+    }
+  }, [prevSong, source]);
 
   const handleLoadStart = useCallback(() => {
     setLoading(true);
@@ -33,6 +51,8 @@ const Audio = () => {
       handlePause();
     }
   }, [handlePause, handlePlay, loading, playing]);
+
+  useEventListener("backclick", handleBackClick);
 
   return source ? (
     <audio

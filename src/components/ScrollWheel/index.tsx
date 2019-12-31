@@ -27,6 +27,7 @@ const forwardScrollEvent = new Event("forwardscroll");
 const backwardScrollEvent = new Event("backwardscroll");
 const wheelClickEvent = new Event("wheelclick");
 const menuClickEvent = new Event("menuclick");
+const backClickEvent = new Event("backclick");
 
 const ScrollWheel = () => {
   const [count, setCount] = useState(0);
@@ -58,7 +59,7 @@ const ScrollWheel = () => {
           togglePause();
           break;
         case WHEEL_QUADRANT.LEFT:
-          console.log("CLICKED REWIND");
+          window.dispatchEvent(backClickEvent);
           break;
         case WHEEL_QUADRANT.RIGHT:
           nextSong();

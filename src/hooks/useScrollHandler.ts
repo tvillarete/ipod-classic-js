@@ -24,11 +24,10 @@ const useScrollHandler = (
   /** Wait until the user stops scrolling to check for a new preview to display. */
   const checkForPreview = useCallback(
     (i: number) => {
-      if (!isActive || !options[i]) return;
-
       if (timeoutIdRef.current) {
         clearTimeout(timeoutIdRef.current);
       }
+      if (!isActive || !options[i]) return;
       timeoutIdRef.current = setTimeout(() => {
         const preview = options[i].preview;
         if (preview) {
@@ -91,7 +90,12 @@ const useScrollHandler = (
   }, [index, isActive, options, play, showWindow]);
 
   useEffect(() => {
-    checkForPreview(0);
+    if (!options || !options[0]) return;
+
+    const preview = options[0].preview;
+    if (preview) {
+      setPreview(preview);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
