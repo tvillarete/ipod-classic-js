@@ -61,7 +61,7 @@ const Audio = () => {
       onLoadStart={handleLoadStart}
       onCanPlay={handleLoadEnd}
       onEnded={nextSong}
-      src={`http://tannerv.ddns.net:12345/SpotiFree/${encodeURI(source.url)}`}
+      src={`http://tannerv.ddns.net/SpotiFree/${encodeURI(source.url)}`}
     />
   ) : null;
 };
