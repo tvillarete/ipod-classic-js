@@ -1,7 +1,7 @@
 import { Song } from 'services/audio';
 
 export const getUrlFromPath = (path: string) =>
-  `http://tannerv.ddns.net/SpotiFree/${encodeURI(path)}`;
+  `https://tannerv.ddns.net/SpotiFree/${encodeURI(path)}`;
 
 export const formatTime = (seconds = 0, guide = seconds) => {
   let s: number | string = Math.floor(seconds % 60);
