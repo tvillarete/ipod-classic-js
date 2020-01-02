@@ -6,6 +6,19 @@ As we head into the next decade, here's a throwback to remind ourselves how far 
 
 ![ipod](https://user-images.githubusercontent.com/21055469/71572818-c877a780-2a95-11ea-9e4e-6b0476ff172b.gif)
 
+## Details
+
+Here's a breakdown of the Full Stack:
+#### Frontend: 
+- JS: TypeScript, React (Hooks, Context)
+- Styles: Styled Components, Framer Motion (for some of the animations)
+- Textures/Icons: All SVGs created by me in Figma
+- API: GraphQL
+
+#### Backend
+- API: Laravel (PHP) with GraphQL middleware
+- DB: MySQL
+- Server: Raspberry Pi (Please be gentle 😄)
 
 ## Running Locally
 
