@@ -8,6 +8,7 @@ import { getUrlFromPath } from 'utils';
 
 const Container = styled.div`
   height: 100%;
+  overflow: hidden;
 `;
 
 const MetadataContainer = styled.div`
