@@ -4,6 +4,8 @@
 
 As we head into the next decade, here's a throwback to remind ourselves how far we've come. An iPod Classic build using React Hooks (no Redux this time), TypeScript, and GraphQL.
 
+I built this thing to be very extensible – to the point where it can even run games (like brick!). In the future I might consider adding a few more little apps and easter eggs (theming?).
+
 ![ipod](https://user-images.githubusercontent.com/21055469/71572818-c877a780-2a95-11ea-9e4e-6b0476ff172b.gif)
 
 ## Details
