@@ -18,7 +18,6 @@ Here's a breakdown of the Full Stack:
 #### Backend
 - API: Laravel (PHP) with GraphQL middleware
 - DB: MySQL
-- Server: Raspberry Pi (Please be gentle 😄)
 
 ## Running Locally
 
