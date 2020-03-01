@@ -8,7 +8,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 const client = new ApolloClient({
-  uri: "https://05aacd63.ngrok.io/graphql"
+  uri: "https://57c62f9e.ngrok.io/graphql"
 });
 
 ReactDOM.render(
