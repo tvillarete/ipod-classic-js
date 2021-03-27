@@ -109,12 +109,12 @@ const CoverFlow = ({ albums }: Props) => {
     }
   }, []);
 
-  useEffect(updateMidpoint, []);
+  useEffect(updateMidpoint, [updateMidpoint]);
 
-  useEventListener("centerclick", selectAlbum);
-  useEventListener("menuclick", handleMenuClick);
-  useEventListener("forwardscroll", forwardScroll);
-  useEventListener("backwardscroll", backwardScroll);
+  useEventListener('centerclick', selectAlbum);
+  useEventListener('menuclick', handleMenuClick);
+  useEventListener('forwardscroll', forwardScroll);
+  useEventListener('backwardscroll', backwardScroll);
 
   return (
     <Container>

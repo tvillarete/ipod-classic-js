@@ -26,8 +26,10 @@ const Text = styled.h3`
   font-weight: 500;
 `;
 
-const Subtext = styled(Text)`
+const Subtext = styled.h3`
+  margin: 0;
   font-size: 14px;
+  font-weight: 500;
 `;
 
 const SettingsPreview = () => {
