@@ -1,36 +1,44 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import { useQuery } from '@apollo/react-hooks';
 import ViewOptions, { AlbumView } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';
-import { ARTIST, ArtistQuery } from 'queries';
-import { getUrlFromPath } from 'utils';
+import { useMusicKit } from 'hooks/useMusicKit';
+import * as Utils from 'utils';
 
 interface Props {
   name: string;
+  id: string;
 }
 
-const ArtistView = ({ name }: Props) => {
+const ArtistView = ({ name, id }: Props) => {
   useMenuHideWindow(ViewOptions.artist.id);
-  const { loading, error, data } = useQuery<ArtistQuery>(ARTIST, {
-    variables: { name }
-  });
+  const { music } = useMusicKit();
+  const [loading, setLoading] = useState(true);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
   const [index] = useScrollHandler(ViewOptions.artist.id, options);
 
+  const handleMount = useCallback(async () => {
+    const albums = await (music.api.library as any).artistRelationship(
+      id,
+      'albums'
+    );
+
+    setOptions(
+      albums.map((album: AppleMusicApi.Album) => ({
+        label: album.attributes?.name ?? 'Unknown name',
+        value: () => <AlbumView id={album.id ?? ''} />,
+        image: Utils.getArtwork(50, album.attributes?.artwork?.url),
+        viewId: ViewOptions.album.id,
+      }))
+    );
+
+    setLoading(false);
+  }, [id, music.api]);
+
   useEffect(() => {
-    if (data && data.artist && !error) {
-      setOptions(
-        data.artist.map(result => ({
-          label: result.album,
-          value: () => <AlbumView name={result.album} />,
-          image: getUrlFromPath(result.artwork),
-          viewId: ViewOptions.album.id
-        }))
-      );
-    }
-  }, [data, error]);
+    handleMount();
+  }, [handleMount]);
 
   return (
     <SelectableList loading={loading} options={options} activeIndex={index} />
