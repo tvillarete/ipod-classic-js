@@ -1,36 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useQuery } from '@apollo/react-hooks';
 import ViewOptions, { NowPlayingView } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';
-import { ALBUM, AlbumQuery } from 'queries';
+import { useMusicKit } from 'hooks/useMusicKit';
 
 interface Props {
-  name: string;
+  id: string;
 }
 
-const AlbumView = ({ name }: Props) => {
+const AlbumView = ({ id }: Props) => {
   useMenuHideWindow(ViewOptions.album.id);
-  const { loading, error, data } = useQuery<AlbumQuery>(ALBUM, {
-    variables: { name }
-  });
+  const { music } = useMusicKit();
+  const [loading, setLoading] = useState(true);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
   const [index] = useScrollHandler(ViewOptions.album.id, options);
 
+  const handleMount = useCallback(async () => {
+    const album = await music.api.library.album(id);
+    const songs = album.relationships?.tracks.data ?? [];
+
+    setOptions(
+      songs.map((song, index) => ({
+        label: song.attributes?.name ?? 'Unknown song',
+        value: () => <NowPlayingView />,
+        viewId: ViewOptions.nowPlaying.id,
+        songIndex: index,
+        albumId: id,
+      }))
+    );
+
+    setLoading(false);
+  }, [id, music.api]);
+
   useEffect(() => {
-    if (data && data.album && !error) {
-      setOptions(
-        data.album.map((song, index) => ({
-          label: song.name,
-          value: () => <NowPlayingView />,
-          viewId: ViewOptions.nowPlaying.id,
-          songIndex: index,
-          playlist: data.album
-        }))
-      );
-    }
-  }, [data, error]);
+    handleMount();
+  }, [handleMount]);
 
   return (
     <SelectableList loading={loading} options={options} activeIndex={index} />
