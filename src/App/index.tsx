@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { ScrollWheel } from 'components';
+import MusicKitProvider from 'hooks/useMusicKit';
 import AudioProvider from 'services/audio';
 import WindowProvider from 'services/window';
 import styled, { createGlobalStyle } from 'styled-components';
 
-import Audio from './Audio';
 import Interface from './Interface';
 
 const GlobalStyles = createGlobalStyle`
@@ -71,13 +71,14 @@ const App: React.FC = () => {
     <Container>
       <GlobalStyles />
       <AudioProvider>
-        <WindowProvider>
-          <Shell>
-            <Interface />
-            <ScrollWheel />
-            <Audio />
-          </Shell>
-        </WindowProvider>
+        <MusicKitProvider>
+          <WindowProvider>
+            <Shell>
+              <Interface />
+              <ScrollWheel />
+            </Shell>
+          </WindowProvider>
+        </MusicKitProvider>
       </AudioProvider>
     </Container>
   );
