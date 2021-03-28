@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useQuery } from '@apollo/react-hooks';
 import { LoadingIndicator } from 'components';
-import { Album, ALBUMS, AlbumsQuery } from 'queries';
+import { useMusicKit } from 'hooks/useMusicKit';
 import styled from 'styled-components';
 
 import CoverFlow from './CoverFlow';
@@ -12,14 +11,22 @@ const Container = styled.div`
 `;
 
 const CoverFlowView = () => {
-  const { loading, error, data } = useQuery<AlbumsQuery>(ALBUMS);
-  const [albums, setAlbums] = useState<Album[]>([]);
+  const [albums, setAlbums] = useState<AppleMusicApi.Album[]>([]);
+
+  const { music } = useMusicKit();
+  const [loading, setLoading] = useState(true);
+
+  const handleMount = useCallback(async () => {
+    const albums = await music.api.library.albums(null);
+
+    setAlbums(albums);
+
+    setLoading(false);
+  }, [music]);
 
   useEffect(() => {
-    if (data && data.albums && !error) {
-      setAlbums(data.albums);
-    }
-  }, [data, error]);
+    handleMount();
+  }, [handleMount]);
 
   return (
     <Container>
