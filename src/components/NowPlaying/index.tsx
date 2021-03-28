@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Controls, Unit } from 'components';
-import { useAudioService } from 'services/audio';
-import { useWindowService } from 'services/window';
+import { useMusicKit } from 'hooks/useMusicKit';
 import styled from 'styled-components';
-import { getUrlFromPath } from 'utils';
+import { getArtwork } from 'utils';
 
 const Container = styled.div`
   height: 100%;
@@ -28,7 +27,7 @@ const ArtworkContainer = styled.div<ArtworkContainerProps>`
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(70%, transparent), to(rgba(250, 250, 250, 0.1)));
   transform-style: preserve-3d;
   perspective: 500px;
-  opacity: ${props => props.isHidden && 0};
+  opacity: ${(props) => props.isHidden && 0};
 `;
 
 const Artwork = styled.img`
@@ -65,41 +64,50 @@ interface Props {
 }
 
 const NowPlaying = ({ hideArtwork, onHide }: Props) => {
-  const { hideWindow } = useWindowService();
-  const { source, songIndex, playlist } = useAudioService();
-  const [windowHidden, setWindowHidden] = useState(false);
+  const { music } = useMusicKit();
+  const { player } = music;
+  const [nowPlayingItem, setNowPlayingItem] = useState(player.nowPlayingItem);
 
-  const handleWindowHide = useCallback(() => {
-    if (!windowHidden) {
-      onHide();
-      setWindowHidden(true);
+  const refresh = useCallback((item: MusicKit.MediaItem) => {
+    if (item) {
+      setNowPlayingItem(item);
     }
-  }, [onHide, windowHidden]);
+  }, []);
 
   useEffect(() => {
-    if (!source) {
-      handleWindowHide();
-    }
-  }, [handleWindowHide, hideWindow, source]);
+    music.addEventListener('mediaItemDidChange', (e: any) => {
+      return refresh(e.item);
+    });
 
-  return source ? (
+    return () => {
+      music.removeEventListener('mediaItemDidChange', (e: any) => {
+        return refresh(e.item);
+      });
+    };
+  }, [music, refresh]);
+
+  return (
     <Container>
       <MetadataContainer>
         <ArtworkContainer isHidden={hideArtwork}>
-          <Artwork src={getUrlFromPath(source.artwork)}></Artwork>
+          <Artwork
+            src={getArtwork(300, nowPlayingItem?.artwork?.url)}
+          ></Artwork>
         </ArtworkContainer>
         <InfoContainer>
-          <Text>{source.name}</Text>
-          <Subtext>{source.artist}</Subtext>
-          <Subtext>{source.album}</Subtext>
-          <Subtext>{`${songIndex + 1} of ${playlist.length}`}</Subtext>
+          <Text>{nowPlayingItem?.title}</Text>
+          <Subtext>{nowPlayingItem?.artistName}</Subtext>
+          <Subtext>{nowPlayingItem?.albumName}</Subtext>
+          {!!nowPlayingItem && (
+            <Subtext>{`${nowPlayingItem.trackNumber} of ${player.queue.length}`}</Subtext>
+          )}
         </InfoContainer>
       </MetadataContainer>
       <ControlsContainer>
         <Controls />
       </ControlsContainer>
     </Container>
-  ) : null;
+  );
 };
 
 export default NowPlaying;

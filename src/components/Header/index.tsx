@@ -1,10 +1,10 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 
-import { useAudioService } from 'services/audio';
+import { useMusicKit } from 'hooks/useMusicKit';
 import { useWindowService } from 'services/window';
 import styled from 'styled-components';
 
-const Container = styled.div` 
+const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -32,14 +32,24 @@ const Icon = styled.img`
 
 const Header = () => {
   const { headerTitle } = useWindowService();
-  const { playing, source } = useAudioService();
+  const { music } = useMusicKit();
+  const [isPlaying, setIsPlaying] = useState(false);
+  const hasSource = !!music.player?.nowPlayingItem;
+
+  useEffect(() => {
+    if (music.player?.isPlaying && !isPlaying) {
+      setIsPlaying(true);
+    } else if (!music.player?.isPlaying && isPlaying) {
+      setIsPlaying(false);
+    }
+  }, [isPlaying, music.player?.isPlaying]);
 
   return headerTitle ? (
     <Container>
       <Text>{headerTitle}</Text>
       <IconContainer>
-        {playing && <Icon src="play.svg" />}
-        {source && !playing && <Icon src="pause.svg" />}
+        {isPlaying && <Icon src="play.svg" />}
+        {hasSource && !isPlaying && <Icon src="pause.svg" />}
         <Icon src="battery.svg" />
       </IconContainer>
     </Container>
