@@ -21,10 +21,11 @@ const AlbumsView = () => {
 
     setOptions(
       albums.map((album) => ({
+        type: 'View',
         label: album.attributes?.name ?? 'Unknown name',
-        value: () => <AlbumView id={album.id ?? ''} />,
         image: Utils.getArtwork(50, album.attributes?.artwork?.url),
         viewId: ViewOptions.album.id,
+        component: () => <AlbumView id={album.id ?? ''} />,
       }))
     );
 

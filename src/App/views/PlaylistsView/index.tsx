@@ -21,10 +21,12 @@ const PlaylistsView = () => {
 
     setOptions(
       playlists.map((playlist) => ({
+        type: 'View',
         label: playlist.attributes?.name ?? 'Unknown playlist',
-        value: () => <PlaylistView id={playlist.id} />,
-        image: Utils.getArtwork(100, playlist.attributes?.artwork?.url),
+        sublabel: playlist.attributes?.description?.standard,
+        imageUrl: Utils.getArtwork(100, playlist.attributes?.artwork?.url),
         viewId: ViewOptions.playlist.id,
+        component: () => <PlaylistView id={playlist.id} />,
       }))
     );
 

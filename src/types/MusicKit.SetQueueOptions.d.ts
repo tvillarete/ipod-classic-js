@@ -14,7 +14,7 @@ declare namespace MusicKit {
     /**
      * The media items used to set a music player's playback queue.
      */
-    items: descriptor[];
+    items?: descriptor[];
     /**
      * The parameters used to set a music player's playback queue.
      */

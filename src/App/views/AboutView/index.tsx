@@ -44,15 +44,15 @@ const AboutView = () => {
   useMenuHideWindow(ViewOptions.about.id);
   const options: SelectableListOption[] = [
     {
-      label: "My Website",
-      value: "Website",
-      link: "http://tannerv.com"
+      type: 'Link',
+      label: 'My Website',
+      url: 'http://tannerv.com',
     },
     {
-      label: "LinkedIn",
-      value: "LinkedIn",
-      link: "https://linkedin.com/in/tvillarete"
-    }
+      type: 'Link',
+      label: 'LinkedIn',
+      url: 'https://linkedin.com/in/tvillarete',
+    },
   ];
 
   const [index] = useScrollHandler(ViewOptions.about.id, options);
@@ -65,10 +65,10 @@ const AboutView = () => {
           <Title>iPod.js</Title>
         </TitleContainer>
         <Description>
-          Made with{" "}
+          Made with{' '}
           <span aria-label="heart" role="img">
             ❤️
-          </span>{" "}
+          </span>{' '}
           by Tanner Villarete
         </Description>
         <SelectableList options={options} activeIndex={index} />

@@ -9,11 +9,12 @@ const SettingsView = () => {
   useMenuHideWindow(ViewOptions.settings.id);
   const options: SelectableListOption[] = [
     {
-      label: "About",
-      value: () => <AboutView />,
+      type: 'View',
+      label: 'About',
       viewId: ViewOptions.about.id,
-      preview: PREVIEW.SETTINGS
-    }
+      component: () => <AboutView />,
+      preview: PREVIEW.SETTINGS,
+    },
   ];
 
   const [index] = useScrollHandler(ViewOptions.settings.id, options);

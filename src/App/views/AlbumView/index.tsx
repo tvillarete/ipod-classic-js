@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import ViewOptions, { NowPlayingView } from 'App/views';
+import ViewOptions from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';
 import { useMusicKit } from 'hooks/useMusicKit';
@@ -22,11 +22,13 @@ const AlbumView = ({ id }: Props) => {
 
     setOptions(
       songs.map((song, index) => ({
+        type: 'Song',
         label: song.attributes?.name ?? 'Unknown song',
-        value: () => <NowPlayingView />,
-        viewId: ViewOptions.nowPlaying.id,
-        songIndex: index,
-        albumId: id,
+        queueOptions: {
+          album: id,
+          startPosition: index,
+        },
+        showNowPlayingView: true,
       }))
     );
 

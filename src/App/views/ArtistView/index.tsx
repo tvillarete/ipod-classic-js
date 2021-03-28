@@ -19,19 +19,19 @@ const ArtistView = ({ name, id }: Props) => {
   const [index] = useScrollHandler(ViewOptions.artist.id, options);
 
   const handleMount = useCallback(async () => {
-    const albums = await (music.api.library as any).artistRelationship(
-      id,
-      'albums'
-    );
+    const albums = await music.api.library.artistRelationship(id, 'albums');
 
-    setOptions(
-      albums.map((album: AppleMusicApi.Album) => ({
+    const newOptions: SelectableListOption[] = albums.map(
+      (album: AppleMusicApi.Album) => ({
+        type: 'View',
         label: album.attributes?.name ?? 'Unknown name',
-        value: () => <AlbumView id={album.id ?? ''} />,
         image: Utils.getArtwork(50, album.attributes?.artwork?.url),
         viewId: ViewOptions.album.id,
-      }))
+        component: () => <AlbumView id={album.id ?? ''} />,
+      })
     );
+
+    setOptions(newOptions);
 
     setLoading(false);
   }, [id, music.api]);

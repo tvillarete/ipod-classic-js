@@ -41,6 +41,14 @@ declare namespace MusicKit {
       parameters?: QueryParameters
     ): Promise<AppleMusicApi.Artist>;
     /**
+     * Fetch an artist's relationship by using the artist's identifier.
+     * This is not accurate – just a stub type.
+     */
+    artistRelationship(
+      id: string,
+      relationship: string
+    ): Promise<AppleMusicApi.Album[]>;
+    /**
      * Fetch one or more library artists using their identifiers.
      *
      * @param ids An array of library artist identifiers.

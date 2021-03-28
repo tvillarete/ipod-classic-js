@@ -47,12 +47,11 @@ const ListContainer = styled.div`
 `;
 
 interface Props {
-  isVisible: boolean;
   albumId: AppleMusicApi.Album['id'];
   setPlayingAlbum: (val: boolean) => void;
 }
 
-const BacksideContent = ({ isVisible, albumId, setPlayingAlbum }: Props) => {
+const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
   const [album, setAlbum] = useState<AppleMusicApi.Album>();
   const { music } = useMusicKit();
   const [loading, setLoading] = useState(true);
@@ -66,10 +65,12 @@ const BacksideContent = ({ isVisible, albumId, setPlayingAlbum }: Props) => {
 
     setOptions(
       songs.map((song, index) => ({
+        type: 'Song',
         label: song.attributes?.name ?? 'Unknown song',
-        value: song,
-        albumId: fetchedAlbum.id,
-        songIndex: index,
+        queueOptions: {
+          album: fetchedAlbum.id,
+          startPosition: index,
+        },
       }))
     );
 

@@ -20,11 +20,12 @@ const ArtistsView = () => {
 
     setOptions(
       artists.map((artist) => ({
+        type: 'View',
         label: artist.attributes?.name ?? 'Unknown artist',
-        value: () => (
+        viewId: ViewOptions.artist.id,
+        component: () => (
           <ArtistView id={artist.id} name={artist.attributes?.name ?? ''} />
         ),
-        viewId: ViewOptions.artist.id,
       }))
     );
 

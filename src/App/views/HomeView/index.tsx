@@ -19,27 +19,31 @@ const strings = {
 const HomeView = () => {
   const initialOptions: SelectableListOption[] = [
     {
+      type: 'View',
       label: 'Cover Flow',
-      value: () => <CoverFlowView />,
       viewId: ViewOptions.coverFlow.id,
+      component: () => <CoverFlowView />,
       preview: PREVIEW.MUSIC,
     },
     {
+      type: 'View',
       label: 'Music',
-      value: () => <MusicView />,
       viewId: ViewOptions.music.id,
+      component: () => <MusicView />,
       preview: PREVIEW.MUSIC,
     },
     {
+      type: 'View',
       label: 'Games',
-      value: () => <GamesView />,
       viewId: ViewOptions.games.id,
+      component: () => <GamesView />,
       preview: PREVIEW.GAMES,
     },
     {
+      type: 'View',
       label: 'Settings',
-      value: () => <SettingsView />,
       viewId: ViewOptions.settings.id,
+      component: () => <SettingsView />,
       preview: PREVIEW.SETTINGS,
     },
   ];
@@ -58,9 +62,10 @@ const HomeView = () => {
       setOptions([
         ...options,
         {
+          type: 'View',
           label: strings.nowPlaying,
-          value: () => <NowPlayingView />,
           viewId: ViewOptions.nowPlaying.id,
+          component: () => <NowPlayingView />,
           preview: PREVIEW.NOW_PLAYING,
         },
       ]);

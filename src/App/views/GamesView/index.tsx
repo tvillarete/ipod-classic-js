@@ -9,11 +9,12 @@ const GamesView = () => {
   useMenuHideWindow(ViewOptions.games.id);
   const options: SelectableListOption[] = [
     {
-      label: "Brick",
-      value: () => <BrickGameView />,
+      type: 'View',
+      label: 'Brick',
       viewId: ViewOptions.brickGame.id,
-      preview: PREVIEW.GAMES
-    }
+      component: () => <BrickGameView />,
+      preview: PREVIEW.GAMES,
+    },
   ];
 
   const [index] = useScrollHandler(ViewOptions.games.id, options);

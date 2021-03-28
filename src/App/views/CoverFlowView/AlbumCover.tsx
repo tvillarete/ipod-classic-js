@@ -130,7 +130,6 @@ const AlbumCover = ({
         {isSelected && !playingAlbum && (
           <Backside {...fadeScale}>
             <BacksideContent
-              isVisible={isSelected}
               albumId={album.id}
               setPlayingAlbum={setPlayingAlbum}
             />

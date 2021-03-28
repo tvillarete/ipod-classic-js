@@ -16,27 +16,31 @@ const MusicView = () => {
   useMenuHideWindow(ViewOptions.music.id);
   const options: SelectableListOption[] = [
     {
+      type: 'View',
       label: 'Cover Flow',
-      value: () => <CoverFlowView />,
       viewId: ViewOptions.coverFlow.id,
+      component: () => <CoverFlowView />,
       preview: PREVIEW.MUSIC,
     },
     {
+      type: 'View',
       label: 'Artists',
-      value: () => <ArtistsView />,
       viewId: ViewOptions.artists.id,
+      component: () => <ArtistsView />,
       preview: PREVIEW.MUSIC,
     },
     {
+      type: 'View',
       label: 'Albums',
-      value: () => <AlbumsView />,
       viewId: ViewOptions.albums.id,
+      component: () => <AlbumsView />,
       preview: PREVIEW.MUSIC,
     },
     {
+      type: 'View',
       label: 'Playlists',
-      value: () => <PlaylistsView />,
       viewId: ViewOptions.playlists.id,
+      component: () => <PlaylistsView />,
       preview: PREVIEW.MUSIC,
     },
   ];
