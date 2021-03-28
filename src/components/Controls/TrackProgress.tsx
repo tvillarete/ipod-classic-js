@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
-import { LoadingIndicator, Unit } from 'components';
+import { Unit } from 'components';
 import { useInterval } from 'hooks';
-import { useAudioService } from 'services/audio';
+import { useMusicKit } from 'hooks/useMusicKit';
 import styled from 'styled-components';
 import { formatTime } from 'utils';
 
@@ -17,55 +17,43 @@ const Container = styled.div`
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(60%, transparent), to(rgba(250, 250, 250, 0.1)));
 `;
 
-const LoadingContainer = styled.div`
-  position: relative;
-  width: 24px;
-`;
+// const LoadingContainer = styled.div`
+//   position: relative;
+//   width: 24px;
+// `;
 
 interface LabelProps {
-  textAlign: "left" | "right";
+  textAlign: 'left' | 'right';
 }
 
 const Label = styled.h3<LabelProps>`
   font-size: 12px;
   margin: auto 0;
   width: 30px;
-  text-align: ${props => props.textAlign};
+  text-align: ${(props) => props.textAlign};
 `;
 
 const TrackProgress = () => {
+  const { music } = useMusicKit();
+  const { player } = music;
   const [currentTime, setCurrentTime] = useState(0);
-  const [maxTime, setMaxTime] = useState(0);
-  const { playing, loading } = useAudioService();
-  const percent = Math.round((currentTime / maxTime) * 100);
 
-  const refresh = useCallback(
-    (force?: boolean) => {
-      if (playing || force) {
-        const audio = document.getElementById("ipodAudio") as HTMLAudioElement;
-        setCurrentTime(audio.currentTime);
-        setMaxTime(audio.duration);
-      }
-    },
-    [playing]
-  );
+  const refresh = useCallback(() => {
+    if (player.isPlaying) {
+      setCurrentTime(player.currentPlaybackTime);
+    }
+  }, [player.currentPlaybackTime, player.isPlaying]);
 
   /** Update the progress bar every second. */
   useInterval(refresh, 1000);
 
-  useEffect(() => refresh(true), [refresh]);
-
   return (
     <Container>
-      {loading ? (
-        <LoadingContainer>
-          <LoadingIndicator size={14} />
-        </LoadingContainer>
-      ) : (
-        <Label textAlign="left">{formatTime(currentTime)}</Label>
-      )}
-      <ProgressBar percent={loading ? 0 : percent} />
-      <Label textAlign="right">-{formatTime(maxTime - currentTime)}</Label>
+      <Label textAlign="left">{formatTime(currentTime)}</Label>
+      <ProgressBar percent={player.currentPlaybackProgress * 100} />
+      <Label textAlign="right">
+        -{formatTime(player.currentPlaybackTimeRemaining)}
+      </Label>
     </Container>
   );
 };
