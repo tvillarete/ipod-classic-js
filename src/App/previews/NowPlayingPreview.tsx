@@ -1,25 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { motion } from 'framer-motion';
-import { useAudioService } from 'services/audio';
 import styled from 'styled-components';
-import { getUrlFromPath } from 'utils';
+
+// import { getArtwork, getUrlFromPath } from 'utils';
 
 const Container = styled(motion.div)`
   height: 100%;
 `;
 
-const Artwork = styled.img`
-  height: 100%;
-  width: auto;
-`;
+// const Artwork = styled.img`
+//   height: 100%;
+//   width: auto;
+// `;
 
 const NowPlayingPreview = () => {
-  const { source } = useAudioService();
+  const [isPlaying] = useState(false);
 
-  return source ? (
+  return isPlaying ? (
     <Container>
-      <Artwork src={getUrlFromPath(source.artwork)} alt="now playing artwork" />
+      {/* <Artwork src={getArtwork()} alt="now playing artwork" /> */}
     </Container>
   ) : null;
 };
