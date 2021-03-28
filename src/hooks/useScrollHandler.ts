@@ -2,10 +2,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import ViewOptions from 'App/views';
 import { SelectableListOption } from 'components';
-import { useAudioService } from 'services/audio';
 import { useWindowService } from 'services/window';
 
 import useEventListener from './useEventListener';
+import { useMusicKit } from './useMusicKit';
 
 /** Accepts a list of options and will maintain a scroll index capped at the list's length. */
 const useScrollHandler = (
@@ -15,7 +15,7 @@ const useScrollHandler = (
   options: SelectableListOption[]
 ): [number] => {
   const { showWindow, windowStack, setPreview } = useWindowService();
-  const { play } = useAudioService();
+  const { music } = useMusicKit();
   const [index, setIndex] = useState(0);
   const timeoutIdRef = useRef<any>();
   /** Only fire events on the top-most view. */
@@ -59,12 +59,27 @@ const useScrollHandler = (
   }, [checkForPreview, index, isActive]);
 
   /** Parses the selected option for a new view to show or song to play. */
-  const centerClick = useCallback(() => {
+  const centerClick = useCallback(async () => {
     const option = options[index];
     if (!isActive || !option) return;
 
     if (timeoutIdRef.current) {
       clearTimeout(timeoutIdRef.current);
+    }
+
+    /** If a song is found, play the song. */
+    if (option.albumId || option.playlistId) {
+      /** Currently, album and playlist playing is supported. I'll clean this up soon. */
+      const key = option.albumId ? 'album' : 'playlist';
+      const value = option.albumId ?? option.playlistId;
+      const queue = await music.setQueue({
+        [key]: value,
+        startPosition: option.songIndex ? option.songIndex - 1 : undefined,
+      } as any);
+
+      if (!queue.isEmpty && queue.nextPlayableItem) {
+        music.play();
+      }
     }
 
     /** If a viewId is found, that means there's a new view to show. */
@@ -75,19 +90,14 @@ const useScrollHandler = (
       showWindow({
         type: viewOptions.type,
         id: option.viewId,
-        component: View
+        component: View,
       });
     }
 
-    /** If a song is found, play the song. */
-    if (option.playlist) {
-      play(option.playlist, option.songIndex);
-    }
-
     if (option.link) {
-      window.open(option.link, "_blank");
+      window.open(option.link, '_blank');
     }
-  }, [index, isActive, options, play, showWindow]);
+  }, [index, isActive, music, options, showWindow]);
 
   useEffect(() => {
     if (!options || !options[0]) return;
@@ -99,9 +109,11 @@ const useScrollHandler = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEventListener("centerclick", centerClick);
-  useEventListener("forwardscroll", forwardScroll);
-  useEventListener("backwardscroll", backwardScroll);
+  useEventListener('centerclick', () => {
+    centerClick();
+  });
+  useEventListener('forwardscroll', forwardScroll);
+  useEventListener('backwardscroll', backwardScroll);
 
   return [index];
 };
