@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
-import ViewOptions from 'App/views';
+import ViewOptions, { NowPlayingView, WINDOW_TYPE } from 'App/views';
 import { SelectableListOption } from 'components';
 import { useWindowService } from 'services/window';
 
+import useEffectOnce from './useEffectOnce';
 import useEventListener from './useEventListener';
 import { useMusicKit } from './useMusicKit';
 
@@ -58,6 +59,30 @@ const useScrollHandler = (
     }
   }, [checkForPreview, index, isActive]);
 
+  const handlePlaySong = useCallback(
+    async (queueOptions: MusicKit.SetQueueOptions) => {
+      const queue = await music.setQueue({
+        ...queueOptions,
+      });
+
+      if (!queue.isEmpty && queue.nextPlayableItem) {
+        await music.play();
+      }
+    },
+    [music]
+  );
+
+  const handleShowView = useCallback(
+    (id: string, component: React.ReactNode, windowType?: WINDOW_TYPE) => {
+      showWindow({
+        id,
+        type: windowType ?? ViewOptions[id]?.type ?? WINDOW_TYPE.FULL,
+        component,
+      });
+    },
+    [showWindow]
+  );
+
   /** Parses the selected option for a new view to show or song to play. */
   const centerClick = useCallback(async () => {
     const option = options[index];
@@ -67,47 +92,27 @@ const useScrollHandler = (
       clearTimeout(timeoutIdRef.current);
     }
 
-    /** If a song is found, play the song. */
-    if (option.albumId || option.playlistId) {
-      /** Currently, album and playlist playing is supported. I'll clean this up soon. */
-      const key = option.albumId ? 'album' : 'playlist';
-      const value = option.albumId ?? option.playlistId;
-      const queue = await music.setQueue({
-        [key]: value,
-        startPosition: option.songIndex ? option.songIndex - 1 : undefined,
-      } as any);
+    if (option.type === 'Song') {
+      await handlePlaySong(option.queueOptions);
 
-      if (!queue.isEmpty && queue.nextPlayableItem) {
-        music.play();
+      if (option.showNowPlayingView) {
+        handleShowView(ViewOptions.nowPlaying.id, () => <NowPlayingView />);
       }
+    } else if (option.type === 'Link') {
+      window.open(option.url, '_blank');
+    } else if (option.type === 'View') {
+      handleShowView(option.viewId, option.component, option.windowType);
     }
+  }, [handlePlaySong, handleShowView, index, isActive, options]);
 
-    /** If a viewId is found, that means there's a new view to show. */
-    if (option.viewId) {
-      const View = option.value;
-      const viewOptions = ViewOptions[option.viewId];
-
-      showWindow({
-        type: viewOptions.type,
-        id: option.viewId,
-        component: View,
-      });
-    }
-
-    if (option.link) {
-      window.open(option.link, '_blank');
-    }
-  }, [index, isActive, music, options, showWindow]);
-
-  useEffect(() => {
+  useEffectOnce(() => {
     if (!options || !options[0]) return;
 
     const preview = options[0].preview;
     if (preview) {
       setPreview(preview);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   useEventListener('centerclick', () => {
     centerClick();

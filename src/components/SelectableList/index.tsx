@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { PREVIEW } from 'App/previews';
+import { WINDOW_TYPE } from 'App/views';
 import { LoadingIndicator } from 'components';
 import { AnimatePresence } from 'framer-motion';
 import { useTimeout } from 'hooks';
@@ -8,19 +9,45 @@ import styled from 'styled-components';
 
 import SelectableListItem from './SelectableListItem';
 
-export interface SelectableListOption {
+export type SelectableListOptionType = 'View' | 'Link' | 'Song';
+
+type SharedOptionProps = {
+  type?: SelectableListOptionType;
   label: string;
-  value: any;
   sublabel?: string;
-  viewId?: string;
   preview?: PREVIEW;
-  link?: string;
-  image?: string;
-  albumId?: string;
-  playlistId?: string;
-  songId?: string;
-  songIndex?: number;
-}
+  imageUrl?: string;
+};
+
+type ViewOptionProps = {
+  type: 'View';
+  /** A unique identifier for the next screen. */
+  viewId: string;
+  /** The component that will be displayed in the next view. */
+  component: React.ReactNode;
+  /** Whether to display the default full size view, split view, or in some cases Cover Flow View. */
+  windowType?: WINDOW_TYPE;
+};
+
+type LinkOptionProps = {
+  type: 'Link';
+  url: string;
+};
+
+type SongOptionProps = {
+  type: 'Song';
+  /** Options that will be used to fetch and play a song. */
+  queueOptions: Omit<MusicKit.SetQueueOptions, 'items'>;
+  /**
+   * Show the Now Playing view after starting the song.
+   * @default false
+   */
+  showNowPlayingView?: boolean;
+};
+
+/** Depending on the option type, certain properties will be available. */
+export type SelectableListOption = SharedOptionProps &
+  (ViewOptionProps | LinkOptionProps | SongOptionProps);
 
 const Container = styled.div`
   width: 100%;

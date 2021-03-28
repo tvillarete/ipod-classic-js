@@ -5,24 +5,32 @@ import styled, { css } from 'styled-components';
 
 import { SelectableListOption } from './';
 
-interface ContainerProps {
-  isActive: boolean;
-}
+const LabelContainer = styled.div`
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: ${Unit.MD};
+`;
 
 const Label = styled.h3`
   margin: 0;
   padding: ${Unit.XXS};
   font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const Sublabel = styled(Label)`
-  padding: 0 ${Unit.XXS};
+  padding: 0 ${Unit.XXS} ${Unit.XXS};
+  margin-top: -4px;
   font-weight: normal;
   font-size: 12px;
   color: rgb(100, 100, 100);
 `;
 
-const Container = styled.div<ContainerProps>`
+const Container = styled.div<{ isActive?: boolean }>`
   display: flex;
   align-items: center;
   overflow: auto;
@@ -30,6 +38,10 @@ const Container = styled.div<ContainerProps>`
   ${(props) =>
     props.isActive &&
     css`
+      ${LabelContainer} {
+        padding-right: 0;
+      }
+
       ${Label}, ${Sublabel} {
         color: white;
       }
@@ -47,12 +59,6 @@ const Icon = styled.img`
   margin-left: auto;
 `;
 
-const LabelContainer = styled.div`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
 interface Props {
   option: SelectableListOption;
   isActive: boolean;
@@ -61,7 +67,7 @@ interface Props {
 const SelectableListItem = ({ option, isActive }: Props) => {
   return (
     <Container isActive={isActive}>
-      {option.image && <Image src={option.image} />}
+      {option.imageUrl && <Image src={option.imageUrl} />}
       <LabelContainer>
         <Label>{option.label}</Label>
         {option.sublabel && <Sublabel>{option.sublabel}</Sublabel>}
