@@ -1,8 +1,9 @@
-import React from "react";
-import styled from "styled-components";
-import { WindowOptions, useWindowService } from "services/window";
-import { slideRightAnimation, noAnimation } from "animation";
-import { motion } from "framer-motion";
+import React from 'react';
+
+import { noAnimation, slideRightAnimation } from 'animation';
+import { motion } from 'framer-motion';
+import { useWindowService, WindowOptions } from 'services/window';
+import styled from 'styled-components';
 
 interface ContainerProps {
   index: number;
@@ -11,9 +12,9 @@ interface ContainerProps {
 
 /** Responsible for putting the window at the proper z-index. */
 export const Container = styled(motion.div)<ContainerProps>`
-  z-index: ${props => props.index};
+  z-index: ${(props) => props.index};
   position: absolute;
-  top: ${props => (props.showHeader ? "20px" : 0)};
+  top: ${(props) => (props.showHeader ? '20px' : 0)};
   bottom: 0;
   left: 0;
   right: 0;
@@ -28,7 +29,7 @@ interface ContentTransitionContainerProps {
 const ContentTransitionContainer = styled.div<ContentTransitionContainerProps>`
   height: 100%;
   transition: transform 0.3s;
-  transform: ${props => props.isHidden && "translateX(-100%)"};
+  transform: ${(props) => props.isHidden && 'translateX(-100%)'};
   overflow: auto;
 `;
 
@@ -45,6 +46,7 @@ const Window = ({ windowStack, index, isHidden }: Props) => {
 
   return (
     <Container
+      data-window-id={options.id}
       index={index}
       showHeader={!!headerTitle}
       {...(firstInStack ? noAnimation : slideRightAnimation)}

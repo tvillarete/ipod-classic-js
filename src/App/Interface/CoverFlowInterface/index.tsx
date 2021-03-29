@@ -23,7 +23,7 @@ const CoverFlowInterface = ({ window }: Props) => {
   return (
     <AnimatePresence>
       {window && (
-        <Container {...fade}>
+        <Container {...fade} data-stack-type="coverflow">
           <Header />
           <window.component />
         </Container>
