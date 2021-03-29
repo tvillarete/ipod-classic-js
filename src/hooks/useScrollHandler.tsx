@@ -92,16 +92,23 @@ const useScrollHandler = (
       clearTimeout(timeoutIdRef.current);
     }
 
-    if (option.type === 'Song') {
-      await handlePlaySong(option.queueOptions);
+    switch (option.type) {
+      case 'Song':
+        await handlePlaySong(option.queueOptions);
 
-      if (option.showNowPlayingView) {
-        handleShowView(ViewOptions.nowPlaying.id, () => <NowPlayingView />);
-      }
-    } else if (option.type === 'Link') {
-      window.open(option.url, '_blank');
-    } else if (option.type === 'View') {
-      handleShowView(option.viewId, option.component, option.windowType);
+        if (option.showNowPlayingView) {
+          handleShowView(ViewOptions.nowPlaying.id, () => <NowPlayingView />);
+        }
+        break;
+      case 'Link':
+        window.open(option.url, '_blank');
+        break;
+      case 'View':
+        handleShowView(option.viewId, option.component, option.windowType);
+        break;
+      case 'Action':
+        option.onSelect();
+        break;
     }
   }, [handlePlaySong, handleShowView, index, isActive, options]);
 

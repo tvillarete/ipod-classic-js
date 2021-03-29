@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { LoadingIndicator } from 'components';
+import { LoadingScreen } from 'components';
 import { useMusicKit } from 'hooks/useMusicKit';
 import styled from 'styled-components';
 
@@ -31,7 +31,7 @@ const CoverFlowView = () => {
   return (
     <Container>
       {loading ? (
-        <LoadingIndicator backgroundColor="white" />
+        <LoadingScreen backgroundColor="white" />
       ) : (
         <CoverFlow albums={albums} />
       )}

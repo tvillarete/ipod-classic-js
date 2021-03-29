@@ -16,7 +16,7 @@ const ArtistView = ({ name, id }: Props) => {
   const { music } = useMusicKit();
   const [loading, setLoading] = useState(true);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
-  const [index] = useScrollHandler(ViewOptions.artist.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.artist.id, options);
 
   const handleMount = useCallback(async () => {
     const albums = await music.api.library.artistRelationship(id, 'albums');
@@ -25,7 +25,7 @@ const ArtistView = ({ name, id }: Props) => {
       (album: AppleMusicApi.Album) => ({
         type: 'View',
         label: album.attributes?.name ?? 'Unknown name',
-        image: Utils.getArtwork(50, album.attributes?.artwork?.url),
+        imageUrl: Utils.getArtwork(50, album.attributes?.artwork?.url),
         viewId: ViewOptions.album.id,
         component: () => <AlbumView id={album.id ?? ''} />,
       })
@@ -41,7 +41,11 @@ const ArtistView = ({ name, id }: Props) => {
   }, [handleMount]);
 
   return (
-    <SelectableList loading={loading} options={options} activeIndex={index} />
+    <SelectableList
+      loading={loading}
+      options={options}
+      activeIndex={scrollIndex}
+    />
   );
 };
 

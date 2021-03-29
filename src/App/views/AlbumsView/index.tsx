@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { SelectableList, SelectableListOption } from 'components';
+import { AuthPrompt, SelectableList, SelectableListOption } from 'components';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';
 import { useMusicKit } from 'hooks/useMusicKit';
 import * as Utils from 'utils';
@@ -9,12 +9,13 @@ import ViewOptions, { AlbumView } from '../';
 
 const AlbumsView = () => {
   useMenuHideWindow(ViewOptions.albums.id);
-  const { music } = useMusicKit();
-  const [loading, setLoading] = useState(true);
+  const { music, isAuthorized } = useMusicKit();
+  const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
-  const [index] = useScrollHandler(ViewOptions.albums.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.albums.id, options);
 
   const handleMount = useCallback(async () => {
+    setLoading(true);
     const albums = await music.api.library.albums(null, {
       include: 'library-albums',
     });
@@ -23,7 +24,7 @@ const AlbumsView = () => {
       albums.map((album) => ({
         type: 'View',
         label: album.attributes?.name ?? 'Unknown name',
-        image: Utils.getArtwork(50, album.attributes?.artwork?.url),
+        imageUrl: Utils.getArtwork(50, album.attributes?.artwork?.url),
         viewId: ViewOptions.album.id,
         component: () => <AlbumView id={album.id ?? ''} />,
       }))
@@ -33,11 +34,19 @@ const AlbumsView = () => {
   }, [music]);
 
   useEffect(() => {
-    handleMount();
-  }, [handleMount]);
+    if (isAuthorized) {
+      handleMount();
+    }
+  }, [handleMount, isAuthorized]);
 
-  return (
-    <SelectableList loading={loading} options={options} activeIndex={index} />
+  return isAuthorized ? (
+    <SelectableList
+      loading={loading}
+      options={options}
+      activeIndex={scrollIndex}
+    />
+  ) : (
+    <AuthPrompt />
   );
 };
 

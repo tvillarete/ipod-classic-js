@@ -15,7 +15,7 @@ const PlaylistView = ({ id }: Props) => {
   const { music } = useMusicKit();
   const [loading, setLoading] = useState(true);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
-  const [index] = useScrollHandler(ViewOptions.playlist.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.playlist.id, options);
 
   const handleMount = useCallback(async () => {
     const playlist = await music.api.library.playlist(id);
@@ -29,7 +29,7 @@ const PlaylistView = ({ id }: Props) => {
         imageUrl: Utils.getArtwork(100, song.attributes?.artwork?.url),
         queueOptions: {
           playlist: id,
-          startPosition: index,
+          startPosition: index - 1,
         },
         showNowPlayingView: true,
       }))
@@ -43,7 +43,11 @@ const PlaylistView = ({ id }: Props) => {
   }, [handleMount]);
 
   return (
-    <SelectableList loading={loading} options={options} activeIndex={index} />
+    <SelectableList
+      loading={loading}
+      options={options}
+      activeIndex={scrollIndex}
+    />
   );
 };
 

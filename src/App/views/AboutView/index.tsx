@@ -55,7 +55,7 @@ const AboutView = () => {
     },
   ];
 
-  const [index] = useScrollHandler(ViewOptions.about.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.about.id, options);
 
   return (
     <Container>
@@ -71,7 +71,7 @@ const AboutView = () => {
           </span>{' '}
           by Tanner Villarete
         </Description>
-        <SelectableList options={options} activeIndex={index} />
+        <SelectableList options={options} activeIndex={scrollIndex} />
       </ListContainer>
     </Container>
   );

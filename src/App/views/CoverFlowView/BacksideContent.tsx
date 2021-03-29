@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import {
-  LoadingIndicator,
+  LoadingScreen,
   SelectableList,
   SelectableListOption,
 } from 'components';
@@ -56,7 +56,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
   const { music } = useMusicKit();
   const [loading, setLoading] = useState(true);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
-  const [index] = useScrollHandler(ViewOptions.coverFlow.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.coverFlow.id, options);
 
   const handleMount = useCallback(async () => {
     const fetchedAlbum = await music.api.library.album(albumId);
@@ -69,7 +69,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
         label: song.attributes?.name ?? 'Unknown song',
         queueOptions: {
           album: fetchedAlbum.id,
-          startPosition: index,
+          startPosition: index - 1,
         },
       }))
     );
@@ -88,7 +88,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
   return (
     <Container>
       {loading ? (
-        <LoadingIndicator />
+        <LoadingScreen />
       ) : (
         <>
           <InfoContainer>
@@ -96,7 +96,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
             <Subtext>{album?.attributes?.artistName}</Subtext>
           </InfoContainer>
           <ListContainer>
-            <SelectableList activeIndex={index} options={options} />
+            <SelectableList activeIndex={scrollIndex} options={options} />
           </ListContainer>
         </>
       )}

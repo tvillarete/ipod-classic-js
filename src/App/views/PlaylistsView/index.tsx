@@ -10,7 +10,7 @@ import ViewOptions, { PlaylistView } from '../';
 const PlaylistsView = () => {
   useMenuHideWindow(ViewOptions.playlists.id);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
-  const [index] = useScrollHandler(ViewOptions.playlists.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.playlists.id, options);
   const { music } = useMusicKit();
   const [loading, setLoading] = useState(true);
 
@@ -38,7 +38,11 @@ const PlaylistsView = () => {
   }, [handleMount]);
 
   return (
-    <SelectableList loading={loading} options={options} activeIndex={index} />
+    <SelectableList
+      loading={loading}
+      options={options}
+      activeIndex={scrollIndex}
+    />
   );
 };
 

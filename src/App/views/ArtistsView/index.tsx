@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { SelectableList, SelectableListOption } from 'components';
+import { AuthPrompt, SelectableList, SelectableListOption } from 'components';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';
 import { useMusicKit } from 'hooks/useMusicKit';
 
@@ -8,11 +8,12 @@ import ViewOptions, { ArtistView } from '../';
 
 const ArtistsView = () => {
   useMenuHideWindow(ViewOptions.artists.id);
-  const { music } = useMusicKit();
-  const [loading, setLoading] = useState(true);
+  const { music, isAuthorized } = useMusicKit();
+  const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
 
   const handleMount = useCallback(async () => {
+    setLoading(true);
     const artists = await music.api.library.artists(null, {
       include: 'catalog',
       limit: 100,
@@ -33,13 +34,21 @@ const ArtistsView = () => {
   }, [music]);
 
   useEffect(() => {
-    handleMount();
-  }, [handleMount]);
+    if (isAuthorized) {
+      handleMount();
+    }
+  }, [handleMount, isAuthorized]);
 
-  const [index] = useScrollHandler(ViewOptions.artists.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.artists.id, options);
 
-  return (
-    <SelectableList loading={loading} options={options} activeIndex={index} />
+  return isAuthorized ? (
+    <SelectableList
+      loading={loading}
+      options={options}
+      activeIndex={scrollIndex}
+    />
+  ) : (
+    <AuthPrompt />
   );
 };
 

@@ -14,7 +14,7 @@ const AlbumView = ({ id }: Props) => {
   const { music } = useMusicKit();
   const [loading, setLoading] = useState(true);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
-  const [index] = useScrollHandler(ViewOptions.album.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.album.id, options);
 
   const handleMount = useCallback(async () => {
     const album = await music.api.library.album(id);
@@ -26,7 +26,7 @@ const AlbumView = ({ id }: Props) => {
         label: song.attributes?.name ?? 'Unknown song',
         queueOptions: {
           album: id,
-          startPosition: index,
+          startPosition: index - 1,
         },
         showNowPlayingView: true,
       }))
@@ -40,7 +40,11 @@ const AlbumView = ({ id }: Props) => {
   }, [handleMount]);
 
   return (
-    <SelectableList loading={loading} options={options} activeIndex={index} />
+    <SelectableList
+      loading={loading}
+      options={options}
+      activeIndex={scrollIndex}
+    />
   );
 };
 

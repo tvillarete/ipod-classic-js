@@ -44,9 +44,9 @@ const MusicView = () => {
       preview: PREVIEW.MUSIC,
     },
   ];
-  const [index] = useScrollHandler(ViewOptions.music.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.music.id, options);
 
-  return <SelectableList options={options} activeIndex={index} />;
+  return <SelectableList options={options} activeIndex={scrollIndex} />;
 };
 
 export default MusicView;
