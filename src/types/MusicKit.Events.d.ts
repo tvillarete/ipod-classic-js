@@ -33,6 +33,9 @@ declare namespace MusicKit {
      * changed.
      */
     mediaItemDidChange: string;
+
+    mediaItemStateDidChange: string;
+
     /**
      * A notification name indicating the currently-playing media item is about
      * to change.

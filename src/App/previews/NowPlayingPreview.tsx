@@ -1,25 +1,27 @@
-import React, { useState } from 'react';
-
 import { motion } from 'framer-motion';
+import { useMusicKit } from 'hooks/useMusicKit';
 import styled from 'styled-components';
-
-// import { getArtwork, getUrlFromPath } from 'utils';
+import * as Utils from 'utils';
 
 const Container = styled(motion.div)`
   height: 100%;
 `;
 
-// const Artwork = styled.img`
-//   height: 100%;
-//   width: auto;
-// `;
+const Artwork = styled.img`
+  height: 100%;
+  width: auto;
+`;
 
 const NowPlayingPreview = () => {
-  const [isPlaying] = useState(false);
+  const { music } = useMusicKit();
+  const { player } = music;
 
-  return isPlaying ? (
+  return music.player.isPlaying ? (
     <Container>
-      {/* <Artwork src={getArtwork()} alt="now playing artwork" /> */}
+      <Artwork
+        src={Utils.getArtwork(300, player?.nowPlayingItem?.artwork?.url)}
+        alt="now playing artwork"
+      />
     </Container>
   ) : null;
 };

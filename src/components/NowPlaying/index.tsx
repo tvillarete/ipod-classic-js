@@ -1,7 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-
 import { Controls, Unit } from 'components';
-import { useMusicKit } from 'hooks/useMusicKit';
+import { useForceUpdate, useMKEventListener, useMusicKit } from 'hooks';
 import styled from 'styled-components';
 import { getArtwork } from 'utils';
 
@@ -66,33 +64,17 @@ interface Props {
 const NowPlaying = ({ hideArtwork, onHide }: Props) => {
   const { music } = useMusicKit();
   const { player } = music;
-  const [nowPlayingItem, setNowPlayingItem] = useState(player.nowPlayingItem);
+  const nowPlayingItem = player?.nowPlayingItem;
+  const forceUpdate = useForceUpdate();
 
-  const refresh = useCallback((item: MusicKit.MediaItem) => {
-    if (item) {
-      setNowPlayingItem(item);
-    }
-  }, []);
-
-  useEffect(() => {
-    music.addEventListener('mediaItemDidChange', (e: any) => {
-      return refresh(e.item);
-    });
-
-    return () => {
-      music.removeEventListener('mediaItemDidChange', (e: any) => {
-        return refresh(e.item);
-      });
-    };
-  }, [music, refresh]);
+  /** Update this view whenever the playback state changes */
+  useMKEventListener('playbackStateDidChange', forceUpdate);
 
   return (
     <Container>
       <MetadataContainer>
         <ArtworkContainer isHidden={hideArtwork}>
-          <Artwork
-            src={getArtwork(300, nowPlayingItem?.artwork?.url)}
-          ></Artwork>
+          <Artwork src={getArtwork(300, nowPlayingItem?.artwork?.url)} />
         </ArtworkContainer>
         <InfoContainer>
           <Text>{nowPlayingItem?.title}</Text>

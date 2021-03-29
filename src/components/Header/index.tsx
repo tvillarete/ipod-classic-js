@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-
+import LoadingIndicator from 'components/LoadingIndicator';
+import { useForceUpdate, useMKEventListener } from 'hooks';
 import { useMusicKit } from 'hooks/useMusicKit';
 import { useWindowService } from 'services/window';
 import styled from 'styled-components';
@@ -33,23 +33,27 @@ const Icon = styled.img`
 const Header = () => {
   const { headerTitle } = useWindowService();
   const { music } = useMusicKit();
-  const [isPlaying, setIsPlaying] = useState(false);
-  const hasSource = !!music.player?.nowPlayingItem;
+  const forceUpdate = useForceUpdate();
+  const playbackState = music.player?.playbackState;
 
-  useEffect(() => {
-    if (music.player?.isPlaying && !isPlaying) {
-      setIsPlaying(true);
-    } else if (!music.player?.isPlaying && isPlaying) {
-      setIsPlaying(false);
-    }
-  }, [isPlaying, music.player?.isPlaying]);
+  /** Re-render the component with the new playback state when this event triggers. */
+  useMKEventListener('playbackStateDidChange', forceUpdate);
 
   return headerTitle ? (
     <Container>
       <Text>{headerTitle}</Text>
       <IconContainer>
-        {isPlaying && <Icon src="play.svg" />}
-        {hasSource && !isPlaying && <Icon src="pause.svg" />}
+        {playbackState === MusicKit.PlaybackStates.waiting && (
+          <IconContainer>
+            <LoadingIndicator size={10} />
+          </IconContainer>
+        )}
+        {playbackState === MusicKit.PlaybackStates.playing && (
+          <Icon src="play.svg" />
+        )}
+        {playbackState === MusicKit.PlaybackStates.paused && (
+          <Icon src="pause.svg" />
+        )}
         <Icon src="battery.svg" />
       </IconContainer>
     </Container>

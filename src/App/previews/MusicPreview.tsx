@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { previewSlideRight } from 'animation';
-import { KenBurns, LoadingIndicator } from 'components';
+import { AuthPrompt, KenBurns, LoadingScreen } from 'components';
 import { motion } from 'framer-motion';
 import { useMusicKit } from 'hooks/useMusicKit';
 import styled from 'styled-components';
@@ -17,11 +17,12 @@ const Container = styled(motion.div)`
 `;
 
 const MusicPreview = () => {
-  const { music, isConfigured } = useMusicKit();
+  const { music, isConfigured, isAuthorized } = useMusicKit();
   const [artworkUrls, setArtworkUrls] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const handleMount = useCallback(async () => {
+    setLoading(true);
     const albums = await music.api.library.albums(null);
     const urls = albums.map(
       (album) => Utils.getArtwork(300, album.attributes?.artwork?.url) ?? ''
@@ -33,15 +34,17 @@ const MusicPreview = () => {
   }, [music]);
 
   useEffect(() => {
-    if (isConfigured) {
+    if (isConfigured && isAuthorized) {
       handleMount();
     }
-  }, [handleMount, isConfigured]);
+  }, [handleMount, isAuthorized, isConfigured]);
 
   return (
     <Container {...previewSlideRight}>
       {loading ? (
-        <LoadingIndicator backgroundColor="linear-gradient(180deg, #B1B5C0 0%, #686E7A 100%)" />
+        <LoadingScreen backgroundColor="linear-gradient(180deg, #B1B5C0 0%, #686E7A 100%)" />
+      ) : !isAuthorized ? (
+        <AuthPrompt message="Sign in to view your library" />
       ) : (
         <KenBurns urls={artworkUrls} />
       )}
