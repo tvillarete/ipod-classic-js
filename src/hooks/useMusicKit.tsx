@@ -8,22 +8,26 @@ import React, {
   useState,
 } from 'react';
 
-import { useEventListener } from 'hooks';
+import { useEventListener, useMKEventListener } from 'hooks';
 
 export interface MusicKitState {
   musicKit: typeof MusicKit;
   isConfigured: boolean;
+  isAuthorized: boolean;
 }
 
 export const MusicKitContext = createContext<MusicKitState>({} as any);
 
 export interface MusicKitHook {
   isConfigured: boolean;
+  isAuthorized: boolean;
+  musicKit: typeof MusicKit;
   music: MusicKit.MusicKitInstance;
 }
 
 export const useMusicKit = (): MusicKitHook => {
-  const { isConfigured } = useContext(MusicKitContext);
+  const musicKit = window.MusicKit;
+  const { isConfigured, isAuthorized } = useContext(MusicKitContext);
   const music = useMemo(() => {
     if (!isConfigured) {
       return {} as any;
@@ -32,15 +36,10 @@ export const useMusicKit = (): MusicKitHook => {
     return window.MusicKit.getInstance();
   }, [isConfigured]);
 
-  // const getUserAlbums = useCallback(async () => {
-  //   console.log('Getting albums');
-  //   const music = window.MusicKit.getInstance();
-
-  //   return music.api.library.albums(null);
-  // }, []);
-
   return {
     isConfigured,
+    isAuthorized,
+    musicKit,
     music,
   };
 };
@@ -55,6 +54,7 @@ const developerToken =
 export const MusicKitProvider = ({ children }: Props) => {
   const musicKit = window.MusicKit;
   const [isConfigured, setIsConfigured] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
     console.log({ musicKit });
@@ -65,8 +65,9 @@ export const MusicKitProvider = ({ children }: Props) => {
         build: '1978.4.1',
       },
     });
-
-    musicKit.getInstance().authorize();
+    if (musicKit.getInstance().isAuthorized) {
+      setIsAuthorized(true);
+    }
   }, [musicKit]);
 
   const handlePlayPauseClick = useCallback(() => {
@@ -91,16 +92,24 @@ export const MusicKitProvider = ({ children }: Props) => {
     music.skipToPreviousItem();
   }, [musicKit]);
 
+  useMKEventListener('playbackTargetAvailableDidChange', (e) => {
+    console.log('playbackTargetAvailableDidChange');
+  });
+
+  useMKEventListener('userTokenDidChange', (e) => {
+    console.log('Token change', e);
+    setIsAuthorized(!!e.userToken);
+  });
+
   useEventListener('musickitconfigured', () => {
     setIsConfigured(true);
   });
-
   useEventListener('playpauseclick', handlePlayPauseClick);
   useEventListener('forwardclick', handleForwardClick);
   useEventListener('backclick', handleBackClick);
 
   return (
-    <MusicKitContext.Provider value={{ musicKit, isConfigured }}>
+    <MusicKitContext.Provider value={{ musicKit, isConfigured, isAuthorized }}>
       {children}
     </MusicKitContext.Provider>
   );

@@ -2,14 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { PREVIEW } from 'App/previews';
 import { WINDOW_TYPE } from 'App/views';
-import { LoadingIndicator } from 'components';
+import { LoadingScreen } from 'components';
 import { AnimatePresence } from 'framer-motion';
 import { useTimeout } from 'hooks';
 import styled from 'styled-components';
 
 import SelectableListItem from './SelectableListItem';
 
-export type SelectableListOptionType = 'View' | 'Link' | 'Song';
+export type SelectableListOptionType = 'View' | 'Link' | 'Song' | 'Action';
 
 type SharedOptionProps = {
   type?: SelectableListOptionType;
@@ -45,9 +45,14 @@ type SongOptionProps = {
   showNowPlayingView?: boolean;
 };
 
+type ActionOptionProps = {
+  type: 'Action';
+  onSelect: () => void;
+};
+
 /** Depending on the option type, certain properties will be available. */
 export type SelectableListOption = SharedOptionProps &
-  (ViewOptionProps | LinkOptionProps | SongOptionProps);
+  (ViewOptionProps | LinkOptionProps | SongOptionProps | ActionOptionProps);
 
 const Container = styled.div`
   width: 100%;
@@ -74,7 +79,7 @@ const SelectableList = ({ options, activeIndex, loading }: Props) => {
     // the animation wasn't finishing...
     if (isMounted && containerRef.current && options.length) {
       const { children } = containerRef.current;
-      children[activeIndex].scrollIntoView({
+      children[activeIndex]?.scrollIntoView({
         block: 'nearest',
       });
     }
@@ -83,7 +88,7 @@ const SelectableList = ({ options, activeIndex, loading }: Props) => {
   return (
     <AnimatePresence>
       {loading ? (
-        <LoadingIndicator backgroundColor="white" />
+        <LoadingScreen backgroundColor="white" />
       ) : (
         <Container ref={containerRef}>
           {options.map((option, index) => (
