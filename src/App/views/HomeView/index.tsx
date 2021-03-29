@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { PREVIEW } from 'App/previews';
 import ViewOptions, {
@@ -9,7 +9,7 @@ import ViewOptions, {
   SettingsView,
 } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
-import { useEffectOnce, useMKEventListener, useScrollHandler } from 'hooks';
+import { useForceUpdate, useMKEventListener, useScrollHandler } from 'hooks';
 import { useMusicKit } from 'hooks/useMusicKit';
 
 const strings = {
@@ -17,16 +17,15 @@ const strings = {
 };
 
 const HomeView = () => {
-  const [options, setOptions] = useState<SelectableListOption[]>([]);
-  const { music, isAuthorized } = useMusicKit();
-  const [scrollIndex] = useScrollHandler(ViewOptions.home.id, options);
+  const { music } = useMusicKit();
+  const forceUpdate = useForceUpdate();
 
   const handleLogIn = useCallback(() => {
     music.authorize();
   }, [music]);
 
-  const handleUpdateOptions = useCallback(() => {
-    const updatedOptions: SelectableListOption[] = [
+  const options = useMemo(() => {
+    const arr: SelectableListOption[] = [
       {
         type: 'View',
         label: 'Cover Flow',
@@ -57,8 +56,8 @@ const HomeView = () => {
       },
     ];
 
-    if (!isAuthorized) {
-      updatedOptions.push({
+    if (!music.isAuthorized) {
+      arr.push({
         type: 'Action',
         label: 'Sign in',
         onSelect: handleLogIn,
@@ -66,8 +65,8 @@ const HomeView = () => {
       });
     }
 
-    if (music.player?.nowPlayingItem) {
-      updatedOptions.push({
+    if (music.isAuthorized && music.player?.nowPlayingItem?.isPlayable) {
+      arr.push({
         type: 'View',
         label: strings.nowPlaying,
         viewId: ViewOptions.nowPlaying.id,
@@ -76,13 +75,13 @@ const HomeView = () => {
       });
     }
 
-    setOptions(updatedOptions);
-  }, [handleLogIn, isAuthorized, music.player?.nowPlayingItem]);
+    return arr;
+  }, [handleLogIn, music.isAuthorized, music.player?.nowPlayingItem]);
 
-  useMKEventListener('userTokenDidChange', handleUpdateOptions);
-  useMKEventListener('playbackStateDidChange', handleUpdateOptions);
+  const [scrollIndex] = useScrollHandler(ViewOptions.home.id, options);
 
-  useEffectOnce(handleUpdateOptions);
+  useMKEventListener('userTokenDidChange', forceUpdate);
+  useMKEventListener('playbackStateDidChange', forceUpdate);
 
   return <SelectableList options={options} activeIndex={scrollIndex} />;
 };

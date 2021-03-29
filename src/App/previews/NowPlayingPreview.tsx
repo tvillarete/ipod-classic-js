@@ -15,11 +15,13 @@ const Artwork = styled.img`
 const NowPlayingPreview = () => {
   const { music } = useMusicKit();
   const { player } = music;
+  const nowPlayingItem =
+    player?.queue?.items?.[player.nowPlayingItemIndex ?? 0];
 
   return music.player.isPlaying ? (
     <Container>
       <Artwork
-        src={Utils.getArtwork(300, player?.nowPlayingItem?.artwork?.url)}
+        src={Utils.getArtwork(300, nowPlayingItem?.artwork?.url)}
         alt="now playing artwork"
       />
     </Container>

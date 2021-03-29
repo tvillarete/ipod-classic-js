@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import ViewOptions, { NowPlayingView, WINDOW_TYPE } from 'App/views';
 import { SelectableListOption } from 'components';
@@ -13,7 +13,7 @@ const useScrollHandler = (
   /** This should match the view's viewId (to enable/disable events for hidden views). */
   id: string,
   /** A list of all scrollable items. Used to cap the scrolling to the last element. */
-  options: SelectableListOption[]
+  options: SelectableListOption[] = []
 ): [number] => {
   const { showWindow, windowStack, setPreview } = useWindowService();
   const { music } = useMusicKit();
@@ -23,7 +23,7 @@ const useScrollHandler = (
   const isActive = windowStack[windowStack.length - 1].id === id;
 
   /** Wait until the user stops scrolling to check for a new preview to display. */
-  const checkForPreview = useCallback(
+  const handleCheckForPreview = useCallback(
     (i: number) => {
       if (timeoutIdRef.current) {
         clearTimeout(timeoutIdRef.current);
@@ -45,19 +45,19 @@ const useScrollHandler = (
     [isActive, options, setPreview]
   );
 
-  const forwardScroll = useCallback(() => {
+  const handleForwardScroll = useCallback(() => {
     if (index < options.length - 1 && isActive) {
       setIndex(index + 1);
-      checkForPreview(index + 1);
+      handleCheckForPreview(index + 1);
     }
-  }, [checkForPreview, index, isActive, options.length]);
+  }, [handleCheckForPreview, index, isActive, options.length]);
 
-  const backwardScroll = useCallback(() => {
+  const handleBackwardScroll = useCallback(() => {
     if (index > 0 && isActive) {
       setIndex(index - 1);
-      checkForPreview(index - 1);
+      handleCheckForPreview(index - 1);
     }
-  }, [checkForPreview, index, isActive]);
+  }, [handleCheckForPreview, index, isActive]);
 
   const handlePlaySong = useCallback(
     async (queueOptions: MusicKit.SetQueueOptions) => {
@@ -84,7 +84,7 @@ const useScrollHandler = (
   );
 
   /** Parses the selected option for a new view to show or song to play. */
-  const centerClick = useCallback(async () => {
+  const handleCenterClick = useCallback(async () => {
     const option = options[index];
     if (!isActive || !option) return;
 
@@ -112,6 +112,13 @@ const useScrollHandler = (
     }
   }, [handlePlaySong, handleShowView, index, isActive, options]);
 
+  /** If the list length changes and the index is larger, reset the index to 0. */
+  useEffect(() => {
+    if (options.length && index > options.length - 1) {
+      setIndex(0);
+    }
+  }, [index, options.length]);
+
   useEffectOnce(() => {
     if (!options || !options[0]) return;
 
@@ -122,10 +129,10 @@ const useScrollHandler = (
   });
 
   useEventListener('centerclick', () => {
-    centerClick();
+    handleCenterClick();
   });
-  useEventListener('forwardscroll', forwardScroll);
-  useEventListener('backwardscroll', backwardScroll);
+  useEventListener('forwardscroll', handleForwardScroll);
+  useEventListener('backwardscroll', handleBackwardScroll);
 
   return [index];
 };

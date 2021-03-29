@@ -38,7 +38,11 @@ const TrackProgress = () => {
   const isLoading = playbackState === MusicKit.PlaybackStates.waiting;
 
   /** Update the progress bar every second. */
-  useInterval(forceUpdate, 1000);
+  useInterval(() => {
+    if (player.isPlaying) {
+      forceUpdate();
+    }
+  }, 1000);
 
   /** Update the progress bar whenever the playback state changes */
   useMKEventListener('playbackStateDidChange', forceUpdate);

@@ -11,15 +11,22 @@ const RootContainer = styled.div`
   background: white;
 `;
 
-const Text = styled.h3`
-  margin: ${Unit.MD} 0 0;
+const Title = styled.h3`
+  margin: ${Unit.XS} 0 ${Unit.XXS};
   font-weight: bold;
-  font-size: 16px;
-  max-width: 150px;
+  font-size: 20px;
+`;
+
+const Text = styled.p`
+  font-size: 14px;
+  margin: 0;
+  max-width: 120px;
+  color: rgb(100, 100, 100);
 `;
 
 const strings = {
-  defaultMessage: 'Sign into Apple Music to access this content',
+  title: ' Music',
+  defaultMessage: 'Sign into view this content',
 };
 
 interface Props {
@@ -29,7 +36,8 @@ interface Props {
 const AuthPrompt = ({ message }: Props) => {
   return (
     <RootContainer>
-      <img alt="app_icon" src="app_icon.png" />
+      <img alt="app_icon" src="app_icon.png" height={60} width={60} />
+      <Title>{strings.title}</Title>
       <Text>{message ?? strings.defaultMessage}</Text>
     </RootContainer>
   );

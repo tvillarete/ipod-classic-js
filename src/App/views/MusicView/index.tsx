@@ -24,6 +24,13 @@ const MusicView = () => {
     },
     {
       type: 'View',
+      label: 'Playlists',
+      viewId: ViewOptions.playlists.id,
+      component: () => <PlaylistsView />,
+      preview: PREVIEW.MUSIC,
+    },
+    {
+      type: 'View',
       label: 'Artists',
       viewId: ViewOptions.artists.id,
       component: () => <ArtistsView />,
@@ -34,13 +41,6 @@ const MusicView = () => {
       label: 'Albums',
       viewId: ViewOptions.albums.id,
       component: () => <AlbumsView />,
-      preview: PREVIEW.MUSIC,
-    },
-    {
-      type: 'View',
-      label: 'Playlists',
-      viewId: ViewOptions.playlists.id,
-      component: () => <PlaylistsView />,
       preview: PREVIEW.MUSIC,
     },
   ];

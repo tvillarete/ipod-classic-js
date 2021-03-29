@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { Controls, Unit } from 'components';
 import { useForceUpdate, useMKEventListener, useMusicKit } from 'hooks';
 import styled from 'styled-components';
@@ -64,11 +66,26 @@ interface Props {
 const NowPlaying = ({ hideArtwork, onHide }: Props) => {
   const { music } = useMusicKit();
   const { player } = music;
-  const nowPlayingItem = player?.nowPlayingItem;
+  const queue = player?.queue;
+  const nowPlayingItem = queue?.items?.[player.nowPlayingItemIndex ?? 0];
   const forceUpdate = useForceUpdate();
 
-  /** Update this view whenever the playback state changes */
-  useMKEventListener('playbackStateDidChange', forceUpdate);
+  const handlePlaybackChange = useCallback(
+    ({ state }: { state: MusicKit.PlaybackStates }) => {
+      /** Hide the now playing view if the playback state is "Completed" */
+      if (state === MusicKit.PlaybackStates.completed) {
+        onHide();
+      }
+
+      forceUpdate();
+    },
+    [onHide, forceUpdate]
+  );
+
+  useMKEventListener('playbackStateDidChange', handlePlaybackChange);
+
+  /** Force a component re-render whenever the queue position changes. */
+  useMKEventListener('queuePositionDidChange', forceUpdate);
 
   return (
     <Container>
@@ -81,7 +98,9 @@ const NowPlaying = ({ hideArtwork, onHide }: Props) => {
           <Subtext>{nowPlayingItem?.artistName}</Subtext>
           <Subtext>{nowPlayingItem?.albumName}</Subtext>
           {!!nowPlayingItem && (
-            <Subtext>{`${nowPlayingItem.trackNumber} of ${player.queue.length}`}</Subtext>
+            <Subtext>{`${music.player.queue.position + 1} of ${
+              music.player.queue.length
+            }`}</Subtext>
           )}
         </InfoContainer>
       </MetadataContainer>

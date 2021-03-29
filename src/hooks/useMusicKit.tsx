@@ -92,12 +92,7 @@ export const MusicKitProvider = ({ children }: Props) => {
     music.skipToPreviousItem();
   }, [musicKit]);
 
-  useMKEventListener('playbackTargetAvailableDidChange', (e) => {
-    console.log('playbackTargetAvailableDidChange');
-  });
-
   useMKEventListener('userTokenDidChange', (e) => {
-    console.log('Token change', e);
     setIsAuthorized(!!e.userToken);
   });
 
