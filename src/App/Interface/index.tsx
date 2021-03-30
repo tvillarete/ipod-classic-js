@@ -1,5 +1,5 @@
 import { WINDOW_TYPE } from 'App/views';
-import { Screen, Unit } from 'components';
+import { ErrorScreen, Screen, Unit } from 'components';
 import { useMusicKit } from 'hooks/useMusicKit';
 import { useWindowService } from 'services/window';
 import styled from 'styled-components';
@@ -42,7 +42,7 @@ const Mask = styled.div`
 `;
 
 const Interface = () => {
-  const { isConfigured } = useMusicKit();
+  const { isConfigured, hasDevToken } = useMusicKit();
   const { windowStack } = useWindowService();
   const splitViewWindows = windowStack.filter(
     (window) => window.type === WINDOW_TYPE.SPLIT
@@ -54,20 +54,24 @@ const Interface = () => {
     (window) => window.type === WINDOW_TYPE.COVER_FLOW
   );
 
-  if (!isConfigured) {
-    return null;
-  }
+  const isReady = isConfigured && hasDevToken;
 
   return (
     <Container>
+      {isReady ? (
+        <>
+          <CoverFlowInterface window={coverFlowWindow} />
+          <SplitScreenInterface
+            windowStack={splitViewWindows}
+            menuHidden={fullViewWindows.length > 0}
+            allHidden={!!coverFlowWindow}
+          />
+          <FullScreenInterface windowStack={fullViewWindows} />
+        </>
+      ) : (
+        <ErrorScreen message={'Missing developer token'} />
+      )}
       <Mask />
-      <CoverFlowInterface window={coverFlowWindow} />
-      <SplitScreenInterface
-        windowStack={splitViewWindows}
-        menuHidden={fullViewWindows.length > 0}
-        allHidden={!!coverFlowWindow}
-      />
-      <FullScreenInterface windowStack={fullViewWindows} />
     </Container>
   );
 };

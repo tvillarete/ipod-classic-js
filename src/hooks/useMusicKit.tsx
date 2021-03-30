@@ -21,6 +21,7 @@ export interface MusicKitState {
   musicKit: typeof MusicKit;
   isConfigured: boolean;
   isAuthorized: boolean;
+  hasDevToken: boolean;
 }
 
 export const MusicKitContext = createContext<MusicKitState>({} as any);
@@ -28,24 +29,28 @@ export const MusicKitContext = createContext<MusicKitState>({} as any);
 export interface MusicKitHook {
   isConfigured: boolean;
   isAuthorized: boolean;
+  hasDevToken: boolean;
   musicKit: typeof MusicKit;
   music: MusicKit.MusicKitInstance;
 }
 
 export const useMusicKit = (): MusicKitHook => {
   const musicKit = window.MusicKit;
-  const { isConfigured, isAuthorized } = useContext(MusicKitContext);
+  const { isConfigured, isAuthorized, hasDevToken } = useContext(
+    MusicKitContext
+  );
   const music = useMemo(() => {
-    if (!isConfigured) {
+    if (!isConfigured || !hasDevToken) {
       return {} as any;
     }
 
     return window.MusicKit.getInstance();
-  }, [isConfigured]);
+  }, [hasDevToken, isConfigured]);
 
   return {
     isConfigured,
     isAuthorized,
+    hasDevToken,
     musicKit,
     music,
   };
@@ -57,24 +62,9 @@ interface Props {
 
 export const MusicKitProvider = ({ children }: Props) => {
   const musicKit = window.MusicKit;
+  const [hasDevToken, setHasDevToken] = useState(false);
   const [isConfigured, setIsConfigured] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
-
-  useEffect(() => {
-    musicKit.configure({
-      developerToken:
-        DEVELOPER_TOKEN ??
-        new URLSearchParams(window.location.search).get('token') ??
-        undefined,
-      app: {
-        name: 'My Cool Web App',
-        build: '1978.4.1',
-      },
-    });
-    if (musicKit.getInstance().isAuthorized) {
-      setIsAuthorized(true);
-    }
-  }, [musicKit]);
 
   const handlePlayPauseClick = useCallback(() => {
     const music = musicKit.getInstance();
@@ -98,6 +88,31 @@ export const MusicKitProvider = ({ children }: Props) => {
     music.skipToPreviousItem();
   }, [musicKit]);
 
+  useEffect(() => {
+    try {
+      const music = musicKit.configure({
+        developerToken:
+          DEVELOPER_TOKEN ??
+          new URLSearchParams(window.location.search).get('token') ??
+          undefined,
+        app: {
+          name: 'iPod.js',
+          build: '1.0',
+        },
+      });
+
+      if (music) {
+        setHasDevToken(true);
+      }
+
+      if (music.isAuthorized) {
+        setIsAuthorized(true);
+      }
+    } catch (e) {
+      setHasDevToken(false);
+    }
+  }, [musicKit]);
+
   useMKEventListener('userTokenDidChange', (e) => {
     setIsAuthorized(!!e.userToken);
   });
@@ -110,7 +125,9 @@ export const MusicKitProvider = ({ children }: Props) => {
   useEventListener('backclick', handleBackClick);
 
   return (
-    <MusicKitContext.Provider value={{ musicKit, isConfigured, isAuthorized }}>
+    <MusicKitContext.Provider
+      value={{ musicKit, isConfigured, isAuthorized, hasDevToken }}
+    >
       {children}
     </MusicKitContext.Provider>
   );
