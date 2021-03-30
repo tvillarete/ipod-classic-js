@@ -51,7 +51,7 @@ declare namespace MusicKit {
     album(
       id: string,
       parameters?: QueryParameters
-    ): Promise<AppleMusicApi.Resource>;
+    ): Promise<AppleMusicApi.Album>;
     /**
      * Fetch one or more albums using their identifiers.
      *
@@ -96,6 +96,13 @@ declare namespace MusicKit {
       id: string,
       parameters?: QueryParameters
     ): Promise<AppleMusicApi.Artist>;
+
+    /** Stub type */
+    artistRelationship(
+      id: string,
+      relationship: string
+    ): Promise<AppleMusicApi.Album[]>;
+
     /**
      * Fetch one or more artists using their identifiers.
      *
@@ -256,7 +263,17 @@ declare namespace MusicKit {
     search(
       term: string,
       parameters?: QueryParameters
-    ): Promise<AppleMusicApi.Resource[]>;
+    ): Promise<
+      Record<
+        AppleMusicApi.Resource['type'],
+        AppleMusicApi.Relationship<
+          | AppleMusicApi.Artist
+          | AppleMusicApi.Album
+          | AppleMusicApi.Playlist
+          | AppleMusicApi.Song
+        >
+      >
+    >;
     /**
      * Fetch the search term results for a hint.
      *

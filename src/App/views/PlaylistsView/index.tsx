@@ -26,7 +26,7 @@ const PlaylistsView = () => {
         sublabel: playlist.attributes?.description?.standard,
         imageUrl: Utils.getArtwork(100, playlist.attributes?.artwork?.url),
         viewId: ViewOptions.playlist.id,
-        component: () => <PlaylistView id={playlist.id} />,
+        component: () => <PlaylistView id={playlist.id} inLibrary />,
       }))
     );
 

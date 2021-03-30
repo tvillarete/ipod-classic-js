@@ -8,9 +8,11 @@ import * as Utils from 'utils';
 
 interface Props {
   id: string;
+  /** Get playlist from the user's library if true (otherwise search Apple Music). */
+  inLibrary?: boolean;
 }
 
-const PlaylistView = ({ id }: Props) => {
+const PlaylistView = ({ id, inLibrary = false }: Props) => {
   useMenuHideWindow(ViewOptions.playlist.id);
   const { music } = useMusicKit();
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,9 @@ const PlaylistView = ({ id }: Props) => {
   const [scrollIndex] = useScrollHandler(ViewOptions.playlist.id, options);
 
   const handleMount = useCallback(async () => {
-    const playlist = await music.api.library.playlist(id);
+    const playlist = inLibrary
+      ? await music.api.library.playlist(id)
+      : await music.api.playlist(id);
     const songs = playlist.relationships?.tracks?.data ?? [];
 
     setOptions(
@@ -36,7 +40,7 @@ const PlaylistView = ({ id }: Props) => {
     );
 
     setLoading(false);
-  }, [id, music.api]);
+  }, [id, inLibrary, music.api]);
 
   useEffect(() => {
     handleMount();

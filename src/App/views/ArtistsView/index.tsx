@@ -24,9 +24,7 @@ const ArtistsView = () => {
         type: 'View',
         label: artist.attributes?.name ?? 'Unknown artist',
         viewId: ViewOptions.artist.id,
-        component: () => (
-          <ArtistView id={artist.id} name={artist.attributes?.name ?? ''} />
-        ),
+        component: () => <ArtistView id={artist.id} inLibrary={true} />,
       }))
     );
 

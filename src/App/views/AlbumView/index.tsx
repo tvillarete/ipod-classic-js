@@ -7,9 +7,11 @@ import { useMusicKit } from 'hooks/useMusicKit';
 
 interface Props {
   id: string;
+  /** Get album from the user's library if true (otherwise search Apple Music). */
+  inLibrary?: boolean;
 }
 
-const AlbumView = ({ id }: Props) => {
+const AlbumView = ({ id, inLibrary = false }: Props) => {
   useMenuHideWindow(ViewOptions.album.id);
   const { music } = useMusicKit();
   const [loading, setLoading] = useState(true);
@@ -17,8 +19,12 @@ const AlbumView = ({ id }: Props) => {
   const [scrollIndex] = useScrollHandler(ViewOptions.album.id, options);
 
   const handleMount = useCallback(async () => {
-    const album = await music.api.library.album(id);
+    const album = inLibrary
+      ? await music.api.library.album(id)
+      : await music.api.album(id);
     const songs = album.relationships?.tracks.data ?? [];
+
+    console.log({ album });
 
     setOptions(
       songs.map((song, index) => ({
@@ -33,7 +39,7 @@ const AlbumView = ({ id }: Props) => {
     );
 
     setLoading(false);
-  }, [id, music.api]);
+  }, [id, inLibrary, music.api]);
 
   useEffect(() => {
     handleMount();
