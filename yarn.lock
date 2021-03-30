@@ -158,6 +158,14 @@
     "@babel/helper-explode-assignable-expression" "^7.12.13"
     "@babel/types" "^7.12.13"
 
+"@babel/helper-builder-react-jsx@^7.12.13":
+  version "7.12.13"
+  resolved "https://packages.convoy.com/artifactory/api/npm/npm/@babel/helper-builder-react-jsx/-/helper-builder-react-jsx-7.12.13.tgz#df6a76fb83feb6b8e6dcfb46bb49010098cb51f0"
+  integrity sha1-32p2+4P+trjm3PtGu0kBAJjLUfA=
+  dependencies:
+    "@babel/helper-annotate-as-pure" "^7.12.13"
+    "@babel/types" "^7.12.13"
+
 "@babel/helper-compilation-targets@^7.12.1", "@babel/helper-compilation-targets@^7.13.0", "@babel/helper-compilation-targets@^7.13.10", "@babel/helper-compilation-targets@^7.13.13", "@babel/helper-compilation-targets@^7.13.8":
   version "7.13.13"
   resolved "https://packages.convoy.com/artifactory/api/npm/npm/@babel/helper-compilation-targets/-/helper-compilation-targets-7.13.13.tgz#2b2972a0926474853f41e4adbc69338f520600e5"
@@ -186,6 +194,14 @@
   dependencies:
     "@babel/helper-annotate-as-pure" "^7.12.13"
     regexpu-core "^4.7.1"
+
+"@babel/helper-define-map@^7.13.12":
+  version "7.13.12"
+  resolved "https://packages.convoy.com/artifactory/api/npm/npm/@babel/helper-define-map/-/helper-define-map-7.13.12.tgz#4f7a67d164560137a820f3cfe12f142123e66063"
+  integrity sha1-T3pn0WRWATeoIPPP4S8UISPmYGM=
+  dependencies:
+    "@babel/helper-function-name" "^7.12.13"
+    "@babel/types" "^7.13.12"
 
 "@babel/helper-define-polyfill-provider@^0.1.5":
   version "0.1.5"
@@ -299,6 +315,13 @@
   version "7.13.0"
   resolved "https://packages.convoy.com/artifactory/api/npm/npm/@babel/helper-plugin-utils/-/helper-plugin-utils-7.13.0.tgz#806526ce125aed03373bc416a828321e3a6a33af"
   integrity sha1-gGUmzhJa7QM3O8QWqCgyHjpqM68=
+
+"@babel/helper-regex@^7.10.5":
+  version "7.10.5"
+  resolved "https://packages.convoy.com/artifactory/api/npm/npm/@babel/helper-regex/-/helper-regex-7.10.5.tgz#32dfbb79899073c415557053a19bd055aae50ae0"
+  integrity sha1-Mt+7eYmQc8QVVXBToZvQVarlCuA=
+  dependencies:
+    lodash "^4.17.19"
 
 "@babel/helper-remap-async-to-generator@^7.13.0":
   version "7.13.0"
