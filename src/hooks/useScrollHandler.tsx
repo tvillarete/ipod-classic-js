@@ -112,6 +112,13 @@ const useScrollHandler = (
     }
   }, [handlePlaySong, handleShowView, index, isActive, options]);
 
+  const handleCenterLongClick = useCallback(async () => {
+    const option = options[index];
+    if (!isActive || !option) return;
+
+    console.log('long press', { option });
+  }, [index, isActive, options]);
+
   /** If the list length changes and the index is larger, reset the index to 0. */
   useEffect(() => {
     if (options.length && index > options.length - 1) {
@@ -131,6 +138,7 @@ const useScrollHandler = (
   useEventListener('centerclick', () => {
     handleCenterClick();
   });
+  useEventListener('centerlongclick', handleCenterLongClick);
   useEventListener('forwardscroll', handleForwardScroll);
   useEventListener('backwardscroll', handleBackwardScroll);
 

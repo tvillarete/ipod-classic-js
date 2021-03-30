@@ -22,6 +22,7 @@ enum KEY_CODE {
 }
 
 const centerClickEvent = new Event('centerclick');
+const centerLongClickEvent = new Event('centerlongclick');
 const forwardScrollEvent = new Event('forwardscroll');
 const backwardScrollEvent = new Event('backwardscroll');
 const wheelClickEvent = new Event('wheelclick');
@@ -37,6 +38,11 @@ const ScrollWheel = () => {
     () => window.dispatchEvent(centerClickEvent),
     []
   );
+
+  const handleCenterLongPress = useCallback((e: any) => {
+    e.preventDefault();
+    window.dispatchEvent(centerLongClickEvent);
+  }, []);
 
   const handleClockwiseScroll = useCallback(
     () => window.dispatchEvent(forwardScrollEvent),
@@ -128,6 +134,7 @@ const ScrollWheel = () => {
       bgColor={'white'}
       thickness={0.6}
       onClick={handleCenterClick}
+      onLongPress={handleCenterLongPress}
       onWheelClick={handleWheelClick}
       onChange={handleScroll}
     />
