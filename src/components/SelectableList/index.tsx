@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { PREVIEW } from 'App/previews';
 import { WINDOW_TYPE } from 'App/views';

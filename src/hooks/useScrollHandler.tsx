@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import ViewOptions, { NowPlayingView, WINDOW_TYPE } from 'App/views';
 import { SelectableListOption } from 'components';

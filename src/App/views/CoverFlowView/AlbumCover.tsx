@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { fadeScale } from 'animation';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled, { css } from 'styled-components';

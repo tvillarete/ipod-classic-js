@@ -1,5 +1,3 @@
-import React from 'react';
-
 import ViewOptions from 'App/views';
 import { SelectableList, SelectableListOption, Unit } from 'components';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';

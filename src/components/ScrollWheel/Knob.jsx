@@ -1,4 +1,4 @@
-import React from 'react';
+import { createRef, Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
@@ -60,7 +60,7 @@ const WheelButton = styled.img`
   max-height: 13px;
 `;
 
-class Knob extends React.Component {
+class Knob extends Component {
   static propTypes = {
     value: PropTypes.number.isRequired,
     onChange: PropTypes.func.isRequired,
@@ -137,7 +137,7 @@ class Knob extends React.Component {
         String(Math.abs(this.props.max)).length,
         2
       ) + 2;
-    this.centerButtonRef = React.createRef();
+    this.centerButtonRef = createRef();
   }
 
   handleLongPress = (e) => {

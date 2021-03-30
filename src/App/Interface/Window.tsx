@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { noAnimation, slideRightAnimation } from 'animation';
 import { motion } from 'framer-motion';
 import { useWindowService, WindowOptions } from 'services/window';

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import ViewOptions, { AlbumView } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';

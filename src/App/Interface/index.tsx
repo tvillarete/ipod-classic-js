@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { WINDOW_TYPE } from 'App/views';
 import { Screen, Unit } from 'components';
 import { useMusicKit } from 'hooks/useMusicKit';

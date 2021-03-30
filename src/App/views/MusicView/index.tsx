@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { PREVIEW } from 'App/previews';
 import {
   AlbumsView,

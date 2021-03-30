@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Unit } from 'components';
 import LoadingIndicator from 'components/LoadingIndicator';
 import { useForceUpdate, useInterval, useMKEventListener } from 'hooks';

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Unit } from 'components';
 import { useEffectOnce, useEventListener, useInterval } from 'hooks';

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Unit } from 'components';
 import styled, { css } from 'styled-components';
 

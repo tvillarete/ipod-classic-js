@@ -2087,12 +2087,13 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/react@16.14.1":
-  version "16.14.1"
-  resolved "https://packages.convoy.com/artifactory/api/npm/npm/@types/react/-/react-16.14.1.tgz#da2ecb638385614a5573e16e4aa7daf936dbead5"
-  integrity sha1-2i7LY4OFYUpVc+FuSqfa+Tbb6tU=
+"@types/react@17.0.1":
+  version "17.0.1"
+  resolved "https://packages.convoy.com/artifactory/api/npm/npm/@types/react/-/react-17.0.1.tgz#eb1f1407dea8da3bc741879c1192aa703ab9975b"
+  integrity sha1-6x8UB96o2jvHQYecEZKqcDq5l1s=
   dependencies:
     "@types/prop-types" "*"
+    csstype "^3.0.2"
 
 "@types/react@^16":
   version "16.14.5"

@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   memo,
   useCallback,
@@ -59,10 +59,8 @@ export const MusicKitProvider = ({ children }: Props) => {
   const musicKit = window.MusicKit;
   const [isConfigured, setIsConfigured] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
-  console.log({ token: process.env.DEVELOPER_TOKEN });
 
   useEffect(() => {
-    console.log({ musicKit });
     musicKit.configure({
       developerToken:
         DEVELOPER_TOKEN ??

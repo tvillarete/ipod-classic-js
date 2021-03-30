@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Window from 'App/Interface/Window';
 import { Header } from 'components';
 import { AnimatePresence } from 'framer-motion';

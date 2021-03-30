@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import { ScrollWheel } from 'components';
 import MusicKitProvider from 'hooks/useMusicKit';

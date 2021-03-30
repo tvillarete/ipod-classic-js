@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { useMenuHideWindow } from 'hooks';
 import styled from 'styled-components';
