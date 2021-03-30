@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useQuery } from '@apollo/react-hooks';
 import {
-  LoadingIndicator,
+  LoadingScreen,
   SelectableList,
   SelectableListOption,
 } from 'components';
 import { useEventListener, useScrollHandler } from 'hooks';
-import { Album, ALBUM, AlbumQuery } from 'queries';
+import { useMusicKit } from 'hooks/useMusicKit';
 import styled from 'styled-components';
 
 import ViewOptions from '../';
@@ -48,44 +47,56 @@ const ListContainer = styled.div`
 `;
 
 interface Props {
-  album: Album;
+  albumId: AppleMusicApi.Album['id'];
   setPlayingAlbum: (val: boolean) => void;
 }
 
-const BacksideContent = ({ album, setPlayingAlbum }: Props) => {
-  const { loading, error, data } = useQuery<AlbumQuery>(ALBUM, {
-    variables: { name: album.album }
-  });
+const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
+  const [album, setAlbum] = useState<AppleMusicApi.Album>();
+  const { music } = useMusicKit();
+  const [loading, setLoading] = useState(true);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
-  const [index] = useScrollHandler(ViewOptions.coverFlow.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.coverFlow.id, options);
 
-  useEventListener("centerclick", () => setPlayingAlbum(true));
+  const handleMount = useCallback(async () => {
+    const fetchedAlbum = await music.api.library.album(albumId);
+    setAlbum(fetchedAlbum);
+    const songs = fetchedAlbum.relationships?.tracks.data ?? [];
+
+    setOptions(
+      songs.map((song, index) => ({
+        type: 'Song',
+        label: song.attributes?.name ?? 'Unknown song',
+        queueOptions: {
+          album: fetchedAlbum.id,
+          startPosition: index - 1,
+        },
+      }))
+    );
+
+    setLoading(false);
+  }, [albumId, music.api.library]);
 
   useEffect(() => {
-    if (data && data.album && !error) {
-      setOptions(
-        data.album.map((song, index) => ({
-          label: song.name,
-          value: song,
-          songIndex: index,
-          playlist: data.album
-        }))
-      );
+    if (!album) {
+      handleMount();
     }
-  }, [data, error]);
+  }, [album, handleMount]);
+
+  useEventListener('centerclick', () => setPlayingAlbum(true));
 
   return (
     <Container>
       {loading ? (
-        <LoadingIndicator />
+        <LoadingScreen />
       ) : (
         <>
           <InfoContainer>
-            <Text>{album.album}</Text>
-            <Subtext>{album.artist}</Subtext>
+            <Text>{album?.attributes?.name}</Text>
+            <Subtext>{album?.attributes?.artistName}</Subtext>
           </InfoContainer>
           <ListContainer>
-            <SelectableList activeIndex={index} options={options} />
+            <SelectableList activeIndex={scrollIndex} options={options} />
           </ListContainer>
         </>
       )}

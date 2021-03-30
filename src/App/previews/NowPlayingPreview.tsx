@@ -1,9 +1,7 @@
-import React from 'react';
-
 import { motion } from 'framer-motion';
-import { useAudioService } from 'services/audio';
+import { useMusicKit } from 'hooks/useMusicKit';
 import styled from 'styled-components';
-import { getUrlFromPath } from 'utils';
+import * as Utils from 'utils';
 
 const Container = styled(motion.div)`
   height: 100%;
@@ -15,11 +13,17 @@ const Artwork = styled.img`
 `;
 
 const NowPlayingPreview = () => {
-  const { source } = useAudioService();
+  const { music } = useMusicKit();
+  const { player } = music;
+  const nowPlayingItem =
+    player?.queue?.items?.[player.nowPlayingItemIndex ?? 0];
 
-  return source ? (
+  return music.player.isPlaying ? (
     <Container>
-      <Artwork src={getUrlFromPath(source.artwork)} alt="now playing artwork" />
+      <Artwork
+        src={Utils.getArtwork(300, nowPlayingItem?.artwork?.url)}
+        alt="now playing artwork"
+      />
     </Container>
   ) : null;
 };

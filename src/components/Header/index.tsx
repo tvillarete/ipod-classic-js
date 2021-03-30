@@ -1,10 +1,10 @@
-import React from 'react';
-
-import { useAudioService } from 'services/audio';
+import LoadingIndicator from 'components/LoadingIndicator';
+import { useForceUpdate, useMKEventListener } from 'hooks';
+import { useMusicKit } from 'hooks/useMusicKit';
 import { useWindowService } from 'services/window';
 import styled from 'styled-components';
 
-const Container = styled.div` 
+const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -32,14 +32,28 @@ const Icon = styled.img`
 
 const Header = () => {
   const { headerTitle } = useWindowService();
-  const { playing, source } = useAudioService();
+  const { music } = useMusicKit();
+  const forceUpdate = useForceUpdate();
+  const playbackState = music.player?.playbackState;
+
+  /** Re-render the component with the new playback state when this event triggers. */
+  useMKEventListener('playbackStateDidChange', forceUpdate);
 
   return headerTitle ? (
     <Container>
       <Text>{headerTitle}</Text>
       <IconContainer>
-        {playing && <Icon src="play.svg" />}
-        {source && !playing && <Icon src="pause.svg" />}
+        {playbackState === MusicKit.PlaybackStates.waiting && (
+          <IconContainer>
+            <LoadingIndicator size={10} />
+          </IconContainer>
+        )}
+        {playbackState === MusicKit.PlaybackStates.playing && (
+          <Icon src="play.svg" />
+        )}
+        {playbackState === MusicKit.PlaybackStates.paused && (
+          <Icon src="pause.svg" />
+        )}
         <Icon src="battery.svg" />
       </IconContainer>
     </Container>

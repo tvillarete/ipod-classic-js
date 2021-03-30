@@ -1,5 +1,3 @@
-import React from 'react';
-
 import GamesPreview from './GamesPreview';
 import MusicPreview from './MusicPreview';
 import NowPlayingPreview from './NowPlayingPreview';

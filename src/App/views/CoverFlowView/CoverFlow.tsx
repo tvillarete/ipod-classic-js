@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { fade } from 'animation';
 import { NowPlaying } from 'components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEventListener } from 'hooks';
-import { Album } from 'queries';
 import { useWindowService } from 'services/window';
 import styled from 'styled-components';
 
@@ -62,14 +61,14 @@ const Text = styled.h3`
 `;
 
 interface Props {
-  albums: Album[];
+  albums: AppleMusicApi.Album[];
 }
 
 const CoverFlow = ({ albums }: Props) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [midpoint, setMidpoint] = useState<Point>({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
-  const [selectedAlbum, setSelectedAlbum] = useState<Album>();
+  const [selectedAlbum, setSelectedAlbum] = useState<AppleMusicApi.Album>();
   const [playingAlbum, setPlayingAlbum] = useState(false);
   const { hideWindow } = useWindowService();
 
@@ -121,13 +120,13 @@ const CoverFlow = ({ albums }: Props) => {
       <AlbumsContainer ref={containerRef}>
         {albums.map((album, index) => (
           <AlbumCover
-            key={`cf-artwork-${album.artwork}`}
+            key={`cf-artwork-${album.id}`}
             index={index}
             activeIndex={activeIndex}
             midpoint={midpoint}
             album={album}
             playingAlbum={playingAlbum}
-            isSelected={!!selectedAlbum && album.album === selectedAlbum.album}
+            isSelected={!!selectedAlbum && album.id === selectedAlbum.id}
             setPlayingAlbum={setPlayingAlbum}
           />
         ))}
@@ -136,8 +135,8 @@ const CoverFlow = ({ albums }: Props) => {
       <AnimatePresence>
         {albums.length && !playingAlbum && (
           <InfoContainer {...fade}>
-            <Text>{albums[activeIndex].album}</Text>
-            <Text>{albums[activeIndex].artist}</Text>
+            <Text>{albums[activeIndex]?.attributes?.name}</Text>
+            <Text>{albums[activeIndex]?.attributes?.artistName}</Text>
           </InfoContainer>
         )}
         {playingAlbum && (

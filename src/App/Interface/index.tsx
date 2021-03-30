@@ -1,7 +1,6 @@
-import React from 'react';
-
 import { WINDOW_TYPE } from 'App/views';
 import { Screen, Unit } from 'components';
+import { useMusicKit } from 'hooks/useMusicKit';
 import { useWindowService } from 'services/window';
 import styled from 'styled-components';
 
@@ -43,16 +42,21 @@ const Mask = styled.div`
 `;
 
 const Interface = () => {
+  const { isConfigured } = useMusicKit();
   const { windowStack } = useWindowService();
   const splitViewWindows = windowStack.filter(
-    window => window.type === WINDOW_TYPE.SPLIT
+    (window) => window.type === WINDOW_TYPE.SPLIT
   );
   const fullViewWindows = windowStack.filter(
-    window => window.type === WINDOW_TYPE.FULL
+    (window) => window.type === WINDOW_TYPE.FULL
   );
   const coverFlowWindow = windowStack.find(
-    window => window.type === WINDOW_TYPE.COVER_FLOW
+    (window) => window.type === WINDOW_TYPE.COVER_FLOW
   );
+
+  if (!isConfigured) {
+    return null;
+  }
 
   return (
     <Container>

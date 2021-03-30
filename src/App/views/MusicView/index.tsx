@@ -1,7 +1,10 @@
-import React from 'react';
-
 import { PREVIEW } from 'App/previews';
-import { AlbumsView, ArtistsView } from 'App/views';
+import {
+  AlbumsView,
+  ArtistsView,
+  CoverFlowView,
+  PlaylistsView,
+} from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';
 
@@ -11,21 +14,37 @@ const MusicView = () => {
   useMenuHideWindow(ViewOptions.music.id);
   const options: SelectableListOption[] = [
     {
-      label: "Artists",
-      value: () => <ArtistsView />,
-      viewId: ViewOptions.artists.id,
-      preview: PREVIEW.MUSIC
+      type: 'View',
+      label: 'Cover Flow',
+      viewId: ViewOptions.coverFlow.id,
+      component: () => <CoverFlowView />,
+      preview: PREVIEW.MUSIC,
     },
     {
-      label: "Albums",
-      value: () => <AlbumsView />,
+      type: 'View',
+      label: 'Playlists',
+      viewId: ViewOptions.playlists.id,
+      component: () => <PlaylistsView />,
+      preview: PREVIEW.MUSIC,
+    },
+    {
+      type: 'View',
+      label: 'Artists',
+      viewId: ViewOptions.artists.id,
+      component: () => <ArtistsView />,
+      preview: PREVIEW.MUSIC,
+    },
+    {
+      type: 'View',
+      label: 'Albums',
       viewId: ViewOptions.albums.id,
-      preview: PREVIEW.MUSIC
-    }
+      component: () => <AlbumsView />,
+      preview: PREVIEW.MUSIC,
+    },
   ];
-  const [index] = useScrollHandler(ViewOptions.music.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.music.id, options);
 
-  return <SelectableList options={options} activeIndex={index} />;
+  return <SelectableList options={options} activeIndex={scrollIndex} />;
 };
 
 export default MusicView;

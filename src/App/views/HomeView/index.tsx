@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { PREVIEW } from 'App/previews';
 import ViewOptions, {
@@ -9,80 +9,81 @@ import ViewOptions, {
   SettingsView,
 } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
-import { useScrollHandler } from 'hooks';
-import { useAudioService } from 'services/audio';
+import { useForceUpdate, useMKEventListener, useScrollHandler } from 'hooks';
+import { useMusicKit } from 'hooks/useMusicKit';
 
 const strings = {
-  nowPlaying: "Now Playing"
+  nowPlaying: 'Now Playing',
 };
 
 const HomeView = () => {
-  const initialOptions: SelectableListOption[] = [
-    {
-      label: "Cover Flow",
-      value: () => <CoverFlowView />,
-      viewId: ViewOptions.coverFlow.id,
-      preview: PREVIEW.MUSIC
-    },
-    {
-      label: "Music",
-      value: () => <MusicView />,
-      viewId: ViewOptions.music.id,
-      preview: PREVIEW.MUSIC
-    },
-    {
-      label: "Games",
-      value: () => <GamesView />,
-      viewId: ViewOptions.games.id,
-      preview: PREVIEW.GAMES
-    },
-    {
-      label: "Settings",
-      value: () => <SettingsView />,
-      viewId: ViewOptions.settings.id,
-      preview: PREVIEW.SETTINGS
+  const { music } = useMusicKit();
+  const forceUpdate = useForceUpdate();
+
+  const handleLogIn = useCallback(() => {
+    music.authorize();
+  }, [music]);
+
+  const options = useMemo(() => {
+    const arr: SelectableListOption[] = [
+      {
+        type: 'View',
+        label: 'Cover Flow',
+        viewId: ViewOptions.coverFlow.id,
+        component: () => <CoverFlowView />,
+        preview: PREVIEW.MUSIC,
+      },
+      {
+        type: 'View',
+        label: 'Music',
+        viewId: ViewOptions.music.id,
+        component: () => <MusicView />,
+        preview: PREVIEW.MUSIC,
+      },
+      {
+        type: 'View',
+        label: 'Games',
+        viewId: ViewOptions.games.id,
+        component: () => <GamesView />,
+        preview: PREVIEW.GAMES,
+      },
+      {
+        type: 'View',
+        label: 'Settings',
+        viewId: ViewOptions.settings.id,
+        component: () => <SettingsView />,
+        preview: PREVIEW.SETTINGS,
+      },
+    ];
+
+    if (!music.isAuthorized) {
+      arr.push({
+        type: 'Action',
+        label: 'Sign in',
+        onSelect: handleLogIn,
+        preview: PREVIEW.MUSIC,
+      });
     }
-  ];
 
-  const [options, setOptions] = useState(initialOptions);
-  const { source } = useAudioService();
-  const [index] = useScrollHandler(ViewOptions.home.id, options);
-
-  /** Append the "Now Playing" button to the list of options. */
-  const showNowPlaying = useCallback(() => {
-    if (
-      source &&
-      !options.find(option => option.label === strings.nowPlaying)
-    ) {
-      setOptions([
-        ...options,
-        {
-          label: strings.nowPlaying,
-          value: () => <NowPlayingView />,
-          viewId: ViewOptions.nowPlaying.id,
-          preview: PREVIEW.NOW_PLAYING
-        }
-      ]);
+    if (music.isAuthorized && music.player?.nowPlayingItem?.isPlayable) {
+      arr.push({
+        type: 'View',
+        label: strings.nowPlaying,
+        viewId: ViewOptions.nowPlaying.id,
+        component: () => <NowPlayingView />,
+        preview: PREVIEW.NOW_PLAYING,
+      });
     }
-  }, [options, source]);
 
-  /** Remove the "Now Playing" button from the list of options. */
-  const hideNowPlaying = useCallback(() => {
-    if (options.find(option => option.label === strings.nowPlaying)) {
-      setOptions(options.filter(option => option.label !== strings.nowPlaying));
-    }
-  }, [options]);
+    return arr;
+  }, [handleLogIn, music.isAuthorized, music.player?.nowPlayingItem]);
 
-  /** Conditionally show "Now Playing" button if music is queued/playing. */
-  useEffect(() => {
-    if (source) {
-      showNowPlaying();
-    } else {
-      hideNowPlaying();
-    }
-  }, [hideNowPlaying, showNowPlaying, source]);
+  const [scrollIndex] = useScrollHandler(ViewOptions.home.id, options);
 
-  return <SelectableList options={options} activeIndex={index} />;
+  useMKEventListener('userTokenDidChange', forceUpdate);
+  useMKEventListener('playbackStateDidChange', forceUpdate);
+
+  return <SelectableList options={options} activeIndex={scrollIndex} />;
 };
 
 export default HomeView;

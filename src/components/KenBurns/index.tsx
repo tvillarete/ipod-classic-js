@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useInterval } from 'hooks';
 import styled from 'styled-components';
-import { getUrlFromPath } from 'utils';
 
 const Container = styled.div``;
 
@@ -13,12 +12,12 @@ interface ImageProps {
 }
 
 const Image = styled.img<ImageProps>`
-  z-index: ${props => props.zIndex};
+  z-index: ${(props) => props.zIndex};
   position: absolute;
   height: 100%;
   right: 0;
-  animation: ${props => props.startedAnimation && "kenBurns"} 20s;
-  opacity: ${props => props.isHidden && 0};
+  animation: ${(props) => props.startedAnimation && 'kenBurns'} 20s;
+  opacity: ${(props) => props.isHidden && 0};
   transition: opacity 2s;
 
   @keyframes kenBurns {
@@ -72,7 +71,7 @@ const KenBurns = ({ urls }: Props) => {
         <Image
           key={`ken-burns-${path}`}
           zIndex={3 - index}
-          src={getUrlFromPath(path)}
+          src={path}
           startedAnimation={index === 0 || transitioning}
           isHidden={transitioning && index === 0}
         />

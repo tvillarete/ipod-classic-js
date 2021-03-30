@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { PREVIEW } from 'App/previews';
 import ViewOptions, { BrickGameView } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
@@ -9,16 +7,17 @@ const GamesView = () => {
   useMenuHideWindow(ViewOptions.games.id);
   const options: SelectableListOption[] = [
     {
-      label: "Brick",
-      value: () => <BrickGameView />,
+      type: 'View',
+      label: 'Brick',
       viewId: ViewOptions.brickGame.id,
-      preview: PREVIEW.GAMES
-    }
+      component: () => <BrickGameView />,
+      preview: PREVIEW.GAMES,
+    },
   ];
 
-  const [index] = useScrollHandler(ViewOptions.games.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.games.id, options);
 
-  return <SelectableList options={options} activeIndex={index} />;
+  return <SelectableList options={options} activeIndex={scrollIndex} />;
 };
 
 export default GamesView;

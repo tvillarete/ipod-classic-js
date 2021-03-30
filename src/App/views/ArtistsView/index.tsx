@@ -1,49 +1,52 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
-import { SelectableList, SelectableListOption } from 'components';
+import { AuthPrompt, SelectableList, SelectableListOption } from 'components';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';
+import { useMusicKit } from 'hooks/useMusicKit';
 
 import ViewOptions, { ArtistView } from '../';
 
-type ArtistsQuery = {
-  artists: [
-    {
-      artist: string;
-    }
-  ];
-};
-
-const ARTISTS = gql`
-  {
-    artists {
-      artist
-    }
-  }
-`;
-
 const ArtistsView = () => {
   useMenuHideWindow(ViewOptions.artists.id);
-  const { loading, error, data } = useQuery<ArtistsQuery>(ARTISTS);
+  const { music, isAuthorized } = useMusicKit();
+  const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
 
+  const handleMount = useCallback(async () => {
+    setLoading(true);
+    const artists = await music.api.library.artists(null, {
+      include: 'catalog',
+      limit: 100,
+    });
+
+    setOptions(
+      artists.map((artist) => ({
+        type: 'View',
+        label: artist.attributes?.name ?? 'Unknown artist',
+        viewId: ViewOptions.artist.id,
+        component: () => <ArtistView id={artist.id} inLibrary={true} />,
+      }))
+    );
+
+    setLoading(false);
+  }, [music]);
+
   useEffect(() => {
-    if (data && data.artists && !error) {
-      setOptions(
-        data.artists.map(result => ({
-          label: result.artist,
-          viewId: ViewOptions.artist.id,
-          value: () => <ArtistView name={result.artist} />
-        }))
-      );
+    if (isAuthorized) {
+      handleMount();
     }
-  }, [data, error]);
+  }, [handleMount, isAuthorized]);
 
-  const [index] = useScrollHandler(ViewOptions.artists.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.artists.id, options);
 
-  return (
-    <SelectableList loading={loading} options={options} activeIndex={index} />
+  return isAuthorized ? (
+    <SelectableList
+      loading={loading}
+      options={options}
+      activeIndex={scrollIndex}
+    />
+  ) : (
+    <AuthPrompt />
   );
 };
 

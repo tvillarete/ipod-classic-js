@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import { createRef, Component } from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
 // NOTE: This is a legacy file that I pulled from an
 //       older version of this same project.
@@ -19,8 +19,8 @@ const CanvasContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${props => props.width}px;
-  height: ${props => props.height}px;
+  width: ${(props) => props.width}px;
+  height: ${(props) => props.height}px;
 `;
 
 const Canvas = styled.canvas`
@@ -36,13 +36,13 @@ const CenterButton = styled.div`
   left: 0;
   right: 0;
   margin: auto;
-  width: ${props => props.size / 2.5}px;
-  height: ${props => props.size / 2.5}px;
+  width: ${(props) => props.size / 2.5}px;
+  height: ${(props) => props.size / 2.5}px;
   border-radius: 50%;
   box-shadow: rgb(191, 191, 191) 0px 1em 3em inset;
   background: rgb(225, 225, 225);
   border: 1px solid #b9b9b9;
-  
+
   :active {
     filter: brightness(0.9);
   }
@@ -50,21 +50,22 @@ const CenterButton = styled.div`
 
 const WheelButton = styled.img`
   position: absolute;
-  margin: ${props => props.margin};
-  top: ${props => props.top};
-  bottom: ${props => props.bottom};
-  left: ${props => props.left};
-  right: ${props => props.right};
+  margin: ${(props) => props.margin};
+  top: ${(props) => props.top};
+  bottom: ${(props) => props.bottom};
+  left: ${(props) => props.left};
+  right: ${(props) => props.right};
   user-select: none;
   pointer-events: none;
   max-height: 13px;
 `;
 
-class Knob extends React.Component {
+class Knob extends Component {
   static propTypes = {
     value: PropTypes.number.isRequired,
     onChange: PropTypes.func.isRequired,
     onClick: PropTypes.func,
+    onLongPress: PropTypes.func,
     onWheelClick: PropTypes.func,
     onChangeEnd: PropTypes.func,
     min: PropTypes.number,
@@ -74,7 +75,7 @@ class Knob extends React.Component {
     width: PropTypes.number,
     height: PropTypes.number,
     thickness: PropTypes.number,
-    lineCap: PropTypes.oneOf(["butt", "round"]),
+    lineCap: PropTypes.oneOf(['butt', 'round']),
     bgColor: PropTypes.string,
     fgColor: PropTypes.string,
     inputColor: PropTypes.string,
@@ -89,13 +90,14 @@ class Knob extends React.Component {
     angleArc: PropTypes.number,
     angleOffset: PropTypes.number,
     className: PropTypes.string,
-    canvasClassName: PropTypes.string
+    canvasClassName: PropTypes.string,
   };
 
   static defaultProps = {
     onChangeEnd: () => {},
     onWheelClick: () => {},
     onClick: () => {},
+    onLongPress: () => {},
     min: 0,
     max: 100,
     step: 1,
@@ -103,12 +105,12 @@ class Knob extends React.Component {
     width: 200,
     height: 200,
     thickness: 0.35,
-    lineCap: "butt",
-    bgColor: "#EEE",
-    fgColor: "#EA2",
-    inputColor: "",
-    font: "Arial",
-    fontWeight: "bold",
+    lineCap: 'butt',
+    bgColor: '#EEE',
+    fgColor: '#EA2',
+    inputColor: '',
+    font: 'Arial',
+    fontWeight: 'bold',
     clockwise: true,
     cursor: false,
     stopper: true,
@@ -117,7 +119,7 @@ class Knob extends React.Component {
     angleArc: 360,
     angleOffset: 0,
     className: null,
-    canvasClassName: null
+    canvasClassName: null,
   };
 
   constructor(props) {
@@ -135,13 +137,25 @@ class Knob extends React.Component {
         String(Math.abs(this.props.max)).length,
         2
       ) + 2;
+    this.centerButtonRef = createRef();
   }
+
+  handleLongPress = (e) => {
+    e.preventDefault();
+    e.target.setAttribute('longpress', new Date().getTime());
+    this.props.onLongPress(e);
+    return false;
+  };
 
   componentDidMount() {
     this.drawCanvas();
-    this.canvasRef.addEventListener("touchstart", this.handleTouchStart, {
-      passive: false
+    this.canvasRef.addEventListener('touchstart', this.handleTouchStart, {
+      passive: false,
     });
+    this.centerButtonRef.current.addEventListener(
+      'long-press',
+      this.handleLongPress
+    );
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -158,10 +172,14 @@ class Knob extends React.Component {
   }
 
   componentWillUnmount() {
-    this.canvasRef.removeEventListener("touchstart", this.handleTouchStart);
+    this.canvasRef.removeEventListener('touchstart', this.handleTouchStart);
+    this.centerButtonRef.current.removeEventListener(
+      'long-press',
+      this.handleLongPress
+    );
   }
 
-  getArcToValue = v => {
+  getArcToValue = (v) => {
     let startAngle;
     let endAngle;
     const angle = !this.props.log
@@ -183,12 +201,12 @@ class Knob extends React.Component {
     return {
       startAngle,
       endAngle,
-      acw: !this.props.clockwise && !this.props.cursor
+      acw: !this.props.clockwise && !this.props.cursor,
     };
   };
 
   // Calculate ratio to scale canvas to avoid blurriness on HiDPI devices
-  getCanvasScale = ctx => {
+  getCanvasScale = (ctx) => {
     const devicePixelRatio =
       window.devicePixelRatio ||
       window.screen.deviceXDPI / window.screen.logicalXDPI || // IE10
@@ -197,7 +215,7 @@ class Knob extends React.Component {
     return devicePixelRatio / backingStoreRatio;
   };
 
-  coerceToStep = v => {
+  coerceToStep = (v) => {
     let val = !this.props.log
       ? ~~((v < 0 ? -0.5 : 0.5) + v / this.props.step) * this.props.step
       : Math.pow(
@@ -214,7 +232,7 @@ class Knob extends React.Component {
     return Math.round(val * 1000) / 1000;
   };
 
-  eventToValue = e => {
+  eventToValue = (e) => {
     const bounds = this.canvasRef.getBoundingClientRect();
     const x = e.clientX - bounds.left;
     const y = e.clientY - bounds.top;
@@ -234,21 +252,21 @@ class Knob extends React.Component {
     return this.coerceToStep(val);
   };
 
-  handleMouseDown = e => {
+  handleMouseDown = (e) => {
     this.props.onChange(this.eventToValue(e));
-    document.addEventListener("mousemove", this.handleMouseMove);
-    document.addEventListener("mouseup", this.handleMouseUpNoMove);
+    document.addEventListener('mousemove', this.handleMouseMove);
+    document.addEventListener('mouseup', this.handleMouseUpNoMove);
   };
 
-  handleTouchStart = e => {
+  handleTouchStart = (e) => {
     this.props.onChange(this.eventToValue(e));
-    document.addEventListener("touchmove", this.handleTouchMove, {
-      passive: false
+    document.addEventListener('touchmove', this.handleTouchMove, {
+      passive: false,
     });
-    document.addEventListener("touchend", this.handleTouchEndNoMove);
+    document.addEventListener('touchend', this.handleTouchEndNoMove);
   };
 
-  handleMouseMove = e => {
+  handleMouseMove = (e) => {
     e.preventDefault();
     const val = this.eventToValue(e);
 
@@ -256,11 +274,11 @@ class Knob extends React.Component {
       this.props.onChange(this.eventToValue(e));
     }
 
-    document.removeEventListener("mouseup", this.handleMouseUpNoMove);
-    document.addEventListener("mouseup", this.handleMouseUp);
+    document.removeEventListener('mouseup', this.handleMouseUpNoMove);
+    document.addEventListener('mouseup', this.handleMouseUp);
   };
 
-  handleTouchMove = e => {
+  handleTouchMove = (e) => {
     e.preventDefault();
     const touchIndex = e.targetTouches.length - 1;
     const val = this.eventToValue(e.targetTouches[touchIndex]);
@@ -269,21 +287,21 @@ class Knob extends React.Component {
       this.props.onChange(val);
     }
 
-    document.removeEventListener("touchend", this.handleTouchEndNoMove);
-    document.addEventListener("touchend", this.handleTouchEnd);
+    document.removeEventListener('touchend', this.handleTouchEndNoMove);
+    document.addEventListener('touchend', this.handleTouchEnd);
   };
 
-  handleMouseUp = e => {
+  handleMouseUp = (e) => {
     this.props.onChangeEnd(this.eventToValue(e));
-    document.removeEventListener("mousemove", this.handleMouseMove);
-    document.removeEventListener("mouseup", this.handleMouseUp);
+    document.removeEventListener('mousemove', this.handleMouseMove);
+    document.removeEventListener('mouseup', this.handleMouseUp);
   };
 
-  handleTouchEnd = e => {
+  handleTouchEnd = (e) => {
     const touchIndex = e.targetTouches.length - 1;
     this.props.onChangeEnd(e.targetTouches[touchIndex]);
-    document.removeEventListener("touchmove", this.handleTouchMove);
-    document.removeEventListener("touchend", this.handleTouchEnd);
+    document.removeEventListener('touchmove', this.handleTouchMove);
+    document.removeEventListener('touchend', this.handleTouchEnd);
   };
 
   findClickQuadrant = (rectSize, x, y) => {
@@ -299,7 +317,7 @@ class Knob extends React.Component {
     return -1;
   };
 
-  handleMouseUpNoMove = e => {
+  handleMouseUpNoMove = (e) => {
     const rect = e.target.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -309,12 +327,12 @@ class Knob extends React.Component {
       this.props.onWheelClick(quadrant);
     }
 
-    document.removeEventListener("mousemove", this.handleMouseMove);
-    document.removeEventListener("mouseup", this.handleMouseUp);
-    document.removeEventListener("mouseup", this.handleMouseUpNoMove);
+    document.removeEventListener('mousemove', this.handleMouseMove);
+    document.removeEventListener('mouseup', this.handleMouseUp);
+    document.removeEventListener('mouseup', this.handleMouseUpNoMove);
   };
 
-  handleTouchEndNoMove = e => {
+  handleTouchEndNoMove = (e) => {
     const rect = e.target.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -324,26 +342,26 @@ class Knob extends React.Component {
       this.props.onWheelClick(quadrant);
     }
 
-    document.removeEventListener("touchmove", this.handleTouchMove);
-    document.removeEventListener("touchend", this.handleTouchEnd);
-    document.removeEventListener("touchend", this.handleTouchEndNoMove);
+    document.removeEventListener('touchmove', this.handleTouchMove);
+    document.removeEventListener('touchend', this.handleTouchEnd);
+    document.removeEventListener('touchend', this.handleTouchEndNoMove);
   };
 
-  handleEsc = e => {
+  handleEsc = (e) => {
     if (e.keyCode === 27) {
       e.preventDefault();
       this.handleMouseUp();
     }
   };
 
-  handleTextInput = e => {
+  handleTextInput = (e) => {
     const val =
       Math.max(Math.min(+e.target.value, this.props.max), this.props.min) ||
       this.props.min;
     this.props.onChange(val);
   };
 
-  handleWheel = e => {
+  handleWheel = (e) => {
     e.preventDefault();
     if (e.deltaX > 0 || e.deltaY > 0) {
       this.props.onChange(
@@ -364,7 +382,7 @@ class Knob extends React.Component {
     }
   };
 
-  handleArrowKey = e => {
+  handleArrowKey = (e) => {
     if (e.keyCode === 37 || e.keyCode === 40) {
       e.preventDefault();
       this.props.onChange(
@@ -389,25 +407,25 @@ class Knob extends React.Component {
   inputStyle = () => ({
     width: `${(this.w / 2 + 4) >> 0}px`,
     height: `${(this.w / 3) >> 0}px`,
-    position: "absolute",
-    verticalAlign: "middle",
+    position: 'absolute',
+    verticalAlign: 'middle',
     marginTop: `${(this.w / 3) >> 0}px`,
     marginLeft: `-${((this.w * 3) / 4 + 2) >> 0}px`,
     border: 0,
-    outline: "none",
-    background: "none",
+    outline: 'none',
+    background: 'none',
     font: `${this.props.fontWeight} ${(this.w / this.digits) >> 0}px ${
       this.props.font
     }`,
-    textAlign: "center",
+    textAlign: 'center',
     color: this.props.inputColor || this.props.fgColor,
-    padding: "0px",
-    WebkitAppearance: "none",
-    cursor: "pointer"
+    padding: '0px',
+    WebkitAppearance: 'none',
+    cursor: 'pointer',
   });
 
   drawCanvas() {
-    const ctx = this.canvasRef.getContext("2d");
+    const ctx = this.canvasRef.getContext('2d');
     const scale = this.getCanvasScale(ctx);
     this.canvasRef.width = this.w * scale; // clears the canvas
     this.canvasRef.height = this.h * scale;
@@ -444,14 +462,18 @@ class Knob extends React.Component {
       <Container>
         <CanvasContainer width={this.w} height={this.h}>
           <Canvas
-            ref={ref => {
+            ref={(ref) => {
               this.canvasRef = ref;
             }}
             className={canvasClassName}
-            style={{ width: "100%", height: "100%" }}
+            style={{ width: '100%', height: '100%' }}
             onMouseDown={this.handleMouseDown}
           />
-          <CenterButton onClick={onClick} size={this.w} />
+          <CenterButton
+            ref={this.centerButtonRef}
+            onClick={onClick}
+            size={this.w}
+          />
           <WheelButton top="8%" margin="0 auto" src="menu.svg" />
           <WheelButton right="8%" margin="auto 0" src="fast_forward.svg" />
           <WheelButton left="8%" margin="auto 0" src="rewind.svg" />

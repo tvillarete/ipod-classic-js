@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Window from 'App/Interface/Window';
 import { Header } from 'components';
 import { AnimatePresence } from 'framer-motion';
@@ -28,7 +26,7 @@ const LeftPanel = styled.div<PanelProps>`
   transition: all 0.35s;
   overflow: hidden;
 
-  ${props =>
+  ${(props) =>
     props.isHidden &&
     css`
       transition-delay: 0.05s;
@@ -46,10 +44,10 @@ interface Props {
 const SplitScreenInterface = ({
   windowStack,
   menuHidden,
-  allHidden
+  allHidden,
 }: Props) => {
   return (
-    <Container>
+    <Container data-stack-type="splitscreen">
       <LeftPanel isHidden={menuHidden || allHidden}>
         <Header />
         <AnimatePresence>

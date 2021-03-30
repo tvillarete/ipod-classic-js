@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 import { Controls, Unit } from 'components';
-import { useAudioService } from 'services/audio';
-import { useWindowService } from 'services/window';
+import { useForceUpdate, useMKEventListener, useMusicKit } from 'hooks';
 import styled from 'styled-components';
-import { getUrlFromPath } from 'utils';
+import { getArtwork } from 'utils';
 
 const Container = styled.div`
   height: 100%;
@@ -28,7 +27,7 @@ const ArtworkContainer = styled.div<ArtworkContainerProps>`
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(70%, transparent), to(rgba(250, 250, 250, 0.1)));
   transform-style: preserve-3d;
   perspective: 500px;
-  opacity: ${props => props.isHidden && 0};
+  opacity: ${(props) => props.isHidden && 0};
 `;
 
 const Artwork = styled.img`
@@ -65,41 +64,51 @@ interface Props {
 }
 
 const NowPlaying = ({ hideArtwork, onHide }: Props) => {
-  const { hideWindow } = useWindowService();
-  const { source, songIndex, playlist } = useAudioService();
-  const [windowHidden, setWindowHidden] = useState(false);
+  const { music } = useMusicKit();
+  const { player } = music;
+  const queue = player?.queue;
+  const nowPlayingItem = queue?.items?.[player.nowPlayingItemIndex ?? 0];
+  const forceUpdate = useForceUpdate();
 
-  const handleWindowHide = useCallback(() => {
-    if (!windowHidden) {
-      onHide();
-      setWindowHidden(true);
-    }
-  }, [onHide, windowHidden]);
+  const handlePlaybackChange = useCallback(
+    ({ state }: { state: MusicKit.PlaybackStates }) => {
+      /** Hide the now playing view if the playback state is "Completed" */
+      if (state === MusicKit.PlaybackStates.completed) {
+        onHide();
+      }
 
-  useEffect(() => {
-    if (!source) {
-      handleWindowHide();
-    }
-  }, [handleWindowHide, hideWindow, source]);
+      forceUpdate();
+    },
+    [onHide, forceUpdate]
+  );
 
-  return source ? (
+  useMKEventListener('playbackStateDidChange', handlePlaybackChange);
+
+  /** Force a component re-render whenever the queue position changes. */
+  useMKEventListener('queuePositionDidChange', forceUpdate);
+
+  return (
     <Container>
       <MetadataContainer>
         <ArtworkContainer isHidden={hideArtwork}>
-          <Artwork src={getUrlFromPath(source.artwork)}></Artwork>
+          <Artwork src={getArtwork(300, nowPlayingItem?.artwork?.url)} />
         </ArtworkContainer>
         <InfoContainer>
-          <Text>{source.name}</Text>
-          <Subtext>{source.artist}</Subtext>
-          <Subtext>{source.album}</Subtext>
-          <Subtext>{`${songIndex + 1} of ${playlist.length}`}</Subtext>
+          <Text>{nowPlayingItem?.title}</Text>
+          <Subtext>{nowPlayingItem?.artistName}</Subtext>
+          <Subtext>{nowPlayingItem?.albumName}</Subtext>
+          {!!nowPlayingItem && (
+            <Subtext>{`${music.player.queue.position + 1} of ${
+              music.player.queue.length
+            }`}</Subtext>
+          )}
         </InfoContainer>
       </MetadataContainer>
       <ControlsContainer>
         <Controls />
       </ControlsContainer>
     </Container>
-  ) : null;
+  );
 };
 
 export default NowPlaying;

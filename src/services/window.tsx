@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 
 import { PREVIEW } from 'App/previews';
 import ViewOptions, * as Views from 'App/views';
@@ -11,7 +11,7 @@ export type WindowOptions<TComponent extends React.ComponentType<any> = any> = {
   /** The React component that will be rendered in the window. */
   component: TComponent;
   /** Props that will be passed to the component. */
-  props?: Omit<React.ComponentProps<TComponent>, "id">;
+  props?: Omit<React.ComponentProps<TComponent>, 'id'>;
   /** Any extra styles you want to pass to the window. */
   windowStyles?: Record<string, any>;
   /** Fire an event when the window closes. */
@@ -32,10 +32,10 @@ type WindowContextType = [
 const WindowContext = createContext<WindowContextType>([
   {
     windowStack: [],
-    headerTitle: "iPod.js",
-    preview: PREVIEW.MUSIC
+    headerTitle: 'iPod.js',
+    preview: PREVIEW.MUSIC,
   },
-  () => {}
+  () => {},
 ]);
 
 export interface WindowServiceHook {
@@ -71,10 +71,10 @@ export const useWindowService = (): WindowServiceHook => {
 
   const showWindow = useCallback(
     (window: WindowOptions) => {
-      setWindowState(prevWindowState => ({
+      setWindowState((prevWindowState) => ({
         ...prevWindowState,
         windowStack: [...prevWindowState.windowStack, window],
-        headerTitle: ViewOptions[window.id].title
+        headerTitle: ViewOptions[window.id].title,
       }));
     },
     [setWindowState]
@@ -83,7 +83,7 @@ export const useWindowService = (): WindowServiceHook => {
   const hideWindow = useCallback(
     (id?: string) => {
       if (windowState.windowStack.length === 1) return;
-      setWindowState(prevWindowState => {
+      setWindowState((prevWindowState) => {
         const newWindowStack = id
           ? prevWindowState.windowStack.filter(
               (window: WindowOptions) => window.id !== id
@@ -94,7 +94,7 @@ export const useWindowService = (): WindowServiceHook => {
           ...prevWindowState,
           windowStack: newWindowStack,
           headerTitle:
-            ViewOptions[newWindowStack[newWindowStack.length - 1].id].title
+            ViewOptions[newWindowStack[newWindowStack.length - 1].id].title,
         };
       });
     },
@@ -114,7 +114,7 @@ export const useWindowService = (): WindowServiceHook => {
     (title?: string) => {
       setWindowState({
         ...windowState,
-        headerTitle: title
+        headerTitle: title,
       });
     },
     [setWindowState, windowState]
@@ -124,7 +124,7 @@ export const useWindowService = (): WindowServiceHook => {
     (preview: PREVIEW) => {
       setWindowState({
         ...windowState,
-        preview
+        preview,
       });
     },
     [setWindowState, windowState]
@@ -138,7 +138,7 @@ export const useWindowService = (): WindowServiceHook => {
     headerTitle: windowState.headerTitle,
     preview: windowState.preview,
     setHeaderTitle,
-    setPreview
+    setPreview,
   };
 };
 
@@ -151,13 +151,13 @@ const WindowProvider = ({ children }: Props) => {
     {
       id: ViewOptions.home.id,
       type: Views.WINDOW_TYPE.SPLIT,
-      component: Views.HomeView
-    }
+      component: Views.HomeView,
+    },
   ];
   const [windowState, setWindowState] = useState<WindowState>({
     windowStack,
     headerTitle: ViewOptions.home.title,
-    preview: PREVIEW.MUSIC
+    preview: PREVIEW.MUSIC,
   });
 
   return (

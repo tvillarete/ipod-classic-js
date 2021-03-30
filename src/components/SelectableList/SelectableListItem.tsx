@@ -1,34 +1,14 @@
-import React from 'react';
-
 import { Unit } from 'components';
 import styled, { css } from 'styled-components';
 
 import { SelectableListOption } from './';
 
-interface ContainerProps {
-  isActive: boolean;
-}
-
-const Container = styled.div<ContainerProps>`
-  display: flex;
-  align-items: center;
-  overflow: auto;
-
-  ${props =>
-    props.isActive &&
-    css`
-      color: white;
-      background: linear-gradient(rgb(60, 184, 255) 0%, rgb(52, 122, 181) 100%);
-    `};
-`;
-
-const Image = styled.img`
-  height: 3rem;
-  width: 3rem;
-`;
-
-const Icon = styled.img`
-  margin-left: auto;
+const LabelContainer = styled.div`
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: ${Unit.MD};
 `;
 
 const Label = styled.h3`
@@ -40,6 +20,43 @@ const Label = styled.h3`
   text-overflow: ellipsis;
 `;
 
+const Sublabel = styled(Label)`
+  padding: 0 ${Unit.XXS} ${Unit.XXS};
+  margin-top: -4px;
+  font-weight: normal;
+  font-size: 12px;
+  color: rgb(100, 100, 100);
+`;
+
+const Container = styled.div<{ isActive?: boolean }>`
+  display: flex;
+  align-items: center;
+  overflow: auto;
+
+  ${(props) =>
+    props.isActive &&
+    css`
+      ${LabelContainer} {
+        padding-right: 0;
+      }
+
+      ${Label}, ${Sublabel} {
+        color: white;
+      }
+      background: linear-gradient(rgb(60, 184, 255) 0%, rgb(52, 122, 181) 100%);
+    `};
+`;
+
+const Image = styled.img`
+  height: 3rem;
+  width: 3rem;
+  margin-right: ${Unit.XXS};
+`;
+
+const Icon = styled.img`
+  margin-left: auto;
+`;
+
 interface Props {
   option: SelectableListOption;
   isActive: boolean;
@@ -48,8 +65,11 @@ interface Props {
 const SelectableListItem = ({ option, isActive }: Props) => {
   return (
     <Container isActive={isActive}>
-      {option.image && <Image src={option.image} />}
-      <Label>{option.label}</Label>
+      {option.imageUrl && <Image src={option.imageUrl} />}
+      <LabelContainer>
+        <Label>{option.label}</Label>
+        {option.sublabel && <Sublabel>{option.sublabel}</Sublabel>}
+      </LabelContainer>
       {isActive && <Icon src="arrow_right.svg" />}
     </Container>
   );

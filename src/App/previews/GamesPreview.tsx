@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Unit } from 'components';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';

@@ -1,24 +1,58 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { PREVIEW } from 'App/previews';
-import { LoadingIndicator } from 'components';
+import { WINDOW_TYPE } from 'App/views';
+import { LoadingScreen } from 'components';
 import { AnimatePresence } from 'framer-motion';
 import { useTimeout } from 'hooks';
-import { Song } from 'services/audio';
 import styled from 'styled-components';
 
 import SelectableListItem from './SelectableListItem';
 
-export interface SelectableListOption {
+export type SelectableListOptionType = 'View' | 'Link' | 'Song' | 'Action';
+
+type SharedOptionProps = {
+  type?: SelectableListOptionType;
   label: string;
-  value: any;
-  viewId?: string;
+  sublabel?: string;
   preview?: PREVIEW;
-  link?: string;
-  image?: string;
-  songIndex?: number;
-  playlist?: Song[];
-}
+  imageUrl?: string;
+};
+
+type ViewOptionProps = {
+  type: 'View';
+  /** A unique identifier for the next screen. */
+  viewId: string;
+  /** The component that will be displayed in the next view. */
+  component: React.ReactNode;
+  /** Whether to display the default full size view, split view, or in some cases Cover Flow View. */
+  windowType?: WINDOW_TYPE;
+};
+
+type LinkOptionProps = {
+  type: 'Link';
+  url: string;
+};
+
+type SongOptionProps = {
+  type: 'Song';
+  /** Options that will be used to fetch and play a song. */
+  queueOptions: Omit<MusicKit.SetQueueOptions, 'items'>;
+  /**
+   * Show the Now Playing view after starting the song.
+   * @default false
+   */
+  showNowPlayingView?: boolean;
+};
+
+type ActionOptionProps = {
+  type: 'Action';
+  onSelect: () => void;
+};
+
+/** Depending on the option type, certain properties will be available. */
+export type SelectableListOption = SharedOptionProps &
+  (ViewOptionProps | LinkOptionProps | SongOptionProps | ActionOptionProps);
 
 const Container = styled.div`
   width: 100%;
@@ -45,8 +79,8 @@ const SelectableList = ({ options, activeIndex, loading }: Props) => {
     // the animation wasn't finishing...
     if (isMounted && containerRef.current && options.length) {
       const { children } = containerRef.current;
-      children[activeIndex].scrollIntoView({
-        block: "nearest"
+      children[activeIndex]?.scrollIntoView({
+        block: 'nearest',
       });
     }
   }, [activeIndex, isMounted, options.length]);
@@ -54,7 +88,7 @@ const SelectableList = ({ options, activeIndex, loading }: Props) => {
   return (
     <AnimatePresence>
       {loading ? (
-        <LoadingIndicator backgroundColor="white" />
+        <LoadingScreen backgroundColor="white" />
       ) : (
         <Container ref={containerRef}>
           {options.map((option, index) => (

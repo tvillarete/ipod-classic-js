@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
-
-import { LoadingIndicator, Unit } from 'components';
-import { useInterval } from 'hooks';
-import { useAudioService } from 'services/audio';
+import { Unit } from 'components';
+import LoadingIndicator from 'components/LoadingIndicator';
+import { useForceUpdate, useInterval, useMKEventListener } from 'hooks';
+import { useMusicKit } from 'hooks/useMusicKit';
 import styled from 'styled-components';
-import { formatTime } from 'utils';
+import * as Utils from 'utils';
 
 import ProgressBar from './ProgressBar';
 
@@ -17,55 +16,48 @@ const Container = styled.div`
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(60%, transparent), to(rgba(250, 250, 250, 0.1)));
 `;
 
-const LoadingContainer = styled.div`
-  position: relative;
-  width: 24px;
-`;
-
 interface LabelProps {
-  textAlign: "left" | "right";
+  textAlign: 'left' | 'right';
 }
 
 const Label = styled.h3<LabelProps>`
   font-size: 12px;
   margin: auto 0;
   width: 30px;
-  text-align: ${props => props.textAlign};
+  text-align: ${(props) => props.textAlign};
 `;
 
 const TrackProgress = () => {
-  const [currentTime, setCurrentTime] = useState(0);
-  const [maxTime, setMaxTime] = useState(0);
-  const { playing, loading } = useAudioService();
-  const percent = Math.round((currentTime / maxTime) * 100);
+  const { music } = useMusicKit();
+  const forceUpdate = useForceUpdate();
+  const { player } = music;
+  const playbackState = music.player?.playbackState;
 
-  const refresh = useCallback(
-    (force?: boolean) => {
-      if (playing || force) {
-        const audio = document.getElementById("ipodAudio") as HTMLAudioElement;
-        setCurrentTime(audio.currentTime);
-        setMaxTime(audio.duration);
-      }
-    },
-    [playing]
-  );
+  const isLoading = playbackState === MusicKit.PlaybackStates.waiting;
 
   /** Update the progress bar every second. */
-  useInterval(refresh, 1000);
+  useInterval(() => {
+    if (player.isPlaying) {
+      forceUpdate();
+    }
+  }, 1000);
 
-  useEffect(() => refresh(true), [refresh]);
+  /** Update the progress bar whenever the playback state changes */
+  useMKEventListener('playbackStateDidChange', forceUpdate);
 
   return (
     <Container>
-      {loading ? (
-        <LoadingContainer>
-          <LoadingIndicator size={14} />
-        </LoadingContainer>
+      {isLoading ? (
+        <LoadingIndicator size={14} />
       ) : (
-        <Label textAlign="left">{formatTime(currentTime)}</Label>
+        <Label textAlign="left">
+          {Utils.formatTime(player.currentPlaybackTime)}
+        </Label>
       )}
-      <ProgressBar percent={loading ? 0 : percent} />
-      <Label textAlign="right">-{formatTime(maxTime - currentTime)}</Label>
+      <ProgressBar percent={player.currentPlaybackProgress * 100} />
+      <Label textAlign="right">
+        -{Utils.formatTime(player.currentPlaybackTimeRemaining)}
+      </Label>
     </Container>
   );
 };

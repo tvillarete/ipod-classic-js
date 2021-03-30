@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { PREVIEW, Previews } from 'App/previews';
 import { AnimatePresence } from 'framer-motion';
 import { useWindowService } from 'services/window';

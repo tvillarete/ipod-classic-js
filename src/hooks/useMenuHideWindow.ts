@@ -4,7 +4,10 @@ import { useWindowService } from 'services/window';
 
 import useEventListener from './useEventListener';
 
-/** A quick way to use the menu button as a back button. */
+/**
+ * A quick way to use the menu button as a back button.
+ * Provide an ID that matches the ID of the window you want to close.
+ */
 const useMenuHideWindow = (id: string) => {
   const { windowStack, hideWindow } = useWindowService();
 
@@ -14,7 +17,7 @@ const useMenuHideWindow = (id: string) => {
     }
   }, [hideWindow, id, windowStack]);
 
-  useEventListener("menuclick", handleClick);
+  useEventListener('menuclick', handleClick);
 };
 
 export default useMenuHideWindow;

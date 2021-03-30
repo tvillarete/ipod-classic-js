@@ -1,9 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import { WindowOptions } from "services/window";
-import { AnimatePresence } from "framer-motion";
-import Window from "App/Interface/Window";
-import { Header } from "components";
+import Window from 'App/Interface/Window';
+import { Header } from 'components';
+import { AnimatePresence } from 'framer-motion';
+import { WindowOptions } from 'services/window';
+import styled from 'styled-components';
 
 interface ContainerProps {
   isHidden: boolean;
@@ -16,7 +15,7 @@ const Container = styled.div<ContainerProps>`
   width: 100%;
   background: white;
   transition: all 0.35s;
-  transform: ${props => props.isHidden && "translateX(100%)"};
+  transform: ${(props) => props.isHidden && 'translateX(100%)'};
 `;
 
 interface Props {
@@ -27,7 +26,7 @@ const FullScreenInterface = ({ windowStack }: Props) => {
   const isHidden = windowStack.length === 0;
 
   return (
-    <Container isHidden={isHidden}>
+    <Container data-stack-type="fullscreen" isHidden={isHidden}>
       <Header />
       <AnimatePresence>
         {windowStack.map((window, index) => (

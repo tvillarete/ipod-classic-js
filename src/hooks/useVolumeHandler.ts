@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
+import useEffectOnce from './useEffectOnce';
 import useEventListener from './useEventListener';
+import { useMusicKit } from './useMusicKit';
 
 interface VolumeHandlerHook {
   volume: number;
@@ -9,15 +11,14 @@ interface VolumeHandlerHook {
 }
 
 const useVolumeHandler = (): VolumeHandlerHook => {
+  const { music } = useMusicKit();
   const [active, setActive] = useState(false);
   const [volume, setVolume] = useState(100);
   const [enabled, setIsEnabled] = useState(true);
   const timeoutIdRef = useRef<any>();
 
-  useEffect(() => {
-    const audio = document.getElementById("ipodAudio") as HTMLAudioElement;
-
-    setVolume(audio.volume * 100);
+  useEffectOnce(() => {
+    setVolume(music.player.volume * 100);
 
     /** clear the timeout to prevent memory leaks. */
     return () => {
@@ -25,7 +26,7 @@ const useVolumeHandler = (): VolumeHandlerHook => {
         clearTimeout(timeoutIdRef.current);
       }
     };
-  }, []);
+  });
 
   /** This is used to disable and reset the "active" timeout. */
   const setEnabled = useCallback((val: boolean) => {
@@ -56,30 +57,27 @@ const useVolumeHandler = (): VolumeHandlerHook => {
   const increaseVolume = useCallback(() => {
     setActiveState();
     if (volume === 100 || !enabled) return;
-    const audio = document.getElementById("ipodAudio") as HTMLAudioElement;
 
-    audio.volume = (volume + 4) / 100;
+    music.player.volume = (volume + 4) / 100;
     setVolume(volume + 4);
-  }, [volume, enabled, setActiveState]);
+  }, [setActiveState, volume, enabled, music.player]);
 
   const decreaseVolume = useCallback(() => {
     setActiveState();
     if (volume === 0 || !enabled) return;
-    const audio = document.getElementById("ipodAudio") as HTMLAudioElement;
-
-    audio.volume = (volume - 4) / 100;
+    music.player.volume = (volume - 4) / 100;
     setVolume(volume - 4);
-  }, [volume, enabled, setActiveState]);
+  }, [setActiveState, volume, enabled, music.player]);
 
-  useEventListener("forwardscroll", increaseVolume);
-  useEventListener("backwardscroll", decreaseVolume);
+  useEventListener('forwardscroll', increaseVolume);
+  useEventListener('backwardscroll', decreaseVolume);
   /** Don't mistake a scroll for a click. */
-  useEventListener("wheelclick", () => setActive(false));
+  useEventListener('wheelclick', () => setActive(false));
 
   return {
     setEnabled,
     volume,
-    active
+    active,
   };
 };
 

@@ -1,12 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Unit } from 'components';
 import { useEventListener, useVolumeHandler } from 'hooks';
 import styled from 'styled-components';
 
 import Scrubber from './Scrubber';
+// import Scrubber from './Scrubber';
 import TrackProgress from './TrackProgress';
 import VolumeBar from './VolumeBar';
+
+// import VolumeBar from './VolumeBar';
 
 const Container = styled.div`
   position: relative;
@@ -26,7 +29,7 @@ const MainContainer = styled.div<ContainerProps>`
   right: ${Unit.XS};
   transition: transform 0.3s;
 
-  transform: ${props => props.isHidden && "translateX(-110%)"};
+  transform: ${(props) => props.isHidden && 'translateX(-110%)'};
 `;
 
 const ScrubberContainer = styled.div<ContainerProps>`
@@ -37,7 +40,7 @@ const ScrubberContainer = styled.div<ContainerProps>`
   right: ${Unit.XS};
   transition: transform 0.3s;
 
-  transform: ${props => props.isHidden && "translateX(110%)"};
+  transform: ${(props) => props.isHidden && 'translateX(110%)'};
 `;
 
 const Controls = () => {
@@ -56,7 +59,7 @@ const Controls = () => {
     }
   }, [isScrubbing, setEnabled]);
 
-  useEventListener("centerclick", handleCenterClick);
+  useEventListener('centerclick', handleCenterClick);
 
   return (
     <Container>

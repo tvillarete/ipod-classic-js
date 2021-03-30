@@ -1,5 +1,3 @@
-import React from 'react';
-
 import ViewOptions from 'App/views';
 import { NowPlaying } from 'components';
 import { useMenuHideWindow } from 'hooks';

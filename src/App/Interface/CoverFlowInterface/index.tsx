@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { fade } from 'animation';
 import { Header } from 'components';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -23,7 +21,7 @@ const CoverFlowInterface = ({ window }: Props) => {
   return (
     <AnimatePresence>
       {window && (
-        <Container {...fade}>
+        <Container {...fade} data-stack-type="coverflow">
           <Header />
           <window.component />
         </Container>

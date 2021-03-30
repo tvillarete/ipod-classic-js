@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useQuery } from '@apollo/react-hooks';
 import { previewSlideRight } from 'animation';
-import { KenBurns, LoadingIndicator } from 'components';
+import { AuthPrompt, KenBurns, LoadingScreen } from 'components';
 import { motion } from 'framer-motion';
-import { ALBUMS, AlbumsQuery } from 'queries';
+import { useMusicKit } from 'hooks/useMusicKit';
 import styled from 'styled-components';
+import * as Utils from 'utils';
 
 const Container = styled(motion.div)`
   z-index: 1;
@@ -17,19 +17,34 @@ const Container = styled(motion.div)`
 `;
 
 const MusicPreview = () => {
+  const { music, isConfigured, isAuthorized } = useMusicKit();
   const [artworkUrls, setArtworkUrls] = useState<string[]>([]);
-  const { loading, error, data } = useQuery<AlbumsQuery>(ALBUMS);
+  const [loading, setLoading] = useState(false);
+
+  const handleMount = useCallback(async () => {
+    setLoading(true);
+    const albums = await music.api.library.albums(null);
+    const urls = albums.map(
+      (album) => Utils.getArtwork(300, album.attributes?.artwork?.url) ?? ''
+    );
+
+    setArtworkUrls(urls);
+
+    setLoading(false);
+  }, [music]);
 
   useEffect(() => {
-    if (data && data.albums && !error) {
-      setArtworkUrls(data.albums.map(result => result.artwork));
+    if (isConfigured && isAuthorized) {
+      handleMount();
     }
-  }, [data, error]);
+  }, [handleMount, isAuthorized, isConfigured]);
 
   return (
     <Container {...previewSlideRight}>
       {loading ? (
-        <LoadingIndicator backgroundColor="linear-gradient(180deg, #B1B5C0 0%, #686E7A 100%)" />
+        <LoadingScreen backgroundColor="linear-gradient(180deg, #B1B5C0 0%, #686E7A 100%)" />
+      ) : !isAuthorized ? (
+        <AuthPrompt message="Sign in to view your library" />
       ) : (
         <KenBurns urls={artworkUrls} />
       )}

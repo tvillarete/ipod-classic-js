@@ -1,7 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useEventListener } from 'hooks';
-import { useAudioService } from 'services/audio';
 
 import Knob from './Knob';
 
@@ -9,7 +8,7 @@ enum WHEEL_QUADRANT {
   TOP = 1,
   BOTTOM = 2,
   LEFT = 3,
-  RIGHT = 4
+  RIGHT = 4,
 }
 
 enum KEY_CODE {
@@ -19,24 +18,31 @@ enum KEY_CODE {
   ARROW_RIGHT = 39,
   ESC = 27,
   ENTER = 13,
-  SPACE = 32
+  SPACE = 32,
 }
 
-const centerClickEvent = new Event("centerclick");
-const forwardScrollEvent = new Event("forwardscroll");
-const backwardScrollEvent = new Event("backwardscroll");
-const wheelClickEvent = new Event("wheelclick");
-const menuClickEvent = new Event("menuclick");
-const backClickEvent = new Event("backclick");
+const centerClickEvent = new Event('centerclick');
+const centerLongClickEvent = new Event('centerlongclick');
+const forwardScrollEvent = new Event('forwardscroll');
+const backwardScrollEvent = new Event('backwardscroll');
+const wheelClickEvent = new Event('wheelclick');
+const menuClickEvent = new Event('menuclick');
+const backClickEvent = new Event('backclick');
+const forwardClickEvent = new Event('forwardclick');
+const playPauseClickEvent = new Event('playpauseclick');
 
 const ScrollWheel = () => {
   const [count, setCount] = useState(0);
-  const { togglePause, nextSong } = useAudioService();
 
   const handleCenterClick = useCallback(
     () => window.dispatchEvent(centerClickEvent),
     []
   );
+
+  const handleCenterLongPress = useCallback((e: any) => {
+    e.preventDefault();
+    window.dispatchEvent(centerLongClickEvent);
+  }, []);
 
   const handleClockwiseScroll = useCallback(
     () => window.dispatchEvent(forwardScrollEvent),
@@ -47,27 +53,24 @@ const ScrollWheel = () => {
     window.dispatchEvent(backwardScrollEvent);
   }, []);
 
-  const handleWheelClick = useCallback(
-    (quadrant: number) => {
-      window.dispatchEvent(wheelClickEvent);
+  const handleWheelClick = useCallback((quadrant: number) => {
+    window.dispatchEvent(wheelClickEvent);
 
-      switch (quadrant) {
-        case WHEEL_QUADRANT.TOP:
-          window.dispatchEvent(menuClickEvent);
-          break;
-        case WHEEL_QUADRANT.BOTTOM:
-          togglePause();
-          break;
-        case WHEEL_QUADRANT.LEFT:
-          window.dispatchEvent(backClickEvent);
-          break;
-        case WHEEL_QUADRANT.RIGHT:
-          nextSong();
-          break;
-      }
-    },
-    [nextSong, togglePause]
-  );
+    switch (quadrant) {
+      case WHEEL_QUADRANT.TOP:
+        window.dispatchEvent(menuClickEvent);
+        break;
+      case WHEEL_QUADRANT.BOTTOM:
+        window.dispatchEvent(playPauseClickEvent);
+        break;
+      case WHEEL_QUADRANT.LEFT:
+        window.dispatchEvent(backClickEvent);
+        break;
+      case WHEEL_QUADRANT.RIGHT:
+        window.dispatchEvent(forwardClickEvent);
+        break;
+    }
+  }, []);
 
   /** Allows for keyboard navigation. */
   const handleKeyPress = useCallback(
@@ -85,7 +88,7 @@ const ScrollWheel = () => {
           handleCenterClick();
           break;
         case KEY_CODE.SPACE:
-          togglePause();
+          handleWheelClick(WHEEL_QUADRANT.BOTTOM);
           break;
         case KEY_CODE.ESC:
           handleWheelClick(WHEEL_QUADRANT.TOP);
@@ -96,8 +99,7 @@ const ScrollWheel = () => {
       handleCounterClockwiseScroll,
       handleClockwiseScroll,
       handleCenterClick,
-      togglePause,
-      handleWheelClick
+      handleWheelClick,
     ]
   );
 
@@ -118,7 +120,7 @@ const ScrollWheel = () => {
     [count, handleClockwiseScroll, handleCounterClockwiseScroll]
   );
 
-  useEventListener("keydown", handleKeyPress);
+  useEventListener('keydown', handleKeyPress);
 
   return (
     <Knob
@@ -129,9 +131,10 @@ const ScrollWheel = () => {
       height={220}
       step={5}
       fgColor="transparent"
-      bgColor={"white"}
+      bgColor={'white'}
       thickness={0.6}
       onClick={handleCenterClick}
+      onLongPress={handleCenterLongPress}
       onWheelClick={handleWheelClick}
       onChange={handleScroll}
     />
