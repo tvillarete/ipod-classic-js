@@ -10,6 +10,13 @@ import React, {
 
 import { useEventListener, useMKEventListener } from 'hooks';
 
+/**
+ * This will be used to connect to the Apple Music API.
+ * @see https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const DEVELOPER_TOKEN: string | undefined = undefined;
+
 export interface MusicKitState {
   musicKit: typeof MusicKit;
   isConfigured: boolean;
@@ -48,18 +55,19 @@ interface Props {
   children: React.ReactNode;
 }
 
-const developerToken =
-  'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJHWFFEWThYM0MifQ.eyJpYXQiOjE2MTY4ODQ1MDksImV4cCI6MTYzMjQzNjUwOSwiaXNzIjoiRzZIM0NLV005QyJ9.z7NS-8962oumCEaYOUMJfzonO2Y2tAWb_vAF_wwOkDqU8BoWTo6xDg5uG8ZvFeFpMqRoMbBaB_Mr4sxpvJzjPg';
-
 export const MusicKitProvider = ({ children }: Props) => {
   const musicKit = window.MusicKit;
   const [isConfigured, setIsConfigured] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
+  console.log({ token: process.env.DEVELOPER_TOKEN });
 
   useEffect(() => {
     console.log({ musicKit });
     musicKit.configure({
-      developerToken,
+      developerToken:
+        DEVELOPER_TOKEN ??
+        new URLSearchParams(window.location.search).get('token') ??
+        undefined,
       app: {
         name: 'My Cool Web App',
         build: '1978.4.1',
