@@ -82,7 +82,7 @@ interface Props {
 }
 
 const Popup = ({ windowStack, index, isHidden }: Props) => {
-  useMenuHideWindow(ViewOptions.songPopup.id);
+  useMenuHideWindow(ViewOptions.mediaPopup.id);
   const { hideWindow } = useWindowService();
   const windowOptions = windowStack[index];
 
@@ -99,7 +99,7 @@ const Popup = ({ windowStack, index, isHidden }: Props) => {
     hideWindow();
   });
 
-  const [scrollIndex] = useScrollHandler(ViewOptions.songPopup.id, options);
+  const [scrollIndex] = useScrollHandler(ViewOptions.mediaPopup.id, options);
 
   return (
     <RootContainer

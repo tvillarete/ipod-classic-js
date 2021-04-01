@@ -56,9 +56,9 @@ export const ViewOptions: Record<string, ViewOption> = {
   },
 
   // Popups
-  songPopup: {
-    id: 'songPopup',
-    title: 'Song options',
+  mediaPopup: {
+    id: 'mediaPopup',
+    title: 'Media Options',
     type: WINDOW_TYPE.POPUP,
   },
 };
