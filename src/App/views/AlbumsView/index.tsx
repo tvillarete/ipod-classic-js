@@ -26,7 +26,7 @@ const AlbumsView = () => {
         label: album.attributes?.name ?? 'Unknown name',
         imageUrl: Utils.getArtwork(50, album.attributes?.artwork?.url),
         viewId: ViewOptions.album.id,
-        component: () => <AlbumView id={album.id ?? ''} />,
+        component: () => <AlbumView id={album.id ?? ''} inLibrary />,
       }))
     );
 
