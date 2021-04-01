@@ -114,10 +114,18 @@ const useScrollHandler = (
 
   const handleCenterLongClick = useCallback(async () => {
     const option = options[index];
+
     if (!isActive || !option) return;
 
-    console.log('long press', { option });
-  }, [index, isActive, options]);
+    if (option.longPressOptions) {
+      showWindow({
+        type: WINDOW_TYPE.POPUP,
+        id: ViewOptions.songPopup.id,
+        component: () => {},
+        listOptions: option.longPressOptions,
+      });
+    }
+  }, [index, isActive, options, showWindow]);
 
   /** If the list length changes and the index is larger, reset the index to 0. */
   useEffect(() => {

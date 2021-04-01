@@ -36,11 +36,12 @@ const PlaylistView = ({ id, inLibrary = false }: Props) => {
           startPosition: index - 1,
         },
         showNowPlayingView: true,
+        longPressOptions: Utils.getMediaOptions('song', song.id),
       }))
     );
 
     setLoading(false);
-  }, [id, inLibrary, music.api]);
+  }, [id, inLibrary, music]);
 
   useEffect(() => {
     handleMount();

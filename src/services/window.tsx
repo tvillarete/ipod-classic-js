@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useState } from 'react';
 
 import { PREVIEW } from 'App/previews';
 import ViewOptions, * as Views from 'App/views';
+import { SelectableListOption } from 'components';
 
 export type WindowOptions<TComponent extends React.ComponentType<any> = any> = {
   /** A unique ID for each window. */
@@ -16,6 +17,8 @@ export type WindowOptions<TComponent extends React.ComponentType<any> = any> = {
   windowStyles?: Record<string, any>;
   /** Fire an event when the window closes. */
   onClose?: (...args: any[]) => void;
+
+  listOptions?: SelectableListOption[];
 };
 
 interface WindowState {

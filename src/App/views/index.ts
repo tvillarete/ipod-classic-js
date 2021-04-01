@@ -17,6 +17,7 @@ export enum WINDOW_TYPE {
   SPLIT = 'SPLIT',
   FULL = 'FULL',
   COVER_FLOW = 'COVER_FLOW',
+  POPUP = 'POPUP',
 }
 
 type ViewOption = {
@@ -52,6 +53,13 @@ export const ViewOptions: Record<string, ViewOption> = {
     id: 'coverFlow',
     title: 'Cover Flow',
     type: WINDOW_TYPE.COVER_FLOW,
+  },
+
+  // Popups
+  songPopup: {
+    id: 'songPopup',
+    title: 'Song options',
+    type: WINDOW_TYPE.POPUP,
   },
 };
 

@@ -4,6 +4,7 @@ import ViewOptions from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';
 import { useMusicKit } from 'hooks/useMusicKit';
+import * as Utils from 'utils';
 
 interface Props {
   id: string;
@@ -24,8 +25,6 @@ const AlbumView = ({ id, inLibrary = false }: Props) => {
       : await music.api.album(id);
     const songs = album.relationships?.tracks.data ?? [];
 
-    console.log({ album });
-
     setOptions(
       songs.map((song, index) => ({
         type: 'Song',
@@ -35,6 +34,7 @@ const AlbumView = ({ id, inLibrary = false }: Props) => {
           startPosition: index - 1,
         },
         showNowPlayingView: true,
+        longPressOptions: Utils.getMediaOptions('song', song.id),
       }))
     );
 

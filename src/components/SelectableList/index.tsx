@@ -17,6 +17,7 @@ type SharedOptionProps = {
   sublabel?: string;
   preview?: PREVIEW;
   imageUrl?: string;
+  longPressOptions?: SelectableListOption[];
 };
 
 type ViewOptionProps = {

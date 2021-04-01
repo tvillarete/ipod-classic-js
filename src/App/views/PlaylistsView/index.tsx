@@ -27,6 +27,7 @@ const PlaylistsView = () => {
         imageUrl: Utils.getArtwork(100, playlist.attributes?.artwork?.url),
         viewId: ViewOptions.playlist.id,
         component: () => <PlaylistView id={playlist.id} inLibrary />,
+        longPressOptions: Utils.getMediaOptions('playlist', playlist.id),
       }))
     );
 

@@ -34,6 +34,7 @@ const ArtistView = ({ id, inLibrary = false }: Props) => {
         component: () => (
           <AlbumView id={album.id ?? ''} inLibrary={inLibrary} />
         ),
+        longPressOptions: Utils.getMediaOptions('album', album.id),
       })
     );
 

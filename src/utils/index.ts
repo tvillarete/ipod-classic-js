@@ -1,3 +1,5 @@
+import { SelectableListOption } from 'components';
+
 export const getUrlFromPath = (path: string) =>
   `https://tannerv.ddns.net/SpotiFree/${encodeURI(path)}`;
 
@@ -32,4 +34,31 @@ export const setDocumentSongTitle = (song?: AppleMusicApi.Song) => {
   document.title = song
     ? `${song.attributes?.name ?? 'Music'} – iPod.js`
     : 'iPod.js';
+};
+
+/** Returns a list of playback options to display in a popup for an album, song, or playlist. */
+export const getMediaOptions = (
+  type: 'album' | 'song' | 'playlist',
+  id: string
+): SelectableListOption[] => {
+  const music = window.MusicKit.getInstance();
+
+  return [
+    {
+      type: 'Action',
+      label: 'Play Next',
+      onSelect: () =>
+        music.playNext({
+          [type]: id,
+        }),
+    },
+    {
+      type: 'Action',
+      label: 'Play Later',
+      onSelect: () =>
+        music.playLater({
+          [type]: id,
+        }),
+    },
+  ];
 };
