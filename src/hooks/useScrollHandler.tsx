@@ -119,7 +119,7 @@ const useScrollHandler = (
 
     if (option.longPressOptions) {
       showWindow({
-        type: WINDOW_TYPE.POPUP,
+        type: WINDOW_TYPE.ACTION_SHEET,
         id: ViewOptions.mediaPopup.id,
         component: () => {},
         listOptions: option.longPressOptions,

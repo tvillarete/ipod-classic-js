@@ -4,9 +4,9 @@ import { useMusicKit } from 'hooks/useMusicKit';
 import { useWindowService } from 'services/window';
 import styled from 'styled-components';
 
+import ActionSheetInterface from './ActionSheetInterface';
 import CoverFlowInterface from './CoverFlowInterface';
 import FullScreenInterface from './FullScreenInterface';
-import PopupInterface from './PopupInterface';
 import SplitScreenInterface from './SplitScreenInterface';
 
 const Container = styled.div`
@@ -55,7 +55,7 @@ const Interface = () => {
     (window) => window.type === WINDOW_TYPE.COVER_FLOW
   );
   const popupWindows = windowStack.filter(
-    (window) => window.type === WINDOW_TYPE.POPUP
+    (window) => window.type === WINDOW_TYPE.ACTION_SHEET
   );
 
   const isReady = isConfigured && hasDevToken;
@@ -71,7 +71,7 @@ const Interface = () => {
             allHidden={!!coverFlowWindow}
           />
           <FullScreenInterface windowStack={fullViewWindows} />
-          <PopupInterface windowStack={popupWindows} />
+          <ActionSheetInterface windowStack={popupWindows} />
         </>
       ) : (
         <ErrorScreen message={'Missing developer token'} />

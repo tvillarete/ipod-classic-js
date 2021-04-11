@@ -19,11 +19,11 @@ interface Props {
   windowStack: WindowOptions[];
 }
 
-const PopupInterface = ({ windowStack }: Props) => {
+const ActionSheetInterface = ({ windowStack }: Props) => {
   const isHidden = windowStack.length === 0;
 
   return (
-    <RootContainer data-stack-type="popup" isHidden={isHidden}>
+    <RootContainer data-stack-type="action-sheet" isHidden={isHidden}>
       <AnimatePresence>
         {windowStack.map((window, index) => (
           <Popup
@@ -38,4 +38,4 @@ const PopupInterface = ({ windowStack }: Props) => {
   );
 };
 
-export default PopupInterface;
+export default ActionSheetInterface;
