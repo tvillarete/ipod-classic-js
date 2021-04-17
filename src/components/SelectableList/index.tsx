@@ -9,7 +9,13 @@ import styled from 'styled-components';
 
 import SelectableListItem from './SelectableListItem';
 
-export type SelectableListOptionType = 'View' | 'Link' | 'Song' | 'Action';
+export type SelectableListOptionType =
+  | 'View'
+  | 'Link'
+  | 'Song'
+  | 'Action'
+  | 'ActionSheet'
+  | 'Popup';
 
 type SharedOptionProps = {
   type?: SelectableListOptionType;
@@ -27,7 +33,7 @@ type ViewOptionProps = {
   /** The component that will be displayed in the next view. */
   component: React.ReactNode;
   /** Whether to display the default full size view, split view, or in some cases Cover Flow View. */
-  windowType?: WINDOW_TYPE;
+  windowType?: WINDOW_TYPE.SPLIT | WINDOW_TYPE.FULL | WINDOW_TYPE.COVER_FLOW;
 };
 
 type LinkOptionProps = {
@@ -51,9 +57,32 @@ type ActionOptionProps = {
   onSelect: () => void;
 };
 
+export type PopupOptionProps = {
+  type: 'Popup';
+  /** A unique identifier for the popup. */
+  popupId: string;
+  listOptions: SelectableListOption[];
+  title: string;
+  description?: string;
+};
+
+export type ActionSheetOptionProps = {
+  type: 'ActionSheet';
+  /** A unique identifier for the action sheet. */
+  id: string;
+  listOptions: SelectableListOption[];
+};
+
 /** Depending on the option type, certain properties will be available. */
 export type SelectableListOption = SharedOptionProps &
-  (ViewOptionProps | LinkOptionProps | SongOptionProps | ActionOptionProps);
+  (
+    | ViewOptionProps
+    | LinkOptionProps
+    | SongOptionProps
+    | ActionOptionProps
+    | ActionSheetOptionProps
+    | PopupOptionProps
+  );
 
 const Container = styled.div`
   width: 100%;

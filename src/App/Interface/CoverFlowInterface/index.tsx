@@ -1,4 +1,5 @@
 import { fade } from 'animation';
+import { WINDOW_TYPE } from 'App/views';
 import { Header } from 'components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { WindowOptions } from 'services/window';
@@ -18,12 +19,15 @@ interface Props {
 }
 
 const CoverFlowInterface = ({ window }: Props) => {
+  const WindowComponent =
+    window?.type === WINDOW_TYPE.COVER_FLOW ? window.component : null;
+
   return (
     <AnimatePresence>
-      {window && (
+      {!!WindowComponent && (
         <Container {...fade} data-stack-type="coverflow">
           <Header />
-          <window.component />
+          <WindowComponent />
         </Container>
       )}
     </AnimatePresence>

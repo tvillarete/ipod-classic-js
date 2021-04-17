@@ -4,6 +4,7 @@ import { useMusicKit } from 'hooks/useMusicKit';
 import { useWindowService } from 'services/window';
 import styled from 'styled-components';
 
+import ActionSheetInterface from './ActionSheetInterface';
 import CoverFlowInterface from './CoverFlowInterface';
 import FullScreenInterface from './FullScreenInterface';
 import PopupInterface from './PopupInterface';
@@ -54,6 +55,9 @@ const Interface = () => {
   const coverFlowWindow = windowStack.find(
     (window) => window.type === WINDOW_TYPE.COVER_FLOW
   );
+  const actionSheetWindows = windowStack.filter(
+    (window) => window.type === WINDOW_TYPE.ACTION_SHEET
+  );
   const popupWindows = windowStack.filter(
     (window) => window.type === WINDOW_TYPE.POPUP
   );
@@ -71,6 +75,7 @@ const Interface = () => {
             allHidden={!!coverFlowWindow}
           />
           <FullScreenInterface windowStack={fullViewWindows} />
+          <ActionSheetInterface windowStack={actionSheetWindows} />
           <PopupInterface windowStack={popupWindows} />
         </>
       ) : (

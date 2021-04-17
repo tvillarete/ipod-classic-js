@@ -49,6 +49,25 @@ export const slideUpAnimation = {
   exit: 'closing',
 };
 
+export const popInAnimation = {
+  variants: {
+    closed: { scale: 0.6, opacity: 0 },
+    open: {
+      scale: 1,
+      opacity: 1,
+      transition: { duration: 0.3, type: 'spring' },
+    },
+    closing: {
+      scale: 0.6,
+      opacity: 0,
+      transition: { duration: 0.3, type: 'spring' },
+    },
+  },
+  initial: 'closed',
+  animate: 'open',
+  exit: 'closing',
+};
+
 export const fade = {
   variants: {
     closed: { opacity: 0 },
