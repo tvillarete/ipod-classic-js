@@ -58,9 +58,16 @@ const HomeView = () => {
 
     if (!music.isAuthorized) {
       arr.push({
-        type: 'Action',
+        type: 'ActionSheet',
+        id: ViewOptions.signinPopup.id,
         label: 'Sign in',
-        onSelect: handleLogIn,
+        listOptions: [
+          {
+            type: 'Action',
+            label: 'Apple Music',
+            onSelect: handleLogIn,
+          },
+        ],
         preview: PREVIEW.MUSIC,
       });
     }
@@ -76,7 +83,11 @@ const HomeView = () => {
     }
 
     return arr;
-  }, [handleLogIn, music.isAuthorized, music.player?.nowPlayingItem]);
+  }, [
+    handleLogIn,
+    music.isAuthorized,
+    music.player?.nowPlayingItem?.isPlayable,
+  ]);
 
   const [scrollIndex] = useScrollHandler(ViewOptions.home.id, options);
 

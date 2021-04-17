@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import ViewOptions, { NowPlayingView, WINDOW_TYPE } from 'App/views';
-import { SelectableListOption } from 'components';
+import {
+  ActionSheetOptionProps,
+  PopupOptionProps,
+  SelectableListOption,
+} from 'components';
 import { useWindowService } from 'services/window';
 
 import useEffectOnce from './useEffectOnce';
@@ -73,11 +77,39 @@ const useScrollHandler = (
   );
 
   const handleShowView = useCallback(
-    (id: string, component: React.ReactNode, windowType?: WINDOW_TYPE) => {
+    (
+      id: string,
+      component: React.ReactNode,
+      windowType?: WINDOW_TYPE.FULL | WINDOW_TYPE.SPLIT | WINDOW_TYPE.COVER_FLOW
+    ) => {
       showWindow({
         id,
-        type: windowType ?? ViewOptions[id]?.type ?? WINDOW_TYPE.FULL,
+        type: windowType ?? (ViewOptions[id]?.type as any) ?? WINDOW_TYPE.FULL,
         component,
+      });
+    },
+    [showWindow]
+  );
+
+  const handleShowPopup = useCallback(
+    (options: PopupOptionProps) => {
+      showWindow({
+        type: WINDOW_TYPE.POPUP,
+        id: options.popupId,
+        title: options.title,
+        description: options.description,
+        listOptions: options.listOptions,
+      });
+    },
+    [showWindow]
+  );
+
+  const handleShowActionSheet = useCallback(
+    (options: ActionSheetOptionProps) => {
+      showWindow({
+        type: WINDOW_TYPE.ACTION_SHEET,
+        id: options.id,
+        listOptions: options.listOptions,
       });
     },
     [showWindow]
@@ -109,8 +141,22 @@ const useScrollHandler = (
       case 'Action':
         option.onSelect();
         break;
+      case 'Popup':
+        handleShowPopup(option);
+        break;
+      case 'ActionSheet':
+        handleShowActionSheet(option);
+        break;
     }
-  }, [handlePlaySong, handleShowView, index, isActive, options]);
+  }, [
+    handlePlaySong,
+    handleShowActionSheet,
+    handleShowPopup,
+    handleShowView,
+    index,
+    isActive,
+    options,
+  ]);
 
   const handleCenterLongClick = useCallback(async () => {
     const option = options[index];
@@ -120,8 +166,7 @@ const useScrollHandler = (
     if (option.longPressOptions) {
       showWindow({
         type: WINDOW_TYPE.ACTION_SHEET,
-        id: ViewOptions.mediaPopup.id,
-        component: () => {},
+        id: ViewOptions.mediaActionSheet.id,
         listOptions: option.longPressOptions,
       });
     }

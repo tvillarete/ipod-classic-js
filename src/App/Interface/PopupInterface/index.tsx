@@ -2,7 +2,7 @@ import { AnimatePresence } from 'framer-motion';
 import { WindowOptions } from 'services/window';
 import styled from 'styled-components';
 
-import ActionSheet from '../ActionSheet';
+import Popup from '../Popup';
 
 interface ContainerProps {
   isHidden: boolean;
@@ -19,14 +19,14 @@ interface Props {
   windowStack: WindowOptions[];
 }
 
-const ActionSheetInterface = ({ windowStack }: Props) => {
+const PopupInterface = ({ windowStack }: Props) => {
   const isHidden = windowStack.length === 0;
 
   return (
-    <RootContainer data-stack-type="action-sheet" isHidden={isHidden}>
+    <RootContainer data-stack-type="popup" isHidden={isHidden}>
       <AnimatePresence>
         {windowStack.map((window, index) => (
-          <ActionSheet
+          <Popup
             key={`window-${window.id}`}
             windowStack={windowStack}
             index={index}
@@ -38,4 +38,4 @@ const ActionSheetInterface = ({ windowStack }: Props) => {
   );
 };
 
-export default ActionSheetInterface;
+export default PopupInterface;

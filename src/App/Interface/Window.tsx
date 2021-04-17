@@ -1,4 +1,7 @@
+import { useMemo } from 'react';
+
 import { noAnimation, slideRightAnimation } from 'animation';
+import { WINDOW_TYPE } from 'App/views';
 import { motion } from 'framer-motion';
 import { useWindowService, WindowOptions } from 'services/window';
 import styled from 'styled-components';
@@ -42,6 +45,17 @@ const Window = ({ windowStack, index, isHidden }: Props) => {
   const options = windowStack[index];
   const firstInStack = index === 0;
 
+  const WindowComponent = useMemo(() => {
+    switch (options.type) {
+      case WINDOW_TYPE.FULL:
+      case WINDOW_TYPE.SPLIT:
+      case WINDOW_TYPE.COVER_FLOW:
+        return options.component;
+      default:
+        return null;
+    }
+  }, [options]);
+
   return (
     <Container
       data-window-id={options.id}
@@ -50,7 +64,7 @@ const Window = ({ windowStack, index, isHidden }: Props) => {
       {...(firstInStack ? noAnimation : slideRightAnimation)}
     >
       <ContentTransitionContainer isHidden={isHidden}>
-        <options.component />
+        <WindowComponent />
       </ContentTransitionContainer>
     </Container>
   );

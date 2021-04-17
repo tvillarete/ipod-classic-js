@@ -18,6 +18,7 @@ export enum WINDOW_TYPE {
   FULL = 'FULL',
   COVER_FLOW = 'COVER_FLOW',
   ACTION_SHEET = 'ACTION_SHEET',
+  POPUP = 'POPUP',
 }
 
 type ViewOption = {
@@ -56,9 +57,16 @@ export const ViewOptions: Record<string, ViewOption> = {
   },
 
   // Action sheets
-  actionSheet: {
-    id: 'actionSheet',
+  mediaActionSheet: {
+    id: 'mediaActionSheet',
     title: 'Media Options',
+    type: WINDOW_TYPE.ACTION_SHEET,
+  },
+
+  // Popups
+  signinPopup: {
+    id: 'signinPopup',
+    title: 'Sign in',
     type: WINDOW_TYPE.ACTION_SHEET,
   },
 };
