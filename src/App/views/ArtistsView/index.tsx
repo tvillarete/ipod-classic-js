@@ -3,12 +3,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { AuthPrompt, SelectableList, SelectableListOption } from 'components';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';
 import { useMusicKit } from 'hooks/useMusicKit';
+import { useSettings } from 'hooks/useSettings';
 
 import ViewOptions, { ArtistView } from '../';
 
 const ArtistsView = () => {
   useMenuHideWindow(ViewOptions.artists.id);
-  const { music, isAuthorized } = useMusicKit();
+  const { isAppleAuthorized: isAuthorized } = useSettings();
+  const { music } = useMusicKit();
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState<SelectableListOption[]>([]);
 
@@ -46,7 +48,7 @@ const ArtistsView = () => {
       activeIndex={scrollIndex}
     />
   ) : (
-    <AuthPrompt />
+    <AuthPrompt message="Sign in to view your artists" />
   );
 };
 
