@@ -8,8 +8,18 @@ import ViewOptions, {
   NowPlayingView,
   SettingsView,
 } from 'App/views';
-import { SelectableList, SelectableListOption } from 'components';
-import { useForceUpdate, useMKEventListener, useScrollHandler } from 'hooks';
+import {
+  getConditionalOption,
+  SelectableList,
+  SelectableListOption,
+} from 'components';
+import {
+  useForceUpdate,
+  useMKEventListener,
+  useScrollHandler,
+  useSettings,
+  useSpotifySDK,
+} from 'hooks';
 import { useMusicKit } from 'hooks/useMusicKit';
 
 const strings = {
@@ -17,15 +27,17 @@ const strings = {
 };
 
 const HomeView = () => {
+  const { isAuthorized } = useSettings();
   const { music } = useMusicKit();
+  const { signIn: signInWithSpotify } = useSpotifySDK();
   const forceUpdate = useForceUpdate();
 
-  const handleLogIn = useCallback(() => {
+  const handleAppleLogIn = useCallback(() => {
     music.authorize();
   }, [music]);
 
-  const options = useMemo(() => {
-    const arr: SelectableListOption[] = [
+  const options: SelectableListOption[] = useMemo(
+    () => [
       {
         type: 'View',
         label: 'Cover Flow',
@@ -54,10 +66,7 @@ const HomeView = () => {
         component: () => <SettingsView />,
         preview: PREVIEW.SETTINGS,
       },
-    ];
-
-    if (!music.isAuthorized) {
-      arr.push({
+      ...getConditionalOption(!isAuthorized, {
         type: 'ActionSheet',
         id: ViewOptions.signinPopup.id,
         label: 'Sign in',
@@ -65,29 +74,27 @@ const HomeView = () => {
           {
             type: 'Action',
             label: 'Apple Music',
-            onSelect: handleLogIn,
+            onSelect: handleAppleLogIn,
+          },
+          {
+            type: 'Action',
+            label: 'Spotify',
+            onSelect: signInWithSpotify,
           },
         ],
         preview: PREVIEW.MUSIC,
-      });
-    }
-
-    if (music.isAuthorized && music.player?.nowPlayingItem?.isPlayable) {
-      arr.push({
+      }),
+      // TODO: Set up now playing button
+      ...getConditionalOption(false, {
         type: 'View',
         label: strings.nowPlaying,
         viewId: ViewOptions.nowPlaying.id,
         component: () => <NowPlayingView />,
         preview: PREVIEW.NOW_PLAYING,
-      });
-    }
-
-    return arr;
-  }, [
-    handleLogIn,
-    music.isAuthorized,
-    music.player?.nowPlayingItem?.isPlayable,
-  ]);
+      }),
+    ],
+    [handleAppleLogIn, isAuthorized, signInWithSpotify]
+  );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.home.id, options);
 
