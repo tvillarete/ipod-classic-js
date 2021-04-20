@@ -62,3 +62,5 @@ export const getMediaOptions = (
     },
   ];
 };
+
+export const isDev = () => window.location.origin.includes('localhost:3000');

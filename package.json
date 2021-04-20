@@ -14,6 +14,7 @@
     "@types/node": "12.19.6",
     "@types/react": "17.0.1",
     "@types/react-dom": "^16.9.10",
+    "@types/spotify-web-playback-sdk": "^0.1.8",
     "@types/styled-components": "^5.1.9",
     "framer-motion": "^4.0.3",
     "long-press-event": "^2.4.2",
@@ -46,6 +47,7 @@
     ]
   },
   "devDependencies": {
-    "@types/apple-music-api": "^0.4.0"
+    "@types/apple-music-api": "^0.4.0",
+    "@types/spotify-api": "^0.0.8"
   }
 }
