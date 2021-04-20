@@ -1,49 +1,47 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
-import { SelectableList, SelectableListOption } from 'components';
-import { useMenuHideWindow, useScrollHandler } from 'hooks';
-import { useMusicKit } from 'hooks/useMusicKit';
+import { AuthPrompt, SelectableList, SelectableListOption } from 'components';
+import {
+  useDataFetcher,
+  useMenuHideWindow,
+  useScrollHandler,
+  useSettings,
+} from 'hooks';
 import * as Utils from 'utils';
 
 import ViewOptions, { PlaylistView } from '../';
 
 const PlaylistsView = () => {
   useMenuHideWindow(ViewOptions.playlists.id);
-  const [options, setOptions] = useState<SelectableListOption[]>([]);
-  const [scrollIndex] = useScrollHandler(ViewOptions.playlists.id, options);
-  const { music } = useMusicKit();
-  const [loading, setLoading] = useState(true);
+  const { isAuthorized } = useSettings();
+  const { data, isLoading } = useDataFetcher<IpodApi.Playlist[]>({
+    name: 'playlists',
+  });
 
-  const handleMount = useCallback(async () => {
-    const playlists = await music.api.library.playlists(null, {
-      limit: 100,
-    });
-
-    setOptions(
-      playlists.map((playlist) => ({
+  const options: SelectableListOption[] = useMemo(
+    () =>
+      data?.map((playlist) => ({
         type: 'View',
-        label: playlist.attributes?.name ?? 'Unknown playlist',
-        sublabel: playlist.attributes?.description?.standard,
-        imageUrl: Utils.getArtwork(100, playlist.attributes?.artwork?.url),
+        label: playlist.name,
+        sublabel: playlist.description,
+        imageUrl: playlist.artwork?.url,
         viewId: ViewOptions.playlist.id,
         component: () => <PlaylistView id={playlist.id} inLibrary />,
         longPressOptions: Utils.getMediaOptions('playlist', playlist.id),
-      }))
-    );
+      })) ?? [],
+    [data]
+  );
 
-    setLoading(false);
-  }, [music]);
+  const [scrollIndex] = useScrollHandler(ViewOptions.playlists.id, options);
 
-  useEffect(() => {
-    handleMount();
-  }, [handleMount]);
-
-  return (
+  return isAuthorized ? (
     <SelectableList
-      loading={loading}
+      loading={isLoading}
       options={options}
       activeIndex={scrollIndex}
     />
+  ) : (
+    <AuthPrompt message="Sign in to view your playlists" />
   );
 };
 
