@@ -13,6 +13,9 @@ const RootContainer = styled.div<ContainerProps>`
   position: absolute;
   height: 100%;
   width: 100%;
+  background: ${({ isHidden }) =>
+    isHidden ? 'transparent' : 'rgba(0, 0, 0, 0.3)'};
+  transition: all 0.25s ease;
 `;
 
 interface Props {
