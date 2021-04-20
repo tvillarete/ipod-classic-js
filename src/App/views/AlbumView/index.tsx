@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 import ViewOptions from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
-import { useMenuHideWindow, useScrollHandler } from 'hooks';
-import { useMusicKit } from 'hooks/useMusicKit';
+import { useDataFetcher, useMenuHideWindow, useScrollHandler } from 'hooks';
 import * as Utils from 'utils';
 
 interface Props {
@@ -14,40 +13,33 @@ interface Props {
 
 const AlbumView = ({ id, inLibrary = false }: Props) => {
   useMenuHideWindow(ViewOptions.album.id);
-  const { music } = useMusicKit();
-  const [loading, setLoading] = useState(true);
-  const [options, setOptions] = useState<SelectableListOption[]>([]);
-  const [scrollIndex] = useScrollHandler(ViewOptions.album.id, options);
 
-  const handleMount = useCallback(async () => {
-    const album = inLibrary
-      ? await music.api.library.album(id)
-      : await music.api.album(id);
-    const songs = album.relationships?.tracks.data ?? [];
+  const { data: album, isLoading } = useDataFetcher<IpodApi.Album>({
+    name: 'album',
+    id,
+    inLibrary,
+  });
 
-    setOptions(
-      songs.map((song, index) => ({
+  const options: SelectableListOption[] = useMemo(
+    () =>
+      album?.songs.map((song, index) => ({
         type: 'Song',
-        label: song.attributes?.name ?? 'Unknown song',
+        label: song.name,
         queueOptions: {
-          album: id,
-          startPosition: index - 1,
+          songs: album?.songs.map(({ url }) => url),
+          startPosition: index,
         },
         showNowPlayingView: true,
         longPressOptions: Utils.getMediaOptions('song', song.id),
-      }))
-    );
+      })) ?? [],
+    [album?.songs]
+  );
 
-    setLoading(false);
-  }, [id, inLibrary, music.api]);
-
-  useEffect(() => {
-    handleMount();
-  }, [handleMount]);
+  const [scrollIndex] = useScrollHandler(ViewOptions.album.id, options);
 
   return (
     <SelectableList
-      loading={loading}
+      loading={isLoading}
       options={options}
       activeIndex={scrollIndex}
     />
