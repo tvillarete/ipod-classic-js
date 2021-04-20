@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 
-import { LoadingScreen } from 'components';
-import { useMusicKit } from 'hooks/useMusicKit';
+import { AuthPrompt, LoadingScreen } from 'components';
+import { useDataFetcher, useEventListener, useSettings } from 'hooks';
+import { useWindowService } from 'services/window';
 import styled from 'styled-components';
 
 import CoverFlow from './CoverFlow';
@@ -11,29 +12,28 @@ const Container = styled.div`
 `;
 
 const CoverFlowView = () => {
-  const [albums, setAlbums] = useState<AppleMusicApi.Album[]>([]);
+  const { hideWindow } = useWindowService();
+  const { isAuthorized } = useSettings();
+  const { data: albums, isLoading } = useDataFetcher<IpodApi.Album[]>({
+    name: 'albums',
+  });
 
-  const { music } = useMusicKit();
-  const [loading, setLoading] = useState(true);
+  const handleMenuClick = useCallback(() => {
+    if (!isAuthorized || isLoading) {
+      hideWindow();
+    }
+  }, [hideWindow, isAuthorized, isLoading]);
 
-  const handleMount = useCallback(async () => {
-    const albums = await music.api.library.albums(null);
-
-    setAlbums(albums);
-
-    setLoading(false);
-  }, [music]);
-
-  useEffect(() => {
-    handleMount();
-  }, [handleMount]);
+  useEventListener('menuclick', handleMenuClick);
 
   return (
     <Container>
-      {loading ? (
+      {isLoading ? (
         <LoadingScreen backgroundColor="white" />
+      ) : !isAuthorized ? (
+        <AuthPrompt message="Sign in to view Cover Flow" />
       ) : (
-        <CoverFlow albums={albums} />
+        <CoverFlow albums={albums ?? []} />
       )}
     </Container>
   );
