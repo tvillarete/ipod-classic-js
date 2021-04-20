@@ -62,11 +62,21 @@ export const ViewOptions: Record<string, ViewOption> = {
     title: 'Media Options',
     type: WINDOW_TYPE.ACTION_SHEET,
   },
+  serviceTypeActionSheet: {
+    id: 'serviceTypeActionSheet',
+    title: 'Service',
+    type: WINDOW_TYPE.ACTION_SHEET,
+  },
 
   // Popups
   signinPopup: {
     id: 'signinPopup',
     title: 'Sign in',
+    type: WINDOW_TYPE.ACTION_SHEET,
+  },
+  signOutPopup: {
+    id: 'signOutPopup',
+    title: 'Sign out',
     type: WINDOW_TYPE.ACTION_SHEET,
   },
 };
