@@ -44,7 +44,7 @@ const Mask = styled.div`
 `;
 
 const Interface = () => {
-  const { isConfigured, hasDevToken } = useMusicKit();
+  const { isConfigured, hasDevToken: hasAppleDevToken } = useMusicKit();
   const { windowStack } = useWindowService();
   const splitViewWindows = windowStack.filter(
     (window) => window.type === WINDOW_TYPE.SPLIT
@@ -62,7 +62,7 @@ const Interface = () => {
     (window) => window.type === WINDOW_TYPE.POPUP
   );
 
-  const isReady = isConfigured && hasDevToken;
+  const isReady = isConfigured && hasAppleDevToken;
 
   return (
     <Container>
