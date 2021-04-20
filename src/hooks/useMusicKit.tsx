@@ -10,49 +10,69 @@ import {
 
 import { useEventListener, useMKEventListener } from 'hooks';
 
+import { useSettings } from './useSettings';
+
 /**
  * This will be used to connect to the Apple Music API.
  * @see https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const DEVELOPER_TOKEN: string | undefined = undefined;
+const DEVELOPER_TOKEN: string | undefined =
+  'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJHWFFEWThYM0MifQ.eyJpYXQiOjE2MTY4ODQ1MDksImV4cCI6MTYzMjQzNjUwOSwiaXNzIjoiRzZIM0NLV005QyJ9.z7NS-8962oumCEaYOUMJfzonO2Y2tAWb_vAF_wwOkDqU8BoWTo6xDg5uG8ZvFeFpMqRoMbBaB_Mr4sxpvJzjPg';
 
 export interface MusicKitState {
   musicKit: typeof MusicKit;
   isConfigured: boolean;
-  isAuthorized: boolean;
   hasDevToken: boolean;
 }
 
 export const MusicKitContext = createContext<MusicKitState>({} as any);
 
-export interface MusicKitHook {
-  isConfigured: boolean;
-  isAuthorized: boolean;
-  hasDevToken: boolean;
-  musicKit: typeof MusicKit;
+export type MusicKitHook = MusicKitState & {
   music: MusicKit.MusicKitInstance;
-}
+  signIn: () => Promise<void>;
+  signOut: () => void;
+};
 
 export const useMusicKit = (): MusicKitHook => {
   const musicKit = window.MusicKit;
-  const { isConfigured, isAuthorized, hasDevToken } = useContext(
-    MusicKitContext
-  );
+  const {
+    setIsAppleAuthorized,
+    isSpotifyAuthorized,
+    setService,
+  } = useSettings();
+  const { isConfigured, hasDevToken } = useContext(MusicKitContext);
   const music = useMemo(() => {
     if (!isConfigured || !hasDevToken) {
-      return {} as any;
+      return {} as MusicKit.MusicKitInstance;
     }
 
     return window.MusicKit.getInstance();
   }, [hasDevToken, isConfigured]);
 
+  const signIn = useCallback(async () => {
+    if (!music.isAuthorized) {
+      await music.authorize();
+    }
+
+    setService('apple');
+  }, [music, setService]);
+
+  const signOut = useCallback(() => {
+    music.unauthorize();
+    setIsAppleAuthorized(false);
+
+    // Change to Spotify if available.
+    setService(isSpotifyAuthorized ? 'spotify' : undefined);
+  }, [isSpotifyAuthorized, music, setIsAppleAuthorized, setService]);
+
   return {
     isConfigured,
-    isAuthorized,
     hasDevToken,
     musicKit,
     music,
+    signIn,
+    signOut,
   };
 };
 
@@ -64,7 +84,10 @@ export const MusicKitProvider = ({ children }: Props) => {
   const musicKit = window.MusicKit;
   const [hasDevToken, setHasDevToken] = useState(false);
   const [isConfigured, setIsConfigured] = useState(false);
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const {
+    setIsAppleAuthorized,
+    setService: setStreamingService,
+  } = useSettings();
 
   const handlePlayPauseClick = useCallback(() => {
     const music = musicKit.getInstance();
@@ -106,15 +129,21 @@ export const MusicKitProvider = ({ children }: Props) => {
       }
 
       if (music.isAuthorized) {
-        setIsAuthorized(true);
+        setIsAppleAuthorized(true);
       }
     } catch (e) {
       setHasDevToken(false);
     }
-  }, [musicKit]);
+  }, [musicKit, setIsAppleAuthorized]);
 
   useMKEventListener('userTokenDidChange', (e) => {
-    setIsAuthorized(!!e.userToken);
+    if (e.userToken) {
+      setIsAppleAuthorized(true);
+      setStreamingService('apple');
+    } else {
+      setIsAppleAuthorized(false);
+      setStreamingService(undefined);
+    }
   });
 
   useEventListener('musickitconfigured', () => {
@@ -125,10 +154,8 @@ export const MusicKitProvider = ({ children }: Props) => {
   useEventListener('backclick', handleBackClick);
 
   return (
-    <MusicKitContext.Provider
-      value={{ musicKit, isConfigured, isAuthorized, hasDevToken }}
-    >
-      {children}
+    <MusicKitContext.Provider value={{ musicKit, isConfigured, hasDevToken }}>
+      {isConfigured ? children : null}
     </MusicKitContext.Provider>
   );
 };
