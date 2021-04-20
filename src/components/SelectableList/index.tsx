@@ -9,6 +9,11 @@ import styled from 'styled-components';
 
 import SelectableListItem from './SelectableListItem';
 
+export const getConditionalOption = (
+  condition?: boolean,
+  option?: SelectableListOption
+) => (option && condition ? [option] : []);
+
 export type SelectableListOptionType =
   | 'View'
   | 'Link'
