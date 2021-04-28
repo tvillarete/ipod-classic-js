@@ -1,7 +1,6 @@
 import { Unit } from 'components';
 import LoadingIndicator from 'components/LoadingIndicator';
-import { useForceUpdate, useInterval, useMKEventListener } from 'hooks';
-import { useMusicKit } from 'hooks/useMusicKit';
+import { useAudioPlayer, useInterval } from 'hooks';
 import styled from 'styled-components';
 import * as Utils from 'utils';
 
@@ -28,36 +27,33 @@ const Label = styled.h3<LabelProps>`
 `;
 
 const TrackProgress = () => {
-  const { music } = useMusicKit();
-  const forceUpdate = useForceUpdate();
-  const { player } = music;
-  const playbackState = music.player?.playbackState;
+  const { playbackInfo, updatePlaybackInfo } = useAudioPlayer();
 
-  const isLoading = playbackState === MusicKit.PlaybackStates.waiting;
+  const {
+    isLoading,
+    isPlaying,
+    isPaused,
+    currentTime,
+    percent,
+    timeRemaining,
+  } = playbackInfo;
 
   /** Update the progress bar every second. */
   useInterval(() => {
-    if (player.isPlaying) {
-      forceUpdate();
+    if (isPlaying && !isPaused) {
+      updatePlaybackInfo();
     }
   }, 1000);
-
-  /** Update the progress bar whenever the playback state changes */
-  useMKEventListener('playbackStateDidChange', forceUpdate);
 
   return (
     <Container>
       {isLoading ? (
         <LoadingIndicator size={14} />
       ) : (
-        <Label textAlign="left">
-          {Utils.formatTime(player.currentPlaybackTime)}
-        </Label>
+        <Label textAlign="left">{Utils.formatTime(currentTime)}</Label>
       )}
-      <ProgressBar percent={player.currentPlaybackProgress * 100} />
-      <Label textAlign="right">
-        -{Utils.formatTime(player.currentPlaybackTimeRemaining)}
-      </Label>
+      <ProgressBar percent={percent} />
+      <Label textAlign="right">-{Utils.formatTime(timeRemaining)}</Label>
     </Container>
   );
 };

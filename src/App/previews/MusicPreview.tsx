@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 import { previewSlideRight } from 'animation';
 import { AuthPrompt, KenBurns, LoadingScreen } from 'components';
 import { motion } from 'framer-motion';
-import { useMusicKit } from 'hooks/useMusicKit';
+import { useDataFetcher } from 'hooks';
+import { useSettings } from 'hooks/useSettings';
 import styled from 'styled-components';
-import * as Utils from 'utils';
 
 const Container = styled(motion.div)`
   z-index: 1;
@@ -17,33 +17,27 @@ const Container = styled(motion.div)`
 `;
 
 const MusicPreview = () => {
-  const { music, isConfigured, isAuthorized } = useMusicKit();
-  const [artworkUrls, setArtworkUrls] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const handleMount = useCallback(async () => {
-    setLoading(true);
-    const albums = await music.api.library.albums(null);
-    const urls = albums.map(
-      (album) => Utils.getArtwork(300, album.attributes?.artwork?.url) ?? ''
-    );
-
-    setArtworkUrls(urls);
-
-    setLoading(false);
-  }, [music]);
-
-  useEffect(() => {
-    if (isConfigured && isAuthorized) {
-      handleMount();
+  const { isSpotifyAuthorized, isAppleAuthorized } = useSettings();
+  const { data: albums, isLoading, hasError } = useDataFetcher<IpodApi.Album[]>(
+    {
+      name: 'albums',
+      artworkSize: 400,
     }
-  }, [handleMount, isAuthorized, isConfigured]);
+  );
+
+  const artworkUrls = useMemo(() => {
+    if (albums && !hasError) {
+      return albums.map((album) => album.artwork?.url ?? '');
+    }
+
+    return [];
+  }, [albums, hasError]);
 
   return (
     <Container {...previewSlideRight}>
-      {loading ? (
+      {isLoading ? (
         <LoadingScreen backgroundColor="linear-gradient(180deg, #B1B5C0 0%, #686E7A 100%)" />
-      ) : !isAuthorized ? (
+      ) : !isSpotifyAuthorized && !isAppleAuthorized ? (
         <AuthPrompt message="Sign in to view your library" />
       ) : (
         <KenBurns urls={artworkUrls} />

@@ -1,8 +1,8 @@
 import { useCallback, useRef, useState } from 'react';
 
+import useAudioPlayer from './useAudioPlayer';
 import useEffectOnce from './useEffectOnce';
 import useEventListener from './useEventListener';
-import { useMusicKit } from './useMusicKit';
 
 interface VolumeHandlerHook {
   volume: number;
@@ -11,15 +11,12 @@ interface VolumeHandlerHook {
 }
 
 const useVolumeHandler = (): VolumeHandlerHook => {
-  const { music } = useMusicKit();
+  const { volume, setVolume } = useAudioPlayer();
   const [active, setActive] = useState(false);
-  const [volume, setVolume] = useState(100);
   const [enabled, setIsEnabled] = useState(true);
   const timeoutIdRef = useRef<any>();
 
   useEffectOnce(() => {
-    setVolume(music.player.volume * 100);
-
     /** clear the timeout to prevent memory leaks. */
     return () => {
       if (timeoutIdRef.current) {
@@ -56,18 +53,21 @@ const useVolumeHandler = (): VolumeHandlerHook => {
 
   const increaseVolume = useCallback(() => {
     setActiveState();
-    if (volume === 100 || !enabled) return;
+    if (volume === 1 || !enabled) return;
 
-    music.player.volume = (volume + 4) / 100;
-    setVolume(volume + 4);
-  }, [setActiveState, volume, enabled, music.player]);
+    const newVolume = Math.min(volume + 0.04, 1);
+
+    setVolume(newVolume);
+  }, [setActiveState, volume, enabled, setVolume]);
 
   const decreaseVolume = useCallback(() => {
     setActiveState();
-    if (volume === 0 || !enabled) return;
-    music.player.volume = (volume - 4) / 100;
-    setVolume(volume - 4);
-  }, [setActiveState, volume, enabled, music.player]);
+    if (!enabled) return;
+
+    const newVolume = Math.max(volume - 0.04, 0.01);
+
+    setVolume(newVolume);
+  }, [setActiveState, volume, enabled, setVolume]);
 
   useEventListener('forwardscroll', increaseVolume);
   useEventListener('backwardscroll', decreaseVolume);

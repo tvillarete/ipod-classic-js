@@ -1,35 +1,32 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 import { PREVIEW } from 'App/previews';
 import ViewOptions, { AboutView } from 'App/views';
-import { SelectableList, SelectableListOption } from 'components';
-import { useEffectOnce, useMenuHideWindow, useScrollHandler } from 'hooks';
+import {
+  getConditionalOption,
+  SelectableList,
+  SelectableListOption,
+} from 'components';
+import { useMenuHideWindow, useScrollHandler, useSpotifySDK } from 'hooks';
 import { useMusicKit } from 'hooks/useMusicKit';
-import { useWindowService } from 'services/window';
+import { useSettings } from 'hooks/useSettings';
 
 const SettingsView = () => {
   useMenuHideWindow(ViewOptions.settings.id);
-  const { music, isAuthorized } = useMusicKit();
-  const { hideWindow } = useWindowService();
-  const [authButtonType, setAuthButtonType] = useState<
-    'loggedIn' | 'loggedOut'
-  >(isAuthorized ? 'loggedIn' : 'loggedOut');
-  const [options, setOptions] = useState<SelectableListOption[]>([]);
+  const {
+    isAuthorized,
+    isAppleAuthorized,
+    isSpotifyAuthorized,
+    service,
+  } = useSettings();
+  const { signIn: signInWithApple, signOut: signOutApple } = useMusicKit();
+  const {
+    signOut: signOutSpotify,
+    signIn: signInWithSpotify,
+  } = useSpotifySDK();
 
-  const handleAuth = useCallback(async () => {
-    console.log('Authing');
-    await music.authorize();
-    hideWindow();
-  }, [hideWindow, music]);
-
-  const handleDeauth = useCallback(async () => {
-    console.log('Deauthing');
-    await music.unauthorize();
-    hideWindow();
-  }, [hideWindow, music]);
-
-  const handleUpdateOptions = useCallback(() => {
-    const updatedOptions: SelectableListOption[] = [
+  const options: SelectableListOption[] = useMemo(
+    () => [
       {
         type: 'View',
         label: 'About',
@@ -37,28 +34,79 @@ const SettingsView = () => {
         component: () => <AboutView />,
         preview: PREVIEW.SETTINGS,
       },
-      {
-        type: 'Action',
-        label: isAuthorized ? 'Sign out' : 'Sign in',
-        onSelect: isAuthorized ? handleDeauth : handleAuth,
-      },
-    ];
-
-    setOptions(updatedOptions);
-    setAuthButtonType(isAuthorized ? 'loggedIn' : 'loggedOut');
-  }, [handleDeauth, isAuthorized, handleAuth]);
-
-  useEffect(() => {
-    if (isAuthorized && authButtonType !== 'loggedIn') {
-      console.log('Showing sign out button');
-      handleUpdateOptions();
-    } else if (!isAuthorized && authButtonType === 'loggedIn') {
-      console.log('Showing sign in button');
-      handleUpdateOptions();
-    }
-  }, [authButtonType, handleUpdateOptions, isAuthorized]);
-
-  useEffectOnce(handleUpdateOptions);
+      /** Add an option to select between services signed into more than one. */
+      ...getConditionalOption(isAuthorized, {
+        type: 'ActionSheet',
+        id: ViewOptions.serviceTypeActionSheet.id,
+        label: 'Choose Service',
+        listOptions: [
+          {
+            type: 'Action',
+            label: `Apple Music ${service === 'apple' ? '(Current)' : ''}`,
+            onSelect: () => {
+              signInWithApple();
+            },
+          },
+          {
+            type: 'Action',
+            label: `Spotify ${service === 'spotify' ? '(Current)' : ''}`,
+            onSelect: signInWithSpotify,
+          },
+        ],
+        preview: PREVIEW.SERVICE,
+      }),
+      /** Show the sign in option if not signed into any service. */
+      ...getConditionalOption(!isAuthorized, {
+        type: 'ActionSheet',
+        id: ViewOptions.signinPopup.id,
+        label: 'Sign in',
+        listOptions: [
+          {
+            type: 'Action',
+            label: 'Apple Music',
+            onSelect: () => {
+              signInWithApple();
+            },
+          },
+          {
+            type: 'Action',
+            label: 'Spotify',
+            onSelect: signInWithSpotify,
+          },
+        ],
+        preview: PREVIEW.MUSIC,
+      }),
+      /** Show the signout option for any services that are authenticated. */
+      ...getConditionalOption(isAuthorized, {
+        type: 'ActionSheet',
+        id: ViewOptions.signOutPopup.id,
+        label: 'Sign out',
+        listOptions: [
+          ...getConditionalOption(isAppleAuthorized, {
+            type: 'Action',
+            label: 'Apple Music',
+            onSelect: signOutApple,
+          }),
+          ...getConditionalOption(isSpotifyAuthorized, {
+            type: 'Action',
+            label: 'Spotify',
+            onSelect: signOutSpotify,
+          }),
+        ],
+        preview: PREVIEW.SERVICE,
+      }),
+    ],
+    [
+      isAppleAuthorized,
+      isAuthorized,
+      isSpotifyAuthorized,
+      service,
+      signInWithApple,
+      signInWithSpotify,
+      signOutApple,
+      signOutSpotify,
+    ]
+  );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.settings.id, options);
 

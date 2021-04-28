@@ -1,7 +1,9 @@
 import * as React from 'react';
 
-import { ScrollWheel } from 'components';
+import { Screen, ScrollWheel, Unit } from 'components';
+import { AudioPlayerProvider, SpotifySDKProvider } from 'hooks';
 import MusicKitProvider from 'hooks/useMusicKit';
+import { SettingsProvider } from 'hooks/useSettings';
 import WindowProvider from 'services/window';
 import styled, { createGlobalStyle } from 'styled-components';
 
@@ -68,18 +70,49 @@ const Shell = styled.div`
   }
 `;
 
+const ScreenContainer = styled.div`
+  position: relative;
+  height: 260px;
+  margin: ${Unit.LG} ${Unit.LG} ${Unit.XL};
+  border: 4px solid black;
+  border-radius: ${Unit.XS};
+  overflow: hidden;
+  background: white;
+  animation: fadeFromBlack 0.5s;
+
+  @keyframes fadeFromBlack {
+    0% {
+      filter: brightness(0);
+    }
+  }
+
+  ${Screen.SM} {
+    @media screen and (max-height: 750px) {
+      margin: ${Unit.SM} ${Unit.SM} ${Unit.XL};
+    }
+  }
+`;
+
 const App: React.FC = () => {
   return (
     <Container>
       <GlobalStyles />
-      <MusicKitProvider>
-        <WindowProvider>
-          <Shell>
-            <Interface />
-            <ScrollWheel />
-          </Shell>
-        </WindowProvider>
-      </MusicKitProvider>
+      <SettingsProvider>
+        <Shell>
+          <ScreenContainer>
+            <SpotifySDKProvider>
+              <MusicKitProvider>
+                <AudioPlayerProvider>
+                  <WindowProvider>
+                    <Interface />
+                  </WindowProvider>
+                </AudioPlayerProvider>
+              </MusicKitProvider>
+            </SpotifySDKProvider>
+          </ScreenContainer>
+          <ScrollWheel />
+        </Shell>
+      </SettingsProvider>
     </Container>
   );
 };

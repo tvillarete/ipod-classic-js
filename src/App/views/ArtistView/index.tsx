@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 import ViewOptions, { AlbumView } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
-import { useMenuHideWindow, useScrollHandler } from 'hooks';
-import { useMusicKit } from 'hooks/useMusicKit';
+import { useDataFetcher, useMenuHideWindow, useScrollHandler } from 'hooks';
 import * as Utils from 'utils';
 
 interface Props {
@@ -14,42 +13,33 @@ interface Props {
 
 const ArtistView = ({ id, inLibrary = false }: Props) => {
   useMenuHideWindow(ViewOptions.artist.id);
-  const { music } = useMusicKit();
-  const [loading, setLoading] = useState(true);
-  const [options, setOptions] = useState<SelectableListOption[]>([]);
-  const [scrollIndex] = useScrollHandler(ViewOptions.artist.id, options);
 
-  const handleMount = useCallback(async () => {
-    const albums = inLibrary
-      ? await music.api.library.artistRelationship(id, 'albums')
-      : await music.api.artistRelationship(id, 'albums');
-
-    const newOptions: SelectableListOption[] = albums.map(
-      (album: AppleMusicApi.Album) => ({
+  const { data: albums, isLoading } = useDataFetcher<IpodApi.Album[]>({
+    name: 'artist',
+    id,
+    inLibrary,
+  });
+  const options: SelectableListOption[] = useMemo(
+    () =>
+      albums?.map((album) => ({
         type: 'View',
-        label: album.attributes?.name ?? 'Unknown name',
-        sublabel: album.attributes?.artistName,
-        imageUrl: Utils.getArtwork(100, album.attributes?.artwork?.url),
+        label: album.name,
+        sublabel: album.artistName,
+        imageUrl: Utils.getArtwork(100, album.artwork?.url),
         viewId: ViewOptions.album.id,
         component: () => (
           <AlbumView id={album.id ?? ''} inLibrary={inLibrary} />
         ),
         longPressOptions: Utils.getMediaOptions('album', album.id),
-      })
-    );
+      })) ?? [],
+    [albums, inLibrary]
+  );
 
-    setOptions(newOptions);
-
-    setLoading(false);
-  }, [id, inLibrary, music.api]);
-
-  useEffect(() => {
-    handleMount();
-  }, [handleMount]);
+  const [scrollIndex] = useScrollHandler(ViewOptions.artist.id, options);
 
   return (
     <SelectableList
-      loading={loading}
+      loading={isLoading}
       options={options}
       activeIndex={scrollIndex}
     />

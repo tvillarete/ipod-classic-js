@@ -9,6 +9,11 @@ import styled from 'styled-components';
 
 import SelectableListItem from './SelectableListItem';
 
+export const getConditionalOption = (
+  condition?: boolean,
+  option?: SelectableListOption
+) => (option && condition ? [option] : []);
+
 export type SelectableListOptionType =
   | 'View'
   | 'Link'
@@ -44,7 +49,7 @@ type LinkOptionProps = {
 type SongOptionProps = {
   type: 'Song';
   /** Options that will be used to fetch and play a song. */
-  queueOptions: Omit<MusicKit.SetQueueOptions, 'items'>;
+  queueOptions: IpodApi.QueueOptions;
   /**
    * Show the Now Playing view after starting the song.
    * @default false

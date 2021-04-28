@@ -1,52 +1,39 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 import { AuthPrompt, SelectableList, SelectableListOption } from 'components';
-import { useMenuHideWindow, useScrollHandler } from 'hooks';
-import { useMusicKit } from 'hooks/useMusicKit';
+import { useDataFetcher, useMenuHideWindow, useScrollHandler } from 'hooks';
+import { useSettings } from 'hooks/useSettings';
 
 import ViewOptions, { ArtistView } from '../';
 
 const ArtistsView = () => {
   useMenuHideWindow(ViewOptions.artists.id);
-  const { music, isAuthorized } = useMusicKit();
-  const [loading, setLoading] = useState(false);
-  const [options, setOptions] = useState<SelectableListOption[]>([]);
+  const { isAppleAuthorized: isAuthorized } = useSettings();
+  const { data: artists, isLoading } = useDataFetcher<IpodApi.Artist[]>({
+    name: 'artists',
+  });
 
-  const handleMount = useCallback(async () => {
-    setLoading(true);
-    const artists = await music.api.library.artists(null, {
-      include: 'catalog',
-      limit: 100,
-    });
-
-    setOptions(
-      artists.map((artist) => ({
+  const options: SelectableListOption[] = useMemo(
+    () =>
+      artists?.map((artist) => ({
         type: 'View',
-        label: artist.attributes?.name ?? 'Unknown artist',
+        label: artist.name,
         viewId: ViewOptions.artist.id,
         component: () => <ArtistView id={artist.id} inLibrary={true} />,
-      }))
-    );
-
-    setLoading(false);
-  }, [music]);
-
-  useEffect(() => {
-    if (isAuthorized) {
-      handleMount();
-    }
-  }, [handleMount, isAuthorized]);
+      })) ?? [],
+    [artists]
+  );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.artists.id, options);
 
   return isAuthorized ? (
     <SelectableList
-      loading={loading}
+      loading={isLoading}
       options={options}
       activeIndex={scrollIndex}
     />
   ) : (
-    <AuthPrompt />
+    <AuthPrompt message="Sign in to view your artists" />
   );
 };
 

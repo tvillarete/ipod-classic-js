@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 import {
   LoadingScreen,
   SelectableList,
   SelectableListOption,
 } from 'components';
-import { useEventListener, useScrollHandler } from 'hooks';
-import { useMusicKit } from 'hooks/useMusicKit';
+import { useDataFetcher, useEventListener, useScrollHandler } from 'hooks';
 import styled from 'styled-components';
 
 import ViewOptions from '../';
@@ -47,53 +46,42 @@ const ListContainer = styled.div`
 `;
 
 interface Props {
-  albumId: AppleMusicApi.Album['id'];
+  albumId: IpodApi.Album['id'];
   setPlayingAlbum: (val: boolean) => void;
 }
 
 const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
-  const [album, setAlbum] = useState<AppleMusicApi.Album>();
-  const { music } = useMusicKit();
-  const [loading, setLoading] = useState(true);
-  const [options, setOptions] = useState<SelectableListOption[]>([]);
-  const [scrollIndex] = useScrollHandler(ViewOptions.coverFlow.id, options);
+  const { data: album, isLoading } = useDataFetcher<IpodApi.Album>({
+    name: 'album',
+    id: albumId,
+    inLibrary: true,
+  });
 
-  const handleMount = useCallback(async () => {
-    const fetchedAlbum = await music.api.library.album(albumId);
-    setAlbum(fetchedAlbum);
-    const songs = fetchedAlbum.relationships?.tracks.data ?? [];
-
-    setOptions(
-      songs.map((song, index) => ({
+  const options: SelectableListOption[] = useMemo(
+    () =>
+      album?.songs.map((song, index) => ({
         type: 'Song',
-        label: song.attributes?.name ?? 'Unknown song',
+        label: song.name,
         queueOptions: {
-          album: fetchedAlbum.id,
-          startPosition: index - 1,
+          album,
+          startPosition: index,
         },
-      }))
-    );
-
-    setLoading(false);
-  }, [albumId, music.api.library]);
-
-  useEffect(() => {
-    if (!album) {
-      handleMount();
-    }
-  }, [album, handleMount]);
+      })) ?? [],
+    [album]
+  );
+  const [scrollIndex] = useScrollHandler(ViewOptions.coverFlow.id, options);
 
   useEventListener('centerclick', () => setPlayingAlbum(true));
 
   return (
     <Container>
-      {loading ? (
+      {isLoading ? (
         <LoadingScreen />
       ) : (
         <>
           <InfoContainer>
-            <Text>{album?.attributes?.name}</Text>
-            <Subtext>{album?.attributes?.artistName}</Subtext>
+            <Text>{album?.name}</Text>
+            <Subtext>{album?.artistName}</Subtext>
           </InfoContainer>
           <ListContainer>
             <SelectableList activeIndex={scrollIndex} options={options} />

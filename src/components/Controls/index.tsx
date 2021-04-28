@@ -64,7 +64,7 @@ const Controls = () => {
   return (
     <Container>
       <MainContainer isHidden={isScrubbing}>
-        {active && !isScrubbing && <VolumeBar percent={volume} />}
+        {active && !isScrubbing && <VolumeBar percent={volume * 100} />}
       </MainContainer>
       <MainContainer hidden={active && !isScrubbing} isHidden={isScrubbing}>
         <TrackProgress />

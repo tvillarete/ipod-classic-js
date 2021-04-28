@@ -62,12 +62,27 @@ export const ViewOptions: Record<string, ViewOption> = {
     title: 'Media Options',
     type: WINDOW_TYPE.ACTION_SHEET,
   },
-
-  // Popups
+  serviceTypeActionSheet: {
+    id: 'serviceTypeActionSheet',
+    title: 'Service',
+    type: WINDOW_TYPE.ACTION_SHEET,
+  },
   signinPopup: {
     id: 'signinPopup',
     title: 'Sign in',
     type: WINDOW_TYPE.ACTION_SHEET,
+  },
+  signOutPopup: {
+    id: 'signOutPopup',
+    title: 'Sign out',
+    type: WINDOW_TYPE.ACTION_SHEET,
+  },
+
+  // Popups
+  spotifyNotSupportedPopup: {
+    id: 'spotifyNotSupportedPopup',
+    title: 'Unsupported browser',
+    type: WINDOW_TYPE.POPUP,
   },
 };
 

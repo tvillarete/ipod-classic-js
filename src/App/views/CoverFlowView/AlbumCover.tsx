@@ -92,7 +92,7 @@ interface Props {
   index: number;
   activeIndex: number;
   midpoint: Point;
-  album: AppleMusicApi.Album;
+  album: IpodApi.Album;
   isSelected: boolean;
   playingAlbum: boolean;
   setPlayingAlbum: (val: boolean) => void;
@@ -123,7 +123,7 @@ const AlbumCover = ({
       activeIndex={activeIndex}
       isPlaying={isSelected && playingAlbum}
     >
-      <Artwork src={Utils.getArtwork(300, album.attributes?.artwork?.url)} />
+      <Artwork src={Utils.getArtwork(300, album.artwork?.url)} />
       <AnimatePresence>
         {isSelected && !playingAlbum && (
           <Backside {...fadeScale}>

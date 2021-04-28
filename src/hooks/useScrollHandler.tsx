@@ -6,11 +6,11 @@ import {
   PopupOptionProps,
   SelectableListOption,
 } from 'components';
+import { useAudioPlayer } from 'hooks';
 import { useWindowService } from 'services/window';
 
 import useEffectOnce from './useEffectOnce';
 import useEventListener from './useEventListener';
-import { useMusicKit } from './useMusicKit';
 
 /** Accepts a list of options and will maintain a scroll index capped at the list's length. */
 const useScrollHandler = (
@@ -20,7 +20,7 @@ const useScrollHandler = (
   options: SelectableListOption[] = []
 ): [number] => {
   const { showWindow, windowStack, setPreview } = useWindowService();
-  const { music } = useMusicKit();
+  const { play } = useAudioPlayer();
   const [index, setIndex] = useState(0);
   const timeoutIdRef = useRef<any>();
   /** Only fire events on the top-most view. */
@@ -62,19 +62,6 @@ const useScrollHandler = (
       handleCheckForPreview(index - 1);
     }
   }, [handleCheckForPreview, index, isActive]);
-
-  const handlePlaySong = useCallback(
-    async (queueOptions: MusicKit.SetQueueOptions) => {
-      const queue = await music.setQueue({
-        ...queueOptions,
-      });
-
-      if (!queue.isEmpty && queue.nextPlayableItem) {
-        await music.play();
-      }
-    },
-    [music]
-  );
 
   const handleShowView = useCallback(
     (
@@ -126,7 +113,7 @@ const useScrollHandler = (
 
     switch (option.type) {
       case 'Song':
-        await handlePlaySong(option.queueOptions);
+        await play(option.queueOptions);
 
         if (option.showNowPlayingView) {
           handleShowView(ViewOptions.nowPlaying.id, () => <NowPlayingView />);
@@ -149,13 +136,13 @@ const useScrollHandler = (
         break;
     }
   }, [
-    handlePlaySong,
     handleShowActionSheet,
     handleShowPopup,
     handleShowView,
     index,
     isActive,
     options,
+    play,
   ]);
 
   const handleCenterLongClick = useCallback(async () => {

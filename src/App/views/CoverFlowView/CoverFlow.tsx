@@ -61,14 +61,14 @@ const Text = styled.h3`
 `;
 
 interface Props {
-  albums: AppleMusicApi.Album[];
+  albums: IpodApi.Album[];
 }
 
 const CoverFlow = ({ albums }: Props) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [midpoint, setMidpoint] = useState<Point>({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
-  const [selectedAlbum, setSelectedAlbum] = useState<AppleMusicApi.Album>();
+  const [selectedAlbum, setSelectedAlbum] = useState<IpodApi.Album>();
   const [playingAlbum, setPlayingAlbum] = useState(false);
   const { hideWindow } = useWindowService();
 
@@ -135,8 +135,9 @@ const CoverFlow = ({ albums }: Props) => {
       <AnimatePresence>
         {albums.length && !playingAlbum && (
           <InfoContainer {...fade}>
-            <Text>{albums[activeIndex]?.attributes?.name}</Text>
-            <Text>{albums[activeIndex]?.attributes?.artistName}</Text>
+            <Text>{albums[activeIndex]?.name}</Text>
+            {/* TODO: Add artistName */}
+            {/* <Text>{albums[activeIndex]?.artistName}</Text> */}
           </InfoContainer>
         )}
         {playingAlbum && (

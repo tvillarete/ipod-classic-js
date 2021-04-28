@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { PREVIEW } from 'App/previews';
 import ViewOptions, {
@@ -8,8 +8,17 @@ import ViewOptions, {
   NowPlayingView,
   SettingsView,
 } from 'App/views';
-import { SelectableList, SelectableListOption } from 'components';
-import { useForceUpdate, useMKEventListener, useScrollHandler } from 'hooks';
+import {
+  getConditionalOption,
+  SelectableList,
+  SelectableListOption,
+} from 'components';
+import {
+  useAudioPlayer,
+  useScrollHandler,
+  useSettings,
+  useSpotifySDK,
+} from 'hooks';
 import { useMusicKit } from 'hooks/useMusicKit';
 
 const strings = {
@@ -17,15 +26,13 @@ const strings = {
 };
 
 const HomeView = () => {
-  const { music } = useMusicKit();
-  const forceUpdate = useForceUpdate();
+  const { isAuthorized } = useSettings();
+  const { signIn: signInWithApple } = useMusicKit();
+  const { nowPlayingItem } = useAudioPlayer();
+  const { signIn: signInWithSpotify } = useSpotifySDK();
 
-  const handleLogIn = useCallback(() => {
-    music.authorize();
-  }, [music]);
-
-  const options = useMemo(() => {
-    const arr: SelectableListOption[] = [
+  const options: SelectableListOption[] = useMemo(
+    () => [
       {
         type: 'View',
         label: 'Cover Flow',
@@ -54,10 +61,7 @@ const HomeView = () => {
         component: () => <SettingsView />,
         preview: PREVIEW.SETTINGS,
       },
-    ];
-
-    if (!music.isAuthorized) {
-      arr.push({
+      ...getConditionalOption(!isAuthorized, {
         type: 'ActionSheet',
         id: ViewOptions.signinPopup.id,
         label: 'Sign in',
@@ -65,34 +69,28 @@ const HomeView = () => {
           {
             type: 'Action',
             label: 'Apple Music',
-            onSelect: handleLogIn,
+            onSelect: signInWithApple,
+          },
+          {
+            type: 'Action',
+            label: 'Spotify',
+            onSelect: signInWithSpotify,
           },
         ],
         preview: PREVIEW.MUSIC,
-      });
-    }
-
-    if (music.isAuthorized && music.player?.nowPlayingItem?.isPlayable) {
-      arr.push({
+      }),
+      ...getConditionalOption(!!nowPlayingItem, {
         type: 'View',
         label: strings.nowPlaying,
         viewId: ViewOptions.nowPlaying.id,
         component: () => <NowPlayingView />,
         preview: PREVIEW.NOW_PLAYING,
-      });
-    }
-
-    return arr;
-  }, [
-    handleLogIn,
-    music.isAuthorized,
-    music.player?.nowPlayingItem?.isPlayable,
-  ]);
+      }),
+    ],
+    [isAuthorized, nowPlayingItem, signInWithApple, signInWithSpotify]
+  );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.home.id, options);
-
-  useMKEventListener('userTokenDidChange', forceUpdate);
-  useMKEventListener('playbackStateDidChange', forceUpdate);
 
   return <SelectableList options={options} activeIndex={scrollIndex} />;
 };
