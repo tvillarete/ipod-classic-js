@@ -18,9 +18,8 @@ const SettingsView = () => {
     isAppleAuthorized,
     isSpotifyAuthorized,
     service,
-    setService,
   } = useSettings();
-  const { music, signIn: signInWithApple } = useMusicKit();
+  const { signIn: signInWithApple, signOut: signOutApple } = useMusicKit();
   const {
     signOut: signOutSpotify,
     signIn: signInWithSpotify,
@@ -39,7 +38,7 @@ const SettingsView = () => {
       ...getConditionalOption(isAuthorized, {
         type: 'ActionSheet',
         id: ViewOptions.serviceTypeActionSheet.id,
-        label: 'Change Service',
+        label: 'Choose Service',
         listOptions: [
           ...getConditionalOption(service === 'spotify', {
             type: 'Action',
@@ -51,9 +50,10 @@ const SettingsView = () => {
           ...getConditionalOption(service === 'apple', {
             type: 'Action',
             label: 'Spotify',
-            onSelect: () => setService('spotify'),
+            onSelect: signInWithSpotify,
           }),
         ],
+        preview: PREVIEW.SERVICE,
       }),
       /** Show the sign in option if not signed into any service. */
       ...getConditionalOption(!isAuthorized, {
@@ -64,7 +64,9 @@ const SettingsView = () => {
           {
             type: 'Action',
             label: 'Apple Music',
-            onSelect: () => music.authorize(),
+            onSelect: () => {
+              signInWithApple();
+            },
           },
           {
             type: 'Action',
@@ -83,7 +85,7 @@ const SettingsView = () => {
           ...getConditionalOption(isAppleAuthorized, {
             type: 'Action',
             label: 'Apple Music',
-            onSelect: () => music.unauthorize(),
+            onSelect: signOutApple,
           }),
           ...getConditionalOption(isSpotifyAuthorized, {
             type: 'Action',
@@ -91,18 +93,17 @@ const SettingsView = () => {
             onSelect: signOutSpotify,
           }),
         ],
-        preview: PREVIEW.MUSIC,
+        preview: PREVIEW.SERVICE,
       }),
     ],
     [
       isAppleAuthorized,
       isAuthorized,
       isSpotifyAuthorized,
-      music,
       service,
-      setService,
       signInWithApple,
       signInWithSpotify,
+      signOutApple,
       signOutSpotify,
     ]
   );
