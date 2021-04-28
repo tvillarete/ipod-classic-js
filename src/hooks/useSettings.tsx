@@ -3,6 +3,7 @@ import { createContext, memo, useCallback, useContext, useState } from 'react';
 type StreamingService = 'apple' | 'spotify';
 
 export const SELECTED_SERVICE_KEY = 'ipodSelectedService';
+export const VOLUME_KEY = 'ipodVolume';
 
 export interface SettingsState {
   service?: StreamingService;
@@ -52,7 +53,7 @@ export const useSettings = (): SettingsHook => {
     (service?: StreamingService) => {
       setState((prevState) => ({
         ...prevState,
-        service: service,
+        service,
       }));
 
       if (service) {
@@ -85,8 +86,6 @@ export const SettingsProvider = ({ children }: Props) => {
       (localStorage.getItem(SELECTED_SERVICE_KEY) as StreamingService) ??
       undefined,
   });
-
-  console.log({ settingsState });
 
   return (
     <SettingsContext.Provider value={[settingsState, setSettingsState]}>

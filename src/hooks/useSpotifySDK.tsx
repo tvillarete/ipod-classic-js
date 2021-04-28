@@ -7,6 +7,8 @@ import {
   useState,
 } from 'react';
 
+import ViewOptions, { WINDOW_TYPE } from 'App/views';
+import { useWindowService } from 'services/window';
 import * as Utils from 'utils';
 import * as SpotifyUtils from 'utils/spotify';
 
@@ -34,6 +36,7 @@ export const useSpotifySDK = (): SpotifySDKHook => {
     isAppleAuthorized,
     setService,
   } = useSettings();
+  const { showWindow } = useWindowService();
   const state = useContext(SpotifySDKContext);
 
   /**
@@ -41,15 +44,33 @@ export const useSpotifySDK = (): SpotifySDKHook => {
    * redirected back to the app.
    */
   const signIn = useCallback(() => {
+    if (!state.isMounted) {
+      showWindow({
+        type: WINDOW_TYPE.POPUP,
+        id: ViewOptions.spotifyNotSupportedPopup.id,
+        title: ViewOptions.spotifyNotSupportedPopup.title,
+        description:
+          'Spotify sadly only supports web playback on Chrome (desktop)',
+        listOptions: [
+          {
+            type: 'Action',
+            label: 'Okay 😞',
+            onSelect: () => {},
+          },
+        ],
+      });
+      return;
+    }
+
     if (!isSpotifyAuthorized) {
       window.open(
         `http://tannerv.ddns.net:3001/${Utils.isDev() ? 'login_dev' : 'login'}`,
         '_self'
       );
+    } else {
+      setService('spotify');
     }
-
-    setService('spotify');
-  }, [isSpotifyAuthorized, setService]);
+  }, [isSpotifyAuthorized, setService, showWindow, state.isMounted]);
 
   const signOut = useCallback(() => {
     state.spotifyPlayer.disconnect();
@@ -58,7 +79,11 @@ export const useSpotifySDK = (): SpotifySDKHook => {
     SpotifyUtils.removeExistingTokens();
 
     // Change to apple music if available.
-    setService(isAppleAuthorized ? 'apple' : undefined);
+    if (isAppleAuthorized) {
+      setService('apple');
+    } else {
+      setService(undefined);
+    }
   }, [
     isAppleAuthorized,
     setIsSpotifyAuthorized,
@@ -146,7 +171,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
         isMounted,
       }}
     >
-      {isMounted ? children : null}
+      {children}
     </SpotifySDKContext.Provider>
   );
 };

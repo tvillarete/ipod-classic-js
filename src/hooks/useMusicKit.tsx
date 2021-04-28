@@ -89,28 +89,6 @@ export const MusicKitProvider = ({ children }: Props) => {
     setService: setStreamingService,
   } = useSettings();
 
-  const handlePlayPauseClick = useCallback(() => {
-    const music = musicKit.getInstance();
-
-    if (music.player.isPlaying) {
-      music.pause();
-    } else {
-      music.play();
-    }
-  }, [musicKit]);
-
-  const handleForwardClick = useCallback(() => {
-    const music = musicKit.getInstance();
-
-    music.skipToNextItem();
-  }, [musicKit]);
-
-  const handleBackClick = useCallback(() => {
-    const music = musicKit.getInstance();
-
-    music.skipToPreviousItem();
-  }, [musicKit]);
-
   useEffect(() => {
     try {
       const music = musicKit.configure({
@@ -149,9 +127,6 @@ export const MusicKitProvider = ({ children }: Props) => {
   useEventListener('musickitconfigured', () => {
     setIsConfigured(true);
   });
-  useEventListener('playpauseclick', handlePlayPauseClick);
-  useEventListener('forwardclick', handleForwardClick);
-  useEventListener('backclick', handleBackClick);
 
   return (
     <MusicKitContext.Provider value={{ musicKit, isConfigured, hasDevToken }}>

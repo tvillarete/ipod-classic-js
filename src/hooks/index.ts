@@ -1,6 +1,7 @@
 export * from './useMusicKit';
 export * from './useSpotifySDK';
 export * from './useSettings';
+export * from './useAudioPlayer';
 
 export { default as useAudioPlayer } from './useAudioPlayer';
 export { default as useDataFetcher } from './useDataFetcher';
