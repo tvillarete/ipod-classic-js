@@ -1,6 +1,7 @@
 {
   "name": "ipod-classic",
   "version": "0.1.0",
+  "license": "MIT",
   "private": true,
   "homepage": "./",
   "dependencies": {
