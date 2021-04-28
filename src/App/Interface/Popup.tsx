@@ -53,6 +53,12 @@ const TitleText = styled.h3`
   font-size: 16px;
 `;
 
+const DescriptionText = styled(TitleText)`
+  margin: ${Unit.XS} 0 ${Unit.XS};
+  font-size: 14px;
+  font-weight: 400;
+`;
+
 const OptionsContainer = styled.div`
   display: flex;
 `;
@@ -72,6 +78,7 @@ const OptionContainer = styled.div<{ highlighted: boolean }>`
   flex: 1;
   text-align: center;
   border: 2px solid transparent;
+  margin-top: 8px;
 
   ${({ highlighted }) =>
     highlighted &&
@@ -127,6 +134,7 @@ const Popup = ({ windowStack, index, isHidden }: Props) => {
     >
       <ContentTransitionContainer isHidden={isHidden}>
         <TitleText>{windowOptions.title}</TitleText>
+        <DescriptionText>{windowOptions.description}</DescriptionText>
         <OptionsContainer>
           {listOptions.map((option, i) => (
             <OptionContainer
