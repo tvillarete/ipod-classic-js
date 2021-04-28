@@ -67,8 +67,6 @@ export const ViewOptions: Record<string, ViewOption> = {
     title: 'Service',
     type: WINDOW_TYPE.ACTION_SHEET,
   },
-
-  // Popups
   signinPopup: {
     id: 'signinPopup',
     title: 'Sign in',
@@ -78,6 +76,13 @@ export const ViewOptions: Record<string, ViewOption> = {
     id: 'signOutPopup',
     title: 'Sign out',
     type: WINDOW_TYPE.ACTION_SHEET,
+  },
+
+  // Popups
+  spotifyNotSupportedPopup: {
+    id: 'spotifyNotSupportedPopup',
+    title: 'Unsupported browser',
+    type: WINDOW_TYPE.POPUP,
   },
 };
 

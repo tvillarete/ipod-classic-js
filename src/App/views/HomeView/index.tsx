@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { PREVIEW } from 'App/previews';
 import ViewOptions, {
@@ -14,8 +14,7 @@ import {
   SelectableListOption,
 } from 'components';
 import {
-  useForceUpdate,
-  useMKEventListener,
+  useAudioPlayer,
   useScrollHandler,
   useSettings,
   useSpotifySDK,
@@ -28,13 +27,9 @@ const strings = {
 
 const HomeView = () => {
   const { isAuthorized } = useSettings();
-  const { music } = useMusicKit();
+  const { signIn: signInWithApple } = useMusicKit();
+  const { nowPlayingItem } = useAudioPlayer();
   const { signIn: signInWithSpotify } = useSpotifySDK();
-  const forceUpdate = useForceUpdate();
-
-  const handleAppleLogIn = useCallback(() => {
-    music.authorize();
-  }, [music]);
 
   const options: SelectableListOption[] = useMemo(
     () => [
@@ -74,7 +69,7 @@ const HomeView = () => {
           {
             type: 'Action',
             label: 'Apple Music',
-            onSelect: handleAppleLogIn,
+            onSelect: signInWithApple,
           },
           {
             type: 'Action',
@@ -84,8 +79,7 @@ const HomeView = () => {
         ],
         preview: PREVIEW.MUSIC,
       }),
-      // TODO: Set up now playing button
-      ...getConditionalOption(false, {
+      ...getConditionalOption(!!nowPlayingItem, {
         type: 'View',
         label: strings.nowPlaying,
         viewId: ViewOptions.nowPlaying.id,
@@ -93,13 +87,10 @@ const HomeView = () => {
         preview: PREVIEW.NOW_PLAYING,
       }),
     ],
-    [handleAppleLogIn, isAuthorized, signInWithSpotify]
+    [isAuthorized, nowPlayingItem, signInWithApple, signInWithSpotify]
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.home.id, options);
-
-  useMKEventListener('userTokenDidChange', forceUpdate);
-  useMKEventListener('playbackStateDidChange', forceUpdate);
 
   return <SelectableList options={options} activeIndex={scrollIndex} />;
 };

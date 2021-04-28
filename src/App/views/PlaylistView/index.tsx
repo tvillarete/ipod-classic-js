@@ -13,7 +13,7 @@ interface Props {
 
 const PlaylistView = ({ id, inLibrary = false }: Props) => {
   useMenuHideWindow(ViewOptions.playlist.id);
-  const { data, isLoading } = useDataFetcher<IpodApi.Playlist>({
+  const { data: playlist, isLoading } = useDataFetcher<IpodApi.Playlist>({
     name: 'playlist',
     id,
     inLibrary,
@@ -21,19 +21,19 @@ const PlaylistView = ({ id, inLibrary = false }: Props) => {
 
   const options: SelectableListOption[] = useMemo(
     () =>
-      data?.songs.map((song, index) => ({
+      playlist?.songs.map((song, index) => ({
         type: 'Song',
         label: song.name,
         sublabel: song.artistName ?? 'Unknown artist',
         imageUrl: song.artwork?.url,
         queueOptions: {
-          songs: data?.songs.map(({ url }) => url),
+          playlist,
           startPosition: index,
         },
         showNowPlayingView: true,
         longPressOptions: Utils.getMediaOptions('song', song.id),
       })) ?? [],
-    [data?.songs]
+    [playlist]
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.playlist.id, options);

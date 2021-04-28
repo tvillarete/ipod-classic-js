@@ -20,6 +20,7 @@ const AlbumsView = () => {
       albums?.map((album) => ({
         type: 'View',
         label: album.name,
+        sublabel: album.artistName,
         imageUrl: Utils.getArtwork(50, album.artwork?.url),
         viewId: ViewOptions.album.id,
         component: () => <AlbumView id={album.id ?? ''} inLibrary />,

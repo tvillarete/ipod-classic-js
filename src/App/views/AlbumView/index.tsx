@@ -26,13 +26,13 @@ const AlbumView = ({ id, inLibrary = false }: Props) => {
         type: 'Song',
         label: song.name,
         queueOptions: {
-          songs: album?.songs.map(({ url }) => url),
+          album,
           startPosition: index,
         },
         showNowPlayingView: true,
         longPressOptions: Utils.getMediaOptions('song', song.id),
       })) ?? [],
-    [album?.songs]
+    [album]
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.album.id, options);

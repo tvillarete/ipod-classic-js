@@ -35,9 +35,9 @@ const Text = styled.h3`
   color: white;
 `;
 
-// const Subtext = styled(Text)`
-//   font-size: 14px;
-// `;
+const Subtext = styled(Text)`
+  font-size: 14px;
+`;
 
 const ListContainer = styled.div`
   position: relative;
@@ -54,6 +54,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
   const { data: album, isLoading } = useDataFetcher<IpodApi.Album>({
     name: 'album',
     id: albumId,
+    inLibrary: true,
   });
 
   const options: SelectableListOption[] = useMemo(
@@ -62,11 +63,11 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
         type: 'Song',
         label: song.name,
         queueOptions: {
-          songs: album?.songs.map(({ url }) => url),
+          album,
           startPosition: index,
         },
       })) ?? [],
-    [album?.songs]
+    [album]
   );
   const [scrollIndex] = useScrollHandler(ViewOptions.coverFlow.id, options);
 
@@ -80,8 +81,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
         <>
           <InfoContainer>
             <Text>{album?.name}</Text>
-            {/* TODO: Add artistName */}
-            {/* <Subtext>{album?.artistName}</Subtext> */}
+            <Subtext>{album?.artistName}</Subtext>
           </InfoContainer>
           <ListContainer>
             <SelectableList activeIndex={scrollIndex} options={options} />

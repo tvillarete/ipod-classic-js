@@ -23,7 +23,7 @@ const PlaylistsView = () => {
       data?.map((playlist) => ({
         type: 'View',
         label: playlist.name,
-        sublabel: playlist.description,
+        sublabel: playlist.description || `By ${playlist.curatorName}`,
         imageUrl: playlist.artwork?.url,
         viewId: ViewOptions.playlist.id,
         component: () => <PlaylistView id={playlist.id} inLibrary />,
