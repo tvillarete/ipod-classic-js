@@ -8,18 +8,27 @@ declare namespace IpodApi {
     description?: string;
     id: string;
     name: string;
+    curatorName: string;
     songs: Song[];
     url: string;
   }
 
   interface Album {
     // TODO: set up artists support
-    artist?: string;
+    artistName?: string;
     artwork?: Artwork;
     id: string;
     name: string;
     url: string;
     songs: Song[];
+  }
+
+  interface Artist {
+    id: string;
+    name: string;
+    url: string;
+    artwork?: Artwork;
+    albums?: Album[];
   }
 
   interface Song {
@@ -31,5 +40,19 @@ declare namespace IpodApi {
     name: string;
     trackNumber: number;
     url: string;
+  }
+
+  interface QueueOptions {
+    album?: Album;
+    playlist?: Playlist;
+    songs?: Song[];
+    song?: Song;
+    startPosition?: number;
+  }
+
+  interface MediaItem extends Song {
+    playlistArtworkUrl?: string;
+    playlistName?: string;
+    previewUrl?: string;
   }
 }

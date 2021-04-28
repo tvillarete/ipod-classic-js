@@ -9,7 +9,7 @@ export const getAppleArtwork = (size: number | string, url?: string) => {
   return url.replace('{w}', `${size}`).replace('{h}', `${size}`);
 };
 
-export const appleToIpodSong = (data: AppleMusicApi.Song): IpodApi.Song => ({
+export const convertAppleSong = (data: AppleMusicApi.Song): IpodApi.Song => ({
   id: data.id,
   name: data.attributes?.name ?? 'Unknown name',
   url: data.href ?? '',
@@ -20,18 +20,18 @@ export const appleToIpodSong = (data: AppleMusicApi.Song): IpodApi.Song => ({
   trackNumber: data.attributes?.trackNumber ?? 0,
 });
 
-export const spotifyToIpodSongSimplified = (
+export const convertSpotifySongSimplified = (
   data: SpotifyApi.TrackObjectSimplified
 ): IpodApi.Song => ({
   id: data.id,
   name: data.name,
   url: data.uri,
-  artistName: 'TODO: Artist name',
+  artistName: data.artists.map(({ name }) => name).join(', '),
   duration: data.duration_ms,
   trackNumber: data.track_number,
 });
 
-export const spotifyToIpodSong = (
+export const convertSpotifySongFull = (
   data: SpotifyApi.TrackObjectFull
 ): IpodApi.Song => ({
   id: data.id,
@@ -39,74 +39,148 @@ export const spotifyToIpodSong = (
   url: data.uri,
   artwork: { url: data.album.images[0]?.url ?? '' },
   albumName: data.album.name,
-  artistName: 'TODO: Artist name',
+  artistName: data.artists.map(({ name }) => name).join(', '),
   duration: data.duration_ms,
   trackNumber: data.track_number,
 });
 
 // Playlist Conversion
 
-export const appleToIpodPlaylist = (
+export const convertApplePlaylist = (
   data: AppleMusicApi.Playlist
 ): IpodApi.Playlist => ({
   id: data.id,
   name: data.attributes?.name ?? '–',
   url: data.attributes?.url ?? '',
+  curatorName: data.attributes?.curatorName ?? '',
   artwork: {
     url: getAppleArtwork(100, data.attributes?.artwork?.url) ?? '',
   },
   description: data.attributes?.description?.standard,
-  songs: data.relationships?.tracks?.data.map(appleToIpodSong) ?? [],
+  songs: data.relationships?.tracks?.data.map(convertAppleSong) ?? [],
 });
 
-export const spotifyToIpodPlaylistSimplified = (
+export const convertSpotifyPlaylistSimplified = (
   data: SpotifyApi.PlaylistObjectSimplified
 ): IpodApi.Playlist => ({
   id: data.id,
   name: data.name,
-  url: data.href,
+  curatorName: data.owner.display_name ?? '',
+  url: data.uri,
   artwork: { url: data.images[0]?.url ?? '' },
   description: data.description ?? '',
   songs: [],
 });
 
-export const spotifyToIpodPlaylist = (
+export const convertSpotifyPlaylistFull = (
   data: SpotifyApi.PlaylistObjectFull
 ): IpodApi.Playlist => ({
   id: data.uri,
   name: data.name,
-  url: data.href,
+  curatorName: data.owner.display_name ?? '',
+  url: data.uri,
   artwork: { url: data.images[0]?.url ?? '' },
   description: data.description ?? '',
-  songs: data.tracks.items.map((item) => spotifyToIpodSong(item.track)),
+  songs: data.tracks.items.map((item) => convertSpotifySongFull(item.track)),
 });
 
-export const appleToIpodAlbum = (data: AppleMusicApi.Album): IpodApi.Album => ({
+export const convertAppleAlbum = (
+  data: AppleMusicApi.Album,
+  artworkSize?: number
+): IpodApi.Album => ({
   id: data.id,
   name: data.attributes?.name ?? '–',
+  artistName: data.attributes?.artistName,
   url: data.attributes?.url ?? '',
   artwork: {
-    url: getAppleArtwork(100, data.attributes?.artwork?.url) ?? '',
+    url:
+      getAppleArtwork(artworkSize ?? 100, data.attributes?.artwork?.url) ?? '',
   },
-  songs: data.relationships?.tracks.data.map(appleToIpodSong) ?? [],
+  songs: data.relationships?.tracks.data.map(convertAppleSong) ?? [],
 });
 
-export const spotifyToIpodAlbumSimplified = (
+export const convertSpotifyAlbumSimplified = (
   data: SpotifyApi.AlbumObjectSimplified
 ): IpodApi.Album => ({
   id: data.id,
   name: data.name,
+  artistName: data.artists.map((artist) => artist.name).join(', '),
   url: data.uri,
   artwork: { url: data.images[0]?.url ?? '' },
   songs: [],
 });
 
-export const spotifyToIpodAlbum = (
+export const convertSpotifyAlbumFull = (
   data: SpotifyApi.AlbumObjectFull
 ): IpodApi.Album => ({
   id: data.id,
   name: data.name,
+  artistName: data.artists.map((artist) => artist.name).join(', '),
   url: data.uri,
   artwork: { url: data.images[0]?.url ?? '' },
-  songs: data.tracks.items.map((item) => spotifyToIpodSongSimplified(item)),
+  songs: data.tracks.items.map((item) => convertSpotifySongSimplified(item)),
 });
+
+export const convertAppleArtist = (
+  data: AppleMusicApi.Artist
+): IpodApi.Artist => ({
+  id: data.id,
+  name: data.attributes?.name ?? '–',
+  url: data.attributes?.url ?? '',
+  artwork: undefined,
+  albums: data.relationships?.albums?.data.map(convertAppleAlbum) ?? [],
+});
+
+export const convertSpotifyArtistSimplified = (
+  data: SpotifyApi.ArtistObjectSimplified
+): IpodApi.Artist => ({
+  id: data.id,
+  name: data.name,
+  url: data.uri,
+  artwork: undefined,
+});
+
+export const convertSpotifyArtistFull = (
+  data: SpotifyApi.ArtistObjectFull
+): IpodApi.Artist => ({
+  id: data.id,
+  name: data.name,
+  url: data.uri,
+  artwork: {
+    url: data.images[0]?.url,
+  },
+});
+
+export const convertAppleMediaItem = (
+  mediaItem: MusicKit.MediaItem
+): IpodApi.MediaItem => ({
+  albumName: mediaItem.albumName,
+  artistName: mediaItem.artistName,
+  artwork: {
+    url: getAppleArtwork(100, mediaItem.artworkURL) ?? '',
+  },
+  duration: mediaItem.playbackDuration,
+  id: mediaItem.id,
+  name: mediaItem.title,
+  trackNumber: mediaItem.trackNumber,
+  url: '',
+});
+
+export const convertSpotifyMediaItem = (
+  state: Spotify.PlaybackState
+): IpodApi.MediaItem => {
+  const track = state.track_window.current_track;
+
+  return {
+    albumName: track.album.name,
+    artistName: track.artists.map(({ name }) => name).join(', '),
+    artwork: {
+      url: track.album.images[0]?.url ?? '',
+    },
+    duration: state.duration,
+    id: track.id ?? '',
+    name: track.name,
+    trackNumber: 0,
+    url: track.uri,
+  };
+};

@@ -44,7 +44,7 @@ const useSpotifyDataFetcher = () => {
 
     if (response) {
       return response.items.map((item) =>
-        ConversionUtils.spotifyToIpodAlbum(item.album)
+        ConversionUtils.convertSpotifyAlbumFull(item.album)
       );
     }
   }, [accessToken]);
@@ -60,7 +60,42 @@ const useSpotifyDataFetcher = () => {
       });
 
       if (response) {
-        return ConversionUtils.spotifyToIpodAlbum(response);
+        return ConversionUtils.convertSpotifyAlbumFull(response);
+      }
+    },
+    [accessToken]
+  );
+
+  const fetchArtists = useCallback(async () => {
+    const response = await fetchSpotifyApi<SpotifyApi.UsersFollowedArtistsResponse>(
+      {
+        endpoint: `me/following?type=artist&limit=50`,
+        accessToken,
+        onError: (error) => {
+          throw new Error(error);
+        },
+      }
+    );
+
+    return response?.artists?.items.map(
+      ConversionUtils.convertSpotifyArtistFull
+    );
+  }, [accessToken]);
+
+  const fetchArtist = useCallback(
+    async (userId = '', id: string) => {
+      const response = await fetchSpotifyApi<SpotifyApi.ArtistsAlbumsResponse>({
+        endpoint: `artists/${id}/albums`,
+        accessToken,
+        onError: (error) => {
+          throw new Error(error);
+        },
+      });
+
+      if (response) {
+        return response.items.map(
+          ConversionUtils.convertSpotifyAlbumSimplified
+        );
       }
     },
     [accessToken]
@@ -78,7 +113,7 @@ const useSpotifyDataFetcher = () => {
     );
 
     return response?.items?.map(
-      ConversionUtils.spotifyToIpodPlaylistSimplified
+      ConversionUtils.convertSpotifyPlaylistSimplified
     );
   }, [accessToken]);
 
@@ -93,7 +128,7 @@ const useSpotifyDataFetcher = () => {
       });
 
       if (response) {
-        return ConversionUtils.spotifyToIpodPlaylist(response);
+        return ConversionUtils.convertSpotifyPlaylistFull(response);
       }
     },
     [accessToken]
@@ -102,6 +137,8 @@ const useSpotifyDataFetcher = () => {
   return {
     fetchAlbums,
     fetchAlbum,
+    fetchArtists,
+    fetchArtist,
     fetchPlaylists,
     fetchPlaylist,
   };

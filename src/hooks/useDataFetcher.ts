@@ -26,11 +26,22 @@ interface PlaylistFetcherProps extends UserLibraryProps {
 
 interface AlbumsFetcherProps {
   name: 'albums';
+  artworkSize?: number;
 }
 
 interface AlbumFetcherProps extends UserLibraryProps {
   name: 'album';
   id: string;
+}
+
+interface ArtistsFetcherProps {
+  name: 'artists';
+}
+
+interface ArtistFetcherProps extends UserLibraryProps {
+  name: 'artist';
+  id: string;
+  artworkSize?: number;
 }
 
 type Props = CommonFetcherProps &
@@ -39,6 +50,8 @@ type Props = CommonFetcherProps &
     | PlaylistFetcherProps
     | AlbumsFetcherProps
     | AlbumFetcherProps
+    | ArtistsFetcherProps
+    | ArtistFetcherProps
   );
 
 const useDataFetcher = <TType extends object>(props: Props) => {
@@ -49,21 +62,26 @@ const useDataFetcher = <TType extends object>(props: Props) => {
   const [hasError, setHasError] = useState(false);
   const [data, setData] = useState<TType>();
 
-  const fetchAlbums = useCallback(async () => {
-    let albums: IpodApi.Album[] | undefined;
+  const fetchAlbums = useCallback(
+    async (options: AlbumsFetcherProps) => {
+      let albums: IpodApi.Album[] | undefined;
 
-    if (service === 'apple') {
-      const response = await music.api.library.albums(null, {
-        include: 'library-albums',
-      });
+      if (service === 'apple') {
+        const response = await music.api.library.albums(null, {
+          include: 'library-albums',
+        });
 
-      albums = response.map(ConversionUtils.appleToIpodAlbum);
-    } else if (service === 'spotify') {
-      albums = await spotifyDataFetcher.fetchAlbums();
-    }
-    setData(albums as TType);
-    setIsLoading(false);
-  }, [music.api, service, spotifyDataFetcher]);
+        albums = response.map((item) =>
+          ConversionUtils.convertAppleAlbum(item, options.artworkSize)
+        );
+      } else if (service === 'spotify') {
+        albums = await spotifyDataFetcher.fetchAlbums();
+      }
+      setData(albums as TType);
+      setIsLoading(false);
+    },
+    [music.api, service, spotifyDataFetcher]
+  );
 
   const fetchAlbum = useCallback(
     async (options: AlbumFetcherProps) => {
@@ -74,11 +92,52 @@ const useDataFetcher = <TType extends object>(props: Props) => {
           ? await music.api.library.album(options.id)
           : await music.api.album(options.id);
 
-        album = ConversionUtils.appleToIpodAlbum(response);
+        album = ConversionUtils.convertAppleAlbum(response);
       } else if (service === 'spotify') {
         album = await spotifyDataFetcher.fetchAlbum(options.userId, options.id);
       }
       setData(album as TType);
+      setIsLoading(false);
+    },
+    [music.api, service, spotifyDataFetcher]
+  );
+
+  const fetchArtists = useCallback(async () => {
+    let artists: IpodApi.Artist[] | undefined;
+
+    if (service === 'apple') {
+      const response = await music.api.library.artists(null, {
+        include: 'catalog',
+        limit: 100,
+      });
+
+      artists = response.map(ConversionUtils.convertAppleArtist);
+    } else if (service === 'spotify') {
+      artists = await spotifyDataFetcher.fetchArtists();
+    }
+    setData(artists as TType);
+    setIsLoading(false);
+  }, [music.api, service, spotifyDataFetcher]);
+
+  const fetchArtistAlbums = useCallback(
+    async (options: ArtistFetcherProps) => {
+      let albums: IpodApi.Album[] | undefined;
+
+      if (service === 'apple') {
+        const response = options.inLibrary
+          ? await music.api.library.artistRelationship(options.id, 'albums')
+          : await music.api.artistRelationship(options.id, 'albums');
+
+        albums = response.map((item) =>
+          ConversionUtils.convertAppleAlbum(item, options.artworkSize)
+        );
+      } else if (service === 'spotify') {
+        albums = await spotifyDataFetcher.fetchArtist(
+          options.userId,
+          options.id
+        );
+      }
+      setData(albums as TType);
       setIsLoading(false);
     },
     [music.api, service, spotifyDataFetcher]
@@ -92,7 +151,7 @@ const useDataFetcher = <TType extends object>(props: Props) => {
         limit: 100,
       });
 
-      playlists = response.map(ConversionUtils.appleToIpodPlaylist);
+      playlists = response.map(ConversionUtils.convertApplePlaylist);
     } else if (service === 'spotify') {
       playlists = await spotifyDataFetcher.fetchPlaylists();
     }
@@ -109,7 +168,7 @@ const useDataFetcher = <TType extends object>(props: Props) => {
           ? await music.api.library.playlist(options.id)
           : await music.api.playlist(options.id);
 
-        playlist = ConversionUtils.appleToIpodPlaylist(response);
+        playlist = ConversionUtils.convertApplePlaylist(response);
       } else if (service === 'spotify') {
         playlist = await spotifyDataFetcher.fetchPlaylist(
           options.userId,
@@ -128,19 +187,27 @@ const useDataFetcher = <TType extends object>(props: Props) => {
 
     switch (props.name) {
       case 'albums':
-        fetchAlbums();
-        break;
+        return fetchAlbums(props);
       case 'album':
-        fetchAlbum(props);
-        break;
+        return fetchAlbum(props);
+      case 'artists':
+        return fetchArtists();
+      case 'artist':
+        return fetchArtistAlbums(props);
       case 'playlists':
-        fetchPlaylists();
-        break;
+        return fetchPlaylists();
       case 'playlist':
-        fetchPlaylist(props);
-        break;
+        return fetchPlaylist(props);
     }
-  }, [fetchAlbum, fetchAlbums, fetchPlaylist, fetchPlaylists, props]);
+  }, [
+    fetchAlbum,
+    fetchAlbums,
+    fetchArtistAlbums,
+    fetchArtists,
+    fetchPlaylist,
+    fetchPlaylists,
+    props,
+  ]);
 
   useEffectOnce(() => {
     handleMount();
