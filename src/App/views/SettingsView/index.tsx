@@ -40,18 +40,18 @@ const SettingsView = () => {
         id: ViewOptions.serviceTypeActionSheet.id,
         label: 'Choose Service',
         listOptions: [
-          ...getConditionalOption(service === 'spotify', {
+          {
             type: 'Action',
-            label: 'Apple Music',
+            label: `Apple Music ${service === 'apple' ? '(Current)' : ''}`,
             onSelect: () => {
               signInWithApple();
             },
-          }),
-          ...getConditionalOption(service === 'apple', {
+          },
+          {
             type: 'Action',
-            label: 'Spotify',
+            label: `Spotify ${service === 'spotify' ? '(Current)' : ''}`,
             onSelect: signInWithSpotify,
-          }),
+          },
         ],
         preview: PREVIEW.SERVICE,
       }),

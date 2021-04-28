@@ -1,5 +1,8 @@
+import { useState } from 'react';
+
 import { Unit } from 'components';
-import styled from 'styled-components';
+import { useInterval } from 'hooks';
+import styled, { css } from 'styled-components';
 
 const RootContainer = styled.div`
   display: flex;
@@ -11,10 +14,26 @@ const RootContainer = styled.div`
   background: white;
 `;
 
+const StyledImg = styled.img<{ isHidden: boolean }>`
+  height: 60px;
+  width: 60px;
+  transition: all 0.5s ease-in-out;
+
+  ${({ isHidden }) =>
+    isHidden &&
+    css`
+      opacity: 0;
+    `};
+
+  :last-of-type {
+    margin-top: -60px;
+  }
+`;
+
 const Title = styled.h3`
   margin: ${Unit.XS} 0 ${Unit.XXS};
   font-weight: bold;
-  font-size: 20px;
+  font-size: 18px;
 `;
 
 const Text = styled.p`
@@ -25,7 +44,10 @@ const Text = styled.p`
 `;
 
 const strings = {
-  title: ' Music',
+  title: {
+    apple: 'Apple Music',
+    spotify: 'Spotify',
+  },
   defaultMessage: 'Sign into view this content',
 };
 
@@ -34,10 +56,26 @@ interface Props {
 }
 
 const AuthPrompt = ({ message }: Props) => {
+  const [icon, setIcon] = useState<'apple' | 'spotify'>('apple');
+
+  useInterval(
+    () => setIcon((prevState) => (prevState === 'apple' ? 'spotify' : 'apple')),
+    4000
+  );
+
   return (
     <RootContainer>
-      <img alt="app_icon" src="app_icon.png" height={60} width={60} />
-      <Title>{strings.title}</Title>
+      <StyledImg
+        isHidden={icon === 'spotify'}
+        alt="app_icon"
+        src="apple_music_icon.svg"
+      />
+      <StyledImg
+        isHidden={icon === 'apple'}
+        alt="app_icon"
+        src="spotify_icon.svg"
+      />
+      <Title>{strings.title[icon]}</Title>
       <Text>{message ?? strings.defaultMessage}</Text>
     </RootContainer>
   );

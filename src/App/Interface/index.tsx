@@ -1,5 +1,5 @@
 import { WINDOW_TYPE } from 'App/views';
-import { ErrorScreen, Screen, Unit } from 'components';
+import { ErrorScreen } from 'components';
 import { useMusicKit } from 'hooks/useMusicKit';
 import { useWindowService } from 'services/window';
 import styled from 'styled-components';
@@ -9,29 +9,6 @@ import CoverFlowInterface from './CoverFlowInterface';
 import FullScreenInterface from './FullScreenInterface';
 import PopupInterface from './PopupInterface';
 import SplitScreenInterface from './SplitScreenInterface';
-
-const Container = styled.div`
-  position: relative;
-  height: 260px;
-  margin: ${Unit.LG} ${Unit.LG} ${Unit.XL};
-  border: 4px solid black;
-  border-radius: ${Unit.XS};
-  overflow: hidden;
-  background: white;
-  animation: fadeFromBlack 0.5s;
-
-  @keyframes fadeFromBlack {
-    0% {
-      filter: brightness(0);
-    }
-  }
-
-  ${Screen.SM} {
-    @media screen and (max-height: 750px) {
-      margin: ${Unit.SM} ${Unit.SM} ${Unit.XL};
-    }
-  }
-`;
 
 /** Prevents the user from scrolling the display with a mouse. */
 const Mask = styled.div`
@@ -65,7 +42,7 @@ const Interface = () => {
   const isReady = isConfigured && hasAppleDevToken;
 
   return (
-    <Container>
+    <div>
       {isReady ? (
         <>
           <CoverFlowInterface window={coverFlowWindow} />
@@ -82,7 +59,7 @@ const Interface = () => {
         <ErrorScreen message={'Missing developer token'} />
       )}
       <Mask />
-    </Container>
+    </div>
   );
 };
 

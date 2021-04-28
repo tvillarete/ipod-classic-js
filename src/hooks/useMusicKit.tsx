@@ -1,4 +1,4 @@
-import {
+import React, {
   createContext,
   memo,
   useCallback,
@@ -8,6 +8,7 @@ import {
   useState,
 } from 'react';
 
+import { ErrorScreen } from 'components';
 import { useEventListener, useMKEventListener } from 'hooks';
 
 import { useSettings } from './useSettings';
@@ -17,8 +18,7 @@ import { useSettings } from './useSettings';
  * @see https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const DEVELOPER_TOKEN: string | undefined =
-  'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJHWFFEWThYM0MifQ.eyJpYXQiOjE2MTY4ODQ1MDksImV4cCI6MTYzMjQzNjUwOSwiaXNzIjoiRzZIM0NLV005QyJ9.z7NS-8962oumCEaYOUMJfzonO2Y2tAWb_vAF_wwOkDqU8BoWTo6xDg5uG8ZvFeFpMqRoMbBaB_Mr4sxpvJzjPg';
+const DEVELOPER_TOKEN: string | undefined = undefined;
 
 export interface MusicKitState {
   musicKit: typeof MusicKit;
@@ -130,7 +130,11 @@ export const MusicKitProvider = ({ children }: Props) => {
 
   return (
     <MusicKitContext.Provider value={{ musicKit, isConfigured, hasDevToken }}>
-      {isConfigured ? children : null}
+      {isConfigured ? (
+        children
+      ) : (
+        <ErrorScreen message={'Missing Apple developer token'} />
+      )}
     </MusicKitContext.Provider>
   );
 };

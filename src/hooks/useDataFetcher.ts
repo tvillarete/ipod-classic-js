@@ -1,9 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useSettings, useSpotifyDataFetcher } from 'hooks';
 import * as ConversionUtils from 'utils/conversion';
 
-import useEffectOnce from './useEffectOnce';
 import { useMusicKit } from './useMusicKit';
 
 interface UserLibraryProps {
@@ -56,11 +55,12 @@ type Props = CommonFetcherProps &
 
 const useDataFetcher = <TType extends object>(props: Props) => {
   const spotifyDataFetcher = useSpotifyDataFetcher();
-  const { service } = useSettings();
+  const { service, isAppleAuthorized, isSpotifyAuthorized } = useSettings();
   const { music } = useMusicKit();
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [data, setData] = useState<TType>();
+  const [isMounted, setIsMounted] = useState(false);
 
   const fetchAlbums = useCallback(
     async (options: AlbumsFetcherProps) => {
@@ -187,18 +187,26 @@ const useDataFetcher = <TType extends object>(props: Props) => {
 
     switch (props.name) {
       case 'albums':
-        return fetchAlbums(props);
+        await fetchAlbums(props);
+        break;
       case 'album':
-        return fetchAlbum(props);
+        await fetchAlbum(props);
+        break;
       case 'artists':
-        return fetchArtists();
+        await fetchArtists();
+        break;
       case 'artist':
-        return fetchArtistAlbums(props);
+        await fetchArtistAlbums(props);
+        break;
       case 'playlists':
-        return fetchPlaylists();
+        await fetchPlaylists();
+        break;
       case 'playlist':
-        return fetchPlaylist(props);
+        await fetchPlaylist(props);
+        break;
     }
+
+    setIsMounted(true);
   }, [
     fetchAlbum,
     fetchAlbums,
@@ -209,9 +217,17 @@ const useDataFetcher = <TType extends object>(props: Props) => {
     props,
   ]);
 
-  useEffectOnce(() => {
-    handleMount();
-  });
+  useEffect(() => {
+    if (
+      !isMounted &&
+      ((service === 'apple' && isAppleAuthorized) ||
+        (service === 'spotify' && isSpotifyAuthorized))
+    ) {
+      handleMount();
+    } else {
+      setIsLoading(false);
+    }
+  }, [handleMount, isAppleAuthorized, isMounted, isSpotifyAuthorized, service]);
 
   return {
     isLoading,
