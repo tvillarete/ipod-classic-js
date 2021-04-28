@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { ScrollWheel } from 'components';
-import { SpotifySDKProvider } from 'hooks';
+import { AudioPlayerProvider, SpotifySDKProvider } from 'hooks';
 import MusicKitProvider from 'hooks/useMusicKit';
 import { SettingsProvider } from 'hooks/useSettings';
 import WindowProvider from 'services/window';
@@ -77,12 +77,14 @@ const App: React.FC = () => {
       <SettingsProvider>
         <SpotifySDKProvider>
           <MusicKitProvider>
-            <WindowProvider>
-              <Shell>
-                <Interface />
-                <ScrollWheel />
-              </Shell>
-            </WindowProvider>
+            <AudioPlayerProvider>
+              <WindowProvider>
+                <Shell>
+                  <Interface />
+                  <ScrollWheel />
+                </Shell>
+              </WindowProvider>
+            </AudioPlayerProvider>
           </MusicKitProvider>
         </SpotifySDKProvider>
       </SettingsProvider>
