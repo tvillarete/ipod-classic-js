@@ -1,9 +1,8 @@
 import { useCallback } from 'react';
 
 import { Controls, Unit } from 'components';
-import { useForceUpdate, useMKEventListener, useMusicKit } from 'hooks';
+import { useAudioPlayer, useEffectOnce, useMKEventListener } from 'hooks';
 import styled from 'styled-components';
-import { getArtwork } from 'utils';
 
 const Container = styled.div`
   height: 100%;
@@ -64,11 +63,11 @@ interface Props {
 }
 
 const NowPlaying = ({ hideArtwork, onHide }: Props) => {
-  const { music } = useMusicKit();
-  const { player } = music;
-  const queue = player?.queue;
-  const nowPlayingItem = queue?.items?.[player.nowPlayingItemIndex ?? 0];
-  const forceUpdate = useForceUpdate();
+  const {
+    nowPlayingItem,
+    updateNowPlayingItem,
+    updatePlaybackInfo,
+  } = useAudioPlayer();
 
   const handlePlaybackChange = useCallback(
     ({ state }: { state: MusicKit.PlaybackStates }) => {
@@ -76,32 +75,27 @@ const NowPlaying = ({ hideArtwork, onHide }: Props) => {
       if (state === MusicKit.PlaybackStates.completed) {
         onHide();
       }
-
-      forceUpdate();
     },
-    [onHide, forceUpdate]
+    [onHide]
   );
 
-  useMKEventListener('playbackStateDidChange', handlePlaybackChange);
+  useEffectOnce(() => {
+    updateNowPlayingItem();
+    updatePlaybackInfo();
+  });
 
-  /** Force a component re-render whenever the queue position changes. */
-  useMKEventListener('queuePositionDidChange', forceUpdate);
+  useMKEventListener('playbackStateDidChange', handlePlaybackChange);
 
   return (
     <Container>
       <MetadataContainer>
         <ArtworkContainer isHidden={hideArtwork}>
-          <Artwork src={getArtwork(300, nowPlayingItem?.artwork?.url)} />
+          <Artwork src={nowPlayingItem?.artwork?.url} />
         </ArtworkContainer>
         <InfoContainer>
-          <Text>{nowPlayingItem?.title}</Text>
+          <Text>{nowPlayingItem?.name}</Text>
           <Subtext>{nowPlayingItem?.artistName}</Subtext>
           <Subtext>{nowPlayingItem?.albumName}</Subtext>
-          {!!nowPlayingItem && (
-            <Subtext>{`${music.player.queue.position + 1} of ${
-              music.player.queue.length
-            }`}</Subtext>
-          )}
         </InfoContainer>
       </MetadataContainer>
       <ControlsContainer>

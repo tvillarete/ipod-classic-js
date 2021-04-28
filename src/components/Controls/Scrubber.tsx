@@ -1,8 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { Unit } from 'components';
-import { useEffectOnce, useEventListener, useInterval } from 'hooks';
-import { useMusicKit } from 'hooks/useMusicKit';
+import { useAudioPlayer, useEventListener, useInterval } from 'hooks';
 import styled from 'styled-components';
 import { useDebouncedCallback } from 'use-debounce/lib';
 import { formatTime } from 'utils';
@@ -35,50 +34,56 @@ interface Props {
 }
 
 const Scrubber = ({ isScrubbing }: Props) => {
-  const { music } = useMusicKit();
-  const { player } = music;
-  const [currentTime, setCurrentTime] = useState(0);
-  const percent = Math.round(
-    (currentTime / player.currentPlaybackDuration) * 100
+  const { playbackInfo, seekToTime } = useAudioPlayer();
+  const { currentTime, duration, isPlaying } = playbackInfo;
+  const [scrubberTime, setScrubberTime] = useState(currentTime);
+  const scrubberPercent = useMemo(
+    () => Math.round((scrubberTime / duration) * 100),
+    [duration, scrubberTime]
   );
+  const scrubberTimeRemaining = useMemo(() => duration - scrubberTime, [
+    duration,
+    scrubberTime,
+  ]);
+
   /** The user is actively scrubbing. We disable the 1s update interval in this case. */
   const [isActive, setIsActive] = useState(false);
 
   /** Wait until the user is finished scrubbing before seeking. */
   const handleSeek = useDebouncedCallback((newTime: number) => {
-    player.seekToTime(newTime);
+    seekToTime(newTime);
     setIsActive(false);
   }, 300);
 
   const scrubForward = useCallback(() => {
-    if (currentTime === player.currentPlaybackDuration || !isScrubbing) return;
-    const newTime = currentTime + 1;
+    if (scrubberTime === duration || !isScrubbing) return;
+    const newTime = scrubberTime + 1;
 
-    if (newTime < player.currentPlaybackDuration) {
+    if (newTime < duration) {
       setIsActive(true);
       handleSeek(newTime);
-      setCurrentTime(newTime);
+      setScrubberTime(newTime);
     }
-  }, [currentTime, handleSeek, isScrubbing, player.currentPlaybackDuration]);
+  }, [scrubberTime, duration, isScrubbing, handleSeek]);
 
   const scrubBackward = useCallback(() => {
-    if (currentTime === 0 || !isScrubbing) return;
-    const newTime = currentTime - 1;
+    if (scrubberTime === 0 || !isScrubbing) return;
+    const newTime = scrubberTime - 1;
 
     if (newTime >= 0) {
       setIsActive(true);
       handleSeek(newTime);
-      setCurrentTime(newTime);
+      setScrubberTime(newTime);
     }
-  }, [currentTime, handleSeek, isScrubbing]);
+  }, [scrubberTime, handleSeek, isScrubbing]);
 
   const refresh = useCallback(
     (force = false) => {
-      if ((!isActive && player.isPlaying) || force) {
-        setCurrentTime(player.currentPlaybackTime);
+      if ((!isActive && isPlaying) || force) {
+        setScrubberTime(currentTime);
       }
     },
-    [isActive, player.currentPlaybackTime, player.isPlaying]
+    [currentTime, isActive, isPlaying]
   );
 
   useEventListener('forwardscroll', scrubForward);
@@ -87,15 +92,11 @@ const Scrubber = ({ isScrubbing }: Props) => {
   /** Update the progress bar every second. */
   useInterval(refresh, 1000);
 
-  useEffectOnce(() => refresh(true));
-
   return (
     <Container>
-      <Label textAlign="left">{formatTime(currentTime)}</Label>
-      <ProgressBar percent={percent} isScrubber />
-      <Label textAlign="right">
-        -{formatTime(player.currentPlaybackTimeRemaining)}
-      </Label>
+      <Label textAlign="left">{formatTime(scrubberTime)}</Label>
+      <ProgressBar percent={scrubberPercent} isScrubber />
+      <Label textAlign="right">-{formatTime(scrubberTimeRemaining)}</Label>
     </Container>
   );
 };
