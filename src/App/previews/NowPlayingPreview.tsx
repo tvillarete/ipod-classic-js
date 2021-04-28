@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useMusicKit } from 'hooks/useMusicKit';
+import { useAudioPlayer } from 'hooks';
 import styled from 'styled-components';
 import * as Utils from 'utils';
 
@@ -13,15 +13,12 @@ const Artwork = styled.img`
 `;
 
 const NowPlayingPreview = () => {
-  const { music } = useMusicKit();
-  const { player } = music;
-  const nowPlayingItem =
-    player?.queue?.items?.[player.nowPlayingItemIndex ?? 0];
+  const { nowPlayingItem } = useAudioPlayer();
 
-  return music.player.isPlaying ? (
+  return nowPlayingItem ? (
     <Container>
       <Artwork
-        src={Utils.getArtwork(300, nowPlayingItem?.artwork?.url)}
+        src={Utils.getArtwork(300, nowPlayingItem.artwork?.url)}
         alt="now playing artwork"
       />
     </Container>

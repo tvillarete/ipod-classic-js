@@ -21,6 +21,7 @@ const MusicPreview = () => {
   const { data: albums, isLoading, hasError } = useDataFetcher<IpodApi.Album[]>(
     {
       name: 'albums',
+      artworkSize: 400,
     }
   );
 
