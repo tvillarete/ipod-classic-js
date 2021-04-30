@@ -1,8 +1,5 @@
 import { SelectableListOption } from 'components';
 
-export const getUrlFromPath = (path: string) =>
-  `https://tannerv.ddns.net/SpotiFree/${encodeURI(path)}`;
-
 /** Accepts a url with '{w}' and '{h}' and replaces them with the specified size */
 export const getArtwork = (size: number | string, url?: string) => {
   if (!url) {

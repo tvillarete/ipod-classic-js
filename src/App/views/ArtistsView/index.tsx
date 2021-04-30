@@ -8,7 +8,7 @@ import ViewOptions, { ArtistView } from '../';
 
 const ArtistsView = () => {
   useMenuHideWindow(ViewOptions.artists.id);
-  const { isAppleAuthorized: isAuthorized } = useSettings();
+  const { isAuthorized } = useSettings();
   const { data: artists, isLoading } = useDataFetcher<IpodApi.Artist[]>({
     name: 'artists',
   });

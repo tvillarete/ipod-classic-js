@@ -1,3 +1,5 @@
+import { API_URL } from 'hooks';
+
 const ACCESS_TOKEN_KEY = 'spotify_access_token';
 const REFRESH_TOKEN_KEY = 'spotify_refresh_token';
 const TOKEN_TIMESTAMP_KEY = 'spotify_token_timestamp';
@@ -55,7 +57,7 @@ const _getRefreshedTokens = async (
 ): Promise<TokenResponse> => {
   try {
     const response = await fetch(
-      `http://tannerv.ddns.net:3001/refresh_token?refresh_token=${storedRefreshToken}`,
+      `${API_URL}/refresh_token?refresh_token=${storedRefreshToken}`,
       {
         credentials: 'same-origin',
         mode: 'cors',
@@ -95,7 +97,7 @@ const _getNewTokens = async (): Promise<TokenResponse> => {
 
   try {
     const response = await fetch(
-      `http://tannerv.ddns.net:3001/callback?state=${state}&code=${code}`,
+      `${API_URL}/callback?state=${state}&code=${code}`,
       {
         credentials: 'same-origin',
         mode: 'cors',

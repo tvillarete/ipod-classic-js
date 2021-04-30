@@ -15,6 +15,8 @@ import * as SpotifyUtils from 'utils/spotify';
 import useEffectOnce from './useEffectOnce';
 import { useSettings } from './useSettings';
 
+export const API_URL = 'https://b7d1fdb16506.ngrok.io';
+
 export interface SpotifySDKState {
   isMounted: boolean;
   spotifyPlayer: Spotify.SpotifyPlayer;
@@ -64,7 +66,7 @@ export const useSpotifySDK = (): SpotifySDKHook => {
 
     if (!isSpotifyAuthorized) {
       window.open(
-        `http://tannerv.ddns.net:3001/${Utils.isDev() ? 'login_dev' : 'login'}`,
+        `${API_URL}/${Utils.isDev() ? 'login_dev' : 'login'}`,
         '_self'
       );
     } else {
