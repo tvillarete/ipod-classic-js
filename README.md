@@ -2,7 +2,7 @@
 
 ### by Tanner Villarete | [LinkedIn](http://linkedin.com/in/tvillarete) | [Website](http://tannerv.com)
 
-As we head into the next decade, here's a throwback to remind ourselves how far we've come. An iPod Classic build using React Hooks (no Redux this time), TypeScript, and GraphQL.
+Before the days of streaming services we relied on physical devices to store our limited libraries of music. Now with the streaming age, we no longer rely on physical storage and have endless hours of songs at our disposal. This project is an homage to the good 'ol days. A mix of the old and new. Experience the iPod Classic you used to own that now connects to Spotify and Apple Music — the two most popular music streaming platforms in the world.
 
 I built this thing to be very extensible – to the point where it can even run games (like brick!). In the future I might consider adding a few more little apps and easter eggs (theming?).
 
@@ -13,13 +13,9 @@ I built this thing to be very extensible – to the point where it can even run 
 Here's a breakdown of the Full Stack:
 #### Frontend: 
 - JS: TypeScript, React (Hooks, Context)
-- Styles: Styled Components, Framer Motion (for some of the animations)
+- CSS: Styled Components, Framer Motion (for some of the animations)
 - Textures/Icons: All SVGs created by me in Figma
-- API: GraphQL
-
-#### Backend
-- API: Laravel (PHP) with GraphQL middleware
-- DB: MySQL
+- API: Spotify Web Playback SDK / Apple MusicKit JS
 
 ## Running Locally
 
