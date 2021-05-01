@@ -1,6 +1,3 @@
-import * as Screen from './constants/Screen';
-import * as Unit from './constants/Unit';
-
 export * from './SelectableList';
 export * from './icons';
 
@@ -14,6 +11,3 @@ export { default as LoadingScreen } from './LoadingScreen';
 export { default as NowPlaying } from './NowPlaying';
 export { default as ScrollWheel } from './ScrollWheel';
 export { default as SelectableList } from './SelectableList';
-
-// Constants
-export { Unit, Screen };

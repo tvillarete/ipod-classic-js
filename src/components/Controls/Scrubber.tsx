@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { Unit } from 'components';
 import { useAudioPlayer, useEventListener, useInterval } from 'hooks';
 import styled from 'styled-components';
 import { useDebouncedCallback } from 'use-debounce/lib';
 import { formatTime } from 'utils';
+import { Unit } from 'utils/constants';
 
 import ProgressBar from './ProgressBar';
 

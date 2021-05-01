@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Screen, ScrollWheel, Unit } from 'components';
+import { ScrollWheel } from 'components';
 import {
   AudioPlayerProvider,
   MusicKitProvider,
@@ -9,6 +9,7 @@ import {
 } from 'hooks';
 import WindowProvider from 'services/window';
 import styled, { createGlobalStyle } from 'styled-components';
+import { Screen, Unit } from 'utils/constants';
 
 import Interface from './Interface';
 

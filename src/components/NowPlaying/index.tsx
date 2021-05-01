@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
 
-import { Controls, Unit } from 'components';
+import { Controls } from 'components';
 import { useAudioPlayer, useEffectOnce, useMKEventListener } from 'hooks';
 import styled from 'styled-components';
+import { Unit } from 'utils/constants';
 
 const Container = styled.div`
   height: 100%;

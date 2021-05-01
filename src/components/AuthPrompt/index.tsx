@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { Unit } from 'components';
 import { useInterval } from 'hooks';
 import styled, { css } from 'styled-components';
+import { Unit } from 'utils/constants';
 
 const RootContainer = styled.div`
   display: flex;

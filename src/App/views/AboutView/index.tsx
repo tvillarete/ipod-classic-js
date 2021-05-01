@@ -1,7 +1,8 @@
 import ViewOptions from 'App/views';
-import { SelectableList, SelectableListOption, Unit } from 'components';
+import { SelectableList, SelectableListOption } from 'components';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';
 import styled from 'styled-components';
+import { Unit } from 'utils/constants';
 
 const Container = styled.div`
   display: flex;

@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 
-import { Unit } from 'components';
 import { useEventListener, useVolumeHandler } from 'hooks';
 import styled from 'styled-components';
+import { Unit } from 'utils/constants';
 
 import Scrubber from './Scrubber';
 // import Scrubber from './Scrubber';

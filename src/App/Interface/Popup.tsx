@@ -2,11 +2,12 @@ import { useMemo } from 'react';
 
 import { popInAnimation } from 'animation';
 import { WINDOW_TYPE } from 'App/views';
-import { SelectableListOption, Unit } from 'components';
+import { SelectableListOption } from 'components';
 import { motion } from 'framer-motion';
 import { useEventListener, useMenuHideWindow, useScrollHandler } from 'hooks';
 import { useWindowService, WindowOptions } from 'services/window';
 import styled, { css } from 'styled-components';
+import { Unit } from 'utils/constants';
 
 interface RootContainerProps {
   index: number;

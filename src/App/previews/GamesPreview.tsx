@@ -1,6 +1,6 @@
-import { Unit } from 'components';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
+import { Unit } from 'utils/constants';
 
 const Container = styled(motion.div)`
   display: flex;

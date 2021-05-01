@@ -1,5 +1,5 @@
-import { Unit } from 'components';
 import styled from 'styled-components';
+import { Unit } from 'utils/constants';
 
 import ProgressBar from './ProgressBar';
 

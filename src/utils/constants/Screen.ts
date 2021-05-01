@@ -1,4 +1,4 @@
-export const XS = {
+const XS = {
   MediaQuery: '@media (min-width: 0)',
   Size: {
     Min: 0,
@@ -7,7 +7,7 @@ export const XS = {
   ContainerMaxWidth: '100%',
 };
 
-export const SM = {
+const SM = {
   MediaQuery: '@media (min-width: 576px)',
   Size: {
     Min: 576,
@@ -16,7 +16,7 @@ export const SM = {
   ContainerMaxWidth: '540px',
 };
 
-export const MD = {
+const MD = {
   MediaQuery: '@media (min-width: 768px)',
   Size: {
     Min: 768,
@@ -25,7 +25,7 @@ export const MD = {
   ContainerMaxWidth: '720px',
 };
 
-export const LG = {
+const LG = {
   MediaQuery: '@media (min-width: 992px)',
   Size: {
     Min: 992,
@@ -34,7 +34,7 @@ export const LG = {
   ContainerMaxWidth: '960px',
 };
 
-export const XL = {
+const XL = {
   MediaQuery: '@media (min-width: 1200px)',
   Size: {
     Min: 1200,
@@ -42,3 +42,13 @@ export const XL = {
   },
   ContainerMaxWidth: '1140px',
 };
+
+const Screen = {
+  XS,
+  SM,
+  MD,
+  LG,
+  XL,
+};
+
+export default Screen;
