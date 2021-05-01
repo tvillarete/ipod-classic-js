@@ -11,7 +11,7 @@ import WindowProvider from 'providers/WindowProvider';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Screen, Unit } from 'utils/constants';
 
-import Interface from './Interface';
+import WindowManager from './WindowManager';
 
 const GlobalStyles = createGlobalStyle`
   * {
@@ -108,7 +108,7 @@ const App: React.FC = () => {
               <MusicKitProvider>
                 <AudioPlayerProvider>
                   <WindowProvider>
-                    <Interface />
+                    <WindowManager />
                   </WindowProvider>
                 </AudioPlayerProvider>
               </MusicKitProvider>

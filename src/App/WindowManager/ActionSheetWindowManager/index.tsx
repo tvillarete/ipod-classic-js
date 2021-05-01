@@ -2,7 +2,7 @@ import { AnimatePresence } from 'framer-motion';
 import { WindowOptions } from 'providers/WindowProvider';
 import styled from 'styled-components';
 
-import ActionSheet from '../ActionSheet';
+import ActionSheet from '../components/ActionSheet';
 
 interface ContainerProps {
   isHidden: boolean;
@@ -22,7 +22,7 @@ interface Props {
   windowStack: WindowOptions[];
 }
 
-const ActionSheetInterface = ({ windowStack }: Props) => {
+const ActionSheetWindowManager = ({ windowStack }: Props) => {
   const isHidden = windowStack.length === 0;
 
   return (
@@ -41,4 +41,4 @@ const ActionSheetInterface = ({ windowStack }: Props) => {
   );
 };
 
-export default ActionSheetInterface;
+export default ActionSheetWindowManager;

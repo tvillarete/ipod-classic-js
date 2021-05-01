@@ -18,7 +18,7 @@ interface Props {
   window?: WindowOptions;
 }
 
-const CoverFlowInterface = ({ window }: Props) => {
+const CoverFlowWindowManager = ({ window }: Props) => {
   const WindowComponent =
     window?.type === WINDOW_TYPE.COVER_FLOW ? window.component : null;
 
@@ -34,4 +34,4 @@ const CoverFlowInterface = ({ window }: Props) => {
   );
 };
 
-export default CoverFlowInterface;
+export default CoverFlowWindowManager;

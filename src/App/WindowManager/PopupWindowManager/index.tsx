@@ -2,7 +2,7 @@ import { AnimatePresence } from 'framer-motion';
 import { WindowOptions } from 'providers/WindowProvider';
 import styled from 'styled-components';
 
-import Popup from '../Popup';
+import Popup from '../components/Popup';
 
 interface ContainerProps {
   isHidden: boolean;
@@ -22,7 +22,7 @@ interface Props {
   windowStack: WindowOptions[];
 }
 
-const PopupInterface = ({ windowStack }: Props) => {
+const PopupWindowManager = ({ windowStack }: Props) => {
   const isHidden = windowStack.length === 0;
 
   return (
@@ -41,4 +41,4 @@ const PopupInterface = ({ windowStack }: Props) => {
   );
 };
 
-export default PopupInterface;
+export default PopupWindowManager;

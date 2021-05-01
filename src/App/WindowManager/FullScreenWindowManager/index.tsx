@@ -1,8 +1,9 @@
-import Window from 'App/Interface/Window';
 import { Header } from 'components';
 import { AnimatePresence } from 'framer-motion';
 import { WindowOptions } from 'providers/WindowProvider';
 import styled from 'styled-components';
+
+import { Window } from '../components';
 
 interface ContainerProps {
   isHidden: boolean;
@@ -22,7 +23,7 @@ interface Props {
   windowStack: WindowOptions[];
 }
 
-const FullScreenInterface = ({ windowStack }: Props) => {
+const FullScreenWindowManager = ({ windowStack }: Props) => {
   const isHidden = windowStack.length === 0;
 
   return (
@@ -42,4 +43,4 @@ const FullScreenInterface = ({ windowStack }: Props) => {
   );
 };
 
-export default FullScreenInterface;
+export default FullScreenWindowManager;

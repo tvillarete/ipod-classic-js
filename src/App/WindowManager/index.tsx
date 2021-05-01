@@ -3,11 +3,11 @@ import { ErrorScreen } from 'components';
 import { useMusicKit, useWindowContext } from 'hooks';
 import styled from 'styled-components';
 
-import ActionSheetInterface from './ActionSheetInterface';
-import CoverFlowInterface from './CoverFlowInterface';
-import FullScreenInterface from './FullScreenInterface';
-import PopupInterface from './PopupInterface';
-import SplitScreenInterface from './SplitScreenInterface';
+import ActionSheetWindowManager from './ActionSheetWindowManager';
+import CoverFlowWindowManager from './CoverFlowWindowManager';
+import FullScreenWindowManager from './FullScreenWindowManager';
+import PopupWindowManager from './PopupWindowManager';
+import SplitScreenWindowManager from './SplitScreenWindowManager';
 
 /** Prevents the user from scrolling the display with a mouse. */
 const Mask = styled.div`
@@ -19,7 +19,7 @@ const Mask = styled.div`
   right: 0;
 `;
 
-const Interface = () => {
+const WindowManager = () => {
   const { isConfigured, hasDevToken: hasAppleDevToken } = useMusicKit();
   const { windowStack } = useWindowContext();
   const splitViewWindows = windowStack.filter(
@@ -44,15 +44,15 @@ const Interface = () => {
     <div>
       {isReady ? (
         <>
-          <CoverFlowInterface window={coverFlowWindow} />
-          <SplitScreenInterface
+          <CoverFlowWindowManager window={coverFlowWindow} />
+          <SplitScreenWindowManager
             windowStack={splitViewWindows}
             menuHidden={fullViewWindows.length > 0}
             allHidden={!!coverFlowWindow}
           />
-          <FullScreenInterface windowStack={fullViewWindows} />
-          <ActionSheetInterface windowStack={actionSheetWindows} />
-          <PopupInterface windowStack={popupWindows} />
+          <FullScreenWindowManager windowStack={fullViewWindows} />
+          <ActionSheetWindowManager windowStack={actionSheetWindows} />
+          <PopupWindowManager windowStack={popupWindows} />
         </>
       ) : (
         <ErrorScreen message={'Missing developer token'} />
@@ -62,4 +62,4 @@ const Interface = () => {
   );
 };
 
-export default Interface;
+export default WindowManager;

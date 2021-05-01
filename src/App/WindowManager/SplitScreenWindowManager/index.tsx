@@ -1,9 +1,9 @@
-import Window from 'App/Interface/Window';
 import { Header } from 'components';
 import { AnimatePresence } from 'framer-motion';
 import { WindowOptions } from 'providers/WindowProvider';
 import styled, { css } from 'styled-components';
 
+import { Window } from '../components';
 import PreviewPanel from './PreviewPanel';
 
 const Container = styled.div`
@@ -41,7 +41,7 @@ interface Props {
   allHidden: boolean;
 }
 
-const SplitScreenInterface = ({
+const SplitScreenWindowManager = ({
   windowStack,
   menuHidden,
   allHidden,
@@ -66,4 +66,4 @@ const SplitScreenInterface = ({
   );
 };
 
-export default SplitScreenInterface;
+export default SplitScreenWindowManager;
