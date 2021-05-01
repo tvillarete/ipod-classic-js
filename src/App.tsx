@@ -11,7 +11,7 @@ import WindowProvider from 'providers/WindowProvider';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Screen, Unit } from 'utils/constants';
 
-import { WindowManager } from '../components';
+import { WindowManager } from './components';
 
 const GlobalStyles = createGlobalStyle`
   * {
