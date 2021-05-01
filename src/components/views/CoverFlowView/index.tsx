@@ -20,6 +20,7 @@ const CoverFlowView = () => {
   const { isAuthorized } = useSettings();
   const { data: albums, isLoading } = useDataFetcher<IpodApi.Album[]>({
     name: 'albums',
+    artworkSize: 350,
   });
 
   const handleMenuClick = useCallback(() => {
