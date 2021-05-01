@@ -1,6 +1,6 @@
 import { PREVIEW, Previews } from 'App/previews';
 import { AnimatePresence } from 'framer-motion';
-import { useWindowService } from 'services/window';
+import { useWindowContext } from 'hooks';
 import styled, { css } from 'styled-components';
 
 interface ContainerProps {
@@ -14,7 +14,7 @@ const Container = styled.div<ContainerProps>`
   background: white;
   transition: all 0.35s;
 
-  ${props =>
+  ${(props) =>
     props.isHidden &&
     css`
       transform: translateX(100%);
@@ -28,7 +28,7 @@ interface Props {
 }
 
 const PreviewPanel = ({ isHidden }: Props) => {
-  const { preview } = useWindowService();
+  const { preview } = useWindowContext();
   const PreviewComponent = Previews[preview];
 
   return (

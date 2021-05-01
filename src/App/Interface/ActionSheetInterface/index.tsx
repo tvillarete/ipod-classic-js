@@ -1,5 +1,5 @@
 import { AnimatePresence } from 'framer-motion';
-import { WindowOptions } from 'services/window';
+import { WindowOptions } from 'providers/WindowProvider';
 import styled from 'styled-components';
 
 import ActionSheet from '../ActionSheet';

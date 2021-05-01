@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useWindowService } from 'services/window';
+import { useWindowContext } from 'hooks';
 
 import useEventListener from '../utils/useEventListener';
 
@@ -9,7 +9,7 @@ import useEventListener from '../utils/useEventListener';
  * Provide an ID that matches the ID of the window you want to close.
  */
 const useMenuHideWindow = (id: string) => {
-  const { windowStack, hideWindow } = useWindowService();
+  const { windowStack, hideWindow } = useWindowContext();
 
   const handleClick = useCallback(() => {
     if (windowStack[windowStack.length - 1].id === id) {

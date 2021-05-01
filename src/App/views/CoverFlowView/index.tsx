@@ -1,8 +1,12 @@
 import React, { useCallback } from 'react';
 
 import { AuthPrompt, LoadingScreen } from 'components';
-import { useDataFetcher, useEventListener, useSettings } from 'hooks';
-import { useWindowService } from 'services/window';
+import {
+  useDataFetcher,
+  useEventListener,
+  useSettings,
+  useWindowContext,
+} from 'hooks';
 import styled from 'styled-components';
 
 import CoverFlow from './CoverFlow';
@@ -12,7 +16,7 @@ const Container = styled.div`
 `;
 
 const CoverFlowView = () => {
-  const { hideWindow } = useWindowService();
+  const { hideWindow } = useWindowContext();
   const { isAuthorized } = useSettings();
   const { data: albums, isLoading } = useDataFetcher<IpodApi.Album[]>({
     name: 'albums',

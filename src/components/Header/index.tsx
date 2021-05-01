@@ -1,6 +1,5 @@
 import LoadingIndicator from 'components/LoadingIndicator';
-import { useAudioPlayer } from 'hooks';
-import { useWindowService } from 'services/window';
+import { useAudioPlayer, useWindowContext } from 'hooks';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -33,7 +32,7 @@ const Icon = styled.img`
 `;
 
 const Header = () => {
-  const { headerTitle } = useWindowService();
+  const { headerTitle } = useWindowContext();
   const { playbackInfo } = useAudioPlayer();
 
   const { isPlaying, isPaused, isLoading } = playbackInfo;

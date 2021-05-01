@@ -2,7 +2,7 @@ import { fade } from 'animation';
 import { WINDOW_TYPE } from 'App/views';
 import { Header } from 'components';
 import { AnimatePresence, motion } from 'framer-motion';
-import { WindowOptions } from 'services/window';
+import { WindowOptions } from 'providers/WindowProvider';
 import styled from 'styled-components';
 
 const Container = styled(motion.div)`

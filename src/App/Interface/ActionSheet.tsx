@@ -4,8 +4,13 @@ import { slideUpAnimation } from 'animation';
 import { WINDOW_TYPE } from 'App/views';
 import { SelectableListOption } from 'components';
 import { motion } from 'framer-motion';
-import { useEventListener, useMenuHideWindow, useScrollHandler } from 'hooks';
-import { useWindowService, WindowOptions } from 'services/window';
+import {
+  useEventListener,
+  useMenuHideWindow,
+  useScrollHandler,
+  useWindowContext,
+} from 'hooks';
+import { WindowOptions } from 'providers/WindowProvider';
 import styled, { css } from 'styled-components';
 import { Unit } from 'utils/constants';
 
@@ -85,7 +90,7 @@ interface Props {
 }
 
 const ActionSheet = ({ windowStack, index, isHidden }: Props) => {
-  const { hideWindow } = useWindowService();
+  const { hideWindow } = useWindowContext();
   const windowOptions = windowStack[index];
   useMenuHideWindow(windowOptions.id);
 

@@ -6,7 +6,7 @@ import {
   PopupOptionProps,
   SelectableListOption,
 } from 'components';
-import { useWindowService } from 'services/window';
+import { useWindowContext } from 'hooks';
 
 import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
 
@@ -17,7 +17,7 @@ const useScrollHandler = (
   /** A list of all scrollable items. Used to cap the scrolling to the last element. */
   options: SelectableListOption[] = []
 ): [number] => {
-  const { showWindow, windowStack, setPreview } = useWindowService();
+  const { showWindow, windowStack, setPreview } = useWindowContext();
   const { play } = useAudioPlayer();
   const [index, setIndex] = useState(0);
   const timeoutIdRef = useRef<any>();

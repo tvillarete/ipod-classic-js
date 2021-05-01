@@ -3,7 +3,8 @@ import { useMemo } from 'react';
 import { noAnimation, slideRightAnimation } from 'animation';
 import { WINDOW_TYPE } from 'App/views';
 import { motion } from 'framer-motion';
-import { useWindowService, WindowOptions } from 'services/window';
+import { useWindowContext } from 'hooks';
+import { WindowOptions } from 'providers/WindowProvider';
 import styled from 'styled-components';
 
 interface ContainerProps {
@@ -41,7 +42,7 @@ interface Props {
 }
 
 const Window = ({ windowStack, index, isHidden }: Props) => {
-  const { headerTitle } = useWindowService();
+  const { headerTitle } = useWindowContext();
   const options = windowStack[index];
   const firstInStack = index === 0;
 

@@ -1,11 +1,10 @@
 import ViewOptions from 'App/views';
 import { NowPlaying } from 'components';
-import { useMenuHideWindow } from 'hooks';
-import { useWindowService } from 'services/window';
+import { useMenuHideWindow, useWindowContext } from 'hooks';
 
 const NowPlayingView = () => {
   useMenuHideWindow(ViewOptions.nowPlaying.id);
-  const { hideWindow } = useWindowService();
+  const { hideWindow } = useWindowContext();
 
   return <NowPlaying onHide={hideWindow} />;
 };

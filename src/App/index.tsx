@@ -7,7 +7,7 @@ import {
   SettingsProvider,
   SpotifySDKProvider,
 } from 'hooks';
-import WindowProvider from 'services/window';
+import WindowProvider from 'providers/WindowProvider';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Screen, Unit } from 'utils/constants';
 

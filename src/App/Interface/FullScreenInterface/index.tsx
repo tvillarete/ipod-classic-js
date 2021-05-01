@@ -1,7 +1,7 @@
 import Window from 'App/Interface/Window';
 import { Header } from 'components';
 import { AnimatePresence } from 'framer-motion';
-import { WindowOptions } from 'services/window';
+import { WindowOptions } from 'providers/WindowProvider';
 import styled from 'styled-components';
 
 interface ContainerProps {

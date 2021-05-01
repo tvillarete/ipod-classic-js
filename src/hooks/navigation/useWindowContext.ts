@@ -1,74 +1,10 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import { useCallback, useContext } from 'react';
 
 import { PREVIEW } from 'App/previews';
-import ViewOptions, * as Views from 'App/views';
-import { SelectableListOption } from 'components';
+import ViewOptions from 'App/views';
+import { WindowContext, WindowOptions } from 'providers/WindowProvider';
 
-type SharedOptionProps = {
-  id: string;
-  type: Views.WINDOW_TYPE;
-  /** Fire an event when the window closes. */
-  onClose?: (...args: any[]) => void;
-  /** Any extra styles you want to pass to the window. */
-  styles?: Record<string, any>;
-};
-
-type ListViewOptionProps<TComponent extends React.ComponentType<any> = any> = {
-  /** These window types allow you to pass in a custom component to render. */
-  type:
-    | Views.WINDOW_TYPE.SPLIT
-    | Views.WINDOW_TYPE.FULL
-    | Views.WINDOW_TYPE.COVER_FLOW;
-  /** The React component that will be rendered in the window. */
-  component: TComponent;
-  /** Props that will be passed to the component. */
-  props?: Omit<React.ComponentProps<TComponent>, 'id'>;
-  /** Fire an event when the window closes. */
-  onClose?: (...args: any[]) => void;
-};
-
-type ActionSheetViewOptionProps = {
-  type: Views.WINDOW_TYPE.ACTION_SHEET;
-  listOptions: SelectableListOption[];
-};
-
-type PopupViewOptionProps = {
-  type: Views.WINDOW_TYPE.POPUP;
-  title: string;
-  description?: string;
-  listOptions: SelectableListOption[];
-};
-
-export type WindowOptions<
-  TComponent extends React.ComponentType<any> = any
-> = SharedOptionProps &
-  (
-    | ListViewOptionProps<TComponent>
-    | ActionSheetViewOptionProps
-    | PopupViewOptionProps
-  );
-
-interface WindowState {
-  windowStack: WindowOptions[];
-  headerTitle?: string;
-  preview: PREVIEW;
-}
-
-type WindowContextType = [
-  WindowState,
-  React.Dispatch<React.SetStateAction<WindowState>>
-];
-
-const WindowContext = createContext<WindowContextType>([
-  {
-    windowStack: [],
-    headerTitle: 'iPod.js',
-    preview: PREVIEW.MUSIC,
-  },
-  () => {},
-]);
-
-export interface WindowServiceHook {
+export interface WindowContextHook {
   /** Push an instance of WindowOptions to the windowStack. */
   showWindow: (window: WindowOptions) => void;
   /** Given an id, remove the window from the stack (otherwise, pop the top window). */
@@ -94,9 +30,9 @@ export interface WindowServiceHook {
  *   Use it whenever you want to open a new window (@type WindowOptions).
  *
  *    @example
- *    `const {showWindow, hideWindow, windowStack} = useWindowService();`
+ *    `const {showWindow, hideWindow, windowStack} = useWindowContext();`
  */
-export const useWindowService = (): WindowServiceHook => {
+export const useWindowContext = (): WindowContextHook => {
   const [windowState, setWindowState] = useContext(WindowContext);
 
   const showWindow = useCallback(
@@ -172,29 +108,4 @@ export const useWindowService = (): WindowServiceHook => {
   };
 };
 
-interface Props {
-  children: React.ReactChild;
-}
-
-const WindowProvider = ({ children }: Props) => {
-  const windowStack: WindowOptions[] = [
-    {
-      id: ViewOptions.home.id,
-      type: Views.WINDOW_TYPE.SPLIT,
-      component: Views.HomeView,
-    },
-  ];
-  const [windowState, setWindowState] = useState<WindowState>({
-    windowStack,
-    headerTitle: ViewOptions.home.title,
-    preview: PREVIEW.MUSIC,
-  });
-
-  return (
-    <WindowContext.Provider value={[windowState, setWindowState]}>
-      {children}
-    </WindowContext.Provider>
-  );
-};
-
-export default WindowProvider;
+export default useWindowContext;

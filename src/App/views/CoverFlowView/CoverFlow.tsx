@@ -3,8 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { fade } from 'animation';
 import { NowPlaying } from 'components';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEventListener } from 'hooks';
-import { useWindowService } from 'services/window';
+import { useEventListener, useWindowContext } from 'hooks';
 import styled from 'styled-components';
 
 import AlbumCover from './AlbumCover';
@@ -70,7 +69,7 @@ const CoverFlow = ({ albums }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedAlbum, setSelectedAlbum] = useState<IpodApi.Album>();
   const [playingAlbum, setPlayingAlbum] = useState(false);
-  const { hideWindow } = useWindowService();
+  const { hideWindow } = useWindowContext();
 
   const selectAlbum = useCallback(() => {
     if (!selectedAlbum) {

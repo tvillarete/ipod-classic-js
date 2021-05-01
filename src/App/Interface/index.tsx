@@ -1,7 +1,6 @@
 import { WINDOW_TYPE } from 'App/views';
 import { ErrorScreen } from 'components';
-import { useMusicKit } from 'hooks';
-import { useWindowService } from 'services/window';
+import { useMusicKit, useWindowContext } from 'hooks';
 import styled from 'styled-components';
 
 import ActionSheetInterface from './ActionSheetInterface';
@@ -22,7 +21,7 @@ const Mask = styled.div`
 
 const Interface = () => {
   const { isConfigured, hasDevToken: hasAppleDevToken } = useMusicKit();
-  const { windowStack } = useWindowService();
+  const { windowStack } = useWindowContext();
   const splitViewWindows = windowStack.filter(
     (window) => window.type === WINDOW_TYPE.SPLIT
   );
