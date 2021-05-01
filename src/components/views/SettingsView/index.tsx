@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 
-import { PREVIEW } from 'App/previews';
-import ViewOptions, { AboutView } from 'App/views';
 import {
   getConditionalOption,
   SelectableList,
   SelectableListOption,
 } from 'components';
+import { PREVIEW } from 'components/previews';
+import ViewOptions, { AboutView } from 'components/views';
 import {
   useMenuHideWindow,
   useMusicKit,

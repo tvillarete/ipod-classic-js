@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
-import ViewOptions, { AlbumView } from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
+import { AlbumView, ViewOptions } from 'components/views';
 import { useDataFetcher, useMenuHideWindow, useScrollHandler } from 'hooks';
 import * as Utils from 'utils';
 

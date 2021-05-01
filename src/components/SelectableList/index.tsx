@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { PREVIEW } from 'App/previews';
-import { WINDOW_TYPE } from 'App/views';
 import { LoadingScreen } from 'components';
+import { PREVIEW } from 'components/previews';
+import { WINDOW_TYPE } from 'components/views';
 import { AnimatePresence } from 'framer-motion';
 import { useTimeout } from 'hooks';
 import styled from 'styled-components';

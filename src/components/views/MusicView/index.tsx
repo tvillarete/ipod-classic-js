@@ -1,17 +1,16 @@
 import React, { useMemo } from 'react';
 
-import { PREVIEW } from 'App/previews';
+import { SelectableList, SelectableListOption } from 'components';
+import { PREVIEW } from 'components/previews';
 import {
   AlbumsView,
   ArtistsView,
   CoverFlowView,
   NowPlayingView,
   PlaylistsView,
-} from 'App/views';
-import { SelectableList, SelectableListOption } from 'components';
+  ViewOptions,
+} from 'components/views';
 import { useMenuHideWindow, useMusicKit, useScrollHandler } from 'hooks';
-
-import ViewOptions from '../';
 
 const MusicView = () => {
   const { music } = useMusicKit();

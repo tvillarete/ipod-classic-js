@@ -1,8 +1,8 @@
 import { createContext, useState } from 'react';
 
-import { PREVIEW } from 'App/previews';
-import ViewOptions, * as Views from 'App/views';
 import { SelectableListOption } from 'components';
+import { PREVIEW } from 'components/previews';
+import ViewOptions, * as Views from 'components/views';
 
 type SharedOptionProps = {
   id: string;

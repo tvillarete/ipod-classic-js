@@ -1,5 +1,5 @@
-import { WINDOW_TYPE } from 'App/views';
 import { ErrorScreen } from 'components';
+import { WINDOW_TYPE } from 'components/views';
 import { useMusicKit, useWindowContext } from 'hooks';
 import styled from 'styled-components';
 

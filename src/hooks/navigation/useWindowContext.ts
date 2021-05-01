@@ -1,7 +1,7 @@
 import { useCallback, useContext } from 'react';
 
-import { PREVIEW } from 'App/previews';
-import ViewOptions from 'App/views';
+import { PREVIEW } from 'components/previews';
+import ViewOptions from 'components/views';
 import { WindowContext, WindowOptions } from 'providers/WindowProvider';
 
 export interface WindowContextHook {

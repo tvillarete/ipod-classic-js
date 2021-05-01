@@ -1,5 +1,5 @@
-import ViewOptions from 'App/views';
 import { NowPlaying } from 'components';
+import ViewOptions from 'components/views';
 import { useMenuHideWindow, useWindowContext } from 'hooks';
 
 const NowPlayingView = () => {

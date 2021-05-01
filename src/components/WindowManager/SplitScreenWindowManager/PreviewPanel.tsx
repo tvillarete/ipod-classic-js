@@ -1,4 +1,4 @@
-import { PREVIEW, Previews } from 'App/previews';
+import { PREVIEW, Previews } from 'components/previews';
 import { AnimatePresence } from 'framer-motion';
 import { useWindowContext } from 'hooks';
 import styled, { css } from 'styled-components';

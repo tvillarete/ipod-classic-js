@@ -1,5 +1,5 @@
-import ViewOptions from 'App/views';
 import { SelectableList, SelectableListOption } from 'components';
+import { ViewOptions } from 'components/views';
 import { useMenuHideWindow, useScrollHandler } from 'hooks';
 import styled from 'styled-components';
 import { Unit } from 'utils/constants';

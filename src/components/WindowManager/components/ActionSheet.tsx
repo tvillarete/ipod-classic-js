@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
 import { slideUpAnimation } from 'animation';
-import { WINDOW_TYPE } from 'App/views';
 import { SelectableListOption } from 'components';
+import { WINDOW_TYPE } from 'components/views';
 import { motion } from 'framer-motion';
 import {
   useEventListener,

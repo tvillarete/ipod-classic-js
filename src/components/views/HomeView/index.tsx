@@ -1,18 +1,19 @@
 import { useMemo } from 'react';
 
-import { PREVIEW } from 'App/previews';
-import ViewOptions, {
-  CoverFlowView,
-  GamesView,
-  MusicView,
-  NowPlayingView,
-  SettingsView,
-} from 'App/views';
 import {
   getConditionalOption,
   SelectableList,
   SelectableListOption,
 } from 'components';
+import { PREVIEW } from 'components/previews';
+import {
+  CoverFlowView,
+  GamesView,
+  MusicView,
+  NowPlayingView,
+  SettingsView,
+  ViewOptions,
+} from 'components/views';
 import {
   useAudioPlayer,
   useMusicKit,

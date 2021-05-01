@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { noAnimation, slideRightAnimation } from 'animation';
-import { WINDOW_TYPE } from 'App/views';
+import { WINDOW_TYPE } from 'components/views';
 import { motion } from 'framer-motion';
 import { useWindowContext } from 'hooks';
 import { WindowOptions } from 'providers/WindowProvider';

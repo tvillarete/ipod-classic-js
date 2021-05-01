@@ -1,6 +1,6 @@
 import { fade } from 'animation';
-import { WINDOW_TYPE } from 'App/views';
 import { Header } from 'components';
+import { WINDOW_TYPE } from 'components/views';
 import { AnimatePresence, motion } from 'framer-motion';
 import { WindowOptions } from 'providers/WindowProvider';
 import styled from 'styled-components';

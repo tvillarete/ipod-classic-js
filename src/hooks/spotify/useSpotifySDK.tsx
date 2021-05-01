@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 
-import ViewOptions, { WINDOW_TYPE } from 'App/views';
+import ViewOptions, { WINDOW_TYPE } from 'components/views';
 import { useWindowContext } from 'hooks';
 import * as Utils from 'utils';
 import * as SpotifyUtils from 'utils/spotify';

@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import ViewOptions, { NowPlayingView, WINDOW_TYPE } from 'App/views';
 import {
   ActionSheetOptionProps,
   PopupOptionProps,
   SelectableListOption,
 } from 'components';
+import ViewOptions, { NowPlayingView, WINDOW_TYPE } from 'components/views';
 import { useWindowContext } from 'hooks';
 
 import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
