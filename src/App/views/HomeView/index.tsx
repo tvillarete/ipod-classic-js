@@ -15,11 +15,11 @@ import {
 } from 'components';
 import {
   useAudioPlayer,
+  useMusicKit,
   useScrollHandler,
   useSettings,
   useSpotifySDK,
 } from 'hooks';
-import { useMusicKit } from 'hooks/useMusicKit';
 
 const strings = {
   nowPlaying: 'Now Playing',

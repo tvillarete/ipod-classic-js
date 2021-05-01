@@ -6,11 +6,9 @@ import {
   PopupOptionProps,
   SelectableListOption,
 } from 'components';
-import { useAudioPlayer } from 'hooks';
 import { useWindowService } from 'services/window';
 
-import useEffectOnce from './useEffectOnce';
-import useEventListener from './useEventListener';
+import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
 
 /** Accepts a list of options and will maintain a scroll index capped at the list's length. */
 const useScrollHandler = (

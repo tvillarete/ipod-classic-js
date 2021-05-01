@@ -1,8 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 
-import useAudioPlayer from './useAudioPlayer';
-import useEffectOnce from './useEffectOnce';
-import useEventListener from './useEventListener';
+import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
 
 interface VolumeHandlerHook {
   volume: number;

@@ -9,9 +9,7 @@ import {
 import { useEventListener, useMKEventListener } from 'hooks';
 import * as ConversionUtils from 'utils/conversion';
 
-import { useMusicKit } from './useMusicKit';
-import { useSettings, VOLUME_KEY } from './useSettings';
-import { useSpotifySDK } from './useSpotifySDK';
+import { useMusicKit, useSettings, useSpotifySDK, VOLUME_KEY } from '../';
 
 export interface AudioPlayerState {
   playbackInfo: {

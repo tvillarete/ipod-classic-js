@@ -12,8 +12,7 @@ import { useWindowService } from 'services/window';
 import * as Utils from 'utils';
 import * as SpotifyUtils from 'utils/spotify';
 
-import useEffectOnce from './useEffectOnce';
-import { useSettings } from './useSettings';
+import { useEffectOnce, useSettings } from '../';
 
 export const API_URL = 'https://b7d1fdb16506.ngrok.io';
 

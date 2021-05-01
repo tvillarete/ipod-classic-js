@@ -1,6 +1,6 @@
 import { WINDOW_TYPE } from 'App/views';
 import { ErrorScreen } from 'components';
-import { useMusicKit } from 'hooks/useMusicKit';
+import { useMusicKit } from 'hooks';
 import { useWindowService } from 'services/window';
 import styled from 'styled-components';
 

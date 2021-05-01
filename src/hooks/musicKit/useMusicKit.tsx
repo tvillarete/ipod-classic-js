@@ -9,9 +9,7 @@ import React, {
 } from 'react';
 
 import { ErrorScreen } from 'components';
-import { useEventListener, useMKEventListener } from 'hooks';
-
-import { useSettings } from './useSettings';
+import { useEventListener, useMKEventListener, useSettings } from 'hooks';
 
 /**
  * This will be used to connect to the Apple Music API.

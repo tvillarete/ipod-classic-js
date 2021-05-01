@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useWindowService } from 'services/window';
 
-import useEventListener from './useEventListener';
+import useEventListener from '../utils/useEventListener';
 
 /**
  * A quick way to use the menu button as a back button.

@@ -1,9 +1,12 @@
 import * as React from 'react';
 
 import { Screen, ScrollWheel, Unit } from 'components';
-import { AudioPlayerProvider, SpotifySDKProvider } from 'hooks';
-import MusicKitProvider from 'hooks/useMusicKit';
-import { SettingsProvider } from 'hooks/useSettings';
+import {
+  AudioPlayerProvider,
+  MusicKitProvider,
+  SettingsProvider,
+  SpotifySDKProvider,
+} from 'hooks';
 import WindowProvider from 'services/window';
 import styled, { createGlobalStyle } from 'styled-components';
 

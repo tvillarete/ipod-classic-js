@@ -3,8 +3,7 @@ import { useMemo } from 'react';
 import { previewSlideRight } from 'animation';
 import { AuthPrompt, KenBurns, LoadingScreen } from 'components';
 import { motion } from 'framer-motion';
-import { useDataFetcher } from 'hooks';
-import { useSettings } from 'hooks/useSettings';
+import { useDataFetcher, useSettings } from 'hooks';
 import styled from 'styled-components';
 
 const Container = styled(motion.div)`

@@ -78,7 +78,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export const SettingsProvider = ({ children }: Props) => {
+export const SettingsProvider = memo(({ children }: Props) => {
   const [settingsState, setSettingsState] = useState<SettingsState>({
     isAppleAuthorized: false,
     isSpotifyAuthorized: false,
@@ -92,6 +92,6 @@ export const SettingsProvider = ({ children }: Props) => {
       {children}
     </SettingsContext.Provider>
   );
-};
+});
 
-export default memo(SettingsProvider);
+export default useSettings;

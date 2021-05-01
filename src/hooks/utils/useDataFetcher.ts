@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { useSettings, useSpotifyDataFetcher } from 'hooks';
+import { useMusicKit, useSettings, useSpotifyDataFetcher } from 'hooks';
 import * as ConversionUtils from 'utils/conversion';
-
-import { useMusicKit } from './useMusicKit';
 
 interface UserLibraryProps {
   inLibrary?: boolean;

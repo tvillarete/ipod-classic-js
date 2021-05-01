@@ -7,9 +7,13 @@ import {
   SelectableList,
   SelectableListOption,
 } from 'components';
-import { useMenuHideWindow, useScrollHandler, useSpotifySDK } from 'hooks';
-import { useMusicKit } from 'hooks/useMusicKit';
-import { useSettings } from 'hooks/useSettings';
+import {
+  useMenuHideWindow,
+  useMusicKit,
+  useScrollHandler,
+  useSettings,
+  useSpotifySDK,
+} from 'hooks';
 
 const SettingsView = () => {
   useMenuHideWindow(ViewOptions.settings.id);
