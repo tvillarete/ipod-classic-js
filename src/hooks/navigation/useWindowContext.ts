@@ -78,22 +78,22 @@ export const useWindowContext = (): WindowContextHook => {
 
   const setHeaderTitle = useCallback(
     (title?: string) => {
-      setWindowState({
-        ...windowState,
+      setWindowState((prevState) => ({
+        ...prevState,
         headerTitle: title,
-      });
+      }));
     },
-    [setWindowState, windowState]
+    [setWindowState]
   );
 
   const setPreview = useCallback(
     (preview: PREVIEW) => {
-      setWindowState({
-        ...windowState,
+      setWindowState((prevState) => ({
+        ...prevState,
         preview,
-      });
+      }));
     },
-    [setWindowState, windowState]
+    [setWindowState]
   );
 
   return {
