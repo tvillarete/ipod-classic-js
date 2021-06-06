@@ -17,17 +17,11 @@ import {
 
 const SettingsView = () => {
   useMenuHideWindow(ViewOptions.settings.id);
-  const {
-    isAuthorized,
-    isAppleAuthorized,
-    isSpotifyAuthorized,
-    service,
-  } = useSettings();
+  const { isAuthorized, isAppleAuthorized, isSpotifyAuthorized, service } =
+    useSettings();
   const { signIn: signInWithApple, signOut: signOutApple } = useMusicKit();
-  const {
-    signOut: signOutSpotify,
-    signIn: signInWithSpotify,
-  } = useSpotifySDK();
+  const { signOut: signOutSpotify, signIn: signInWithSpotify } =
+    useSpotifySDK();
 
   const options: SelectableListOption[] = useMemo(
     () => [
@@ -42,7 +36,7 @@ const SettingsView = () => {
       ...getConditionalOption(isAuthorized, {
         type: 'ActionSheet',
         id: ViewOptions.serviceTypeActionSheet.id,
-        label: 'Choose Service',
+        label: 'Choose service',
         listOptions: [
           {
             type: 'Action',

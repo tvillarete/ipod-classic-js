@@ -148,10 +148,17 @@ class Knob extends Component {
   };
 
   componentDidMount() {
+    const isTouchEnabled =
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      navigator.msMaxTouchPoints > 0;
+
     this.drawCanvas();
-    this.canvasRef.addEventListener('touchstart', this.handleTouchStart, {
-      passive: false,
-    });
+    if (isTouchEnabled) {
+      this.canvasRef.addEventListener('touchstart', this.handleTouchStart);
+    } else {
+      this.canvasRef.addEventListener('mousedown', this.handleMouseDown);
+    }
     this.centerButtonRef.current.addEventListener(
       'long-press',
       this.handleLongPress
@@ -260,10 +267,9 @@ class Knob extends Component {
 
   handleTouchStart = (e) => {
     this.props.onChange(this.eventToValue(e));
-    document.addEventListener('touchmove', this.handleTouchMove, {
-      passive: false,
-    });
+    document.addEventListener('touchmove', this.handleTouchMove);
     document.addEventListener('touchend', this.handleTouchEndNoMove);
+    document.removeEventListener('mousedown', this.handleMouseDown);
   };
 
   handleMouseMove = (e) => {
@@ -334,10 +340,11 @@ class Knob extends Component {
 
   handleTouchEndNoMove = (e) => {
     const rect = e.target.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = e.pageX - rect.left;
+    const y = e.pageY - rect.top;
     const rectWidth = rect.width;
     const quadrant = this.findClickQuadrant(rectWidth, x, y);
+
     if (quadrant > 0 && quadrant <= 4) {
       this.props.onWheelClick(quadrant);
     }
@@ -467,7 +474,6 @@ class Knob extends Component {
             }}
             className={canvasClassName}
             style={{ width: '100%', height: '100%' }}
-            onMouseDown={this.handleMouseDown}
           />
           <CenterButton
             ref={this.centerButtonRef}
