@@ -18,7 +18,7 @@
     "@types/spotify-web-playback-sdk": "^0.1.8",
     "@types/styled-components": "^5.1.9",
     "framer-motion": "^4.0.3",
-    "long-press-event": "^2.4.2",
+    "long-press-event": "^2.4.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "^4.0.3",

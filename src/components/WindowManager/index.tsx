@@ -1,6 +1,6 @@
 import { ErrorScreen } from 'components';
 import { WINDOW_TYPE } from 'components/views';
-import { useMusicKit, useWindowContext } from 'hooks';
+import { useEventListener, useMusicKit, useWindowContext } from 'hooks';
 import styled from 'styled-components';
 
 import ActionSheetWindowManager from './ActionSheetWindowManager';
@@ -21,7 +21,7 @@ const Mask = styled.div`
 
 const WindowManager = () => {
   const { isConfigured, hasDevToken: hasAppleDevToken } = useMusicKit();
-  const { windowStack } = useWindowContext();
+  const { windowStack, resetWindows } = useWindowContext();
   const splitViewWindows = windowStack.filter(
     (window) => window.type === WINDOW_TYPE.SPLIT
   );
@@ -39,6 +39,8 @@ const WindowManager = () => {
   );
 
   const isReady = isConfigured && hasAppleDevToken;
+
+  useEventListener('menulongpress', resetWindows);
 
   return (
     <div>

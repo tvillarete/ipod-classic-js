@@ -155,6 +155,10 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   }, [music, service, spotifyPlayer]);
 
   const togglePlayPause = useCallback(async () => {
+    if (!nowPlayingItem) {
+      return;
+    }
+
     switch (service) {
       case 'apple':
         if (music.player.isPlaying) {
@@ -168,9 +172,13 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       default:
         throw new Error('Unable to play: service not specified');
     }
-  }, [music, service, spotifyPlayer]);
+  }, [music, nowPlayingItem, service, spotifyPlayer]);
 
   const skipNext = useCallback(async () => {
+    if (!nowPlayingItem) {
+      return;
+    }
+
     setPlaybackInfo((prevState) => ({
       ...prevState,
       isLoading: true,
@@ -193,9 +201,13 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       ...prevState,
       isLoading: false,
     }));
-  }, [music, service, spotifyPlayer]);
+  }, [music, nowPlayingItem, service, spotifyPlayer]);
 
   const skipPrevious = useCallback(async () => {
+    if (!nowPlayingItem) {
+      return;
+    }
+
     setPlaybackInfo((prevState) => ({
       ...prevState,
       isLoading: true,
@@ -218,7 +230,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       ...prevState,
       isLoading: false,
     }));
-  }, [music, service, spotifyPlayer]);
+  }, [music, nowPlayingItem, service, spotifyPlayer]);
 
   const updateNowPlayingItem = useCallback(async () => {
     let mediaItem: IpodApi.MediaItem | undefined;

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import {
   getConditionalOption,
@@ -13,13 +13,16 @@ import {
   NowPlayingView,
   SettingsView,
   ViewOptions,
+  WINDOW_TYPE,
 } from 'components/views';
 import {
   useAudioPlayer,
+  useEventListener,
   useMusicKit,
   useScrollHandler,
   useSettings,
   useSpotifySDK,
+  useWindowContext,
 } from 'hooks';
 
 const strings = {
@@ -31,6 +34,7 @@ const HomeView = () => {
   const { signIn: signInWithApple } = useMusicKit();
   const { nowPlayingItem } = useAudioPlayer();
   const { signIn: signInWithSpotify } = useSpotifySDK();
+  const { showWindow, windowStack } = useWindowContext();
 
   const options: SelectableListOption[] = useMemo(
     () => [
@@ -92,6 +96,21 @@ const HomeView = () => {
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.home.id, options);
+
+  const handleIdleState = useCallback(() => {
+    const activeView = windowStack[windowStack.length - 1];
+
+    // Only show the now playing view if we're playing a song and not already on that view.
+    if (nowPlayingItem && activeView.id !== ViewOptions.nowPlaying.id) {
+      showWindow({
+        id: ViewOptions.nowPlaying.id,
+        type: WINDOW_TYPE.FULL,
+        component: NowPlayingView,
+      });
+    }
+  }, [nowPlayingItem, showWindow, windowStack]);
+
+  useEventListener('idle', handleIdleState);
 
   return <SelectableList options={options} activeIndex={scrollIndex} />;
 };

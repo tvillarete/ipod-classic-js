@@ -44,7 +44,7 @@ const Container = styled.div.attrs((props: ContainerProps) => ({
     css`
       transition: transform 0.3s, opacity 0.35s, background 0.35s;
       transform: translate3d(${props.midpoint.x - 60}px, 4px, 20px)
-        ${props.isSelected && 'rotateY(-180deg) translateY(10%) scale(1)'};
+        ${props.isSelected && 'rotateY(-180deg) translateY(10%) scale(0.96)'};
 
       ${props.isSelected &&
       css`

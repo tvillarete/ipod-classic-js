@@ -21,6 +21,8 @@ const GlobalStyles = createGlobalStyle`
    body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
       font-size: 16px;
+      user-select: none;
+      -webkit-touch-callout: none;
 
       @media (prefers-color-scheme: dark) {
         background: black;

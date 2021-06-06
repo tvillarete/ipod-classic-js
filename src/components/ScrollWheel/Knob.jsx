@@ -6,6 +6,7 @@ import styled from 'styled-components';
 //       older version of this same project.
 
 const Container = styled.div`
+  user-select: none;
   position: relative;
   display: flex;
   justify-content: center;
@@ -66,6 +67,7 @@ class Knob extends Component {
     onChange: PropTypes.func.isRequired,
     onClick: PropTypes.func,
     onLongPress: PropTypes.func,
+    onMenuLongPress: PropTypes.func,
     onWheelClick: PropTypes.func,
     onChangeEnd: PropTypes.func,
     min: PropTypes.number,
@@ -98,6 +100,7 @@ class Knob extends Component {
     onWheelClick: () => {},
     onClick: () => {},
     onLongPress: () => {},
+    onMenuLongPress: () => {},
     min: 0,
     max: 100,
     step: 1,
@@ -147,6 +150,25 @@ class Knob extends Component {
     return false;
   };
 
+  handleMenuLongPress = (e) => {
+    this.props.onMenuLongPress(e);
+  };
+
+  handleWheelLongPress = (e) => {
+    e.preventDefault();
+    e.target.setAttribute('longpress', new Date().getTime());
+
+    const rect = e.target.getBoundingClientRect();
+    const x = e.detail.clientX - rect.left;
+    const y = e.detail.clientY - rect.top;
+    const rectWidth = rect.width;
+    const quadrant = this.findClickQuadrant(rectWidth, x, y);
+
+    if (quadrant === 1) {
+      this.handleMenuLongPress(e);
+    }
+  };
+
   componentDidMount() {
     const isTouchEnabled =
       'ontouchstart' in window ||
@@ -163,6 +185,8 @@ class Knob extends Component {
       'long-press',
       this.handleLongPress
     );
+
+    this.canvasRef.addEventListener('long-press', this.handleWheelLongPress);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -293,6 +317,7 @@ class Knob extends Component {
       this.props.onChange(val);
     }
 
+    this.canvasRef.removeEventListener('long-press', this.handleWheelLongPress);
     document.removeEventListener('touchend', this.handleTouchEndNoMove);
     document.addEventListener('touchend', this.handleTouchEnd);
   };
@@ -308,6 +333,8 @@ class Knob extends Component {
     this.props.onChangeEnd(e.targetTouches[touchIndex]);
     document.removeEventListener('touchmove', this.handleTouchMove);
     document.removeEventListener('touchend', this.handleTouchEnd);
+
+    this.canvasRef.addEventListener('long-press', this.handleWheelLongPress);
   };
 
   findClickQuadrant = (rectSize, x, y) => {
@@ -340,8 +367,9 @@ class Knob extends Component {
 
   handleTouchEndNoMove = (e) => {
     const rect = e.target.getBoundingClientRect();
-    const x = e.pageX - rect.left;
-    const y = e.pageY - rect.top;
+    const touch = e.changedTouches[e.changedTouches.length - 1];
+    const x = touch.pageX - rect.left;
+    const y = touch.pageY - rect.top;
     const rectWidth = rect.width;
     const quadrant = this.findClickQuadrant(rectWidth, x, y);
 

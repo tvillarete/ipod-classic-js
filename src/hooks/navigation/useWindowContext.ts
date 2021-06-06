@@ -9,6 +9,8 @@ export interface WindowContextHook {
   showWindow: (window: WindowOptions) => void;
   /** Given an id, remove the window from the stack (otherwise, pop the top window). */
   hideWindow: (id?: string) => void;
+  /** Removes all windows except the first from the windowStack. */
+  resetWindows: () => void;
   /** Returns an array of WindowOptions. */
   windowStack: WindowOptions[];
   /** Checks if the current window's id matches the given id.
@@ -67,6 +69,13 @@ export const useWindowContext = (): WindowContextHook => {
     [setWindowState, windowState.windowStack.length]
   );
 
+  const resetWindows = useCallback(() => {
+    setWindowState((prevState) => ({
+      ...prevState,
+      windowStack: prevState.windowStack.slice(0, 1),
+    }));
+  }, [setWindowState]);
+
   const isWindowActive = useCallback(
     (id: string) => {
       const { windowStack } = windowState;
@@ -99,6 +108,7 @@ export const useWindowContext = (): WindowContextHook => {
   return {
     showWindow,
     hideWindow,
+    resetWindows,
     isWindowActive,
     windowStack: windowState.windowStack,
     headerTitle: windowState.headerTitle,

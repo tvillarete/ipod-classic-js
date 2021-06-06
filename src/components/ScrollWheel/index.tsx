@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
-import { useEventListener } from 'hooks';
+import { useEffectOnce, useEventListener } from 'hooks';
 
 import Knob from './Knob';
 
@@ -27,12 +27,15 @@ const forwardScrollEvent = new Event('forwardscroll');
 const backwardScrollEvent = new Event('backwardscroll');
 const wheelClickEvent = new Event('wheelclick');
 const menuClickEvent = new Event('menuclick');
+const menuLongPressEvent = new Event('menulongpress');
 const backClickEvent = new Event('backclick');
 const forwardClickEvent = new Event('forwardclick');
 const playPauseClickEvent = new Event('playpauseclick');
+const idleEvent = new Event('idle');
 
 const ScrollWheel = () => {
   const [count, setCount] = useState(0);
+  const timeoutIdRef = useRef<any>();
 
   const handleCenterClick = useCallback(
     () => window.dispatchEvent(centerClickEvent),
@@ -44,6 +47,11 @@ const ScrollWheel = () => {
     window.dispatchEvent(centerLongClickEvent);
   }, []);
 
+  const handleMenuLongPress = useCallback((e: any) => {
+    e.preventDefault();
+    window.dispatchEvent(menuLongPressEvent);
+  }, []);
+
   const handleClockwiseScroll = useCallback(
     () => window.dispatchEvent(forwardScrollEvent),
     []
@@ -53,24 +61,37 @@ const ScrollWheel = () => {
     window.dispatchEvent(backwardScrollEvent);
   }, []);
 
-  const handleWheelClick = useCallback((quadrant: number) => {
-    window.dispatchEvent(wheelClickEvent);
+  const handleResetIdleCheck = useCallback(() => {
+    clearTimeout(timeoutIdRef.current);
 
-    switch (quadrant) {
-      case WHEEL_QUADRANT.TOP:
-        window.dispatchEvent(menuClickEvent);
-        break;
-      case WHEEL_QUADRANT.BOTTOM:
-        window.dispatchEvent(playPauseClickEvent);
-        break;
-      case WHEEL_QUADRANT.LEFT:
-        window.dispatchEvent(backClickEvent);
-        break;
-      case WHEEL_QUADRANT.RIGHT:
-        window.dispatchEvent(forwardClickEvent);
-        break;
-    }
+    timeoutIdRef.current = setTimeout(() => {
+      window.dispatchEvent(idleEvent);
+    }, 10000);
   }, []);
+
+  const handleWheelClick = useCallback(
+    (quadrant: number) => {
+      window.dispatchEvent(wheelClickEvent);
+
+      switch (quadrant) {
+        case WHEEL_QUADRANT.TOP:
+          window.dispatchEvent(menuClickEvent);
+          break;
+        case WHEEL_QUADRANT.BOTTOM:
+          window.dispatchEvent(playPauseClickEvent);
+          break;
+        case WHEEL_QUADRANT.LEFT:
+          window.dispatchEvent(backClickEvent);
+          break;
+        case WHEEL_QUADRANT.RIGHT:
+          window.dispatchEvent(forwardClickEvent);
+          break;
+      }
+
+      handleResetIdleCheck();
+    },
+    [handleResetIdleCheck]
+  );
 
   /** Allows for keyboard navigation. */
   const handleKeyPress = useCallback(
@@ -94,8 +115,11 @@ const ScrollWheel = () => {
           handleWheelClick(WHEEL_QUADRANT.TOP);
           break;
       }
+
+      handleResetIdleCheck();
     },
     [
+      handleResetIdleCheck,
       handleCounterClockwiseScroll,
       handleClockwiseScroll,
       handleCenterClick,
@@ -116,11 +140,24 @@ const ScrollWheel = () => {
         handleCounterClockwiseScroll();
       }
       setCount(val);
+
+      handleResetIdleCheck();
     },
-    [count, handleClockwiseScroll, handleCounterClockwiseScroll]
+    [
+      count,
+      handleClockwiseScroll,
+      handleCounterClockwiseScroll,
+      handleResetIdleCheck,
+    ]
   );
 
   useEventListener('keydown', handleKeyPress);
+
+  /**
+   * Start the countdown for detecting when the user is idle,
+   * in which case we'll show the Now Playing view if music is playing
+   */
+  useEffectOnce(handleResetIdleCheck);
 
   return (
     <Knob
@@ -135,6 +172,7 @@ const ScrollWheel = () => {
       thickness={0.6}
       onClick={handleCenterClick}
       onLongPress={handleCenterLongPress}
+      onMenuLongPress={handleMenuLongPress}
       onWheelClick={handleWheelClick}
       onChange={handleScroll}
     />

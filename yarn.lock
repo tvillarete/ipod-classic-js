@@ -7651,10 +7651,10 @@ loglevel@^1.6.8:
   resolved "https://packages.convoy.com/artifactory/api/npm/npm/loglevel/-/loglevel-1.7.1.tgz#005fde2f5e6e47068f935ff28573e125ef72f197"
   integrity sha1-AF/eL15uRwaPk1/yhXPhJe9y8Zc=
 
-long-press-event@^2.4.2:
-  version "2.4.2"
-  resolved "https://packages.convoy.com/artifactory/api/npm/npm/long-press-event/-/long-press-event-2.4.2.tgz#4eba68261cd827bcba4d2bc7b6c81f4fb3347fad"
-  integrity sha1-TrpoJhzYJ7y6TSvHtsgfT7M0f60=
+long-press-event@^2.4.4:
+  version "2.4.4"
+  resolved "https://packages.convoy.com/artifactory/api/npm/npm/long-press-event/-/long-press-event-2.4.4.tgz#0d517df8915b4c849ff0f99a28013960a7df6413"
+  integrity sha1-DVF9+JFbTISf8PmaKAE5YKffZBM=
 
 loose-envify@^1.1.0, loose-envify@^1.4.0:
   version "1.4.0"
