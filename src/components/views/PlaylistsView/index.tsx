@@ -39,6 +39,7 @@ const PlaylistsView = () => {
       loading={isLoading}
       options={options}
       activeIndex={scrollIndex}
+      emptyMessage="No saved playlists"
     />
   ) : (
     <AuthPrompt message="Sign in to view your playlists" />

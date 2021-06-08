@@ -43,6 +43,7 @@ const PlaylistView = ({ id, inLibrary = false }: Props) => {
       loading={isLoading}
       options={options}
       activeIndex={scrollIndex}
+      emptyMessage="No songs in this playlist"
     />
   );
 };

@@ -42,6 +42,7 @@ const ArtistView = ({ id, inLibrary = false }: Props) => {
       loading={isLoading}
       options={options}
       activeIndex={scrollIndex}
+      emptyMessage="No albums by this artist"
     />
   );
 };

@@ -35,6 +35,7 @@ const ArtistsView = () => {
       loading={isLoading}
       options={options}
       activeIndex={scrollIndex}
+      emptyMessage="No saved artists"
     />
   ) : (
     <AuthPrompt message="Sign in to view your artists" />

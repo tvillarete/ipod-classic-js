@@ -100,8 +100,13 @@ const HomeView = () => {
   const handleIdleState = useCallback(() => {
     const activeView = windowStack[windowStack.length - 1];
 
+    const shouldShowNowPlaying =
+      !!nowPlayingItem &&
+      activeView.id !== ViewOptions.nowPlaying.id &&
+      activeView.id !== ViewOptions.coverFlow.id;
+
     // Only show the now playing view if we're playing a song and not already on that view.
-    if (nowPlayingItem && activeView.id !== ViewOptions.nowPlaying.id) {
+    if (shouldShowNowPlaying) {
       showWindow({
         id: ViewOptions.nowPlaying.id,
         type: WINDOW_TYPE.FULL,

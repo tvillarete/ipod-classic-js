@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { LoadingScreen } from 'components';
+import ErrorScreen from 'components/ErrorScreen';
 import { PREVIEW } from 'components/previews';
 import { WINDOW_TYPE } from 'components/views';
 import { AnimatePresence } from 'framer-motion';
@@ -99,9 +100,15 @@ interface Props {
   options: SelectableListOption[];
   activeIndex: number;
   loading?: boolean;
+  emptyMessage?: string;
 }
 
-const SelectableList = ({ options, activeIndex, loading }: Props) => {
+const SelectableList = ({
+  options,
+  activeIndex,
+  loading,
+  emptyMessage = 'Nothing to see here',
+}: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -124,7 +131,7 @@ const SelectableList = ({ options, activeIndex, loading }: Props) => {
     <AnimatePresence>
       {loading ? (
         <LoadingScreen backgroundColor="white" />
-      ) : (
+      ) : options.length > 0 ? (
         <Container ref={containerRef}>
           {options.map((option, index) => (
             <SelectableListItem
@@ -134,6 +141,8 @@ const SelectableList = ({ options, activeIndex, loading }: Props) => {
             />
           ))}
         </Container>
+      ) : (
+        <ErrorScreen showImage={false} message={emptyMessage} />
       )}
     </AnimatePresence>
   );

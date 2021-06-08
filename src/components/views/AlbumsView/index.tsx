@@ -39,6 +39,7 @@ const AlbumsView = () => {
       loading={isLoading}
       options={options}
       activeIndex={scrollIndex}
+      emptyMessage="No albums"
     />
   ) : (
     <AuthPrompt />

@@ -42,6 +42,7 @@ const AlbumView = ({ id, inLibrary = false }: Props) => {
       loading={isLoading}
       options={options}
       activeIndex={scrollIndex}
+      emptyMessage="No saved songs"
     />
   );
 };

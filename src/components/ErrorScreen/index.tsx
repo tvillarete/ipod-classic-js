@@ -23,13 +23,14 @@ const strings = {
 
 interface Props {
   message?: string;
+  showImage?: React.ReactNode;
 }
 
-const ErrorScreen = ({ message }: Props) => {
+const ErrorScreen = ({ message, showImage = true }: Props) => {
   return (
     <RootContainer>
       <div>
-        <SadMacIcon />
+        {showImage && <SadMacIcon />}
         <Text>{message ?? strings.defaultMessage}</Text>
       </div>
     </RootContainer>
