@@ -1,3 +1,5 @@
+import { decode } from 'he'
+
 // Artwork Conversion
 
 /** Accepts a url with '{w}' and '{h}' and replaces them with the specified size */
@@ -68,7 +70,7 @@ export const convertSpotifyPlaylistSimplified = (
   curatorName: data.owner.display_name ?? '',
   url: data.uri,
   artwork: { url: data.images[0]?.url ?? '' },
-  description: data.description ?? '',
+  description: data.description ? decode(data.description) : '',
   songs: [],
 });
 
