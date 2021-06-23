@@ -5,18 +5,6 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "@babel/helper-builder-react-jsx": "^7.12.13",
-    "@babel/helper-define-map": "^7.13.12",
-    "@babel/helper-regex": "^7.10.5",
-    "@testing-library/jest-dom": "^5.11.6",
-    "@testing-library/react": "^11.2.2",
-    "@testing-library/user-event": "^12.2.2",
-    "@types/jest": "24.0.19",
-    "@types/node": "12.19.6",
-    "@types/react": "17.0.1",
-    "@types/react-dom": "^16.9.10",
-    "@types/spotify-web-playback-sdk": "^0.1.8",
-    "@types/styled-components": "^5.1.9",
     "framer-motion": "^4.0.3",
     "he": "^1.2.0",
     "long-press-event": "^2.4.4",
@@ -24,7 +12,6 @@
     "react-dom": "^17.0.1",
     "react-scripts": "^4.0.3",
     "styled-components": "^5.2.1",
-    "typescript": "4.1.2",
     "use-debounce": "^6.0.0"
   },
   "scripts": {
@@ -49,8 +36,21 @@
     ]
   },
   "devDependencies": {
+    "@babel/helper-builder-react-jsx": "^7.12.13",
+    "@babel/helper-define-map": "^7.13.12",
+    "@babel/helper-regex": "^7.10.5",
+    "@testing-library/jest-dom": "^5.11.6",
+    "@testing-library/react": "^11.2.2",
+    "@testing-library/user-event": "^12.2.2",
     "@types/apple-music-api": "^0.4.0",
     "@types/he": "^1.1.1",
-    "@types/spotify-api": "^0.0.8"
+    "@types/jest": "24.0.19",
+    "@types/node": "12.19.6",
+    "@types/react": "17.0.1",
+    "@types/react-dom": "^16.9.10",
+    "@types/spotify-api": "^0.0.8",
+    "@types/spotify-web-playback-sdk": "^0.1.8",
+    "@types/styled-components": "^5.1.9",
+    "typescript": "4.1.2"
   }
 }
