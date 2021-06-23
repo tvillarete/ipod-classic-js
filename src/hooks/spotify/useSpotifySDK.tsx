@@ -18,7 +18,7 @@ export const API_URL = 'https://b7d1fdb16506.ngrok.io';
 
 export interface SpotifySDKState {
   isMounted: boolean;
-  spotifyPlayer: Spotify.SpotifyPlayer;
+  spotifyPlayer: Spotify.Player;
   accessToken?: string;
   deviceId?: string;
 }
@@ -107,7 +107,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   const { setIsSpotifyAuthorized, setService } = useSettings();
   const [token, setToken] = useState<string>();
   const [deviceId, setDeviceId] = useState<string>();
-  const spotifyPlayerRef = useRef<Spotify.SpotifyPlayer | undefined>();
+  const spotifyPlayerRef = useRef<Spotify.Player | undefined>();
   const [isMounted, setIsMounted] = useState(false);
 
   /** Fetch access tokens and, if successful, then set up the playback sdk. */
@@ -166,7 +166,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
     <SpotifySDKContext.Provider
       value={{
         spotifyPlayer:
-          spotifyPlayerRef.current ?? ({} as Spotify.SpotifyPlayer),
+          spotifyPlayerRef.current ?? ({} as Spotify.Player),
         accessToken: token,
         deviceId,
         isMounted,
