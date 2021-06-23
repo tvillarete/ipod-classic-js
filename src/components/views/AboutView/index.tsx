@@ -44,6 +44,11 @@ const AboutView = () => {
   const options: SelectableListOption[] = [
     {
       type: 'Link',
+      label: 'GitHub Repo',
+      url: 'https://github.com/tvillarete/ipod-classic-js',
+    },
+    {
+      type: 'Link',
       label: 'My Website',
       url: 'http://tannerv.com',
     },
