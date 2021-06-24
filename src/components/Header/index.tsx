@@ -1,3 +1,4 @@
+import BatteryIndicator from 'components/BatteryIndicator';
 import LoadingIndicator from 'components/LoadingIndicator';
 import { useAudioPlayer, useWindowContext } from 'hooks';
 import styled from 'styled-components';
@@ -48,7 +49,7 @@ const Header = () => {
         )}
         {isPlaying && !isPaused && <Icon src="play.svg" />}
         {isPaused && <Icon src="pause.svg" />}
-        <Icon src="battery.svg" />
+        <BatteryIndicator />
       </IconContainer>
     </Container>
   ) : null;

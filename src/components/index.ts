@@ -4,6 +4,7 @@ export * from './views';
 export * from './previews';
 
 export { default as AuthPrompt } from './AuthPrompt';
+export { default as BatteryIndicator } from './BatteryIndicator';
 export { default as Controls } from './Controls';
 export { default as ErrorScreen } from './ErrorScreen';
 export { default as Header } from './Header';
