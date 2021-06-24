@@ -14,6 +14,8 @@ const BatteryIndicatorIcon = styled(BatteryIcon)<{
   }
 
   #charge rect {
+    /* FIXME 8.7313px is a magic number set equal to the width of the charge rect
+       in the SVG; a better approach would be welcomed! */
     width: ${({ batteryLevel }) => `calc(8.7313px * (${batteryLevel} / 100))`};
     fill: ${({ batteryLevel }) => (batteryLevel <= 20 ? "#B74124" : "#4E932C")};
   }
