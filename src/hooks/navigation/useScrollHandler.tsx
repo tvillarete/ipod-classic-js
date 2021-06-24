@@ -9,6 +9,7 @@ import ViewOptions, { NowPlayingView, WINDOW_TYPE } from 'components/views';
 import { useWindowContext } from 'hooks';
 
 import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
+import useHapticFeedback from 'hooks/useHapticFeedback';
 
 /** Accepts a list of options and will maintain a scroll index capped at the list's length. */
 const useScrollHandler = (
@@ -17,6 +18,7 @@ const useScrollHandler = (
   /** A list of all scrollable items. Used to cap the scrolling to the last element. */
   options: SelectableListOption[] = []
 ): [number] => {
+  const { triggerHaptics } = useHapticFeedback();
   const { showWindow, windowStack, setPreview } = useWindowContext();
   const { play } = useAudioPlayer();
   const [index, setIndex] = useState(0);
@@ -49,17 +51,19 @@ const useScrollHandler = (
 
   const handleForwardScroll = useCallback(() => {
     if (index < options.length - 1 && isActive) {
+      triggerHaptics(10);
       setIndex(index + 1);
       handleCheckForPreview(index + 1);
     }
-  }, [handleCheckForPreview, index, isActive, options.length]);
+  }, [handleCheckForPreview, index, isActive, options.length, triggerHaptics]);
 
   const handleBackwardScroll = useCallback(() => {
     if (index > 0 && isActive) {
+      triggerHaptics(10);
       setIndex(index - 1);
       handleCheckForPreview(index - 1);
     }
-  }, [handleCheckForPreview, index, isActive]);
+  }, [handleCheckForPreview, index, isActive, triggerHaptics]);
 
   const handleShowView = useCallback(
     (
@@ -104,6 +108,7 @@ const useScrollHandler = (
   const handleCenterClick = useCallback(async () => {
     const option = options[index];
     if (!isActive || !option) return;
+    triggerHaptics(10);
 
     if (timeoutIdRef.current) {
       clearTimeout(timeoutIdRef.current);
@@ -141,6 +146,7 @@ const useScrollHandler = (
     isActive,
     options,
     play,
+    triggerHaptics,
   ]);
 
   const handleCenterLongClick = useCallback(async () => {
