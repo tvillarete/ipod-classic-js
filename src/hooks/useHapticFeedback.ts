@@ -1,16 +1,20 @@
+import { useCallback, useMemo } from "react";
+
 const canUseHaptics = typeof navigator !== 'undefined' && 'vibrate' in navigator;
 
 const useHapticFeedback = () => {
-  const triggerHaptics = (pattern: number | number[]) => {
+  const triggerHaptics = useCallback((pattern: number | number[]) => {
     if (!canUseHaptics) {
       return;
     }
     navigator.vibrate(pattern);
-  }
+  }, []);
 
-  return {
+  const hooks = useMemo(() => ({
     triggerHaptics
-  }
+  }), [triggerHaptics]);
+
+  return hooks;
 }
 
 export default useHapticFeedback;
