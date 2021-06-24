@@ -10,6 +10,7 @@ import {
 import styled from 'styled-components';
 
 import CoverFlow from './CoverFlow';
+import { IpodEvent } from 'utils/events';
 
 const Container = styled.div`
   flex: 1;
@@ -29,7 +30,7 @@ const CoverFlowView = () => {
     }
   }, [hideWindow, isAuthorized, isLoading]);
 
-  useEventListener('menuclick', handleMenuClick);
+  useEventListener<IpodEvent>('menuclick', handleMenuClick);
 
   return (
     <Container>

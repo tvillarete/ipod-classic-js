@@ -7,6 +7,7 @@ import { formatTime } from 'utils';
 import { Unit } from 'utils/constants';
 
 import ProgressBar from './ProgressBar';
+import { IpodEvent } from 'utils/events';
 
 const Container = styled.div`
   position: relative;
@@ -86,8 +87,8 @@ const Scrubber = ({ isScrubbing }: Props) => {
     [currentTime, isActive, isPlaying]
   );
 
-  useEventListener('forwardscroll', scrubForward);
-  useEventListener('backwardscroll', scrubBackward);
+  useEventListener<IpodEvent>('forwardscroll', scrubForward);
+  useEventListener<IpodEvent>('backwardscroll', scrubBackward);
 
   /** Update the progress bar every second. */
   useInterval(refresh, 1000);

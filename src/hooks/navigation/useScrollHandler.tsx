@@ -9,6 +9,7 @@ import ViewOptions, { NowPlayingView, WINDOW_TYPE } from 'components/views';
 import { useWindowContext } from 'hooks';
 
 import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
+import { IpodEvent } from 'utils/events';
 
 /** Accepts a list of options and will maintain a scroll index capped at the list's length. */
 const useScrollHandler = (
@@ -20,7 +21,7 @@ const useScrollHandler = (
   const { showWindow, windowStack, setPreview } = useWindowContext();
   const { play } = useAudioPlayer();
   const [index, setIndex] = useState(0);
-  const timeoutIdRef = useRef<any>();
+  const timeoutIdRef = useRef<NodeJS.Timeout>();
   /** Only fire events on the top-most view. */
   const isActive = windowStack[windowStack.length - 1].id === id;
 
@@ -173,12 +174,10 @@ const useScrollHandler = (
     }
   });
 
-  useEventListener('centerclick', () => {
-    handleCenterClick();
-  });
-  useEventListener('centerlongclick', handleCenterLongClick);
-  useEventListener('forwardscroll', handleForwardScroll);
-  useEventListener('backwardscroll', handleBackwardScroll);
+  useEventListener<IpodEvent>('centerclick', handleCenterClick);
+  useEventListener<IpodEvent>('centerlongclick', handleCenterLongClick);
+  useEventListener<IpodEvent>('forwardscroll', handleForwardScroll);
+  useEventListener<IpodEvent>('backwardscroll', handleBackwardScroll);
 
   return [index];
 };

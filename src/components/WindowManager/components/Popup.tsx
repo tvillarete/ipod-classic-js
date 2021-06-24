@@ -13,13 +13,14 @@ import {
 import { WindowOptions } from 'providers/WindowProvider';
 import styled, { css } from 'styled-components';
 import { Unit } from 'utils/constants';
+import { IpodEvent } from 'utils/events';
 
 interface RootContainerProps {
   index: number;
 }
 
 /** Responsible for putting the window at the proper z-index. */
-export const RootContainer = styled(motion.div)<RootContainerProps>`
+export const RootContainer = styled(motion.div) <RootContainerProps>`
   z-index: ${(props) => props.index};
   position: absolute;
   top: 0;
@@ -118,17 +119,17 @@ const Popup = ({ windowStack, index, isHidden }: Props) => {
     return listOptions.length
       ? listOptions
       : [
-          {
-            type: 'Action',
-            label: 'Done',
-            onSelect: () => {},
-          },
-        ];
+        {
+          type: 'Action',
+          label: 'Done',
+          onSelect: () => { },
+        },
+      ];
   }, [windowOptions.listOptions, windowOptions.type]);
 
   const [scrollIndex] = useScrollHandler(windowOptions.id, listOptions);
 
-  useEventListener('centerclick', () => {
+  useEventListener<IpodEvent>('centerclick', () => {
     hideWindow();
   });
 

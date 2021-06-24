@@ -24,6 +24,7 @@ import {
   useSpotifySDK,
   useWindowContext,
 } from 'hooks';
+import { IpodEvent } from 'utils/events';
 
 const strings = {
   nowPlaying: 'Now Playing',
@@ -115,7 +116,7 @@ const HomeView = () => {
     }
   }, [nowPlayingItem, showWindow, windowStack]);
 
-  useEventListener('idle', handleIdleState);
+  useEventListener<IpodEvent>('idle', handleIdleState);
 
   return <SelectableList options={options} activeIndex={scrollIndex} />;
 };

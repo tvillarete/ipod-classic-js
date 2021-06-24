@@ -13,6 +13,7 @@ import {
 import { WindowOptions } from 'providers/WindowProvider';
 import styled, { css } from 'styled-components';
 import { Unit } from 'utils/constants';
+import { IpodEvent } from 'utils/events';
 
 interface RootContainerProps {
   index: number;
@@ -105,12 +106,12 @@ const ActionSheet = ({ windowStack, index, isHidden }: Props) => {
       {
         type: 'Action',
         label: 'Cancel',
-        onSelect: () => {},
+        onSelect: () => { },
       },
     ];
   }, [windowOptions]);
 
-  useEventListener('centerclick', () => {
+  useEventListener<IpodEvent>('centerclick', () => {
     hideWindow();
   });
 
