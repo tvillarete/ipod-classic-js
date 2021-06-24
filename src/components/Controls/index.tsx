@@ -5,11 +5,9 @@ import styled from 'styled-components';
 import { Unit } from 'utils/constants';
 
 import Scrubber from './Scrubber';
-// import Scrubber from './Scrubber';
 import TrackProgress from './TrackProgress';
 import VolumeBar from './VolumeBar';
-
-// import VolumeBar from './VolumeBar';
+import { IpodEvent } from 'utils/events';
 
 const Container = styled.div`
   position: relative;
@@ -59,7 +57,7 @@ const Controls = () => {
     }
   }, [isScrubbing, setEnabled]);
 
-  useEventListener('centerclick', handleCenterClick);
+  useEventListener<IpodEvent>('centerclick', handleCenterClick);
 
   return (
     <Container>

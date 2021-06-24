@@ -2,6 +2,7 @@ import { ErrorScreen } from 'components';
 import { WINDOW_TYPE } from 'components/views';
 import { useEventListener, useMusicKit, useWindowContext } from 'hooks';
 import styled from 'styled-components';
+import { IpodEvent } from 'utils/events';
 
 import ActionSheetWindowManager from './ActionSheetWindowManager';
 import CoverFlowWindowManager from './CoverFlowWindowManager';
@@ -40,7 +41,7 @@ const WindowManager = () => {
 
   const isReady = isConfigured && hasAppleDevToken;
 
-  useEventListener('menulongpress', resetWindows);
+  useEventListener<IpodEvent>('menulongpress', resetWindows);
 
   return (
     <div>

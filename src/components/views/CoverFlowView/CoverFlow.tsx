@@ -7,6 +7,7 @@ import { useEventListener, useWindowContext } from 'hooks';
 import styled from 'styled-components';
 
 import AlbumCover from './AlbumCover';
+import { IpodEvent } from 'utils/events';
 
 export type Point = {
   x: number;
@@ -109,10 +110,10 @@ const CoverFlow = ({ albums }: Props) => {
 
   useEffect(updateMidpoint, [updateMidpoint]);
 
-  useEventListener('centerclick', selectAlbum);
-  useEventListener('menuclick', handleMenuClick);
-  useEventListener('forwardscroll', forwardScroll);
-  useEventListener('backwardscroll', backwardScroll);
+  useEventListener<IpodEvent>('centerclick', selectAlbum);
+  useEventListener<IpodEvent>('menuclick', handleMenuClick);
+  useEventListener<IpodEvent>('forwardscroll', forwardScroll);
+  useEventListener<IpodEvent>('backwardscroll', backwardScroll);
 
   return (
     <Container>

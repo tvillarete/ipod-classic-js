@@ -1,8 +1,8 @@
 import { useRef, useEffect } from "react";
 
 // Hook
-const useEventListener = (
-  eventName: string,
+const useEventListener = <TEvent extends string>(
+  eventName: TEvent,
   handler: (...args: any) => void,
   element = window
 ) => {

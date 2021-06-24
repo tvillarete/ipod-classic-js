@@ -9,6 +9,7 @@ import { useDataFetcher, useEventListener, useScrollHandler } from 'hooks';
 import styled from 'styled-components';
 
 import ViewOptions from '../';
+import { IpodEvent } from 'utils/events';
 
 const Container = styled.div`
   position: absolute;
@@ -71,7 +72,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
   );
   const [scrollIndex] = useScrollHandler(ViewOptions.coverFlow.id, options);
 
-  useEventListener('centerclick', () => setPlayingAlbum(true));
+  useEventListener<IpodEvent>('centerclick', () => setPlayingAlbum(true));
 
   return (
     <Container>

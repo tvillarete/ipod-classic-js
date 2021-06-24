@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { useWindowContext } from 'hooks';
 
 import useEventListener from '../utils/useEventListener';
+import { IpodEvent } from 'utils/events';
 
 /**
  * A quick way to use the menu button as a back button.
@@ -17,7 +18,7 @@ const useMenuHideWindow = (id: string) => {
     }
   }, [hideWindow, id, windowStack]);
 
-  useEventListener('menuclick', handleClick);
+  useEventListener<IpodEvent>('menuclick', handleClick);
 };
 
 export default useMenuHideWindow;
