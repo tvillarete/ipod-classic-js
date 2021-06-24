@@ -130,21 +130,22 @@ const ScrollWheel = () => {
   /** Determine if clockwise/counter-clockwise based on the Knob onChange value. */
   const handleScroll = useCallback(
     (val: number) => {
-      if (val === 0 && count === 100) {
-        handleClockwiseScroll();
-      } else if (val === 100 && count === 0) {
-        handleCounterClockwiseScroll();
-      } else if (val > count) {
-        handleClockwiseScroll();
-      } else if (val < count) {
-        handleCounterClockwiseScroll();
-      }
-      setCount(val);
+      setCount(currentCount => {
+        if (val === 5 && currentCount === 100) {
+          handleClockwiseScroll();
+        } else if (val === 100 && currentCount === 5) {
+          handleCounterClockwiseScroll();
+        } else if (val > currentCount) {
+          handleClockwiseScroll();
+        } else if (val < currentCount) {
+          handleCounterClockwiseScroll();
+        }
+        return val;
+      });
 
       handleResetIdleCheck();
     },
     [
-      count,
       handleClockwiseScroll,
       handleCounterClockwiseScroll,
       handleResetIdleCheck,

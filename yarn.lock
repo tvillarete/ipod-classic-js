@@ -1828,6 +1828,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/he@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@types/he/-/he-1.1.1.tgz#19e14033c4ee8f1a702c74dcc6182664839ac2b7"
+  integrity sha512-jpzrsR1ns0n3kyWt92QfOUQhIuJGQ9+QGa7M62rO6toe98woQjnsnzjdMtsQXCdvjjmqjS2ZBCC7xKw0cdzU+Q==
+
 "@types/hoist-non-react-statics@*":
   version "3.3.1"
   resolved "https://registry.npmjs.org/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz#1124aafe5118cb591977aeb1ceaaed1070eb039f"
