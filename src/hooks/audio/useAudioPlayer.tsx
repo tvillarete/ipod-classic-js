@@ -308,9 +308,9 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         duration: music.player.currentPlaybackDuration,
       }));
     } else if (service === 'spotify') {
-      const { position, duration } = await spotifyPlayer.getCurrentState() ?? { position: 0, duration: 0 };
-      const currentTime = position / 1000;
-      const maxTime = duration / 1000;
+      const { position, duration } = await spotifyPlayer.getCurrentState() ?? {};
+      const currentTime = (position ?? 0) / 1000;
+      const maxTime = (duration ?? 0) / 1000;
       const timeRemaining = maxTime - currentTime;
       const percent = Math.round((currentTime / maxTime) * 100);
 
