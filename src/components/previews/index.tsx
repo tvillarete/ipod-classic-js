@@ -10,6 +10,7 @@ export enum PREVIEW {
   SETTINGS = 'settings',
   NOW_PLAYING = 'nowPlaying',
   SERVICE = 'service',
+  DEVICE = 'device'
 }
 
 export const Previews = {
@@ -18,4 +19,5 @@ export const Previews = {
   [PREVIEW.SETTINGS]: () => <SettingsPreview />,
   [PREVIEW.NOW_PLAYING]: () => <NowPlayingPreview />,
   [PREVIEW.SERVICE]: () => <ServicePreview />,
+  [PREVIEW.DEVICE]: () => <div>SILVER OR BLACK</div>,
 };

@@ -6,7 +6,7 @@ export const SELECTED_SERVICE_KEY = 'ipodSelectedService';
 export const DEVICE_COLOR_KEY = 'ipodSelectedDeviceColor';
 export const VOLUME_KEY = 'ipodVolume';
 
-type DeviceColor = 'silver' | 'black';
+export type DeviceColor = 'silver' | 'black';
 
 export interface SettingsState {
   service?: StreamingService;

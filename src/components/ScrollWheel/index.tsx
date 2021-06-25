@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 
-import { useEffectOnce, useEventListener } from 'hooks';
+import { useEffectOnce, useEventListener, useSettings } from 'hooks';
 
 import Knob from './Knob';
 import { createIpodEvent } from 'utils/events';
@@ -35,6 +35,7 @@ const playPauseClickEvent = createIpodEvent('playpauseclick');
 const idleEvent = createIpodEvent('idle');
 
 const ScrollWheel = () => {
+  const { deviceColor } = useSettings();
   const [count, setCount] = useState(0);
   const timeoutIdRef = useRef<any>();
 
@@ -167,7 +168,7 @@ const ScrollWheel = () => {
       height={220}
       step={5}
       fgColor="transparent"
-      bgColor={'white'}
+      bgColor={deviceColor === 'silver' ? 'white' : '#2a2a2a'}
       thickness={0.6}
       onClick={handleCenterClick}
       onLongPress={handleCenterLongPress}
