@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Menu, Tray, screen } = require('electron')
+const { app, BrowserWindow, Menu, Tray, screen, shell } = require('electron')
 const path = require('path')
 
 const createWindow = (_width, _height, ratio) => {
@@ -19,10 +19,7 @@ const createWindow = (_width, _height, ratio) => {
         resizable: false,
         frame: false,
         useContentSize: true,
-        show: false,
-        webPreferences: {
-            zoomFactor: ratio
-        }
+        show: false
     });
 
     // and load the index.html of the app.
@@ -36,10 +33,10 @@ const createWindow = (_width, _height, ratio) => {
  * @param {*} closeWindow 
  * @returns 
  */
-const createTray = (openNewWindow, closeWindow) => {
+const createTray = (openNewWindow, closeWindow, windowSpecifications) => {
     let tray = new Tray('/home/raulgf/Desktop/ipod-classic-js/build/favicon-32x32.png')
     let contextMenu = null;
-    let windowSpecifications = { open: true, width: 370, height: 584, ratio: 1 };
+    
     const _openNewWindow = () => {
         if (windowSpecifications.open)
             closeWindow();
@@ -71,7 +68,8 @@ const createTray = (openNewWindow, closeWindow) => {
             }
         },
         {
-            label: 'About'
+            label: 'About',
+            click: () => shell.openExternal("https://github.com/tvillarete/ipod-classic-js")
         },
         { type: 'separator' },
         { label: 'Quit', click: () => app.quit() },
@@ -90,6 +88,7 @@ const main = () => {
         e.preventDefault();
     });
 
+    let windowSpecifications = { open: true, width: 400, height: 650, ratio: 1 };
     const closeWindow = () => ipodWindow.close();
     const openWindow = (width, height, ratio) => {
         let _window = createWindow(width, height, ratio);
@@ -98,9 +97,9 @@ const main = () => {
     }
 
     //Create the components of Electron UI
-    let ipodWindow = createWindow(400, 650, 0.66);
+    let ipodWindow = createWindow(windowSpecifications.width, windowSpecifications.height, windowSpecifications.ratio);
     setTimeout(() => ipodWindow.show(), 400);
-    let tray = createTray(openWindow, closeWindow, () => ipodWindow);
+    let tray = createTray(openWindow, closeWindow, windowSpecifications);
 
 };
 
@@ -112,4 +111,4 @@ if (process.platform === "linux") {
 }
 
 // When electron app is ready main function will be invoked
-app.whenReady().then(main);
+app.whenReady().then(() => setTimeout(main, 2000));
