@@ -3,6 +3,7 @@ import { createContext, memo, useCallback, useContext, useState } from 'react';
 type StreamingService = 'apple' | 'spotify';
 
 export const SELECTED_SERVICE_KEY = 'ipodSelectedService';
+export const DEVICE_COLOR_KEY = 'ipodSelectedDeviceColor';
 export const VOLUME_KEY = 'ipodVolume';
 
 type DeviceColor = 'silver' | 'black';
@@ -29,7 +30,7 @@ export type SettingsHook = SettingsState & {
   setIsSpotifyAuthorized: (val: boolean) => void;
   setIsAppleAuthorized: (val: boolean) => void;
   setService: (service?: StreamingService) => void;
-  setDeviceColor: (deviceColor?: DeviceColor) => void;
+  setDeviceColor: (deviceColor: DeviceColor) => void;
 };
 
 export const useSettings = (): SettingsHook => {
@@ -70,8 +71,14 @@ export const useSettings = (): SettingsHook => {
   );
 
   const setDeviceColor = useCallback(
-    (deviceColor: DeviceColor = 'silver') => {
+    (deviceColor: DeviceColor) => {
       setState((prevState) => ({ ...prevState, deviceColor }));
+
+      if (deviceColor) {
+        localStorage.setItem(DEVICE_COLOR_KEY, deviceColor);
+      } else {
+        localStorage.removeItem(DEVICE_COLOR_KEY);
+      }
     },
     [setState]
   );
@@ -97,7 +104,8 @@ export const SettingsProvider = memo(({ children }: Props) => {
     service:
       (localStorage.getItem(SELECTED_SERVICE_KEY) as StreamingService) ??
       undefined,
-    deviceColor: 'silver',
+    deviceColor:
+      (localStorage.getItem(DEVICE_COLOR_KEY) as DeviceColor) ?? 'silver',
   });
 
   return (

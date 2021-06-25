@@ -64,13 +64,11 @@ const SettingsView = () => {
         listOptions: [
           {
             type: 'Action',
-            value: 'Silver',
             label: `Silver ${deviceColor === 'silver' ? '(Current)' : ''}`,
             onSelect: () => setDeviceColor('silver'),
           },
           {
             type: 'Action',
-            value: 'Black',
             label: `Black ${deviceColor === 'black' ? '(Current)' : ''}`,
             onSelect: () => setDeviceColor('black'),
           },
