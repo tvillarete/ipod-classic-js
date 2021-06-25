@@ -67,6 +67,11 @@ export const ViewOptions: Record<string, ViewOption> = {
     title: 'Service',
     type: WINDOW_TYPE.ACTION_SHEET,
   },
+  deviceThemeActionSheet: {
+    id: 'deviceThemeActionSheet',
+    title: 'Device theme',
+    type: WINDOW_TYPE.ACTION_SHEET,
+  },
   signinPopup: {
     id: 'signinPopup',
     title: 'Sign in',

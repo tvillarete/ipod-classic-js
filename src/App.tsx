@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { ScrollWheel } from 'components';
 import {
+  useSettings,
   AudioPlayerProvider,
   MusicKitProvider,
   SettingsProvider,
@@ -12,6 +13,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { Screen, Unit } from 'utils/constants';
 
 import { WindowManager } from './components';
+import { DeviceTheme, getTheme } from './utils/themes';
 
 const GlobalStyles = createGlobalStyle`
   * {
@@ -41,7 +43,7 @@ const Container = styled.div`
   }
 `;
 
-const Shell = styled.div`
+const Shell = styled.div<{ deviceTheme: DeviceTheme }>`
   position: relative;
   height: 100vh;
   margin: auto;
@@ -49,7 +51,7 @@ const Shell = styled.div`
   width: 370px;
   border-radius: 30px;
   box-shadow: inset 0 0 2.4em #555;
-  background: linear-gradient(180deg, #e3e3e3 0%, #d6d6d6 100%);
+  background: ${({ deviceTheme }) => getTheme(deviceTheme).body.background};
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, transparent), to(rgba(250, 250, 250, 0.3)));
   animation: descend 1.5s ease;
 
@@ -104,22 +106,29 @@ const App: React.FC = () => {
     <Container>
       <GlobalStyles />
       <SettingsProvider>
-        <Shell>
-          <ScreenContainer>
-            <SpotifySDKProvider>
-              <MusicKitProvider>
-                <AudioPlayerProvider>
-                  <WindowProvider>
-                    <WindowManager />
-                  </WindowProvider>
-                </AudioPlayerProvider>
-              </MusicKitProvider>
-            </SpotifySDKProvider>
-          </ScreenContainer>
-          <ScrollWheel />
-        </Shell>
+        <Ipod />
       </SettingsProvider>
     </Container>
+  );
+};
+
+const Ipod = () => {
+  const { deviceTheme } = useSettings();
+  return (
+    <Shell deviceTheme={deviceTheme}>
+      <ScreenContainer>
+        <SpotifySDKProvider>
+          <MusicKitProvider>
+            <AudioPlayerProvider>
+              <WindowProvider>
+                <WindowManager />
+              </WindowProvider>
+            </AudioPlayerProvider>
+          </MusicKitProvider>
+        </SpotifySDKProvider>
+      </ScreenContainer>
+      <ScrollWheel />
+    </Shell>
   );
 };
 

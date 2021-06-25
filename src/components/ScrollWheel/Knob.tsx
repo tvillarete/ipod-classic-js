@@ -1,8 +1,13 @@
 import React, { SyntheticEvent } from 'react';
 import styled from 'styled-components';
 import { useRef } from 'react';
-import { useEffectOnce } from 'hooks';
+import { useEffectOnce, useSettings } from 'hooks';
 import { useEffect } from 'react';
+import MenuIcon from './icons/MenuIcon';
+import RewindIcon from './icons/RewindIcon';
+import PlayPauseIcon from './icons/PlayPauseIcon';
+import FastForwardIcon from './icons/FastForwardIcon';
+import { DeviceTheme, getTheme } from '../../utils/themes';
 
 const Container = styled.div`
   user-select: none;
@@ -23,13 +28,13 @@ const CanvasContainer = styled.div<{ width: number; height: number }>`
   height: ${(props) => props.height}px;
 `;
 
-const Canvas = styled.canvas`
+const Canvas = styled.canvas<{ deviceTheme: DeviceTheme }>`
   border-radius: 50%;
-  border: 1px solid #b9b9b9;
-  background: white;
+  border: 1px solid ${({ deviceTheme }) => getTheme(deviceTheme).knob.outline};
+  background: ${({ deviceTheme }) => getTheme(deviceTheme).knob.background};
 `;
 
-const CenterButton = styled.div<{ size: number }>`
+const CenterButton = styled.div<{ size: number; deviceTheme: DeviceTheme }>`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -39,31 +44,17 @@ const CenterButton = styled.div<{ size: number }>`
   width: ${(props) => props.size / 2.5}px;
   height: ${(props) => props.size / 2.5}px;
   border-radius: 50%;
-  box-shadow: rgb(191, 191, 191) 0px 1em 3em inset;
-  background: rgb(225, 225, 225);
-  border: 1px solid #b9b9b9;
+  box-shadow: ${({ deviceTheme }) =>
+    getTheme(deviceTheme).knob.centerButton.boxShadow}
+    0px 1em 3em inset;
+  background: ${({ deviceTheme }) =>
+    getTheme(deviceTheme).knob.centerButton.background};
+  border: 1px solid
+    ${({ deviceTheme }) => getTheme(deviceTheme).knob.centerButton.outline}};
 
   :active {
     filter: brightness(0.9);
   }
-`;
-
-const WheelButton = styled.img<{
-  margin?: string;
-  top?: string;
-  bottom?: string;
-  left?: string;
-  right?: string;
-}>`
-  position: absolute;
-  margin: ${(props) => props.margin};
-  top: ${(props) => props.top};
-  bottom: ${(props) => props.bottom};
-  left: ${(props) => props.left};
-  right: ${(props) => props.right};
-  user-select: none;
-  pointer-events: none;
-  max-height: 13px;
 `;
 
 /** Custom Event from https://github.com/john-doherty/long-press-event  */
@@ -118,6 +109,7 @@ const Knob = ({
   className,
   canvasClassName,
 }: Props) => {
+  const { deviceTheme } = useSettings();
   const canvasRef = useRef<HTMLCanvasElement | undefined>();
   const centerButtonRef = useRef<HTMLDivElement | undefined>();
 
@@ -394,6 +386,8 @@ const Knob = ({
     drawCanvas();
   });
 
+  const buttonColor = getTheme(deviceTheme).knob.button;
+
   return (
     <Container className={className}>
       <CanvasContainer width={width} height={height}>
@@ -403,18 +397,21 @@ const Knob = ({
           }}
           className={canvasClassName}
           style={{ width: '100%', height: '100%' }}
+          deviceTheme={deviceTheme}
         />
+
         <CenterButton
           ref={(ref) => {
             centerButtonRef.current = ref ?? undefined;
           }}
           onClick={onClick}
           size={width}
+          deviceTheme={deviceTheme}
         />
-        <WheelButton top="8%" margin="0 auto" src="menu.svg" />
-        <WheelButton right="8%" margin="auto 0" src="fast_forward.svg" />
-        <WheelButton left="8%" margin="auto 0" src="rewind.svg" />
-        <WheelButton bottom="8%" margin="0 auto" src="play_pause.svg" />
+        <MenuIcon top={'8%'} margin={'0 auto'} color={buttonColor} />
+        <PlayPauseIcon bottom={'8%'} margin={'0 auto'} color={buttonColor} />
+        <RewindIcon left={'8%'} margin={'auto 0'} color={buttonColor} />
+        <FastForwardIcon right={'8%'} margin={'auto 0'} color={buttonColor} />
       </CanvasContainer>
     </Container>
   );

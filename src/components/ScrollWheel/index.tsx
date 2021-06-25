@@ -1,9 +1,10 @@
 import { useCallback, useRef, useState } from 'react';
 
-import { useEffectOnce, useEventListener } from 'hooks';
+import { useEffectOnce, useEventListener, useSettings } from 'hooks';
 
 import Knob from './Knob';
 import { createIpodEvent } from 'utils/events';
+import { getTheme } from '../../utils/themes';
 
 enum WHEEL_QUADRANT {
   TOP = 1,
@@ -35,6 +36,7 @@ const playPauseClickEvent = createIpodEvent('playpauseclick');
 const idleEvent = createIpodEvent('idle');
 
 const ScrollWheel = () => {
+  const { deviceTheme } = useSettings();
   const [count, setCount] = useState(0);
   const timeoutIdRef = useRef<any>();
 
@@ -167,7 +169,7 @@ const ScrollWheel = () => {
       height={220}
       step={5}
       fgColor="transparent"
-      bgColor={'white'}
+      bgColor={getTheme(deviceTheme).knob.background}
       thickness={0.6}
       onClick={handleCenterClick}
       onLongPress={handleCenterLongPress}
