@@ -11,6 +11,8 @@ import { useWindowContext } from 'hooks';
 import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
 import { IpodEvent } from 'utils/events';
 
+/** Gets the initial index for the scroll position. If there is a selected option,
+ * this will initialize our initial scroll position at the selectedOption  */
 const getInitIndex = (
   options: SelectableListOption[] = [],
   selectedOption?: SelectableListOption
@@ -25,7 +27,8 @@ const getInitIndex = (
     }
   }
 
-  // Always default to 0.
+  // Always default to 0 if there isn't a selectedOption
+  // or if the selectedOption wasn't found in the list of options.
   return 0;
 };
 

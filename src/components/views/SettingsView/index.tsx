@@ -125,6 +125,7 @@ const SettingsView = () => {
       }),
     ],
     [
+      deviceTheme,
       isAppleAuthorized,
       isAuthorized,
       isSpotifyAuthorized,
