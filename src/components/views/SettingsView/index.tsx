@@ -23,6 +23,7 @@ const SettingsView = () => {
     isSpotifyAuthorized,
     service,
     deviceTheme,
+    deviceSide,
     setDeviceTheme,
     setDeviceSide,
   } = useSettings();
@@ -87,9 +88,25 @@ const SettingsView = () => {
         preview: PREVIEW.DEVICE,
       },
       {
-        type: 'Action',
+        type: 'ActionSheet',
         label: 'View back case',
-        onSelect: () => setDeviceSide('back'),
+        id: ViewOptions.deviceSideActionSheet.id,
+        listOptions: [
+          {
+            type: 'Action',
+            isSelected: deviceSide === 'back',
+            label: `Show back case ${deviceSide === 'back' ? '(Current)' : ''}`,
+            onSelect: () => setDeviceSide('back'),
+          },
+          {
+            type: 'Action',
+            isSelected: deviceSide === 'front',
+            label: `Hide back case ${
+              deviceSide === 'front' ? '(Current)' : ''
+            }`,
+            onSelect: () => setDeviceSide('front'),
+          },
+        ],
       },
       /** Show the sign in option if not signed into any service. */
       ...getConditionalOption(!isAuthorized, {
@@ -132,6 +149,7 @@ const SettingsView = () => {
     ],
     [
       deviceTheme,
+      deviceSide,
       setDeviceTheme,
       setDeviceSide,
       isAppleAuthorized,

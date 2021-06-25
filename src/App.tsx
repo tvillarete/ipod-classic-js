@@ -124,23 +124,21 @@ const Providers = ({ children }: { children: React.ReactChild }) => (
 );
 
 const Ipod = () => {
-  const { deviceTheme, deviceSide, setDeviceSide } = useSettings();
-
-  if (deviceSide === 'back') {
-    return (
-      <BackShell onClick={() => setDeviceSide('front')}>
-        <BackCase />
-      </BackShell>
-    );
-  }
-
+  const { deviceTheme, deviceSide } = useSettings();
   return (
-    <Shell deviceTheme={deviceTheme}>
-      <ScreenContainer>
-        <WindowManager />
-      </ScreenContainer>
-      <ScrollWheel />
-    </Shell>
+    <>
+      <Shell deviceTheme={deviceTheme}>
+        <ScreenContainer>
+          <WindowManager />
+        </ScreenContainer>
+        <ScrollWheel />
+      </Shell>
+      {deviceSide === 'back' && (
+        <BackShell>
+          <BackCase />
+        </BackShell>
+      )}
+    </>
   );
 };
 

@@ -7,6 +7,7 @@ type DeviceSide = 'front' | 'back';
 
 export const SELECTED_SERVICE_KEY = 'ipodSelectedService';
 export const DEVICE_COLOR_KEY = 'ipodSelectedDeviceTheme';
+export const DEVICE_SIDE_KEY = 'ipodSelectedDeviceSide';
 export const VOLUME_KEY = 'ipodVolume';
 
 export interface SettingsState {
@@ -84,6 +85,7 @@ export const useSettings = (): SettingsHook => {
   const setDeviceSide = useCallback(
     (deviceSide: DeviceSide) => {
       setState((prevState) => ({ ...prevState, deviceSide }));
+        localStorage.setItem(DEVICE_SIDE_KEY, deviceSide);
     },
     [setState]
   );
@@ -112,7 +114,8 @@ export const SettingsProvider = memo(({ children }: Props) => {
       undefined,
     deviceTheme:
       (localStorage.getItem(DEVICE_COLOR_KEY) as DeviceTheme) ?? 'silver',
-    deviceSide: 'front',
+    deviceSide:
+      (localStorage.getItem(DEVICE_SIDE_KEY) as DeviceSide) ?? 'front',
   });
 
   return (
