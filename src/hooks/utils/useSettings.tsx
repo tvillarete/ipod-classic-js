@@ -5,10 +5,13 @@ type StreamingService = 'apple' | 'spotify';
 export const SELECTED_SERVICE_KEY = 'ipodSelectedService';
 export const VOLUME_KEY = 'ipodVolume';
 
+type DeviceColor = 'silver' | 'black';
+
 export interface SettingsState {
   service?: StreamingService;
   isSpotifyAuthorized: boolean;
   isAppleAuthorized: boolean;
+  deviceColor?: DeviceColor;
 }
 
 type SettingsContextType = [
@@ -26,6 +29,7 @@ export type SettingsHook = SettingsState & {
   setIsSpotifyAuthorized: (val: boolean) => void;
   setIsAppleAuthorized: (val: boolean) => void;
   setService: (service?: StreamingService) => void;
+  setDeviceColor: (deviceColor?: DeviceColor) => void;
 };
 
 export const useSettings = (): SettingsHook => {
@@ -65,12 +69,20 @@ export const useSettings = (): SettingsHook => {
     [setState]
   );
 
+  const setDeviceColor = useCallback(
+    (deviceColor: DeviceColor = 'silver') => {
+      setState((prevState) => ({ ...prevState, deviceColor }));
+    },
+    [setState]
+  );
+
   return {
     ...state,
     isAuthorized: state.isAppleAuthorized || state.isSpotifyAuthorized,
     setIsSpotifyAuthorized,
     setIsAppleAuthorized,
     setService,
+    setDeviceColor,
   };
 };
 
@@ -85,6 +97,7 @@ export const SettingsProvider = memo(({ children }: Props) => {
     service:
       (localStorage.getItem(SELECTED_SERVICE_KEY) as StreamingService) ??
       undefined,
+    deviceColor: 'silver',
   });
 
   return (
