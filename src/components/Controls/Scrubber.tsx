@@ -42,10 +42,10 @@ const Scrubber = ({ isScrubbing }: Props) => {
     () => Math.round((scrubberTime / duration) * 100),
     [duration, scrubberTime]
   );
-  const scrubberTimeRemaining = useMemo(() => duration - scrubberTime, [
-    duration,
-    scrubberTime,
-  ]);
+  const scrubberTimeRemaining = useMemo(
+    () => duration - scrubberTime,
+    [duration, scrubberTime]
+  );
 
   /** The user is actively scrubbing. We disable the 1s update interval in this case. */
   const [isActive, setIsActive] = useState(false);

@@ -1,4 +1,4 @@
-import { decode } from 'he'
+import { decode } from 'he';
 
 // Artwork Conversion
 

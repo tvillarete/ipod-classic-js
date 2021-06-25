@@ -64,11 +64,8 @@ interface Props {
 }
 
 const NowPlaying = ({ hideArtwork, onHide }: Props) => {
-  const {
-    nowPlayingItem,
-    updateNowPlayingItem,
-    updatePlaybackInfo,
-  } = useAudioPlayer();
+  const { nowPlayingItem, updateNowPlayingItem, updatePlaybackInfo } =
+    useAudioPlayer();
 
   const handlePlaybackChange = useCallback(
     ({ state }: { state: MusicKit.PlaybackStates }) => {

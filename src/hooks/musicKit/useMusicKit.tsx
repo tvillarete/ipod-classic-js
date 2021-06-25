@@ -34,11 +34,8 @@ export type MusicKitHook = MusicKitState & {
 
 export const useMusicKit = (): MusicKitHook => {
   const musicKit = window.MusicKit;
-  const {
-    setIsAppleAuthorized,
-    isSpotifyAuthorized,
-    setService,
-  } = useSettings();
+  const { setIsAppleAuthorized, isSpotifyAuthorized, setService } =
+    useSettings();
   const { isConfigured, hasDevToken } = useContext(MusicKitContext);
   const music = useMemo(() => {
     if (!isConfigured || !hasDevToken) {
@@ -82,10 +79,8 @@ export const MusicKitProvider = ({ children }: Props) => {
   const musicKit = window.MusicKit;
   const [hasDevToken, setHasDevToken] = useState(false);
   const [isConfigured, setIsConfigured] = useState(false);
-  const {
-    setIsAppleAuthorized,
-    setService: setStreamingService,
-  } = useSettings();
+  const { setIsAppleAuthorized, setService: setStreamingService } =
+    useSettings();
 
   useEffect(() => {
     try {

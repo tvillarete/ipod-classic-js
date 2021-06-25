@@ -1,20 +1,20 @@
 const app = {
-  init: function() {
-    this.canvas = document.querySelector("#brickBreakerCanvas");
-    this.context = this.canvas ? this.canvas.getContext("2d") : null;
+  init: function () {
+    this.canvas = document.querySelector('#brickBreakerCanvas');
+    this.context = this.canvas ? this.canvas.getContext('2d') : null;
 
     if (!this.context) {
-      console.log("Error getting application context");
+      console.log('Error getting application context');
       return; //TODO: notify user
     }
 
-    window.addEventListener("centerclick", this.handleCenterClick);
+    window.addEventListener('centerclick', this.handleCenterClick);
     this.inStasis = false;
 
     if (!this.initialized) {
-      window.addEventListener("forwardscroll", () => player.moveRight(), true);
-      window.addEventListener("backwardscroll", () => player.moveLeft(), true);
-      window.addEventListener("menuclick", () => (this.inStasis = true));
+      window.addEventListener('forwardscroll', () => player.moveRight(), true);
+      window.addEventListener('backwardscroll', () => player.moveLeft(), true);
+      window.addEventListener('menuclick', () => (this.inStasis = true));
 
       this.waiting = true;
       this.setupBricks();
@@ -29,15 +29,15 @@ const app = {
     return;
   },
 
-  handleCenterClick: function() {
+  handleCenterClick: function () {
     if (app.waiting && !app.inStasis) {
       app.waiting = false;
     }
   },
 
-  enterStasis: function() {},
+  enterStasis: function () {},
 
-  update: function() {
+  update: function () {
     app.clearContext();
     player.draw();
     app.drawBricks();
@@ -47,12 +47,12 @@ const app = {
     requestAnimationFrame(app.update);
   },
 
-  clearContext: function() {
+  clearContext: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     return;
   },
 
-  die: function() {
+  die: function () {
     //TODO: better death!
     player.position.x = 200;
     player.lives -= 1;
@@ -63,14 +63,14 @@ const app = {
     app.waiting = true;
   },
 
-  drawBricks: function() {
-    this.bricks.forEach(function(brick) {
+  drawBricks: function () {
+    this.bricks.forEach(function (brick) {
       brick.draw();
     });
   },
 
   //TODO: this will change per level
-  setupBricks: function() {
+  setupBricks: function () {
     this.bricks = [];
 
     var i = 0;
@@ -104,7 +104,7 @@ const app = {
     }
   },
 
-  reset: function() {
+  reset: function () {
     player.reset();
     ball.reset();
     this.setupBricks();
@@ -114,14 +114,14 @@ const app = {
 
   canvas: null,
   context: null,
-  timeout: 33
+  timeout: 33,
 };
 
 var player = {
   // Defines initial position
   position: {
     x: 200,
-    y: 480
+    y: 480,
   },
 
   score: 0,
@@ -129,16 +129,16 @@ var player = {
   lives: 3,
 
   physics: {
-    speed: 10
+    speed: 10,
   },
 
   size: {
     height: 20,
-    width: 150
+    width: 150,
   },
 
-  draw: function() {
-    app.context.fillStyle = "black";
+  draw: function () {
+    app.context.fillStyle = 'black';
     app.context.fillRect(
       this.position.x,
       this.position.y,
@@ -158,48 +158,48 @@ var player = {
     // app.context.fillText(this.score, 40, 175);
   },
 
-  moveLeft: function() {
+  moveLeft: function () {
     if (this.position.x > 0) this.position.x -= this.physics.speed * 1.5;
   },
 
-  moveRight: function() {
+  moveRight: function () {
     if (this.position.x < app.canvas.width - this.size.width)
       this.position.x += this.physics.speed * 1.5;
   },
 
-  reset: function() {
+  reset: function () {
     this.lives = 3;
     this.score = 0;
     this.resetPosition();
   },
 
-  resetPosition: function() {
+  resetPosition: function () {
     this.position.x = 200;
-  }
+  },
 };
 
 var ball = {
   position: {
     x: 0,
-    y: 250
+    y: 250,
   },
 
   size: {
     height: 10,
-    width: 10
+    width: 10,
   },
 
   physics: {
-    speed: 5
+    speed: 5,
   },
 
   direction: {
     x: 1, //Moving right
-    y: 1 //Moving down
+    y: 1, //Moving down
   },
 
-  draw: function() {
-    app.context.fillStyle = "transparent";
+  draw: function () {
+    app.context.fillStyle = 'transparent';
     const context = app.context;
     const centerX = this.position.x;
     const centerY = this.position.y;
@@ -207,21 +207,21 @@ var ball = {
 
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-    context.fillStyle = "black";
+    context.fillStyle = 'black';
     context.fill();
     context.lineWidth = 5;
-    context.strokeStyle = "black";
+    context.strokeStyle = 'black';
     context.stroke();
   },
 
-  reset: function() {
+  reset: function () {
     this.position.x = 0;
     this.position.y = 250;
     this.direction.x = 1;
     this.direction.y = 1;
   },
 
-  update: function() {
+  update: function () {
     if (this.position.x <= 0)
       //Left Bounds
       this.direction.x = 1;
@@ -246,7 +246,7 @@ var ball = {
     this.draw();
   },
 
-  checkCollisionWithPlayer: function() {
+  checkCollisionWithPlayer: function () {
     if (this.position.y + this.size.height < player.position.y) return;
     if (this.position.y > player.position.y + player.size.height) return;
     if (this.position.x > player.position.x + player.size.width) return;
@@ -255,7 +255,7 @@ var ball = {
     this.direction.y = -1; //Moving up now
   },
 
-  checkCollisionWithBricks: function() {
+  checkCollisionWithBricks: function () {
     var i = 0;
     for (i = 0; i < app.bricks.length; i++) {
       var brick = app.bricks[i];
@@ -295,35 +295,35 @@ var ball = {
         else this.direction.y = -1;
       }
     }
-  }
+  },
 };
 
-var Brick = function() {
+var Brick = function () {
   this.health = 3;
 
   this.size = {
     height: 20,
-    width: 60
+    width: 60,
   };
 
   //Will be determined on setup
   this.position = {
     x: 0,
-    y: 0
+    y: 0,
   };
 };
 
-Brick.prototype.draw = function() {
+Brick.prototype.draw = function () {
   // eslint-disable-next-line default-case
   switch (this.health) {
     case 3:
-      app.context.fillStyle = "rgb(0, 240, 0)"; //Green
+      app.context.fillStyle = 'rgb(0, 240, 0)'; //Green
       break;
     case 2:
-      app.context.fillStyle = "rgb(255,140,0"; //Orange?
+      app.context.fillStyle = 'rgb(255,140,0'; //Orange?
       break;
     case 1:
-      app.context.fillStyle = "rgb(200, 0, 0)"; //Red
+      app.context.fillStyle = 'rgb(200, 0, 0)'; //Red
       break;
   }
 

@@ -20,7 +20,7 @@ type SupportedKeyCode =
   | 'Escape'
   | 'Enter'
   | ' '
-  | 'Spacebar'
+  | 'Spacebar';
 
 const centerClickEvent = createIpodEvent('centerclick');
 const centerLongClickEvent = createIpodEvent('centerlongclick');
@@ -132,7 +132,7 @@ const ScrollWheel = () => {
   /** Determine if clockwise/counter-clockwise based on the Knob onChange value. */
   const handleScroll = useCallback(
     (val: number) => {
-      setCount(currentCount => {
+      setCount((currentCount) => {
         if (val === 5 && currentCount === 100) {
           handleClockwiseScroll();
         } else if (val === 100 && currentCount === 5) {
@@ -147,11 +147,7 @@ const ScrollWheel = () => {
 
       handleResetIdleCheck();
     },
-    [
-      handleClockwiseScroll,
-      handleCounterClockwiseScroll,
-      handleResetIdleCheck,
-    ]
+    [handleClockwiseScroll, handleCounterClockwiseScroll, handleResetIdleCheck]
   );
 
   useEventListener('keydown', handleKeyPress);

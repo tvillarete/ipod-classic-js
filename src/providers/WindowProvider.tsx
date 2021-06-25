@@ -39,14 +39,13 @@ type PopupViewOptionProps = {
   listOptions: SelectableListOption[];
 };
 
-export type WindowOptions<
-  TComponent extends React.ComponentType<any> = any
-> = SharedOptionProps &
-  (
-    | ListViewOptionProps<TComponent>
-    | ActionSheetViewOptionProps
-    | PopupViewOptionProps
-  );
+export type WindowOptions<TComponent extends React.ComponentType<any> = any> =
+  SharedOptionProps &
+    (
+      | ListViewOptionProps<TComponent>
+      | ActionSheetViewOptionProps
+      | PopupViewOptionProps
+    );
 
 interface WindowState {
   windowStack: WindowOptions[];

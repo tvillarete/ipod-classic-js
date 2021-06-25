@@ -17,12 +17,14 @@ const Container = styled(motion.div)`
 
 const MusicPreview = () => {
   const { isSpotifyAuthorized, isAppleAuthorized } = useSettings();
-  const { data: albums, isLoading, hasError } = useDataFetcher<IpodApi.Album[]>(
-    {
-      name: 'albums',
-      artworkSize: 400,
-    }
-  );
+  const {
+    data: albums,
+    isLoading,
+    hasError,
+  } = useDataFetcher<IpodApi.Album[]>({
+    name: 'albums',
+    artworkSize: 400,
+  });
 
   const artworkUrls = useMemo(() => {
     if (albums && !hasError) {

@@ -20,7 +20,7 @@ const defaultPlatbackInfoState = {
   timeRemaining: 0,
   percent: 0,
   duration: 0,
-}
+};
 
 interface AudioPlayerState {
   playbackInfo: typeof defaultPlatbackInfoState;
@@ -99,7 +99,8 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         isLoading: true,
       }));
 
-      await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+      await fetch(
+        `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
         {
           method: 'PUT',
           body: JSON.stringify({
@@ -161,7 +162,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         break;
       case 'spotify':
         spotifyPlayer.togglePlay();
-        break
+        break;
       default:
         throw new Error('Unable to play: service not specified');
     }
@@ -308,7 +309,8 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         duration: music.player.currentPlaybackDuration,
       }));
     } else if (service === 'spotify') {
-      const { position, duration } = await spotifyPlayer.getCurrentState() ?? {};
+      const { position, duration } =
+        (await spotifyPlayer.getCurrentState()) ?? {};
       const currentTime = (position ?? 0) / 1000;
       const maxTime = (duration ?? 0) / 1000;
       const timeRemaining = maxTime - currentTime;

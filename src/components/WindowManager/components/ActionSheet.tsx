@@ -106,7 +106,7 @@ const ActionSheet = ({ windowStack, index, isHidden }: Props) => {
       {
         type: 'Action',
         label: 'Cancel',
-        onSelect: () => { },
+        onSelect: () => {},
       },
     ];
   }, [windowOptions]);

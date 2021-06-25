@@ -165,8 +165,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   return (
     <SpotifySDKContext.Provider
       value={{
-        spotifyPlayer:
-          spotifyPlayerRef.current ?? ({} as Spotify.Player),
+        spotifyPlayer: spotifyPlayerRef.current ?? ({} as Spotify.Player),
         accessToken: token,
         deviceId,
         isMounted,

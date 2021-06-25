@@ -67,15 +67,14 @@ const useSpotifyDataFetcher = () => {
   );
 
   const fetchArtists = useCallback(async () => {
-    const response = await fetchSpotifyApi<SpotifyApi.UsersFollowedArtistsResponse>(
-      {
+    const response =
+      await fetchSpotifyApi<SpotifyApi.UsersFollowedArtistsResponse>({
         endpoint: `me/following?type=artist&limit=50`,
         accessToken,
         onError: (error) => {
           throw new Error(error);
         },
-      }
-    );
+      });
 
     return response?.artists?.items.map(
       ConversionUtils.convertSpotifyArtistFull
@@ -102,15 +101,14 @@ const useSpotifyDataFetcher = () => {
   );
 
   const fetchPlaylists = useCallback(async () => {
-    const response = await fetchSpotifyApi<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>(
-      {
+    const response =
+      await fetchSpotifyApi<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>({
         endpoint: 'me/playlists?limit=50',
         accessToken,
         onError: (error) => {
           throw new Error(error);
         },
-      }
-    );
+      });
 
     return response?.items?.map(
       ConversionUtils.convertSpotifyPlaylistSimplified

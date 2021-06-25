@@ -14,7 +14,7 @@ const Container = styled.div`
   transform: translate3d(0, 0, 0);
 `;
 
-const CanvasContainer = styled.div<{ width: number, height: number }>`
+const CanvasContainer = styled.div<{ width: number; height: number }>`
   position: relative;
   display: flex;
   justify-content: center;
@@ -49,13 +49,12 @@ const CenterButton = styled.div<{ size: number }>`
 `;
 
 const WheelButton = styled.img<{
-  margin?: string,
-  top?: string,
-  bottom?: string,
-  left?: string,
-  right?: string
-}
-  >`
+  margin?: string;
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+}>`
   position: absolute;
   margin: ${(props) => props.margin};
   top: ${(props) => props.top};
@@ -70,9 +69,9 @@ const WheelButton = styled.img<{
 /** Custom Event from https://github.com/john-doherty/long-press-event  */
 interface LongPressEvent extends SyntheticEvent {
   detail: {
-    clientX: number,
-    clientY: number
-  }
+    clientX: number;
+    clientY: number;
+  };
 }
 
 const ANGLE_ARC = (360 * Math.PI) / 180;
@@ -98,16 +97,16 @@ type Props = {
   fgColor?: string;
   className?: string;
   canvasClassName?: string;
-}
+};
 
 const Knob = ({
   value,
   onChange,
-  onChangeEnd = () => { },
-  onWheelClick = () => { },
-  onClick = () => { },
-  onLongPress = () => { },
-  onMenuLongPress = () => { },
+  onChangeEnd = () => {},
+  onWheelClick = () => {},
+  onClick = () => {},
+  onLongPress = () => {},
+  onMenuLongPress = () => {},
   min = 0,
   max = 100,
   step = 1,
@@ -131,7 +130,7 @@ const Knob = ({
 
   const handleMenuLongPress = (event: Event) => {
     onMenuLongPress(event);
-  }
+  };
 
   const handleWheelLongPress = (event: LongPressEvent) => {
     event.preventDefault();
@@ -147,7 +146,7 @@ const Knob = ({
     if (quadrant === 1) {
       handleMenuLongPress(event as any);
     }
-  }
+  };
 
   const getArcToValue = (v: number) => {
     const angle = ((v - min) * ANGLE_ARC) / (max - min);
@@ -169,10 +168,10 @@ const Knob = ({
 
     const backingStoreRatio = (ctx as any).webkitBackingStorePixelRatio || 1;
     return devicePixelRatio / backingStoreRatio;
-  }
+  };
 
   const coerceToStep = (v: number) => {
-    let val = ~~((v < 0 ? -0.5 : 0.5) + v / step) * step
+    let val = ~~((v < 0 ? -0.5 : 0.5) + v / step) * step;
     val = Math.max(Math.min(val, max), min);
     if (isNaN(val)) {
       val = 0;
@@ -193,7 +192,7 @@ const Knob = ({
     } else if (a < 0) {
       a += Math.PI * 2;
     }
-    const val = (a * (max - min)) / ANGLE_ARC + min
+    const val = (a * (max - min)) / ANGLE_ARC + min;
     return coerceToStep(val);
   };
 
@@ -224,7 +223,7 @@ const Knob = ({
 
   const handleTouchMove = (e: Event) => {
     e.preventDefault();
-    const touchEvent = e as TouchEvent
+    const touchEvent = e as TouchEvent;
     const touchIndex = touchEvent.targetTouches.length - 1;
     const val = eventToValue(touchEvent.targetTouches[touchIndex]);
 
@@ -236,7 +235,10 @@ const Knob = ({
       return;
     }
 
-    canvasRef.current.removeEventListener('long-press', handleWheelLongPress as any);
+    canvasRef.current.removeEventListener(
+      'long-press',
+      handleWheelLongPress as any
+    );
     document.removeEventListener('touchend', handleTouchEndNoMove);
     document.addEventListener('touchend', handleTouchEnd);
   };
@@ -258,7 +260,10 @@ const Knob = ({
       return;
     }
 
-    canvasRef.current.addEventListener('long-press', handleWheelLongPress as any);
+    canvasRef.current.addEventListener(
+      'long-press',
+      handleWheelLongPress as any
+    );
   };
 
   const findClickQuadrant = (rectSize: number, x: number, y: number) => {
@@ -293,7 +298,8 @@ const Knob = ({
   const handleTouchEndNoMove = (e: Event) => {
     const touchEvent = e as TouchEvent;
     const rect = (touchEvent.target as Element).getBoundingClientRect();
-    const touch = touchEvent.changedTouches[touchEvent.changedTouches.length - 1];
+    const touch =
+      touchEvent.changedTouches[touchEvent.changedTouches.length - 1];
     const x = touch.pageX - rect.left;
     const y = touch.pageY - rect.top;
     const rectWidth = rect.width;
@@ -325,14 +331,7 @@ const Knob = ({
     // background arc
     ctx.beginPath();
     ctx.strokeStyle = bgColor;
-    ctx.arc(
-      xy,
-      xy,
-      radius,
-      END_ANGLE - 0.00001,
-      START_ANGLE + 0.00001,
-      true
-    );
+    ctx.arc(xy, xy, radius, END_ANGLE - 0.00001, START_ANGLE + 0.00001, true);
     ctx.stroke();
     // foreground arc
     const a = getArcToValue(value);
@@ -340,7 +339,7 @@ const Knob = ({
     ctx.strokeStyle = fgColor;
     ctx.arc(xy, xy, radius, a.startAngle, a.endAngle, a.acw);
     ctx.stroke();
-  }
+  };
 
   // Component Did Mount
   useEffectOnce(() => {
@@ -362,7 +361,10 @@ const Knob = ({
     }
     centerButtonRef.current.addEventListener('long-press', handleLongPress);
 
-    canvasRef.current.addEventListener('long-press', handleWheelLongPress as any);
+    canvasRef.current.addEventListener(
+      'long-press',
+      handleWheelLongPress as any
+    );
 
     // Component Will Unmount
     return () => {
@@ -376,9 +378,15 @@ const Knob = ({
       } else {
         canvasRef.current.removeEventListener('mousedown', handleMouseDown);
       }
-      centerButtonRef.current.removeEventListener('long-press', handleLongPress);
-      canvasRef.current.removeEventListener('long-press', handleWheelLongPress as any);
-    }
+      centerButtonRef.current.removeEventListener(
+        'long-press',
+        handleLongPress
+      );
+      canvasRef.current.removeEventListener(
+        'long-press',
+        handleWheelLongPress as any
+      );
+    };
   });
 
   // Component Did Update
@@ -410,6 +418,6 @@ const Knob = ({
       </CanvasContainer>
     </Container>
   );
-}
+};
 
 export default Knob;
