@@ -20,7 +20,7 @@ const noop = () => {};
  * to return the current battery charge level and charging status.
  */
 const useBattery = () => {
-  const [batteryLevel, setBatteryLevel] = useState<number>(100);
+  const [chargePercent, setChargePercent] = useState<number>(100);
   const [isCharging, setIsCharging] = useState<boolean>(true);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const useBattery = () => {
         const batteryManager = await navigator.getBattery();
 
         const onLevelChange = () => {
-          setBatteryLevel(Math.round(batteryManager.level * 100));
+          setChargePercent(Math.round(batteryManager.level * 100));
         };
 
         const onChargingChange = () => {
@@ -63,10 +63,10 @@ const useBattery = () => {
     attachListeners();
 
     return () => detachListeners();
-  }, [setBatteryLevel, setIsCharging]);
+  }, [setChargePercent, setIsCharging]);
 
   return {
-    batteryLevel,
+    chargePercent,
     isCharging,
   };
 };
