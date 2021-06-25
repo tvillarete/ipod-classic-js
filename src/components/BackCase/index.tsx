@@ -50,6 +50,10 @@ const Regulatory = styled.div`
   color: #d0d0d0;
 `;
 
+const RegulatoryIcons = styled.img`
+  margin-top: 16px;
+`;
+
 const BackCase = () => (
   <BackPanel>
     <Autographs>
@@ -66,6 +70,7 @@ const BackCase = () => (
       Model No. A1059 EMC No. 1995 Rated 5-30Vdc 1.0A Max.
       <br />™ and © 2004 Apple Computer, Inc. All rights reserved.
     </Regulatory>
+    <RegulatoryIcons height="24px" src={'regulatory_icons.svg'} />
   </BackPanel>
 );
 
