@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { useSettings } from '../../hooks/utils/useSettings';
+import { DeviceTheme } from '../../utils/themes';
 
 const BackPanel = styled.div`
   display: flex;
@@ -10,7 +12,7 @@ const BackPanel = styled.div`
 const IpodJs = styled.div`
   font-size: 48px;
   font-weight: 500;
-  margin-top: 24px;
+  margin-top: 16px;
 `;
 
 const Storage = styled.div`
@@ -21,7 +23,8 @@ const Storage = styled.div`
   margin-top: 16px;
 `;
 
-const U2 = styled.div`
+const U2 = styled.div<{ deviceTheme: DeviceTheme }>`
+  opacity: ${({ deviceTheme }) => (deviceTheme !== 'u2' ? 0 : 1)};
   color: #eee;
   background: #b5c0c8;
   border-radius: 8px;
@@ -34,14 +37,16 @@ const AppleIcon = styled.img`
   margin-top: 4px;
 `;
 
-const SpecialEdition = styled.div`
+const SpecialEdition = styled.div<{ deviceTheme: DeviceTheme }>`
   font-size: 14px;
+  opacity: ${({ deviceTheme }) => (deviceTheme !== 'u2' ? 0 : 1)};
 `;
 
-const Autographs = styled.div`
+const Autographs = styled.div<{ deviceTheme: DeviceTheme }>`
   display: flex;
   align-items: center;
   margin-top: 10%;
+  opacity: ${({ deviceTheme }) => (deviceTheme !== 'u2' ? 0 : 1)};
 `;
 
 const Regulatory = styled.div`
@@ -54,24 +59,29 @@ const RegulatoryIcons = styled.img`
   margin-top: 16px;
 `;
 
-const BackCase = () => (
-  <BackPanel>
-    <Autographs>
-      <img height="160px" src={'u2_autographs.png'} />
-    </Autographs>
-    <AppleIcon height="65px" src={'apple.svg'} />
-    <IpodJs>iPod</IpodJs>
-    <SpecialEdition>Special Edition</SpecialEdition>
-    <U2>U2</U2>
-    <Storage>20GB</Storage>
-    <Regulatory>
-      Designed by Apple in California Assembled in China
-      <br />
-      Model No. A1059 EMC No. 1995 Rated 5-30Vdc 1.0A Max.
-      <br />™ and © 2004 Apple Computer, Inc. All rights reserved.
-    </Regulatory>
-    <RegulatoryIcons height="24px" src={'regulatory_icons.svg'} />
-  </BackPanel>
-);
+const BackCase = () => {
+  const { deviceTheme } = useSettings();
+  return (
+    <BackPanel>
+      <Autographs deviceTheme={deviceTheme}>
+        <img alt="U2-autographs" height="160px" src={'u2_autographs.png'} />
+      </Autographs>
+      <AppleIcon height="65px" src={'apple.svg'} />
+      <IpodJs>iPod</IpodJs>
+      <SpecialEdition deviceTheme={deviceTheme}>Special Edition</SpecialEdition>
+      <U2 deviceTheme={deviceTheme}>U2</U2>
+      <Storage>{deviceTheme === 'u2' ? '30' : '160'}GB</Storage>
+      <Regulatory>
+        Designed by Apple in California Assembled in China
+        <br />
+        Model No. {deviceTheme === 'u2' ? 'A1136' : 'A1238'} EMC No. 1995 Rated
+        5-30Vdc 1.0A Max.
+        <br />™ and © {deviceTheme === 'u2' ? '2006' : '2007'} Apple Computer,
+        Inc. All rights reserved.
+      </Regulatory>
+      <RegulatoryIcons height="24px" src={'regulatory_icons.svg'} />
+    </BackPanel>
+  );
+};
 
 export default BackCase;
