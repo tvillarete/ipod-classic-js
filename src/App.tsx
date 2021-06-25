@@ -111,16 +111,17 @@ const ScreenContainer = styled.div`
   }
 `;
 
-const App: React.FC = () => {
-  return (
-    <Container>
-      <GlobalStyles />
-      <SettingsProvider>
-        <Ipod />
-      </SettingsProvider>
-    </Container>
-  );
-};
+const Providers = ({ children }: { children: React.ReactChild }) => (
+  <SettingsProvider>
+    <SpotifySDKProvider>
+      <MusicKitProvider>
+        <AudioPlayerProvider>
+          <WindowProvider>{children}</WindowProvider>
+        </AudioPlayerProvider>
+      </MusicKitProvider>
+    </SpotifySDKProvider>
+  </SettingsProvider>
+);
 
 const Ipod = () => {
   const { deviceTheme, deviceSide, setDeviceSide } = useSettings();
@@ -136,19 +137,20 @@ const Ipod = () => {
   return (
     <Shell deviceTheme={deviceTheme}>
       <ScreenContainer>
-        <SpotifySDKProvider>
-          <MusicKitProvider>
-            <AudioPlayerProvider>
-              <WindowProvider>
-                <WindowManager />
-              </WindowProvider>
-            </AudioPlayerProvider>
-          </MusicKitProvider>
-        </SpotifySDKProvider>
+        <WindowManager />
       </ScreenContainer>
       <ScrollWheel />
     </Shell>
   );
 };
+
+const App: React.FC = () => (
+  <Container>
+    <GlobalStyles />
+    <Providers>
+      <Ipod />
+    </Providers>
+  </Container>
+);
 
 export default App;
