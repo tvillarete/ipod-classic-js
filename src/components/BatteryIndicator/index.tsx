@@ -56,8 +56,15 @@ const ChargeLevelGloss = styled.div`
   opacity: .7;
 `;
 
-const BatteryCap = styled.img`
+const BatteryCap = styled.div`
+  width: 3px;
   height: 8px;
+
+  border: 1px solid #626262;
+  border-left: 0;
+  border-radius: 0 1px 1px 0;
+
+  background: #c4c4c4;
 `;
 
 const IconContainer = styled.div`
@@ -101,7 +108,7 @@ const BatteryIndicator = () => {
       </ChargeLevelContainer>
 
       {/* decorative cap for an authentic battery experience */}
-      <BatteryCap src="battery_cap.svg" />
+      <BatteryCap />
     </Container>
   );
 };
