@@ -40,8 +40,18 @@ const ChargeLevelGloss = styled.div`
   width: 100%;
   height: 100%;
 
-  // circle back to the gradient
-  background: linear-gradient(180deg, transparent 0%, transparent 10%, rgba(255,255,255, 1) 20%, rgba(255, 255, 255, .82) 30%, rgba(255, 255, 255, .29) 45%, rgba(0, 0, 0, .16) 60%, rgba(0, 0, 0, .31) 80%, rgba(0, 0, 0, .29) 90%, transparent 100%);
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent 10%,
+    rgba(255,255,255, 1) 20%,
+    rgba(255, 255, 255, .82) 30%,
+    rgba(255, 255, 255, .29) 45%,
+    rgba(0, 0, 0, .16) 60%,
+    rgba(0, 0, 0, .31) 80%,
+    rgba(0, 0, 0, .29) 90%,
+    transparent 100%
+  );
   background-clip: content-box;
   opacity: .7;
 `;
