@@ -15,10 +15,10 @@ const Image = styled.img`
   width: 100%;
 `;
 
-const DevicePreview = () => (
+const ThemePreview = () => (
   <Container>
     <Image src="themes_preview.png" />
   </Container>
 );
 
-export default DevicePreview;
+export default ThemePreview;

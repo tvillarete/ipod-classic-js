@@ -83,7 +83,7 @@ const SettingsView = () => {
             onSelect: () => setDeviceTheme('u2'),
           },
         ],
-        preview: PREVIEW.DEVICE,
+        preview: PREVIEW.THEME,
       },
       /** Show the sign in option if not signed into any service. */
       ...getConditionalOption(!isAuthorized, {

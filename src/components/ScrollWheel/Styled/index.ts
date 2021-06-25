@@ -1,14 +1,8 @@
 import styled from 'styled-components';
+import * as Types from './types';
+export * from './types';
 
-export type WheelButtonProps = {
-  margin?: string;
-  top?: string;
-  bottom?: string;
-  left?: string;
-  right?: string;
-};
-
-export const WheelButton = styled.svg<WheelButtonProps>`
+export const WheelButton = styled.svg<Types.WheelButtonProps>`
   position: absolute;
   margin: ${(props) => props.margin};
   top: ${(props) => props.top};
