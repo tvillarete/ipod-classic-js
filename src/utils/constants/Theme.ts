@@ -32,16 +32,16 @@ const Black = {
 
 const U2 = {
   body: {
-    background: 'linear-gradient(180deg, #333333 0%, #111111 100%)',
+    background: 'linear-gradient(180deg, #7d7c7d 0%, #1e1e1e 100%)',
   },
   knob: {
     background: '#de2029',
     outline: '#1a1a1a',
     button: '#ffffff',
     centerButton: {
-      background: '#000000',
+      background: '#5d5c5d',
       boxShadow: 'rgb(50, 50, 50)',
-      outline: '#000000',
+      outline: '#1a1a1a',
     },
   },
 };
