@@ -14,6 +14,7 @@ import { Screen, Unit } from 'utils/constants';
 
 import { WindowManager } from './components';
 import { DeviceTheme, getTheme } from './utils/themes';
+import BackCase from './components/BackCase';
 
 const GlobalStyles = createGlobalStyle`
   * {
@@ -43,7 +44,7 @@ const Container = styled.div`
   }
 `;
 
-const Shell = styled.div<{ deviceTheme: DeviceTheme }>`
+const BaseShell = styled.div`
   position: relative;
   height: 100vh;
   margin: auto;
@@ -51,7 +52,6 @@ const Shell = styled.div<{ deviceTheme: DeviceTheme }>`
   width: 370px;
   border-radius: 30px;
   box-shadow: inset 0 0 2.4em #555;
-  background: ${({ deviceTheme }) => getTheme(deviceTheme).body.background};
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, transparent), to(rgba(250, 250, 250, 0.3)));
   animation: descend 1.5s ease;
 
@@ -76,6 +76,16 @@ const Shell = styled.div<{ deviceTheme: DeviceTheme }>`
       opacity: 1;
     }
   }
+`;
+
+const BackShell = styled(BaseShell)`
+  background: white;
+  background-image: url('back_case.svg');
+  background-size: cover;
+`;
+
+const Shell = styled(BaseShell)<{ deviceTheme: DeviceTheme }>`
+  background: ${({ deviceTheme }) => getTheme(deviceTheme).body.background};
 `;
 
 const ScreenContainer = styled.div`
@@ -113,7 +123,16 @@ const App: React.FC = () => {
 };
 
 const Ipod = () => {
-  const { deviceTheme } = useSettings();
+  const { deviceTheme, deviceSide, setDeviceSide } = useSettings();
+
+  if (deviceSide === 'back') {
+    return (
+      <BackShell onClick={() => setDeviceSide('front')}>
+        <BackCase />
+      </BackShell>
+    );
+  }
+
   return (
     <Shell deviceTheme={deviceTheme}>
       <ScreenContainer>

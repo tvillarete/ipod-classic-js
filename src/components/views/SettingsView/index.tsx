@@ -24,6 +24,7 @@ const SettingsView = () => {
     service,
     deviceTheme,
     setDeviceTheme,
+    setDeviceSide,
   } = useSettings();
   const { signIn: signInWithApple, signOut: signOutApple } = useMusicKit();
   const { signOut: signOutSpotify, signIn: signInWithSpotify } =
@@ -85,6 +86,11 @@ const SettingsView = () => {
         ],
         preview: PREVIEW.DEVICE,
       },
+      {
+        type: 'Action',
+        label: 'View back case',
+        onSelect: () => setDeviceSide('back'),
+      },
       /** Show the sign in option if not signed into any service. */
       ...getConditionalOption(!isAuthorized, {
         type: 'ActionSheet',
@@ -126,6 +132,8 @@ const SettingsView = () => {
     ],
     [
       deviceTheme,
+      setDeviceTheme,
+      setDeviceSide,
       isAppleAuthorized,
       isAuthorized,
       isSpotifyAuthorized,
