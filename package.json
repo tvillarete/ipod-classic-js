@@ -21,7 +21,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron": "npm run build && electron electron.js"
+    "electron": "npm run build && electron --enable-transparent-visuals --disable-gpu electron.js"
   },
   "eslintConfig": {
     "extends": "react-app"
