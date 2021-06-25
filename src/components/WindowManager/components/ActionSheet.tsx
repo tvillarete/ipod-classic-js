@@ -111,11 +111,20 @@ const ActionSheet = ({ windowStack, index, isHidden }: Props) => {
     ];
   }, [windowOptions]);
 
+  const selectedOption: SelectableListOption | undefined = useMemo(
+    () => options.find((option) => option.isSelected === true),
+    [options]
+  );
+
   useEventListener<IpodEvent>('centerclick', () => {
     hideWindow();
   });
 
-  const [scrollIndex] = useScrollHandler(windowOptions.id, options);
+  const [scrollIndex] = useScrollHandler(
+    windowOptions.id,
+    options,
+    selectedOption
+  );
 
   return (
     <RootContainer

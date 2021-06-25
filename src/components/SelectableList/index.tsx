@@ -26,6 +26,7 @@ export type SelectableListOptionType =
 type SharedOptionProps = {
   type?: SelectableListOptionType;
   label: string;
+  isSelected?: boolean;
   sublabel?: string;
   preview?: PREVIEW;
   imageUrl?: string;

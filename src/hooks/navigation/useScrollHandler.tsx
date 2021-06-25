@@ -11,16 +11,35 @@ import { useWindowContext } from 'hooks';
 import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
 import { IpodEvent } from 'utils/events';
 
+const getInitIndex = (
+  options: SelectableListOption[] = [],
+  selectedOption?: SelectableListOption
+): number => {
+  if (selectedOption) {
+    const selectedOptionIndex = options.findIndex(
+      (option) => option === selectedOption
+    );
+
+    if (selectedOptionIndex > -1) {
+      return selectedOptionIndex;
+    }
+  }
+
+  // Always default to 0.
+  return 0;
+};
+
 /** Accepts a list of options and will maintain a scroll index capped at the list's length. */
 const useScrollHandler = (
   /** This should match the view's viewId (to enable/disable events for hidden views). */
   id: string,
   /** A list of all scrollable items. Used to cap the scrolling to the last element. */
-  options: SelectableListOption[] = []
+  options: SelectableListOption[] = [],
+  selectedOption?: SelectableListOption
 ): [number] => {
   const { showWindow, windowStack, setPreview } = useWindowContext();
   const { play } = useAudioPlayer();
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(getInitIndex(options, selectedOption));
   const timeoutIdRef = useRef<NodeJS.Timeout>();
   /** Only fire events on the top-most view. */
   const isActive = windowStack[windowStack.length - 1].id === id;
