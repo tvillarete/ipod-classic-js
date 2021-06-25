@@ -10,15 +10,19 @@ const createWindow = (_width, _height, ratio) => {
     const mainWindow = new BrowserWindow({
         width: _width,
         height: _height,
-        maxWidth: 375,
-        maxHeight: 589,
+        maxWidth: 400,
+        maxHeight: 600,
         transparent: true,
-        x: width ,
-        y: height,
+        x: width,
+        y: 0,
         dragable: true,
         resizable: false,
-        frame: true,
-        useContentSize: true
+        frame: false,
+        useContentSize: true,
+        show: false,
+        webPreferences: {
+            zoomFactor: ratio
+        }
     });
 
     // and load the index.html of the app.
@@ -55,39 +59,6 @@ const createTray = (openNewWindow, closeWindow) => {
             click: _openNewWindow
         },
         {
-            label: 'Zoom',
-            id: 'zoom',
-            submenu: [{
-                label: 'Small',
-                type: "radio",
-                click: () => {
-                    windowSpecifications.height = 584 - (584 * 0.66);
-                    windowSpecifications.width = 370 - (370 * 0.66);
-                    windowSpecifications.ratio = 0.33;
-                    _openNewWindow();
-                }
-            }, {
-                label: 'Medium',
-                type: "radio",
-                click: () => {
-                    windowSpecifications.height = 584 - (584 * 0.33);
-                    windowSpecifications.width = 370 - (370 * 0.33);
-                    windowSpecifications.ratio = 0.66;
-                    _openNewWindow();
-                },
-                checked: true
-            }, {
-                label: 'Large',
-                click: () => {
-                    windowSpecifications.height = 584 * 1;
-                    windowSpecifications.width = 370 * 1;
-                    windowSpecifications.ratio = 1;
-                    _openNewWindow();
-                },
-                type: "radio"
-            }]
-        },
-        {
             id: 'close',
             label: 'Close Window',
             enabled: windowSpecifications.open,
@@ -98,6 +69,9 @@ const createTray = (openNewWindow, closeWindow) => {
                 windowSpecifications.open = false;
                 tray.setContextMenu(contextMenu);
             }
+        },
+        {
+            label: 'About'
         },
         { type: 'separator' },
         { label: 'Quit', click: () => app.quit() },
@@ -111,20 +85,23 @@ const createTray = (openNewWindow, closeWindow) => {
  * Principal Function will be invoked when Electron App is on
  */
 const main = () => {
-    const closeWindow = () => ipodWindow.close();
-    const openWindow = (width, height, ratio) => {
-        let _window = createWindow(width, height, ratio);
-        ipodWindow = _window;
-    }
-
-    //Create the components of Electron UI
-    let ipodWindow = createWindow(600 * 0.66, 410 * 0.66, 0.66);
-    let tray = createTray(openWindow, closeWindow, () => ipodWindow);
-
     /* In case all windows will close, we block. App will be exit in Tray menu (Quit)*/
     app.on('window-all-closed', (e) => {
         e.preventDefault();
     });
+
+    const closeWindow = () => ipodWindow.close();
+    const openWindow = (width, height, ratio) => {
+        let _window = createWindow(width, height, ratio);
+        _window.show();
+        ipodWindow = _window;
+    }
+
+    //Create the components of Electron UI
+    let ipodWindow = createWindow(400, 650, 0.66);
+    setTimeout(() => ipodWindow.show(), 400);
+    let tray = createTray(openWindow, closeWindow, () => ipodWindow);
+
 };
 
 // In case Linux programs we need disabled this this for trasnparency
