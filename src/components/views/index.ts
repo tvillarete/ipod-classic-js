@@ -74,7 +74,7 @@ export const ViewOptions: Record<string, ViewOption> = {
   },
   deviceSideActionSheet: {
     id: 'deviceSideActionSheet',
-    title: 'View back case',
+    title: 'Back case',
     type: WINDOW_TYPE.ACTION_SHEET,
   },
   signinPopup: {

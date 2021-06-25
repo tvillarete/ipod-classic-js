@@ -15,6 +15,7 @@ import { Screen, Unit } from 'utils/constants';
 import { WindowManager } from './components';
 import { DeviceTheme, getTheme } from './utils/themes';
 import BackCase from './components/BackCase';
+import useMediaQuery from './hooks/utils/useMediaQuery';
 
 const GlobalStyles = createGlobalStyle`
   * {
@@ -124,17 +125,33 @@ const Providers = ({ children }: { children: React.ReactChild }) => (
 );
 
 const Ipod = () => {
-  const { deviceTheme, deviceSide } = useSettings();
+  const { deviceTheme, deviceSide, setDeviceSide } = useSettings();
+  // const isMobile = useMediaQuery(
+  //   `(min-width: ${Screen.XS.Size.Min})`
+  // );
+
+  const isMobile = false;
+  const shouldHideFront = isMobile && deviceSide === 'back';
+
   return (
     <>
-      <Shell deviceTheme={deviceTheme}>
-        <ScreenContainer>
-          <WindowManager />
-        </ScreenContainer>
-        <ScrollWheel />
-      </Shell>
+      {!shouldHideFront && (
+        <Shell deviceTheme={deviceTheme}>
+          <ScreenContainer>
+            <WindowManager />
+          </ScreenContainer>
+          <ScrollWheel />
+        </Shell>
+      )}
       {deviceSide === 'back' && (
-        <BackShell>
+        <BackShell
+          onClick={() => {
+            if (!isMobile) {
+              return;
+            }
+            setDeviceSide('front');
+          }}
+        >
           <BackCase />
         </BackShell>
       )}

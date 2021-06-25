@@ -43,10 +43,9 @@ const SpecialEdition = styled.div<{ deviceTheme: DeviceTheme }>`
 `;
 
 const Autographs = styled.div<{ deviceTheme: DeviceTheme }>`
-  display: flex;
+  display: ${({ deviceTheme }) => (deviceTheme !== 'u2' ? 'none' : 'flex')};
   align-items: center;
   margin-top: 10%;
-  opacity: ${({ deviceTheme }) => (deviceTheme !== 'u2' ? 0 : 1)};
 `;
 
 const Regulatory = styled.div`
@@ -59,6 +58,24 @@ const RegulatoryIcons = styled.img`
   margin-top: 16px;
 `;
 
+const Etch = styled.div<{ deviceTheme: DeviceTheme }>`
+  display: ${({ deviceTheme }) => (deviceTheme === 'u2' ? 'none' : 'flex')};
+  flex-direction: column;
+  color: #b5c0c8;
+  height: 160px;
+  margin-top: 10%;
+  align-items: center;
+`;
+
+const Line1 = styled.p`
+  filter: grayscale(100%);
+  margin: 0;
+`;
+
+const Line2 = styled(Line1)`
+  margin-top: 4px;
+`;
+
 const BackCase = () => {
   const { deviceTheme } = useSettings();
   return (
@@ -66,6 +83,10 @@ const BackCase = () => {
       <Autographs deviceTheme={deviceTheme}>
         <img alt="U2-autographs" height="160px" src={'u2_autographs.png'} />
       </Autographs>
+      <Etch deviceTheme={deviceTheme}>
+        <Line1>Manky's iPod</Line1>
+        <Line2>Stay Hungry & Foolish ❤️</Line2>
+      </Etch>
       <AppleIcon height="65px" src={'apple.svg'} />
       <IpodJs>iPod</IpodJs>
       <SpecialEdition deviceTheme={deviceTheme}>Special Edition</SpecialEdition>

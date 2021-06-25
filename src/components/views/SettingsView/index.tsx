@@ -89,7 +89,7 @@ const SettingsView = () => {
       },
       {
         type: 'ActionSheet',
-        label: 'View back case',
+        label: 'Back case',
         id: ViewOptions.deviceSideActionSheet.id,
         listOptions: [
           {
