@@ -17,8 +17,14 @@ import {
 
 const SettingsView = () => {
   useMenuHideWindow(ViewOptions.settings.id);
-  const { isAuthorized, isAppleAuthorized, isSpotifyAuthorized, service } =
-    useSettings();
+  const {
+    isAuthorized,
+    isAppleAuthorized,
+    isSpotifyAuthorized,
+    service,
+    deviceColor,
+    setDeviceColor,
+  } = useSettings();
   const { signIn: signInWithApple, signOut: signOutApple } = useMusicKit();
   const { signOut: signOutSpotify, signIn: signInWithSpotify } =
     useSpotifySDK();
@@ -41,9 +47,7 @@ const SettingsView = () => {
           {
             type: 'Action',
             label: `Apple Music ${service === 'apple' ? '(Current)' : ''}`,
-            onSelect: () => {
-              signInWithApple();
-            },
+            onSelect: signInWithApple,
           },
           {
             type: 'Action',
@@ -53,6 +57,26 @@ const SettingsView = () => {
         ],
         preview: PREVIEW.SERVICE,
       }),
+      {
+        type: 'ActionSheet',
+        id: ViewOptions.deviceColorActionSheet.id,
+        label: 'Device color',
+        listOptions: [
+          {
+            type: 'Action',
+            value: 'Silver',
+            label: `Silver ${deviceColor === 'silver' ? '(Current)' : ''}`,
+            onSelect: () => setDeviceColor('silver'),
+          },
+          {
+            type: 'Action',
+            value: 'Black',
+            label: `Black ${deviceColor === 'black' ? '(Current)' : ''}`,
+            onSelect: () => setDeviceColor('black'),
+          },
+        ],
+        preview: PREVIEW.DEVICE,
+      },
       /** Show the sign in option if not signed into any service. */
       ...getConditionalOption(!isAuthorized, {
         type: 'ActionSheet',
@@ -62,9 +86,7 @@ const SettingsView = () => {
           {
             type: 'Action',
             label: 'Apple Music',
-            onSelect: () => {
-              signInWithApple();
-            },
+            onSelect: signInWithApple,
           },
           {
             type: 'Action',
