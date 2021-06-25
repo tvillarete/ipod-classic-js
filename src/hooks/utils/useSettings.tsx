@@ -85,7 +85,7 @@ export const useSettings = (): SettingsHook => {
   const setDeviceSide = useCallback(
     (deviceSide: DeviceSide) => {
       setState((prevState) => ({ ...prevState, deviceSide }));
-        localStorage.setItem(DEVICE_SIDE_KEY, deviceSide);
+      localStorage.setItem(DEVICE_SIDE_KEY, deviceSide);
     },
     [setState]
   );

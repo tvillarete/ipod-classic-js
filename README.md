@@ -19,6 +19,9 @@ Here's a breakdown of the Full Stack:
 
 ## Running Locally
 
+#### NOTE
+If you want to develop locally with this project, you'll need to supply an Apple Developer Token using the `token` query parameter. See https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
+
 In the project directory, you can run:
 
 ### `yarn start`

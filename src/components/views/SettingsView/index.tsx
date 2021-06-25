@@ -85,7 +85,7 @@ const SettingsView = () => {
             onSelect: () => setDeviceTheme('u2'),
           },
         ],
-        preview: PREVIEW.DEVICE,
+        preview: PREVIEW.THEME,
       },
       {
         type: 'ActionSheet',
