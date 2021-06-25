@@ -73,12 +73,7 @@ export const useSettings = (): SettingsHook => {
   const setDeviceColor = useCallback(
     (deviceColor: DeviceColor) => {
       setState((prevState) => ({ ...prevState, deviceColor }));
-
-      if (deviceColor) {
-        localStorage.setItem(DEVICE_COLOR_KEY, deviceColor);
-      } else {
-        localStorage.removeItem(DEVICE_COLOR_KEY);
-      }
+      localStorage.setItem(DEVICE_COLOR_KEY, deviceColor);
     },
     [setState]
   );
