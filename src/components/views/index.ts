@@ -69,7 +69,7 @@ export const ViewOptions: Record<string, ViewOption> = {
   },
   deviceThemeActionSheet: {
     id: 'deviceThemeActionSheet',
-    title: 'Device color',
+    title: 'Device theme',
     type: WINDOW_TYPE.ACTION_SHEET,
   },
   signinPopup: {
