@@ -14,7 +14,7 @@ const createWindow = (_width, _height, ratio) => {
         maxHeight: 600,
         transparent: true,
         x: width,
-        y: 0,
+        y: 50,
         dragable: true,
         resizable: false,
         frame: false,

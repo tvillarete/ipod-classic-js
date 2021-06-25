@@ -90,6 +90,8 @@ const ScreenContainer = styled.div`
   overflow: hidden;
   background: white;
   animation: fadeFromBlack 0.5s;
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
 
   @keyframes fadeFromBlack {
     0% {
