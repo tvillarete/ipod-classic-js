@@ -400,6 +400,7 @@ const Knob = ({
           style={{ width: '100%', height: '100%' }}
           deviceColor={deviceColor}
         />
+
         <CenterButton
           ref={(ref) => {
             centerButtonRef.current = ref ?? undefined;
