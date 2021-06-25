@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import { useInterval } from 'hooks';
-import styled, { css } from 'styled-components';
-import { Unit } from 'utils/constants';
+import { useInterval } from "hooks";
+import styled, { css } from "styled-components";
+import { Unit } from "utils/constants";
 
 const RootContainer = styled.div`
   display: flex;
@@ -45,10 +45,10 @@ const Text = styled.p`
 
 const strings = {
   title: {
-    apple: 'Apple Music',
-    spotify: 'Spotify',
+    apple: "Apple Music",
+    spotify: "Spotify"
   },
-  defaultMessage: 'Sign into view this content',
+  defaultMessage: "Sign into view this content"
 };
 
 interface Props {
@@ -56,22 +56,22 @@ interface Props {
 }
 
 const AuthPrompt = ({ message }: Props) => {
-  const [icon, setIcon] = useState<'apple' | 'spotify'>('apple');
+  const [icon, setIcon] = useState<"apple" | "spotify">("apple");
 
   useInterval(
-    () => setIcon((prevState) => (prevState === 'apple' ? 'spotify' : 'apple')),
+    () => setIcon((prevState) => (prevState === "apple" ? "spotify" : "apple")),
     4000
   );
 
   return (
     <RootContainer>
       <StyledImg
-        isHidden={icon === 'spotify'}
+        isHidden={icon === "spotify"}
         alt="app_icon"
         src="apple_music_icon.svg"
       />
       <StyledImg
-        isHidden={icon === 'apple'}
+        isHidden={icon === "apple"}
         alt="app_icon"
         src="spotify_icon.svg"
       />

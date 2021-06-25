@@ -1,6 +1,6 @@
-import { SadMacIcon } from 'components/icons';
-import styled from 'styled-components';
-import { Unit } from 'utils/constants';
+import { SadMacIcon } from "components/icons";
+import styled from "styled-components";
+import { Unit } from "utils/constants";
 
 const RootContainer = styled.div`
   display: flex;
@@ -18,7 +18,7 @@ const Text = styled.p`
 `;
 
 const strings = {
-  defaultMessage: 'Something went wrong',
+  defaultMessage: "Something went wrong"
 };
 
 interface Props {

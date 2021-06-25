@@ -1,26 +1,26 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { popInAnimation } from 'animation';
-import { SelectableListOption } from 'components';
-import { WINDOW_TYPE } from 'components/views';
-import { motion } from 'framer-motion';
+import { popInAnimation } from "animation";
+import { SelectableListOption } from "components";
+import { WINDOW_TYPE } from "components/views";
+import { motion } from "framer-motion";
 import {
   useEventListener,
   useMenuHideWindow,
   useScrollHandler,
-  useWindowContext,
-} from 'hooks';
-import { WindowOptions } from 'providers/WindowProvider';
-import styled, { css } from 'styled-components';
-import { Unit } from 'utils/constants';
-import { IpodEvent } from 'utils/events';
+  useWindowContext
+} from "hooks";
+import { WindowOptions } from "providers/WindowProvider";
+import styled, { css } from "styled-components";
+import { Unit } from "utils/constants";
+import { IpodEvent } from "utils/events";
 
 interface RootContainerProps {
   index: number;
 }
 
 /** Responsible for putting the window at the proper z-index. */
-export const RootContainer = styled(motion.div) <RootContainerProps>`
+export const RootContainer = styled(motion.div)<RootContainerProps>`
   z-index: ${(props) => props.index};
   position: absolute;
   top: 0;
@@ -109,7 +109,7 @@ const Popup = ({ windowStack, index, isHidden }: Props) => {
   const { hideWindow } = useWindowContext();
 
   if (windowOptions.type !== WINDOW_TYPE.POPUP) {
-    throw new Error('Popup option not supplied');
+    throw new Error("Popup option not supplied");
   }
 
   const listOptions: SelectableListOption[] = useMemo(() => {
@@ -119,17 +119,17 @@ const Popup = ({ windowStack, index, isHidden }: Props) => {
     return listOptions.length
       ? listOptions
       : [
-        {
-          type: 'Action',
-          label: 'Done',
-          onSelect: () => { },
-        },
-      ];
+          {
+            type: "Action",
+            label: "Done",
+            onSelect: () => {}
+          }
+        ];
   }, [windowOptions.listOptions, windowOptions.type]);
 
   const [scrollIndex] = useScrollHandler(windowOptions.id, listOptions);
 
-  useEventListener<IpodEvent>('centerclick', () => {
+  useEventListener<IpodEvent>("centerclick", () => {
     hideWindow();
   });
 

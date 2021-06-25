@@ -1,8 +1,8 @@
-import React, { SyntheticEvent } from 'react';
-import styled from 'styled-components';
-import { useRef } from 'react';
-import { useEffectOnce } from 'hooks';
-import { useEffect } from 'react';
+import React, { SyntheticEvent } from "react";
+import styled from "styled-components";
+import { useRef } from "react";
+import { useEffectOnce } from "hooks";
+import { useEffect } from "react";
 
 const Container = styled.div`
   user-select: none;
@@ -14,7 +14,7 @@ const Container = styled.div`
   transform: translate3d(0, 0, 0);
 `;
 
-const CanvasContainer = styled.div<{ width: number, height: number }>`
+const CanvasContainer = styled.div<{ width: number; height: number }>`
   position: relative;
   display: flex;
   justify-content: center;
@@ -49,13 +49,12 @@ const CenterButton = styled.div<{ size: number }>`
 `;
 
 const WheelButton = styled.img<{
-  margin?: string,
-  top?: string,
-  bottom?: string,
-  left?: string,
-  right?: string
-}
-  >`
+  margin?: string;
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+}>`
   position: absolute;
   margin: ${(props) => props.margin};
   top: ${(props) => props.top};
@@ -70,9 +69,9 @@ const WheelButton = styled.img<{
 /** Custom Event from https://github.com/john-doherty/long-press-event  */
 interface LongPressEvent extends SyntheticEvent {
   detail: {
-    clientX: number,
-    clientY: number
-  }
+    clientX: number;
+    clientY: number;
+  };
 }
 
 const ANGLE_ARC = (360 * Math.PI) / 180;
@@ -98,44 +97,44 @@ type Props = {
   fgColor?: string;
   className?: string;
   canvasClassName?: string;
-}
+};
 
 const Knob = ({
   value,
   onChange,
-  onChangeEnd = () => { },
-  onWheelClick = () => { },
-  onClick = () => { },
-  onLongPress = () => { },
-  onMenuLongPress = () => { },
+  onChangeEnd = () => {},
+  onWheelClick = () => {},
+  onClick = () => {},
+  onLongPress = () => {},
+  onMenuLongPress = () => {},
   min = 0,
   max = 100,
   step = 1,
   width = 200,
   height = 200,
   thickness = 0.35,
-  bgColor = '#EEE',
-  fgColor = '#EA2',
+  bgColor = "#EEE",
+  fgColor = "#EA2",
   className,
-  canvasClassName,
+  canvasClassName
 }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement | undefined>();
   const centerButtonRef = useRef<HTMLDivElement | undefined>();
 
   const handleLongPress = (event: Event) => {
     event.preventDefault();
-    (event.target as any).setAttribute('longpress', new Date().getTime());
+    (event.target as any).setAttribute("longpress", new Date().getTime());
     onLongPress(event);
     return false;
   };
 
   const handleMenuLongPress = (event: Event) => {
     onMenuLongPress(event);
-  }
+  };
 
   const handleWheelLongPress = (event: LongPressEvent) => {
     event.preventDefault();
-    (event.target as any).setAttribute('longpress', new Date().getTime());
+    (event.target as any).setAttribute("longpress", new Date().getTime());
 
     const rect = (event.target as Element).getBoundingClientRect();
     const x = event.detail.clientX - rect.left;
@@ -147,7 +146,7 @@ const Knob = ({
     if (quadrant === 1) {
       handleMenuLongPress(event as any);
     }
-  }
+  };
 
   const getArcToValue = (v: number) => {
     const angle = ((v - min) * ANGLE_ARC) / (max - min);
@@ -157,7 +156,7 @@ const Knob = ({
     return {
       startAngle,
       endAngle,
-      acw: false,
+      acw: false
     };
   };
 
@@ -169,10 +168,10 @@ const Knob = ({
 
     const backingStoreRatio = (ctx as any).webkitBackingStorePixelRatio || 1;
     return devicePixelRatio / backingStoreRatio;
-  }
+  };
 
   const coerceToStep = (v: number) => {
-    let val = ~~((v < 0 ? -0.5 : 0.5) + v / step) * step
+    let val = ~~((v < 0 ? -0.5 : 0.5) + v / step) * step;
     val = Math.max(Math.min(val, max), min);
     if (isNaN(val)) {
       val = 0;
@@ -193,21 +192,21 @@ const Knob = ({
     } else if (a < 0) {
       a += Math.PI * 2;
     }
-    const val = (a * (max - min)) / ANGLE_ARC + min
+    const val = (a * (max - min)) / ANGLE_ARC + min;
     return coerceToStep(val);
   };
 
   const handleMouseDown = (e: Event) => {
     onChange(eventToValue(e));
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUpNoMove);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUpNoMove);
   };
 
   const handleTouchStart = (e: Event) => {
     onChange(eventToValue(e));
-    document.addEventListener('touchmove', handleTouchMove);
-    document.addEventListener('touchend', handleTouchEndNoMove);
-    document.removeEventListener('mousedown', handleMouseDown);
+    document.addEventListener("touchmove", handleTouchMove);
+    document.addEventListener("touchend", handleTouchEndNoMove);
+    document.removeEventListener("mousedown", handleMouseDown);
   };
 
   const handleMouseMove = (e: Event) => {
@@ -218,13 +217,13 @@ const Knob = ({
       onChange(eventToValue(e));
     }
 
-    document.removeEventListener('mouseup', handleMouseUpNoMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.removeEventListener("mouseup", handleMouseUpNoMove);
+    document.addEventListener("mouseup", handleMouseUp);
   };
 
   const handleTouchMove = (e: Event) => {
     e.preventDefault();
-    const touchEvent = e as TouchEvent
+    const touchEvent = e as TouchEvent;
     const touchIndex = touchEvent.targetTouches.length - 1;
     const val = eventToValue(touchEvent.targetTouches[touchIndex]);
 
@@ -236,29 +235,35 @@ const Knob = ({
       return;
     }
 
-    canvasRef.current.removeEventListener('long-press', handleWheelLongPress as any);
-    document.removeEventListener('touchend', handleTouchEndNoMove);
-    document.addEventListener('touchend', handleTouchEnd);
+    canvasRef.current.removeEventListener(
+      "long-press",
+      handleWheelLongPress as any
+    );
+    document.removeEventListener("touchend", handleTouchEndNoMove);
+    document.addEventListener("touchend", handleTouchEnd);
   };
 
   const handleMouseUp = (e: Event) => {
     onChangeEnd(eventToValue(e));
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
   };
 
   const handleTouchEnd = (e: Event) => {
     const touchEvent = e as TouchEvent;
     const touchIndex = touchEvent.targetTouches.length - 1;
     onChangeEnd(touchEvent.targetTouches[touchIndex] as any);
-    document.removeEventListener('touchmove', handleTouchMove);
-    document.removeEventListener('touchend', handleTouchEnd);
+    document.removeEventListener("touchmove", handleTouchMove);
+    document.removeEventListener("touchend", handleTouchEnd);
 
     if (!canvasRef.current) {
       return;
     }
 
-    canvasRef.current.addEventListener('long-press', handleWheelLongPress as any);
+    canvasRef.current.addEventListener(
+      "long-press",
+      handleWheelLongPress as any
+    );
   };
 
   const findClickQuadrant = (rectSize: number, x: number, y: number) => {
@@ -285,15 +290,16 @@ const Knob = ({
       onWheelClick(quadrant);
     }
 
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-    document.removeEventListener('mouseup', handleMouseUpNoMove);
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+    document.removeEventListener("mouseup", handleMouseUpNoMove);
   };
 
   const handleTouchEndNoMove = (e: Event) => {
     const touchEvent = e as TouchEvent;
     const rect = (touchEvent.target as Element).getBoundingClientRect();
-    const touch = touchEvent.changedTouches[touchEvent.changedTouches.length - 1];
+    const touch =
+      touchEvent.changedTouches[touchEvent.changedTouches.length - 1];
     const x = touch.pageX - rect.left;
     const y = touch.pageY - rect.top;
     const rectWidth = rect.width;
@@ -303,16 +309,16 @@ const Knob = ({
       onWheelClick(quadrant);
     }
 
-    document.removeEventListener('touchmove', handleTouchMove);
-    document.removeEventListener('touchend', handleTouchEnd);
-    document.removeEventListener('touchend', handleTouchEndNoMove);
+    document.removeEventListener("touchmove", handleTouchMove);
+    document.removeEventListener("touchend", handleTouchEnd);
+    document.removeEventListener("touchend", handleTouchEndNoMove);
   };
 
   const drawCanvas = () => {
     if (!canvasRef.current) {
       return;
     }
-    const ctx = canvasRef.current.getContext('2d')!;
+    const ctx = canvasRef.current.getContext("2d")!;
     const scale = getCanvasScale(ctx);
     canvasRef.current.width = width * scale; // clears the canvas
     canvasRef.current.height = height * scale;
@@ -321,18 +327,11 @@ const Knob = ({
     const lineWidth = xy * thickness;
     const radius = xy - lineWidth / 2;
     ctx.lineWidth = lineWidth;
-    ctx.lineCap = 'butt';
+    ctx.lineCap = "butt";
     // background arc
     ctx.beginPath();
     ctx.strokeStyle = bgColor;
-    ctx.arc(
-      xy,
-      xy,
-      radius,
-      END_ANGLE - 0.00001,
-      START_ANGLE + 0.00001,
-      true
-    );
+    ctx.arc(xy, xy, radius, END_ANGLE - 0.00001, START_ANGLE + 0.00001, true);
     ctx.stroke();
     // foreground arc
     const a = getArcToValue(value);
@@ -340,7 +339,7 @@ const Knob = ({
     ctx.strokeStyle = fgColor;
     ctx.arc(xy, xy, radius, a.startAngle, a.endAngle, a.acw);
     ctx.stroke();
-  }
+  };
 
   // Component Did Mount
   useEffectOnce(() => {
@@ -350,19 +349,22 @@ const Knob = ({
     }
 
     const isTouchEnabled =
-      'ontouchstart' in window ||
+      "ontouchstart" in window ||
       navigator.maxTouchPoints > 0 ||
       navigator.msMaxTouchPoints > 0;
 
     drawCanvas();
     if (isTouchEnabled) {
-      canvasRef.current.addEventListener('touchstart', handleTouchStart);
+      canvasRef.current.addEventListener("touchstart", handleTouchStart);
     } else {
-      canvasRef.current.addEventListener('mousedown', handleMouseDown);
+      canvasRef.current.addEventListener("mousedown", handleMouseDown);
     }
-    centerButtonRef.current.addEventListener('long-press', handleLongPress);
+    centerButtonRef.current.addEventListener("long-press", handleLongPress);
 
-    canvasRef.current.addEventListener('long-press', handleWheelLongPress as any);
+    canvasRef.current.addEventListener(
+      "long-press",
+      handleWheelLongPress as any
+    );
 
     // Component Will Unmount
     return () => {
@@ -372,13 +374,19 @@ const Knob = ({
       }
 
       if (isTouchEnabled) {
-        canvasRef.current.removeEventListener('touchstart', handleTouchStart);
+        canvasRef.current.removeEventListener("touchstart", handleTouchStart);
       } else {
-        canvasRef.current.removeEventListener('mousedown', handleMouseDown);
+        canvasRef.current.removeEventListener("mousedown", handleMouseDown);
       }
-      centerButtonRef.current.removeEventListener('long-press', handleLongPress);
-      canvasRef.current.removeEventListener('long-press', handleWheelLongPress as any);
-    }
+      centerButtonRef.current.removeEventListener(
+        "long-press",
+        handleLongPress
+      );
+      canvasRef.current.removeEventListener(
+        "long-press",
+        handleWheelLongPress as any
+      );
+    };
   });
 
   // Component Did Update
@@ -394,7 +402,7 @@ const Knob = ({
             canvasRef.current = ref ?? undefined;
           }}
           className={canvasClassName}
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: "100%", height: "100%" }}
         />
         <CenterButton
           ref={(ref) => {
@@ -410,6 +418,6 @@ const Knob = ({
       </CanvasContainer>
     </Container>
   );
-}
+};
 
 export default Knob;

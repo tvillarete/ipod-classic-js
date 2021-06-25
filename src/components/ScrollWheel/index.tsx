@@ -1,38 +1,38 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from "react";
 
-import { useEffectOnce, useEventListener } from 'hooks';
+import { useEffectOnce, useEventListener } from "hooks";
 
-import Knob from './Knob';
-import { createIpodEvent } from 'utils/events';
+import Knob from "./Knob";
+import { createIpodEvent } from "utils/events";
 
 enum WHEEL_QUADRANT {
   TOP = 1,
   BOTTOM = 2,
   LEFT = 3,
-  RIGHT = 4,
+  RIGHT = 4
 }
 
 type SupportedKeyCode =
-  | 'ArrowUp'
-  | 'ArrowDown'
-  | 'ArrowLeft'
-  | 'ArrowRight'
-  | 'Escape'
-  | 'Enter'
-  | ' '
-  | 'Spacebar'
+  | "ArrowUp"
+  | "ArrowDown"
+  | "ArrowLeft"
+  | "ArrowRight"
+  | "Escape"
+  | "Enter"
+  | " "
+  | "Spacebar";
 
-const centerClickEvent = createIpodEvent('centerclick');
-const centerLongClickEvent = createIpodEvent('centerlongclick');
-const forwardScrollEvent = createIpodEvent('forwardscroll');
-const backwardScrollEvent = createIpodEvent('backwardscroll');
-const wheelClickEvent = createIpodEvent('wheelclick');
-const menuClickEvent = createIpodEvent('menuclick');
-const menuLongPressEvent = createIpodEvent('menulongpress');
-const backClickEvent = createIpodEvent('backwardclick');
-const forwardClickEvent = createIpodEvent('forwardclick');
-const playPauseClickEvent = createIpodEvent('playpauseclick');
-const idleEvent = createIpodEvent('idle');
+const centerClickEvent = createIpodEvent("centerclick");
+const centerLongClickEvent = createIpodEvent("centerlongclick");
+const forwardScrollEvent = createIpodEvent("forwardscroll");
+const backwardScrollEvent = createIpodEvent("backwardscroll");
+const wheelClickEvent = createIpodEvent("wheelclick");
+const menuClickEvent = createIpodEvent("menuclick");
+const menuLongPressEvent = createIpodEvent("menulongpress");
+const backClickEvent = createIpodEvent("backwardclick");
+const forwardClickEvent = createIpodEvent("forwardclick");
+const playPauseClickEvent = createIpodEvent("playpauseclick");
+const idleEvent = createIpodEvent("idle");
 
 const ScrollWheel = () => {
   const [count, setCount] = useState(0);
@@ -98,22 +98,22 @@ const ScrollWheel = () => {
   const handleKeyPress = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       switch (event.key as SupportedKeyCode) {
-        case 'ArrowUp':
-        case 'ArrowLeft':
+        case "ArrowUp":
+        case "ArrowLeft":
           handleCounterClockwiseScroll();
           break;
-        case 'ArrowDown':
-        case 'ArrowRight':
+        case "ArrowDown":
+        case "ArrowRight":
           handleClockwiseScroll();
           break;
-        case 'Enter':
+        case "Enter":
           handleCenterClick();
           break;
-        case ' ':
-        case 'Spacebar':
+        case " ":
+        case "Spacebar":
           handleWheelClick(WHEEL_QUADRANT.BOTTOM);
           break;
-        case 'Escape':
+        case "Escape":
           handleWheelClick(WHEEL_QUADRANT.TOP);
           break;
       }
@@ -125,14 +125,14 @@ const ScrollWheel = () => {
       handleCounterClockwiseScroll,
       handleClockwiseScroll,
       handleCenterClick,
-      handleWheelClick,
+      handleWheelClick
     ]
   );
 
   /** Determine if clockwise/counter-clockwise based on the Knob onChange value. */
   const handleScroll = useCallback(
     (val: number) => {
-      setCount(currentCount => {
+      setCount((currentCount) => {
         if (val === 5 && currentCount === 100) {
           handleClockwiseScroll();
         } else if (val === 100 && currentCount === 5) {
@@ -147,14 +147,10 @@ const ScrollWheel = () => {
 
       handleResetIdleCheck();
     },
-    [
-      handleClockwiseScroll,
-      handleCounterClockwiseScroll,
-      handleResetIdleCheck,
-    ]
+    [handleClockwiseScroll, handleCounterClockwiseScroll, handleResetIdleCheck]
   );
 
-  useEventListener('keydown', handleKeyPress);
+  useEventListener("keydown", handleKeyPress);
 
   /**
    * Start the countdown for detecting when the user is idle,
@@ -171,7 +167,7 @@ const ScrollWheel = () => {
       height={220}
       step={5}
       fgColor="transparent"
-      bgColor={'white'}
+      bgColor={"white"}
       thickness={0.6}
       onClick={handleCenterClick}
       onLongPress={handleCenterLongPress}

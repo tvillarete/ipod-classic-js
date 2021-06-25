@@ -1,7 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback } from "react";
 
-import { useSpotifySDK } from 'hooks';
-import * as ConversionUtils from 'utils/conversion';
+import { useSpotifySDK } from "hooks";
+import * as ConversionUtils from "utils/conversion";
 
 type FetchSpotifyApiArgs = {
   endpoint: string;
@@ -12,15 +12,15 @@ type FetchSpotifyApiArgs = {
 const fetchSpotifyApi = async <TSpotifyApiType extends object>({
   endpoint,
   accessToken,
-  onError,
+  onError
 }: FetchSpotifyApiArgs) => {
   try {
     if (!accessToken) {
-      throw new Error('Provide a Spotify API Access token');
+      throw new Error("Provide a Spotify API Access token");
     }
 
     const res = await fetch(`https://api.spotify.com/v1/${endpoint}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
+      headers: { Authorization: `Bearer ${accessToken}` }
     });
     return (await res.json()) as TSpotifyApiType;
   } catch (error) {
@@ -38,7 +38,7 @@ const useSpotifyDataFetcher = () => {
         accessToken,
         onError: (error) => {
           throw new Error(error);
-        },
+        }
       }
     );
 
@@ -50,13 +50,13 @@ const useSpotifyDataFetcher = () => {
   }, [accessToken]);
 
   const fetchAlbum = useCallback(
-    async (userId = '', id: string) => {
+    async (userId = "", id: string) => {
       const response = await fetchSpotifyApi<SpotifyApi.SingleAlbumResponse>({
         endpoint: `albums/${id}`,
         accessToken,
         onError: (error) => {
           throw new Error(error);
-        },
+        }
       });
 
       if (response) {
@@ -67,15 +67,14 @@ const useSpotifyDataFetcher = () => {
   );
 
   const fetchArtists = useCallback(async () => {
-    const response = await fetchSpotifyApi<SpotifyApi.UsersFollowedArtistsResponse>(
-      {
+    const response =
+      await fetchSpotifyApi<SpotifyApi.UsersFollowedArtistsResponse>({
         endpoint: `me/following?type=artist&limit=50`,
         accessToken,
         onError: (error) => {
           throw new Error(error);
-        },
-      }
-    );
+        }
+      });
 
     return response?.artists?.items.map(
       ConversionUtils.convertSpotifyArtistFull
@@ -83,13 +82,13 @@ const useSpotifyDataFetcher = () => {
   }, [accessToken]);
 
   const fetchArtist = useCallback(
-    async (userId = '', id: string) => {
+    async (userId = "", id: string) => {
       const response = await fetchSpotifyApi<SpotifyApi.ArtistsAlbumsResponse>({
         endpoint: `artists/${id}/albums`,
         accessToken,
         onError: (error) => {
           throw new Error(error);
-        },
+        }
       });
 
       if (response) {
@@ -102,15 +101,14 @@ const useSpotifyDataFetcher = () => {
   );
 
   const fetchPlaylists = useCallback(async () => {
-    const response = await fetchSpotifyApi<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>(
-      {
-        endpoint: 'me/playlists?limit=50',
+    const response =
+      await fetchSpotifyApi<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>({
+        endpoint: "me/playlists?limit=50",
         accessToken,
         onError: (error) => {
           throw new Error(error);
-        },
-      }
-    );
+        }
+      });
 
     return response?.items?.map(
       ConversionUtils.convertSpotifyPlaylistSimplified
@@ -118,13 +116,13 @@ const useSpotifyDataFetcher = () => {
   }, [accessToken]);
 
   const fetchPlaylist = useCallback(
-    async (userId = '', id: string) => {
+    async (userId = "", id: string) => {
       const response = await fetchSpotifyApi<SpotifyApi.PlaylistObjectFull>({
         endpoint: `users/${userId}/playlists/${id}`,
         accessToken,
         onError: (error) => {
           throw new Error(error);
-        },
+        }
       });
 
       if (response) {
@@ -140,7 +138,7 @@ const useSpotifyDataFetcher = () => {
     fetchArtists,
     fetchArtist,
     fetchPlaylists,
-    fetchPlaylist,
+    fetchPlaylist
   };
 };
 

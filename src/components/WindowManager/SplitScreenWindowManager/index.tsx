@@ -1,10 +1,10 @@
-import { Header } from 'components';
-import { AnimatePresence } from 'framer-motion';
-import { WindowOptions } from 'providers/WindowProvider';
-import styled, { css } from 'styled-components';
+import { Header } from "components";
+import { AnimatePresence } from "framer-motion";
+import { WindowOptions } from "providers/WindowProvider";
+import styled, { css } from "styled-components";
 
-import { Window } from '../components';
-import PreviewPanel from './PreviewPanel';
+import { Window } from "../components";
+import PreviewPanel from "./PreviewPanel";
 
 const Container = styled.div`
   z-index: 2;
@@ -44,7 +44,7 @@ interface Props {
 const SplitScreenWindowManager = ({
   windowStack,
   menuHidden,
-  allHidden,
+  allHidden
 }: Props) => {
   return (
     <Container data-stack-type="splitscreen">

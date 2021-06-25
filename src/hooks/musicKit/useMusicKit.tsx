@@ -5,11 +5,11 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useState,
-} from 'react';
+  useState
+} from "react";
 
-import { ErrorScreen } from 'components';
-import { useEventListener, useMKEventListener, useSettings } from 'hooks';
+import { ErrorScreen } from "components";
+import { useEventListener, useMKEventListener, useSettings } from "hooks";
 
 /**
  * This will be used to connect to the Apple Music API.
@@ -34,11 +34,8 @@ export type MusicKitHook = MusicKitState & {
 
 export const useMusicKit = (): MusicKitHook => {
   const musicKit = window.MusicKit;
-  const {
-    setIsAppleAuthorized,
-    isSpotifyAuthorized,
-    setService,
-  } = useSettings();
+  const { setIsAppleAuthorized, isSpotifyAuthorized, setService } =
+    useSettings();
   const { isConfigured, hasDevToken } = useContext(MusicKitContext);
   const music = useMemo(() => {
     if (!isConfigured || !hasDevToken) {
@@ -53,7 +50,7 @@ export const useMusicKit = (): MusicKitHook => {
       await music.authorize();
     }
 
-    setService('apple');
+    setService("apple");
   }, [music, setService]);
 
   const signOut = useCallback(() => {
@@ -61,7 +58,7 @@ export const useMusicKit = (): MusicKitHook => {
     setIsAppleAuthorized(false);
 
     // Change to Spotify if available.
-    setService(isSpotifyAuthorized ? 'spotify' : undefined);
+    setService(isSpotifyAuthorized ? "spotify" : undefined);
   }, [isSpotifyAuthorized, music, setIsAppleAuthorized, setService]);
 
   return {
@@ -70,7 +67,7 @@ export const useMusicKit = (): MusicKitHook => {
     musicKit,
     music,
     signIn,
-    signOut,
+    signOut
   };
 };
 
@@ -82,22 +79,20 @@ export const MusicKitProvider = ({ children }: Props) => {
   const musicKit = window.MusicKit;
   const [hasDevToken, setHasDevToken] = useState(false);
   const [isConfigured, setIsConfigured] = useState(false);
-  const {
-    setIsAppleAuthorized,
-    setService: setStreamingService,
-  } = useSettings();
+  const { setIsAppleAuthorized, setService: setStreamingService } =
+    useSettings();
 
   useEffect(() => {
     try {
       const music = musicKit.configure({
         developerToken:
           DEVELOPER_TOKEN ??
-          new URLSearchParams(window.location.search).get('token') ??
+          new URLSearchParams(window.location.search).get("token") ??
           undefined,
         app: {
-          name: 'iPod.js',
-          build: '1.0',
-        },
+          name: "iPod.js",
+          build: "1.0"
+        }
       });
 
       if (music) {
@@ -112,17 +107,17 @@ export const MusicKitProvider = ({ children }: Props) => {
     }
   }, [musicKit, setIsAppleAuthorized]);
 
-  useMKEventListener('userTokenDidChange', (e) => {
+  useMKEventListener("userTokenDidChange", (e) => {
     if (e.userToken) {
       setIsAppleAuthorized(true);
-      setStreamingService('apple');
+      setStreamingService("apple");
     } else {
       setIsAppleAuthorized(false);
       setStreamingService(undefined);
     }
   });
 
-  useEventListener('musickitconfigured', () => {
+  useEventListener("musickitconfigured", () => {
     setIsConfigured(true);
   });
 
@@ -131,7 +126,7 @@ export const MusicKitProvider = ({ children }: Props) => {
       {isConfigured ? (
         children
       ) : (
-        <ErrorScreen message={'Missing Apple developer token'} />
+        <ErrorScreen message={"Missing Apple developer token"} />
       )}
     </MusicKitContext.Provider>
   );

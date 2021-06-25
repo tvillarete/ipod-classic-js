@@ -1,10 +1,10 @@
-import LoadingIndicator from 'components/LoadingIndicator';
-import { useAudioPlayer, useInterval } from 'hooks';
-import styled from 'styled-components';
-import * as Utils from 'utils';
-import { Unit } from 'utils/constants';
+import LoadingIndicator from "components/LoadingIndicator";
+import { useAudioPlayer, useInterval } from "hooks";
+import styled from "styled-components";
+import * as Utils from "utils";
+import { Unit } from "utils/constants";
 
-import ProgressBar from './ProgressBar';
+import ProgressBar from "./ProgressBar";
 
 const Container = styled.div`
   position: relative;
@@ -16,7 +16,7 @@ const Container = styled.div`
 `;
 
 interface LabelProps {
-  textAlign: 'left' | 'right';
+  textAlign: "left" | "right";
 }
 
 const Label = styled.h3<LabelProps>`
@@ -35,7 +35,7 @@ const TrackProgress = () => {
     isPaused,
     currentTime,
     percent,
-    timeRemaining,
+    timeRemaining
   } = playbackInfo;
 
   /** Update the progress bar every second. */

@@ -1,8 +1,8 @@
-import { AnimatePresence } from 'framer-motion';
-import { WindowOptions } from 'providers/WindowProvider';
-import styled from 'styled-components';
+import { AnimatePresence } from "framer-motion";
+import { WindowOptions } from "providers/WindowProvider";
+import styled from "styled-components";
 
-import Popup from '../components/Popup';
+import Popup from "../components/Popup";
 
 interface ContainerProps {
   isHidden: boolean;
@@ -14,7 +14,7 @@ const RootContainer = styled.div<ContainerProps>`
   height: 100%;
   width: 100%;
   background: ${({ isHidden }) =>
-    isHidden ? 'transparent' : 'rgba(0, 0, 0, 0.3)'};
+    isHidden ? "transparent" : "rgba(0, 0, 0, 0.3)"};
   transition: all 0.25s ease;
 `;
 

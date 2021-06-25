@@ -1,19 +1,19 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
 import {
   getConditionalOption,
   SelectableList,
-  SelectableListOption,
-} from 'components';
-import { PREVIEW } from 'components/previews';
-import ViewOptions, { AboutView } from 'components/views';
+  SelectableListOption
+} from "components";
+import { PREVIEW } from "components/previews";
+import ViewOptions, { AboutView } from "components/views";
 import {
   useMenuHideWindow,
   useMusicKit,
   useScrollHandler,
   useSettings,
-  useSpotifySDK,
-} from 'hooks';
+  useSpotifySDK
+} from "hooks";
 
 const SettingsView = () => {
   useMenuHideWindow(ViewOptions.settings.id);
@@ -26,73 +26,73 @@ const SettingsView = () => {
   const options: SelectableListOption[] = useMemo(
     () => [
       {
-        type: 'View',
-        label: 'About',
+        type: "View",
+        label: "About",
         viewId: ViewOptions.about.id,
         component: () => <AboutView />,
-        preview: PREVIEW.SETTINGS,
+        preview: PREVIEW.SETTINGS
       },
       /** Add an option to select between services signed into more than one. */
       ...getConditionalOption(isAuthorized, {
-        type: 'ActionSheet',
+        type: "ActionSheet",
         id: ViewOptions.serviceTypeActionSheet.id,
-        label: 'Choose service',
+        label: "Choose service",
         listOptions: [
           {
-            type: 'Action',
-            label: `Apple Music ${service === 'apple' ? '(Current)' : ''}`,
+            type: "Action",
+            label: `Apple Music ${service === "apple" ? "(Current)" : ""}`,
             onSelect: () => {
               signInWithApple();
-            },
+            }
           },
           {
-            type: 'Action',
-            label: `Spotify ${service === 'spotify' ? '(Current)' : ''}`,
-            onSelect: signInWithSpotify,
-          },
+            type: "Action",
+            label: `Spotify ${service === "spotify" ? "(Current)" : ""}`,
+            onSelect: signInWithSpotify
+          }
         ],
-        preview: PREVIEW.SERVICE,
+        preview: PREVIEW.SERVICE
       }),
       /** Show the sign in option if not signed into any service. */
       ...getConditionalOption(!isAuthorized, {
-        type: 'ActionSheet',
+        type: "ActionSheet",
         id: ViewOptions.signinPopup.id,
-        label: 'Sign in',
+        label: "Sign in",
         listOptions: [
           {
-            type: 'Action',
-            label: 'Apple Music',
+            type: "Action",
+            label: "Apple Music",
             onSelect: () => {
               signInWithApple();
-            },
+            }
           },
           {
-            type: 'Action',
-            label: 'Spotify',
-            onSelect: signInWithSpotify,
-          },
+            type: "Action",
+            label: "Spotify",
+            onSelect: signInWithSpotify
+          }
         ],
-        preview: PREVIEW.MUSIC,
+        preview: PREVIEW.MUSIC
       }),
       /** Show the signout option for any services that are authenticated. */
       ...getConditionalOption(isAuthorized, {
-        type: 'ActionSheet',
+        type: "ActionSheet",
         id: ViewOptions.signOutPopup.id,
-        label: 'Sign out',
+        label: "Sign out",
         listOptions: [
           ...getConditionalOption(isAppleAuthorized, {
-            type: 'Action',
-            label: 'Apple Music',
-            onSelect: signOutApple,
+            type: "Action",
+            label: "Apple Music",
+            onSelect: signOutApple
           }),
           ...getConditionalOption(isSpotifyAuthorized, {
-            type: 'Action',
-            label: 'Spotify',
-            onSelect: signOutSpotify,
-          }),
+            type: "Action",
+            label: "Spotify",
+            onSelect: signOutSpotify
+          })
         ],
-        preview: PREVIEW.SERVICE,
-      }),
+        preview: PREVIEW.SERVICE
+      })
     ],
     [
       isAppleAuthorized,
@@ -102,7 +102,7 @@ const SettingsView = () => {
       signInWithApple,
       signInWithSpotify,
       signOutApple,
-      signOutSpotify,
+      signOutSpotify
     ]
   );
 

@@ -1,9 +1,9 @@
-import { useCallback } from 'react';
+import { useCallback } from "react";
 
-import { Controls } from 'components';
-import { useAudioPlayer, useEffectOnce, useMKEventListener } from 'hooks';
-import styled from 'styled-components';
-import { Unit } from 'utils/constants';
+import { Controls } from "components";
+import { useAudioPlayer, useEffectOnce, useMKEventListener } from "hooks";
+import styled from "styled-components";
+import { Unit } from "utils/constants";
 
 const Container = styled.div`
   height: 100%;
@@ -64,11 +64,8 @@ interface Props {
 }
 
 const NowPlaying = ({ hideArtwork, onHide }: Props) => {
-  const {
-    nowPlayingItem,
-    updateNowPlayingItem,
-    updatePlaybackInfo,
-  } = useAudioPlayer();
+  const { nowPlayingItem, updateNowPlayingItem, updatePlaybackInfo } =
+    useAudioPlayer();
 
   const handlePlaybackChange = useCallback(
     ({ state }: { state: MusicKit.PlaybackStates }) => {
@@ -85,7 +82,7 @@ const NowPlaying = ({ hideArtwork, onHide }: Props) => {
     updatePlaybackInfo();
   });
 
-  useMKEventListener('playbackStateDidChange', handlePlaybackChange);
+  useMKEventListener("playbackStateDidChange", handlePlaybackChange);
 
   return (
     <Container>

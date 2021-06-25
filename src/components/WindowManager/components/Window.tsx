@@ -1,11 +1,11 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { noAnimation, slideRightAnimation } from 'animation';
-import { WINDOW_TYPE } from 'components/views';
-import { motion } from 'framer-motion';
-import { useWindowContext } from 'hooks';
-import { WindowOptions } from 'providers/WindowProvider';
-import styled from 'styled-components';
+import { noAnimation, slideRightAnimation } from "animation";
+import { WINDOW_TYPE } from "components/views";
+import { motion } from "framer-motion";
+import { useWindowContext } from "hooks";
+import { WindowOptions } from "providers/WindowProvider";
+import styled from "styled-components";
 
 interface ContainerProps {
   index: number;
@@ -16,7 +16,7 @@ interface ContainerProps {
 export const Container = styled(motion.div)<ContainerProps>`
   z-index: ${(props) => props.index};
   position: absolute;
-  top: ${(props) => (props.showHeader ? '20px' : 0)};
+  top: ${(props) => (props.showHeader ? "20px" : 0)};
   bottom: 0;
   left: 0;
   right: 0;
@@ -31,7 +31,7 @@ interface ContentTransitionContainerProps {
 const ContentTransitionContainer = styled.div<ContentTransitionContainerProps>`
   height: 100%;
   transition: transform 0.3s;
-  transform: ${(props) => props.isHidden && 'translateX(-100%)'};
+  transform: ${(props) => props.isHidden && "translateX(-100%)"};
   overflow: auto;
 `;
 

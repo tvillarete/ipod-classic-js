@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-import { useMenuHideWindow } from 'hooks';
-import styled from 'styled-components';
+import { useMenuHideWindow } from "hooks";
+import styled from "styled-components";
 
-import ViewOptions from '../';
-import Game from './Game';
+import ViewOptions from "../";
+import Game from "./Game";
 
 const RootContainer = styled.div`
   height: 100%;

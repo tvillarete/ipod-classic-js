@@ -1,29 +1,29 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { AuthPrompt, SelectableList, SelectableListOption } from 'components';
+import { AuthPrompt, SelectableList, SelectableListOption } from "components";
 import {
   useDataFetcher,
   useMenuHideWindow,
   useScrollHandler,
-  useSettings,
-} from 'hooks';
+  useSettings
+} from "hooks";
 
-import ViewOptions, { ArtistView } from '../';
+import ViewOptions, { ArtistView } from "../";
 
 const ArtistsView = () => {
   useMenuHideWindow(ViewOptions.artists.id);
   const { isAuthorized } = useSettings();
   const { data: artists, isLoading } = useDataFetcher<IpodApi.Artist[]>({
-    name: 'artists',
+    name: "artists"
   });
 
   const options: SelectableListOption[] = useMemo(
     () =>
       artists?.map((artist) => ({
-        type: 'View',
+        type: "View",
         label: artist.name,
         viewId: ViewOptions.artist.id,
-        component: () => <ArtistView id={artist.id} inLibrary={true} />,
+        component: () => <ArtistView id={artist.id} inLibrary={true} />
       })) ?? [],
     [artists]
   );

@@ -1,9 +1,9 @@
-import { Header } from 'components';
-import { AnimatePresence } from 'framer-motion';
-import { WindowOptions } from 'providers/WindowProvider';
-import styled from 'styled-components';
+import { Header } from "components";
+import { AnimatePresence } from "framer-motion";
+import { WindowOptions } from "providers/WindowProvider";
+import styled from "styled-components";
 
-import { Window } from '../components';
+import { Window } from "../components";
 
 interface ContainerProps {
   isHidden: boolean;
@@ -16,7 +16,7 @@ const Container = styled.div<ContainerProps>`
   width: 100%;
   background: white;
   transition: all 0.35s;
-  transform: ${(props) => props.isHidden && 'translateX(100%)'};
+  transform: ${(props) => props.isHidden && "translateX(100%)"};
 `;
 
 interface Props {

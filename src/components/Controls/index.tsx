@@ -1,13 +1,13 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from "react";
 
-import { useEventListener, useVolumeHandler } from 'hooks';
-import styled from 'styled-components';
-import { Unit } from 'utils/constants';
+import { useEventListener, useVolumeHandler } from "hooks";
+import styled from "styled-components";
+import { Unit } from "utils/constants";
 
-import Scrubber from './Scrubber';
-import TrackProgress from './TrackProgress';
-import VolumeBar from './VolumeBar';
-import { IpodEvent } from 'utils/events';
+import Scrubber from "./Scrubber";
+import TrackProgress from "./TrackProgress";
+import VolumeBar from "./VolumeBar";
+import { IpodEvent } from "utils/events";
 
 const Container = styled.div`
   position: relative;
@@ -27,7 +27,7 @@ const MainContainer = styled.div<ContainerProps>`
   right: ${Unit.XS};
   transition: transform 0.3s;
 
-  transform: ${(props) => props.isHidden && 'translateX(-110%)'};
+  transform: ${(props) => props.isHidden && "translateX(-110%)"};
 `;
 
 const ScrubberContainer = styled.div<ContainerProps>`
@@ -38,7 +38,7 @@ const ScrubberContainer = styled.div<ContainerProps>`
   right: ${Unit.XS};
   transition: transform 0.3s;
 
-  transform: ${(props) => props.isHidden && 'translateX(110%)'};
+  transform: ${(props) => props.isHidden && "translateX(110%)"};
 `;
 
 const Controls = () => {
@@ -57,7 +57,7 @@ const Controls = () => {
     }
   }, [isScrubbing, setEnabled]);
 
-  useEventListener<IpodEvent>('centerclick', handleCenterClick);
+  useEventListener<IpodEvent>("centerclick", handleCenterClick);
 
   return (
     <Container>

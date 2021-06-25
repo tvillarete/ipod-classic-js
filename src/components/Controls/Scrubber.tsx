@@ -1,13 +1,13 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from "react";
 
-import { useAudioPlayer, useEventListener, useInterval } from 'hooks';
-import styled from 'styled-components';
-import { useDebouncedCallback } from 'use-debounce/lib';
-import { formatTime } from 'utils';
-import { Unit } from 'utils/constants';
+import { useAudioPlayer, useEventListener, useInterval } from "hooks";
+import styled from "styled-components";
+import { useDebouncedCallback } from "use-debounce/lib";
+import { formatTime } from "utils";
+import { Unit } from "utils/constants";
 
-import ProgressBar from './ProgressBar';
-import { IpodEvent } from 'utils/events';
+import ProgressBar from "./ProgressBar";
+import { IpodEvent } from "utils/events";
 
 const Container = styled.div`
   position: relative;
@@ -19,7 +19,7 @@ const Container = styled.div`
 `;
 
 interface LabelProps {
-  textAlign: 'left' | 'right';
+  textAlign: "left" | "right";
 }
 
 const Label = styled.h3<LabelProps>`
@@ -42,10 +42,10 @@ const Scrubber = ({ isScrubbing }: Props) => {
     () => Math.round((scrubberTime / duration) * 100),
     [duration, scrubberTime]
   );
-  const scrubberTimeRemaining = useMemo(() => duration - scrubberTime, [
-    duration,
-    scrubberTime,
-  ]);
+  const scrubberTimeRemaining = useMemo(
+    () => duration - scrubberTime,
+    [duration, scrubberTime]
+  );
 
   /** The user is actively scrubbing. We disable the 1s update interval in this case. */
   const [isActive, setIsActive] = useState(false);
@@ -87,8 +87,8 @@ const Scrubber = ({ isScrubbing }: Props) => {
     [currentTime, isActive, isPlaying]
   );
 
-  useEventListener<IpodEvent>('forwardscroll', scrubForward);
-  useEventListener<IpodEvent>('backwardscroll', scrubBackward);
+  useEventListener<IpodEvent>("forwardscroll", scrubForward);
+  useEventListener<IpodEvent>("backwardscroll", scrubBackward);
 
   /** Update the progress bar every second. */
   useInterval(refresh, 1000);

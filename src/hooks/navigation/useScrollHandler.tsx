@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   ActionSheetOptionProps,
   PopupOptionProps,
-  SelectableListOption,
-} from 'components';
-import ViewOptions, { NowPlayingView, WINDOW_TYPE } from 'components/views';
-import { useWindowContext } from 'hooks';
+  SelectableListOption
+} from "components";
+import ViewOptions, { NowPlayingView, WINDOW_TYPE } from "components/views";
+import { useWindowContext } from "hooks";
 
-import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
-import { IpodEvent } from 'utils/events';
+import { useAudioPlayer, useEffectOnce, useEventListener } from "../";
+import { IpodEvent } from "utils/events";
 
 /** Accepts a list of options and will maintain a scroll index capped at the list's length. */
 const useScrollHandler = (
@@ -71,7 +71,7 @@ const useScrollHandler = (
       showWindow({
         id,
         type: windowType ?? (ViewOptions[id]?.type as any) ?? WINDOW_TYPE.FULL,
-        component,
+        component
       });
     },
     [showWindow]
@@ -84,7 +84,7 @@ const useScrollHandler = (
         id: options.popupId,
         title: options.title,
         description: options.description,
-        listOptions: options.listOptions,
+        listOptions: options.listOptions
       });
     },
     [showWindow]
@@ -95,7 +95,7 @@ const useScrollHandler = (
       showWindow({
         type: WINDOW_TYPE.ACTION_SHEET,
         id: options.id,
-        listOptions: options.listOptions,
+        listOptions: options.listOptions
       });
     },
     [showWindow]
@@ -111,26 +111,26 @@ const useScrollHandler = (
     }
 
     switch (option.type) {
-      case 'Song':
+      case "Song":
         await play(option.queueOptions);
 
         if (option.showNowPlayingView) {
           handleShowView(ViewOptions.nowPlaying.id, () => <NowPlayingView />);
         }
         break;
-      case 'Link':
-        window.open(option.url, '_blank');
+      case "Link":
+        window.open(option.url, "_blank");
         break;
-      case 'View':
+      case "View":
         handleShowView(option.viewId, option.component, option.windowType);
         break;
-      case 'Action':
+      case "Action":
         option.onSelect();
         break;
-      case 'Popup':
+      case "Popup":
         handleShowPopup(option);
         break;
-      case 'ActionSheet':
+      case "ActionSheet":
         handleShowActionSheet(option);
         break;
     }
@@ -141,7 +141,7 @@ const useScrollHandler = (
     index,
     isActive,
     options,
-    play,
+    play
   ]);
 
   const handleCenterLongClick = useCallback(async () => {
@@ -153,7 +153,7 @@ const useScrollHandler = (
       showWindow({
         type: WINDOW_TYPE.ACTION_SHEET,
         id: ViewOptions.mediaActionSheet.id,
-        listOptions: option.longPressOptions,
+        listOptions: option.longPressOptions
       });
     }
   }, [index, isActive, options, showWindow]);
@@ -174,10 +174,10 @@ const useScrollHandler = (
     }
   });
 
-  useEventListener<IpodEvent>('centerclick', handleCenterClick);
-  useEventListener<IpodEvent>('centerlongclick', handleCenterLongClick);
-  useEventListener<IpodEvent>('forwardscroll', handleForwardScroll);
-  useEventListener<IpodEvent>('backwardscroll', handleBackwardScroll);
+  useEventListener<IpodEvent>("centerclick", handleCenterClick);
+  useEventListener<IpodEvent>("centerlongclick", handleCenterLongClick);
+  useEventListener<IpodEvent>("forwardscroll", handleForwardScroll);
+  useEventListener<IpodEvent>("backwardscroll", handleBackwardScroll);
 
   return [index];
 };

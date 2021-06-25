@@ -1,9 +1,9 @@
-import { createContext, memo, useCallback, useContext, useState } from 'react';
+import { createContext, memo, useCallback, useContext, useState } from "react";
 
-type StreamingService = 'apple' | 'spotify';
+type StreamingService = "apple" | "spotify";
 
-export const SELECTED_SERVICE_KEY = 'ipodSelectedService';
-export const VOLUME_KEY = 'ipodVolume';
+export const SELECTED_SERVICE_KEY = "ipodSelectedService";
+export const VOLUME_KEY = "ipodVolume";
 
 export interface SettingsState {
   service?: StreamingService;
@@ -18,7 +18,7 @@ type SettingsContextType = [
 
 export const SettingsContext = createContext<SettingsContextType>([
   {} as any,
-  () => {},
+  () => {}
 ]);
 
 export type SettingsHook = SettingsState & {
@@ -35,7 +35,7 @@ export const useSettings = (): SettingsHook => {
     (val: boolean) =>
       setState((prevState) => ({
         ...prevState,
-        isSpotifyAuthorized: val,
+        isSpotifyAuthorized: val
       })),
     [setState]
   );
@@ -44,7 +44,7 @@ export const useSettings = (): SettingsHook => {
     (val: boolean) =>
       setState((prevState) => ({
         ...prevState,
-        isAppleAuthorized: val,
+        isAppleAuthorized: val
       })),
     [setState]
   );
@@ -53,7 +53,7 @@ export const useSettings = (): SettingsHook => {
     (service?: StreamingService) => {
       setState((prevState) => ({
         ...prevState,
-        service,
+        service
       }));
 
       if (service) {
@@ -70,7 +70,7 @@ export const useSettings = (): SettingsHook => {
     isAuthorized: state.isAppleAuthorized || state.isSpotifyAuthorized,
     setIsSpotifyAuthorized,
     setIsAppleAuthorized,
-    setService,
+    setService
   };
 };
 
@@ -84,7 +84,7 @@ export const SettingsProvider = memo(({ children }: Props) => {
     isSpotifyAuthorized: false,
     service:
       (localStorage.getItem(SELECTED_SERVICE_KEY) as StreamingService) ??
-      undefined,
+      undefined
   });
 
   return (

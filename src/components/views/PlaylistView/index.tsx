@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { SelectableList, SelectableListOption } from 'components';
-import { ViewOptions } from 'components/views';
-import { useDataFetcher, useMenuHideWindow, useScrollHandler } from 'hooks';
-import * as Utils from 'utils';
+import { SelectableList, SelectableListOption } from "components";
+import { ViewOptions } from "components/views";
+import { useDataFetcher, useMenuHideWindow, useScrollHandler } from "hooks";
+import * as Utils from "utils";
 
 interface Props {
   id: string;
@@ -14,24 +14,24 @@ interface Props {
 const PlaylistView = ({ id, inLibrary = false }: Props) => {
   useMenuHideWindow(ViewOptions.playlist.id);
   const { data: playlist, isLoading } = useDataFetcher<IpodApi.Playlist>({
-    name: 'playlist',
+    name: "playlist",
     id,
-    inLibrary,
+    inLibrary
   });
 
   const options: SelectableListOption[] = useMemo(
     () =>
       playlist?.songs.map((song, index) => ({
-        type: 'Song',
+        type: "Song",
         label: song.name,
-        sublabel: song.artistName ?? 'Unknown artist',
+        sublabel: song.artistName ?? "Unknown artist",
         imageUrl: song.artwork?.url,
         queueOptions: {
           playlist,
-          startPosition: index,
+          startPosition: index
         },
         showNowPlayingView: true,
-        longPressOptions: Utils.getMediaOptions('song', song.id),
+        longPressOptions: Utils.getMediaOptions("song", song.id)
       })) ?? [],
     [playlist]
   );

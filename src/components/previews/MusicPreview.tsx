@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { previewSlideRight } from 'animation';
-import { AuthPrompt, KenBurns, LoadingScreen } from 'components';
-import { motion } from 'framer-motion';
-import { useDataFetcher, useSettings } from 'hooks';
-import styled from 'styled-components';
+import { previewSlideRight } from "animation";
+import { AuthPrompt, KenBurns, LoadingScreen } from "components";
+import { motion } from "framer-motion";
+import { useDataFetcher, useSettings } from "hooks";
+import styled from "styled-components";
 
 const Container = styled(motion.div)`
   z-index: 1;
@@ -17,16 +17,18 @@ const Container = styled(motion.div)`
 
 const MusicPreview = () => {
   const { isSpotifyAuthorized, isAppleAuthorized } = useSettings();
-  const { data: albums, isLoading, hasError } = useDataFetcher<IpodApi.Album[]>(
-    {
-      name: 'albums',
-      artworkSize: 400,
-    }
-  );
+  const {
+    data: albums,
+    isLoading,
+    hasError
+  } = useDataFetcher<IpodApi.Album[]>({
+    name: "albums",
+    artworkSize: 400
+  });
 
   const artworkUrls = useMemo(() => {
     if (albums && !hasError) {
-      return albums.map((album) => album.artwork?.url ?? '');
+      return albums.map((album) => album.artwork?.url ?? "");
     }
 
     return [];

@@ -1,8 +1,8 @@
-import { createContext, useState } from 'react';
+import { createContext, useState } from "react";
 
-import { SelectableListOption } from 'components';
-import { PREVIEW } from 'components/previews';
-import ViewOptions, * as Views from 'components/views';
+import { SelectableListOption } from "components";
+import { PREVIEW } from "components/previews";
+import ViewOptions, * as Views from "components/views";
 
 type SharedOptionProps = {
   id: string;
@@ -22,7 +22,7 @@ type ListViewOptionProps<TComponent extends React.ComponentType<any> = any> = {
   /** The React component that will be rendered in the window. */
   component: TComponent;
   /** Props that will be passed to the component. */
-  props?: Omit<React.ComponentProps<TComponent>, 'id'>;
+  props?: Omit<React.ComponentProps<TComponent>, "id">;
   /** Fire an event when the window closes. */
   onClose?: (...args: any[]) => void;
 };
@@ -39,14 +39,13 @@ type PopupViewOptionProps = {
   listOptions: SelectableListOption[];
 };
 
-export type WindowOptions<
-  TComponent extends React.ComponentType<any> = any
-> = SharedOptionProps &
-  (
-    | ListViewOptionProps<TComponent>
-    | ActionSheetViewOptionProps
-    | PopupViewOptionProps
-  );
+export type WindowOptions<TComponent extends React.ComponentType<any> = any> =
+  SharedOptionProps &
+    (
+      | ListViewOptionProps<TComponent>
+      | ActionSheetViewOptionProps
+      | PopupViewOptionProps
+    );
 
 interface WindowState {
   windowStack: WindowOptions[];
@@ -62,10 +61,10 @@ type WindowContextType = [
 export const WindowContext = createContext<WindowContextType>([
   {
     windowStack: [],
-    headerTitle: 'iPod.js',
-    preview: PREVIEW.MUSIC,
+    headerTitle: "iPod.js",
+    preview: PREVIEW.MUSIC
   },
-  () => {},
+  () => {}
 ]);
 
 interface Props {
@@ -77,13 +76,13 @@ const WindowProvider = ({ children }: Props) => {
     {
       id: ViewOptions.home.id,
       type: Views.WINDOW_TYPE.SPLIT,
-      component: Views.HomeView,
-    },
+      component: Views.HomeView
+    }
   ];
   const [windowState, setWindowState] = useState<WindowState>({
     windowStack,
     headerTitle: ViewOptions.home.title,
-    preview: PREVIEW.MUSIC,
+    preview: PREVIEW.MUSIC
   });
 
   return (

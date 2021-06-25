@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const Container = styled.div`
   position: relative;
@@ -35,7 +35,7 @@ const Progress = styled.div.attrs((props: ProgressProps) => ({
 }))<ProgressProps>`
   position: relative;
   height: 100%;
-  background: ${props =>
+  background: ${(props) =>
     !props.transparent && 'url("gloss-blue.svg") repeat-x'};
   transition: width 0.1s;
 `;

@@ -1,8 +1,8 @@
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext } from "react";
 
-import { PREVIEW } from 'components/previews';
-import ViewOptions from 'components/views';
-import { WindowContext, WindowOptions } from 'providers/WindowProvider';
+import { PREVIEW } from "components/previews";
+import ViewOptions from "components/views";
+import { WindowContext, WindowOptions } from "providers/WindowProvider";
 
 export interface WindowContextHook {
   /** Push an instance of WindowOptions to the windowStack. */
@@ -42,7 +42,7 @@ export const useWindowContext = (): WindowContextHook => {
       setWindowState((prevWindowState) => ({
         ...prevWindowState,
         windowStack: [...prevWindowState.windowStack, window],
-        headerTitle: ViewOptions[window.id].title,
+        headerTitle: ViewOptions[window.id].title
       }));
     },
     [setWindowState]
@@ -62,7 +62,7 @@ export const useWindowContext = (): WindowContextHook => {
           ...prevWindowState,
           windowStack: newWindowStack,
           headerTitle:
-            ViewOptions[newWindowStack[newWindowStack.length - 1].id].title,
+            ViewOptions[newWindowStack[newWindowStack.length - 1].id].title
         };
       });
     },
@@ -72,7 +72,7 @@ export const useWindowContext = (): WindowContextHook => {
   const resetWindows = useCallback(() => {
     setWindowState((prevState) => ({
       ...prevState,
-      windowStack: prevState.windowStack.slice(0, 1),
+      windowStack: prevState.windowStack.slice(0, 1)
     }));
   }, [setWindowState]);
 
@@ -89,7 +89,7 @@ export const useWindowContext = (): WindowContextHook => {
     (title?: string) => {
       setWindowState((prevState) => ({
         ...prevState,
-        headerTitle: title,
+        headerTitle: title
       }));
     },
     [setWindowState]
@@ -99,7 +99,7 @@ export const useWindowContext = (): WindowContextHook => {
     (preview: PREVIEW) => {
       setWindowState((prevState) => ({
         ...prevState,
-        preview,
+        preview
       }));
     },
     [setWindowState]
@@ -114,7 +114,7 @@ export const useWindowContext = (): WindowContextHook => {
     headerTitle: windowState.headerTitle,
     preview: windowState.preview,
     setHeaderTitle,
-    setPreview,
+    setPreview
   };
 };
 
