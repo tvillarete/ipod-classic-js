@@ -28,7 +28,7 @@ export const getTokens = async (): Promise<TokenResponse> => {
 
   return {
     accessToken: storedAccessToken,
-    refreshToken: storedRefreshToken
+    refreshToken: storedRefreshToken,
   };
 };
 
@@ -39,7 +39,7 @@ export const getExistingTokens = () => {
 
   return {
     storedAccessToken,
-    storedRefreshToken
+    storedRefreshToken,
   };
 };
 
@@ -53,15 +53,15 @@ export const removeExistingTokens = () => {
  * Valid for 1 hour, at which point the token will expire.
  */
 const _getRefreshedTokens = async (
-  storedRefreshToken: string
+  storedRefreshToken: string,
 ): Promise<TokenResponse> => {
   try {
     const response = await fetch(
       `${API_URL}/refresh_token?refresh_token=${storedRefreshToken}`,
       {
         credentials: 'same-origin',
-        mode: 'cors'
-      }
+        mode: 'cors',
+      },
     );
 
     const { access_token: accessToken } = await response.json();
@@ -77,7 +77,7 @@ const _getRefreshedTokens = async (
 
   return {
     accessToken: undefined,
-    refreshToken: undefined
+    refreshToken: undefined,
   };
 };
 
@@ -100,8 +100,8 @@ const _getNewTokens = async (): Promise<TokenResponse> => {
       `${API_URL}/callback?state=${state}&code=${code}`,
       {
         credentials: 'same-origin',
-        mode: 'cors'
-      }
+        mode: 'cors',
+      },
     );
 
     const { accessToken, refreshToken } = await response.json();
@@ -117,7 +117,7 @@ const _getNewTokens = async (): Promise<TokenResponse> => {
       accessToken,
       refreshToken,
       // The user signed in for the first time. We will set the current streaming service to Spotify
-      isNew: true
+      isNew: true,
     };
   } catch (error) {
     console.error('error fetching token:', { error });
@@ -125,7 +125,7 @@ const _getNewTokens = async (): Promise<TokenResponse> => {
 
   return {
     accessToken: undefined,
-    refreshToken: undefined
+    refreshToken: undefined,
   };
 };
 
@@ -135,7 +135,7 @@ const _getNewTokens = async (): Promise<TokenResponse> => {
  */
 const _shouldRefreshTokens = () => {
   const lastRefreshTimestamp = parseInt(
-    localStorage.getItem(TOKEN_TIMESTAMP_KEY) ?? ''
+    localStorage.getItem(TOKEN_TIMESTAMP_KEY) ?? '',
   );
   const now = Date.now();
 
@@ -154,7 +154,7 @@ const _saveTokens = (accessToken?: string, refreshToken?: string) => {
   if (!accessToken || !refreshToken) {
     console.error('Error: Attempting to save undefined tokens:', {
       accessToken,
-      refreshToken
+      refreshToken,
     });
 
     return;

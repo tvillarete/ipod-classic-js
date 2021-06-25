@@ -45,18 +45,18 @@ const AboutView = () => {
     {
       type: 'Link',
       label: 'GitHub Repo',
-      url: 'https://github.com/tvillarete/ipod-classic-js'
+      url: 'https://github.com/tvillarete/ipod-classic-js',
     },
     {
       type: 'Link',
       label: 'My Website',
-      url: 'http://tannerv.com'
+      url: 'http://tannerv.com',
     },
     {
       type: 'Link',
       label: 'LinkedIn',
-      url: 'https://linkedin.com/in/tvillarete'
-    }
+      url: 'https://linkedin.com/in/tvillarete',
+    },
   ];
 
   const [scrollIndex] = useScrollHandler(ViewOptions.about.id, options);

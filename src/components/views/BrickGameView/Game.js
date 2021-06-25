@@ -114,14 +114,14 @@ const app = {
 
   canvas: null,
   context: null,
-  timeout: 33
+  timeout: 33,
 };
 
 var player = {
   // Defines initial position
   position: {
     x: 200,
-    y: 480
+    y: 480,
   },
 
   score: 0,
@@ -129,12 +129,12 @@ var player = {
   lives: 3,
 
   physics: {
-    speed: 10
+    speed: 10,
   },
 
   size: {
     height: 20,
-    width: 150
+    width: 150,
   },
 
   draw: function () {
@@ -143,7 +143,7 @@ var player = {
       this.position.x,
       this.position.y,
       this.size.width,
-      this.size.height
+      this.size.height,
     );
 
     // app.context.textAlign = "center";
@@ -175,27 +175,27 @@ var player = {
 
   resetPosition: function () {
     this.position.x = 200;
-  }
+  },
 };
 
 var ball = {
   position: {
     x: 0,
-    y: 250
+    y: 250,
   },
 
   size: {
     height: 10,
-    width: 10
+    width: 10,
   },
 
   physics: {
-    speed: 5
+    speed: 5,
   },
 
   direction: {
     x: 1, //Moving right
-    y: 1 //Moving down
+    y: 1, //Moving down
   },
 
   draw: function () {
@@ -295,7 +295,7 @@ var ball = {
         else this.direction.y = -1;
       }
     }
-  }
+  },
 };
 
 var Brick = function () {
@@ -303,13 +303,13 @@ var Brick = function () {
 
   this.size = {
     height: 20,
-    width: 60
+    width: 60,
   };
 
   //Will be determined on setup
   this.position = {
     x: 0,
-    y: 0
+    y: 0,
   };
 };
 
@@ -332,7 +332,7 @@ Brick.prototype.draw = function () {
       this.position.x,
       this.position.y,
       this.size.width - 5,
-      this.size.height - 5
+      this.size.height - 5,
     );
 };
 

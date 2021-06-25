@@ -55,16 +55,16 @@ interface WindowState {
 
 type WindowContextType = [
   WindowState,
-  React.Dispatch<React.SetStateAction<WindowState>>
+  React.Dispatch<React.SetStateAction<WindowState>>,
 ];
 
 export const WindowContext = createContext<WindowContextType>([
   {
     windowStack: [],
     headerTitle: 'iPod.js',
-    preview: PREVIEW.MUSIC
+    preview: PREVIEW.MUSIC,
   },
-  () => {}
+  () => {},
 ]);
 
 interface Props {
@@ -76,13 +76,13 @@ const WindowProvider = ({ children }: Props) => {
     {
       id: ViewOptions.home.id,
       type: Views.WINDOW_TYPE.SPLIT,
-      component: Views.HomeView
-    }
+      component: Views.HomeView,
+    },
   ];
   const [windowState, setWindowState] = useState<WindowState>({
     windowStack,
     headerTitle: ViewOptions.home.title,
-    preview: PREVIEW.MUSIC
+    preview: PREVIEW.MUSIC,
   });
 
   return (

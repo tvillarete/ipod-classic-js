@@ -24,19 +24,19 @@ const WindowManager = () => {
   const { isConfigured, hasDevToken: hasAppleDevToken } = useMusicKit();
   const { windowStack, resetWindows } = useWindowContext();
   const splitViewWindows = windowStack.filter(
-    (window) => window.type === WINDOW_TYPE.SPLIT
+    (window) => window.type === WINDOW_TYPE.SPLIT,
   );
   const fullViewWindows = windowStack.filter(
-    (window) => window.type === WINDOW_TYPE.FULL
+    (window) => window.type === WINDOW_TYPE.FULL,
   );
   const coverFlowWindow = windowStack.find(
-    (window) => window.type === WINDOW_TYPE.COVER_FLOW
+    (window) => window.type === WINDOW_TYPE.COVER_FLOW,
   );
   const actionSheetWindows = windowStack.filter(
-    (window) => window.type === WINDOW_TYPE.ACTION_SHEET
+    (window) => window.type === WINDOW_TYPE.ACTION_SHEET,
   );
   const popupWindows = windowStack.filter(
-    (window) => window.type === WINDOW_TYPE.POPUP
+    (window) => window.type === WINDOW_TYPE.POPUP,
   );
 
   const isReady = isConfigured && hasAppleDevToken;

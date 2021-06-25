@@ -13,12 +13,12 @@ export interface SettingsState {
 
 type SettingsContextType = [
   SettingsState,
-  React.Dispatch<React.SetStateAction<SettingsState>>
+  React.Dispatch<React.SetStateAction<SettingsState>>,
 ];
 
 export const SettingsContext = createContext<SettingsContextType>([
   {} as any,
-  () => {}
+  () => {},
 ]);
 
 export type SettingsHook = SettingsState & {
@@ -35,25 +35,25 @@ export const useSettings = (): SettingsHook => {
     (val: boolean) =>
       setState((prevState) => ({
         ...prevState,
-        isSpotifyAuthorized: val
+        isSpotifyAuthorized: val,
       })),
-    [setState]
+    [setState],
   );
 
   const setIsAppleAuthorized = useCallback(
     (val: boolean) =>
       setState((prevState) => ({
         ...prevState,
-        isAppleAuthorized: val
+        isAppleAuthorized: val,
       })),
-    [setState]
+    [setState],
   );
 
   const setService = useCallback(
     (service?: StreamingService) => {
       setState((prevState) => ({
         ...prevState,
-        service
+        service,
       }));
 
       if (service) {
@@ -62,7 +62,7 @@ export const useSettings = (): SettingsHook => {
         localStorage.removeItem(SELECTED_SERVICE_KEY);
       }
     },
-    [setState]
+    [setState],
   );
 
   return {
@@ -70,7 +70,7 @@ export const useSettings = (): SettingsHook => {
     isAuthorized: state.isAppleAuthorized || state.isSpotifyAuthorized,
     setIsSpotifyAuthorized,
     setIsAppleAuthorized,
-    setService
+    setService,
   };
 };
 
@@ -84,7 +84,7 @@ export const SettingsProvider = memo(({ children }: Props) => {
     isSpotifyAuthorized: false,
     service:
       (localStorage.getItem(SELECTED_SERVICE_KEY) as StreamingService) ??
-      undefined
+      undefined,
   });
 
   return (

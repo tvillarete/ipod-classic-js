@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import {
   getConditionalOption,
   SelectableList,
-  SelectableListOption
+  SelectableListOption,
 } from 'components';
 import { PREVIEW } from 'components/previews';
 import {
@@ -13,7 +13,7 @@ import {
   NowPlayingView,
   SettingsView,
   ViewOptions,
-  WINDOW_TYPE
+  WINDOW_TYPE,
 } from 'components/views';
 import {
   useAudioPlayer,
@@ -22,12 +22,12 @@ import {
   useScrollHandler,
   useSettings,
   useSpotifySDK,
-  useWindowContext
+  useWindowContext,
 } from 'hooks';
 import { IpodEvent } from 'utils/events';
 
 const strings = {
-  nowPlaying: 'Now Playing'
+  nowPlaying: 'Now Playing',
 };
 
 const HomeView = () => {
@@ -44,28 +44,28 @@ const HomeView = () => {
         label: 'Cover Flow',
         viewId: ViewOptions.coverFlow.id,
         component: () => <CoverFlowView />,
-        preview: PREVIEW.MUSIC
+        preview: PREVIEW.MUSIC,
       },
       {
         type: 'View',
         label: 'Music',
         viewId: ViewOptions.music.id,
         component: () => <MusicView />,
-        preview: PREVIEW.MUSIC
+        preview: PREVIEW.MUSIC,
       },
       {
         type: 'View',
         label: 'Games',
         viewId: ViewOptions.games.id,
         component: () => <GamesView />,
-        preview: PREVIEW.GAMES
+        preview: PREVIEW.GAMES,
       },
       {
         type: 'View',
         label: 'Settings',
         viewId: ViewOptions.settings.id,
         component: () => <SettingsView />,
-        preview: PREVIEW.SETTINGS
+        preview: PREVIEW.SETTINGS,
       },
       ...getConditionalOption(!isAuthorized, {
         type: 'ActionSheet',
@@ -75,25 +75,25 @@ const HomeView = () => {
           {
             type: 'Action',
             label: 'Apple Music',
-            onSelect: signInWithApple
+            onSelect: signInWithApple,
           },
           {
             type: 'Action',
             label: 'Spotify',
-            onSelect: signInWithSpotify
-          }
+            onSelect: signInWithSpotify,
+          },
         ],
-        preview: PREVIEW.MUSIC
+        preview: PREVIEW.MUSIC,
       }),
       ...getConditionalOption(!!nowPlayingItem, {
         type: 'View',
         label: strings.nowPlaying,
         viewId: ViewOptions.nowPlaying.id,
         component: () => <NowPlayingView />,
-        preview: PREVIEW.NOW_PLAYING
-      })
+        preview: PREVIEW.NOW_PLAYING,
+      }),
     ],
-    [isAuthorized, nowPlayingItem, signInWithApple, signInWithSpotify]
+    [isAuthorized, nowPlayingItem, signInWithApple, signInWithSpotify],
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.home.id, options);
@@ -111,7 +111,7 @@ const HomeView = () => {
       showWindow({
         id: ViewOptions.nowPlaying.id,
         type: WINDOW_TYPE.FULL,
-        component: NowPlayingView
+        component: NowPlayingView,
       });
     }
   }, [nowPlayingItem, showWindow, windowStack]);

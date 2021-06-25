@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import {
   getConditionalOption,
   SelectableList,
-  SelectableListOption
+  SelectableListOption,
 } from 'components';
 import { PREVIEW } from 'components/previews';
 import ViewOptions, { AboutView } from 'components/views';
@@ -12,7 +12,7 @@ import {
   useMusicKit,
   useScrollHandler,
   useSettings,
-  useSpotifySDK
+  useSpotifySDK,
 } from 'hooks';
 
 const SettingsView = () => {
@@ -30,7 +30,7 @@ const SettingsView = () => {
         label: 'About',
         viewId: ViewOptions.about.id,
         component: () => <AboutView />,
-        preview: PREVIEW.SETTINGS
+        preview: PREVIEW.SETTINGS,
       },
       /** Add an option to select between services signed into more than one. */
       ...getConditionalOption(isAuthorized, {
@@ -43,15 +43,15 @@ const SettingsView = () => {
             label: `Apple Music ${service === 'apple' ? '(Current)' : ''}`,
             onSelect: () => {
               signInWithApple();
-            }
+            },
           },
           {
             type: 'Action',
             label: `Spotify ${service === 'spotify' ? '(Current)' : ''}`,
-            onSelect: signInWithSpotify
-          }
+            onSelect: signInWithSpotify,
+          },
         ],
-        preview: PREVIEW.SERVICE
+        preview: PREVIEW.SERVICE,
       }),
       /** Show the sign in option if not signed into any service. */
       ...getConditionalOption(!isAuthorized, {
@@ -64,15 +64,15 @@ const SettingsView = () => {
             label: 'Apple Music',
             onSelect: () => {
               signInWithApple();
-            }
+            },
           },
           {
             type: 'Action',
             label: 'Spotify',
-            onSelect: signInWithSpotify
-          }
+            onSelect: signInWithSpotify,
+          },
         ],
-        preview: PREVIEW.MUSIC
+        preview: PREVIEW.MUSIC,
       }),
       /** Show the signout option for any services that are authenticated. */
       ...getConditionalOption(isAuthorized, {
@@ -83,16 +83,16 @@ const SettingsView = () => {
           ...getConditionalOption(isAppleAuthorized, {
             type: 'Action',
             label: 'Apple Music',
-            onSelect: signOutApple
+            onSelect: signOutApple,
           }),
           ...getConditionalOption(isSpotifyAuthorized, {
             type: 'Action',
             label: 'Spotify',
-            onSelect: signOutSpotify
-          })
+            onSelect: signOutSpotify,
+          }),
         ],
-        preview: PREVIEW.SERVICE
-      })
+        preview: PREVIEW.SERVICE,
+      }),
     ],
     [
       isAppleAuthorized,
@@ -102,8 +102,8 @@ const SettingsView = () => {
       signInWithApple,
       signInWithSpotify,
       signOutApple,
-      signOutSpotify
-    ]
+      signOutSpotify,
+    ],
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.settings.id, options);

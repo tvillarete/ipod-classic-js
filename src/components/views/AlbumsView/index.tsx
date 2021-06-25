@@ -5,7 +5,7 @@ import {
   useDataFetcher,
   useMenuHideWindow,
   useScrollHandler,
-  useSettings
+  useSettings,
 } from 'hooks';
 import * as Utils from 'utils';
 
@@ -16,7 +16,7 @@ const AlbumsView = () => {
   useMenuHideWindow(ViewOptions.albums.id);
 
   const { data: albums, isLoading } = useDataFetcher<IpodApi.Album[]>({
-    name: 'albums'
+    name: 'albums',
   });
 
   const options: SelectableListOption[] = useMemo(
@@ -27,9 +27,9 @@ const AlbumsView = () => {
         sublabel: album.artistName,
         imageUrl: Utils.getArtwork(50, album.artwork?.url),
         viewId: ViewOptions.album.id,
-        component: () => <AlbumView id={album.id ?? ''} inLibrary />
+        component: () => <AlbumView id={album.id ?? ''} inLibrary />,
       })) ?? [],
-    [albums]
+    [albums],
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.albums.id, options);

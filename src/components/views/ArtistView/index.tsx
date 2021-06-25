@@ -17,7 +17,7 @@ const ArtistView = ({ id, inLibrary = false }: Props) => {
   const { data: albums, isLoading } = useDataFetcher<IpodApi.Album[]>({
     name: 'artist',
     id,
-    inLibrary
+    inLibrary,
   });
   const options: SelectableListOption[] = useMemo(
     () =>
@@ -30,9 +30,9 @@ const ArtistView = ({ id, inLibrary = false }: Props) => {
         component: () => (
           <AlbumView id={album.id ?? ''} inLibrary={inLibrary} />
         ),
-        longPressOptions: Utils.getMediaOptions('album', album.id)
+        longPressOptions: Utils.getMediaOptions('album', album.id),
       })) ?? [],
-    [albums, inLibrary]
+    [albums, inLibrary],
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.artist.id, options);

@@ -27,8 +27,8 @@ interface ContainerProps {
 const Container = styled.div.attrs((props: ContainerProps) => ({
   style: {
     background: 'transparent',
-    backgroundSize: 'cover'
-  }
+    backgroundSize: 'cover',
+  },
 }))<ContainerProps>`
   z-index: ${(props) => 1 - Math.abs(props.index - props.activeIndex)};
   position: absolute;
@@ -105,7 +105,7 @@ const AlbumCover = ({
   activeIndex,
   isSelected,
   playingAlbum,
-  setPlayingAlbum
+  setPlayingAlbum,
 }: Props) => {
   const isVisible = index > activeIndex - 15 && index < activeIndex + 15;
   const isActive = index === activeIndex;

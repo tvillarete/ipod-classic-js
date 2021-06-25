@@ -6,7 +6,7 @@ import { useEffect } from 'react';
  */
 const useMKEventListener = (
   event: keyof typeof MusicKit.Events,
-  callback: (...args: any) => void
+  callback: (...args: any) => void,
 ) => {
   useEffect(() => {
     const musicKit = window.MusicKit;

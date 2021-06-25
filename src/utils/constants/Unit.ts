@@ -15,7 +15,7 @@ const Unit = {
   MD,
   SM,
   XS,
-  XXS
+  XXS,
 };
 
 export default Unit;

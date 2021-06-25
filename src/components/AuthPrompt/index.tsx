@@ -46,9 +46,9 @@ const Text = styled.p`
 const strings = {
   title: {
     apple: 'Apple Music',
-    spotify: 'Spotify'
+    spotify: 'Spotify',
   },
-  defaultMessage: 'Sign into view this content'
+  defaultMessage: 'Sign into view this content',
 };
 
 interface Props {
@@ -60,7 +60,7 @@ const AuthPrompt = ({ message }: Props) => {
 
   useInterval(
     () => setIcon((prevState) => (prevState === 'apple' ? 'spotify' : 'apple')),
-    4000
+    4000,
   );
 
   return (

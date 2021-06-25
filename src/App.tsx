@@ -5,7 +5,7 @@ import {
   AudioPlayerProvider,
   MusicKitProvider,
   SettingsProvider,
-  SpotifySDKProvider
+  SpotifySDKProvider,
 } from 'hooks';
 import WindowProvider from 'providers/WindowProvider';
 import styled, { createGlobalStyle } from 'styled-components';

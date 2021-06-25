@@ -25,13 +25,13 @@ declare namespace MusicKit {
   function formatArtworkURL(
     artwork: Artwork,
     height: number,
-    width: number
+    width: number,
   ): string;
   /**
    * Returns an object with milliseconds formatted into hours and minutes.
    */
   function formattedMilliseconds(
-    milliseconds: number
+    milliseconds: number,
   ): FormattedPlaybackDuration;
   /**
    * Returns an object with seconds formatted into hours and minutes.

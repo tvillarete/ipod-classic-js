@@ -8,7 +8,7 @@ import {
   useEventListener,
   useMenuHideWindow,
   useScrollHandler,
-  useWindowContext
+  useWindowContext,
 } from 'hooks';
 import { WindowOptions } from 'providers/WindowProvider';
 import styled, { css } from 'styled-components';
@@ -106,8 +106,8 @@ const ActionSheet = ({ windowStack, index, isHidden }: Props) => {
       {
         type: 'Action',
         label: 'Cancel',
-        onSelect: () => {}
-      }
+        onSelect: () => {},
+      },
     ];
   }, [windowOptions]);
 

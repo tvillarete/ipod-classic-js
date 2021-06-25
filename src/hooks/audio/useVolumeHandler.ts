@@ -76,7 +76,7 @@ const useVolumeHandler = (): VolumeHandlerHook => {
   return {
     setEnabled,
     volume,
-    active
+    active,
   };
 };
 

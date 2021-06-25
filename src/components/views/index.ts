@@ -18,7 +18,7 @@ export enum WINDOW_TYPE {
   FULL = 'FULL',
   COVER_FLOW = 'COVER_FLOW',
   ACTION_SHEET = 'ACTION_SHEET',
-  POPUP = 'POPUP'
+  POPUP = 'POPUP',
 }
 
 type ViewOption = {
@@ -43,7 +43,7 @@ export const ViewOptions: Record<string, ViewOption> = {
   nowPlaying: {
     id: 'nowPlaying',
     title: 'Now Playing',
-    type: WINDOW_TYPE.FULL
+    type: WINDOW_TYPE.FULL,
   },
   playlists: { id: 'playlists', title: 'Playlists', type: WINDOW_TYPE.FULL },
   playlist: { id: 'playlist', title: 'Playlist', type: WINDOW_TYPE.FULL },
@@ -53,37 +53,37 @@ export const ViewOptions: Record<string, ViewOption> = {
   coverFlow: {
     id: 'coverFlow',
     title: 'Cover Flow',
-    type: WINDOW_TYPE.COVER_FLOW
+    type: WINDOW_TYPE.COVER_FLOW,
   },
 
   // Action sheets
   mediaActionSheet: {
     id: 'mediaActionSheet',
     title: 'Media Options',
-    type: WINDOW_TYPE.ACTION_SHEET
+    type: WINDOW_TYPE.ACTION_SHEET,
   },
   serviceTypeActionSheet: {
     id: 'serviceTypeActionSheet',
     title: 'Service',
-    type: WINDOW_TYPE.ACTION_SHEET
+    type: WINDOW_TYPE.ACTION_SHEET,
   },
   signinPopup: {
     id: 'signinPopup',
     title: 'Sign in',
-    type: WINDOW_TYPE.ACTION_SHEET
+    type: WINDOW_TYPE.ACTION_SHEET,
   },
   signOutPopup: {
     id: 'signOutPopup',
     title: 'Sign out',
-    type: WINDOW_TYPE.ACTION_SHEET
+    type: WINDOW_TYPE.ACTION_SHEET,
   },
 
   // Popups
   spotifyNotSupportedPopup: {
     id: 'spotifyNotSupportedPopup',
     title: 'Unsupported browser',
-    type: WINDOW_TYPE.POPUP
-  }
+    type: WINDOW_TYPE.POPUP,
+  },
 };
 
 export default ViewOptions;

@@ -4,7 +4,7 @@ import {
   useCallback,
   useContext,
   useRef,
-  useState
+  useState,
 } from 'react';
 
 import ViewOptions, { WINDOW_TYPE } from 'components/views';
@@ -35,7 +35,7 @@ export const useSpotifySDK = (): SpotifySDKHook => {
     isSpotifyAuthorized,
     setIsSpotifyAuthorized,
     isAppleAuthorized,
-    setService
+    setService,
   } = useSettings();
   const { showWindow } = useWindowContext();
   const state = useContext(SpotifySDKContext);
@@ -56,9 +56,9 @@ export const useSpotifySDK = (): SpotifySDKHook => {
           {
             type: 'Action',
             label: 'Okay 😞',
-            onSelect: () => {}
-          }
-        ]
+            onSelect: () => {},
+          },
+        ],
       });
       return;
     }
@@ -66,7 +66,7 @@ export const useSpotifySDK = (): SpotifySDKHook => {
     if (!isSpotifyAuthorized) {
       window.open(
         `${API_URL}/${Utils.isDev() ? 'login_dev' : 'login'}`,
-        '_self'
+        '_self',
       );
     } else {
       setService('spotify');
@@ -89,13 +89,13 @@ export const useSpotifySDK = (): SpotifySDKHook => {
     isAppleAuthorized,
     setIsSpotifyAuthorized,
     setService,
-    state.spotifyPlayer
+    state.spotifyPlayer,
   ]);
 
   return {
     ...state,
     signIn,
-    signOut
+    signOut,
   };
 };
 
@@ -129,7 +129,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
           }
 
           cb(storedAccessToken);
-        }
+        },
       });
 
       player.addListener('ready', ({ device_id }: any) => {
@@ -168,7 +168,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
         spotifyPlayer: spotifyPlayerRef.current ?? ({} as Spotify.Player),
         accessToken: token,
         deviceId,
-        isMounted
+        isMounted,
       }}
     >
       {children}

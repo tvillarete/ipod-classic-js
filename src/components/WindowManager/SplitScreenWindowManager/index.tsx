@@ -44,7 +44,7 @@ interface Props {
 const SplitScreenWindowManager = ({
   windowStack,
   menuHidden,
-  allHidden
+  allHidden,
 }: Props) => {
   return (
     <Container data-stack-type="splitscreen">

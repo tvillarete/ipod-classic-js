@@ -12,7 +12,7 @@ type FetchSpotifyApiArgs = {
 const fetchSpotifyApi = async <TSpotifyApiType extends object>({
   endpoint,
   accessToken,
-  onError
+  onError,
 }: FetchSpotifyApiArgs) => {
   try {
     if (!accessToken) {
@@ -20,7 +20,7 @@ const fetchSpotifyApi = async <TSpotifyApiType extends object>({
     }
 
     const res = await fetch(`https://api.spotify.com/v1/${endpoint}`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
     return (await res.json()) as TSpotifyApiType;
   } catch (error) {
@@ -38,13 +38,13 @@ const useSpotifyDataFetcher = () => {
         accessToken,
         onError: (error) => {
           throw new Error(error);
-        }
-      }
+        },
+      },
     );
 
     if (response) {
       return response.items.map((item) =>
-        ConversionUtils.convertSpotifyAlbumFull(item.album)
+        ConversionUtils.convertSpotifyAlbumFull(item.album),
       );
     }
   }, [accessToken]);
@@ -56,14 +56,14 @@ const useSpotifyDataFetcher = () => {
         accessToken,
         onError: (error) => {
           throw new Error(error);
-        }
+        },
       });
 
       if (response) {
         return ConversionUtils.convertSpotifyAlbumFull(response);
       }
     },
-    [accessToken]
+    [accessToken],
   );
 
   const fetchArtists = useCallback(async () => {
@@ -73,11 +73,11 @@ const useSpotifyDataFetcher = () => {
         accessToken,
         onError: (error) => {
           throw new Error(error);
-        }
+        },
       });
 
     return response?.artists?.items.map(
-      ConversionUtils.convertSpotifyArtistFull
+      ConversionUtils.convertSpotifyArtistFull,
     );
   }, [accessToken]);
 
@@ -88,16 +88,16 @@ const useSpotifyDataFetcher = () => {
         accessToken,
         onError: (error) => {
           throw new Error(error);
-        }
+        },
       });
 
       if (response) {
         return response.items.map(
-          ConversionUtils.convertSpotifyAlbumSimplified
+          ConversionUtils.convertSpotifyAlbumSimplified,
         );
       }
     },
-    [accessToken]
+    [accessToken],
   );
 
   const fetchPlaylists = useCallback(async () => {
@@ -107,11 +107,11 @@ const useSpotifyDataFetcher = () => {
         accessToken,
         onError: (error) => {
           throw new Error(error);
-        }
+        },
       });
 
     return response?.items?.map(
-      ConversionUtils.convertSpotifyPlaylistSimplified
+      ConversionUtils.convertSpotifyPlaylistSimplified,
     );
   }, [accessToken]);
 
@@ -122,14 +122,14 @@ const useSpotifyDataFetcher = () => {
         accessToken,
         onError: (error) => {
           throw new Error(error);
-        }
+        },
       });
 
       if (response) {
         return ConversionUtils.convertSpotifyPlaylistFull(response);
       }
     },
-    [accessToken]
+    [accessToken],
   );
 
   return {
@@ -138,7 +138,7 @@ const useSpotifyDataFetcher = () => {
     fetchArtists,
     fetchArtist,
     fetchPlaylists,
-    fetchPlaylist
+    fetchPlaylist,
   };
 };
 

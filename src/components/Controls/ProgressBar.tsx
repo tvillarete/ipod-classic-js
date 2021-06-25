@@ -30,8 +30,8 @@ interface ProgressProps {
 const Progress = styled.div.attrs((props: ProgressProps) => ({
   // This is the recommended syntax for when things change often.
   style: {
-    width: `${props.percent}%`
-  }
+    width: `${props.percent}%`,
+  },
 }))<ProgressProps>`
   position: relative;
   height: 100%;

@@ -12,7 +12,7 @@ import SelectableListItem from './SelectableListItem';
 
 export const getConditionalOption = (
   condition?: boolean,
-  option?: SelectableListOption
+  option?: SelectableListOption,
 ) => (option && condition ? [option] : []);
 
 export type SelectableListOptionType =
@@ -107,7 +107,7 @@ const SelectableList = ({
   options,
   activeIndex,
   loading,
-  emptyMessage = 'Nothing to see here'
+  emptyMessage = 'Nothing to see here',
 }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -122,7 +122,7 @@ const SelectableList = ({
     if (isMounted && containerRef.current && options.length) {
       const { children } = containerRef.current;
       children[activeIndex]?.scrollIntoView({
-        block: 'nearest'
+        block: 'nearest',
       });
     }
   }, [activeIndex, isMounted, options.length]);

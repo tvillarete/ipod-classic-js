@@ -8,7 +8,7 @@ import {
   CoverFlowView,
   NowPlayingView,
   PlaylistsView,
-  ViewOptions
+  ViewOptions,
 } from 'components/views';
 import { useMenuHideWindow, useMusicKit, useScrollHandler } from 'hooks';
 
@@ -23,29 +23,29 @@ const MusicView = () => {
         label: 'Cover Flow',
         viewId: ViewOptions.coverFlow.id,
         component: () => <CoverFlowView />,
-        preview: PREVIEW.MUSIC
+        preview: PREVIEW.MUSIC,
       },
       {
         type: 'View',
         label: 'Playlists',
         viewId: ViewOptions.playlists.id,
         component: () => <PlaylistsView />,
-        preview: PREVIEW.MUSIC
+        preview: PREVIEW.MUSIC,
       },
       {
         type: 'View',
         label: 'Artists',
         viewId: ViewOptions.artists.id,
         component: () => <ArtistsView />,
-        preview: PREVIEW.MUSIC
+        preview: PREVIEW.MUSIC,
       },
       {
         type: 'View',
         label: 'Albums',
         viewId: ViewOptions.albums.id,
         component: () => <AlbumsView />,
-        preview: PREVIEW.MUSIC
-      }
+        preview: PREVIEW.MUSIC,
+      },
     ];
 
     if (music.isAuthorized && music.player?.nowPlayingItem?.isPlayable) {
@@ -54,7 +54,7 @@ const MusicView = () => {
         label: 'Now playing',
         viewId: ViewOptions.nowPlaying.id,
         component: () => <NowPlayingView />,
-        preview: PREVIEW.NOW_PLAYING
+        preview: PREVIEW.NOW_PLAYING,
       });
     }
 

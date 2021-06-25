@@ -9,7 +9,7 @@ enum WHEEL_QUADRANT {
   TOP = 1,
   BOTTOM = 2,
   LEFT = 3,
-  RIGHT = 4
+  RIGHT = 4,
 }
 
 type SupportedKeyCode =
@@ -40,7 +40,7 @@ const ScrollWheel = () => {
 
   const handleCenterClick = useCallback(
     () => window.dispatchEvent(centerClickEvent),
-    []
+    [],
   );
 
   const handleCenterLongPress = useCallback((e: any) => {
@@ -55,7 +55,7 @@ const ScrollWheel = () => {
 
   const handleClockwiseScroll = useCallback(
     () => window.dispatchEvent(forwardScrollEvent),
-    []
+    [],
   );
 
   const handleCounterClockwiseScroll = useCallback(() => {
@@ -91,7 +91,7 @@ const ScrollWheel = () => {
 
       handleResetIdleCheck();
     },
-    [handleResetIdleCheck]
+    [handleResetIdleCheck],
   );
 
   /** Allows for keyboard navigation. */
@@ -125,8 +125,8 @@ const ScrollWheel = () => {
       handleCounterClockwiseScroll,
       handleClockwiseScroll,
       handleCenterClick,
-      handleWheelClick
-    ]
+      handleWheelClick,
+    ],
   );
 
   /** Determine if clockwise/counter-clockwise based on the Knob onChange value. */
@@ -147,7 +147,7 @@ const ScrollWheel = () => {
 
       handleResetIdleCheck();
     },
-    [handleClockwiseScroll, handleCounterClockwiseScroll, handleResetIdleCheck]
+    [handleClockwiseScroll, handleCounterClockwiseScroll, handleResetIdleCheck],
   );
 
   useEventListener('keydown', handleKeyPress);

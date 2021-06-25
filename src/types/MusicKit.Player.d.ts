@@ -159,7 +159,7 @@ declare namespace MusicKit {
     seeking,
     waiting,
     stalled,
-    completed
+    completed,
   }
 
   /**
@@ -167,7 +167,7 @@ declare namespace MusicKit {
    */
   enum PlaybackBitrate {
     HIGH = 256,
-    STANDARD = 64
+    STANDARD = 64,
   }
 
   // enum is not exposed via the MusicKit namespace

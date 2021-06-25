@@ -9,7 +9,7 @@ export enum PREVIEW {
   GAMES = 'games',
   SETTINGS = 'settings',
   NOW_PLAYING = 'nowPlaying',
-  SERVICE = 'service'
+  SERVICE = 'service',
 }
 
 export const Previews = {
@@ -17,5 +17,5 @@ export const Previews = {
   [PREVIEW.GAMES]: () => <GamesPreview />,
   [PREVIEW.SETTINGS]: () => <SettingsPreview />,
   [PREVIEW.NOW_PLAYING]: () => <NowPlayingPreview />,
-  [PREVIEW.SERVICE]: () => <ServicePreview />
+  [PREVIEW.SERVICE]: () => <ServicePreview />,
 };

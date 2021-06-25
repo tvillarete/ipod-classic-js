@@ -11,8 +11,8 @@ const GamesView = () => {
       label: 'Brick',
       viewId: ViewOptions.brickGame.id,
       component: () => <BrickGameView />,
-      preview: PREVIEW.GAMES
-    }
+      preview: PREVIEW.GAMES,
+    },
   ];
 
   const [scrollIndex] = useScrollHandler(ViewOptions.games.id, options);

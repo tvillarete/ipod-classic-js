@@ -3,7 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useState
+  useState,
 } from 'react';
 
 import { useEventListener, useMKEventListener } from 'hooks';
@@ -19,7 +19,7 @@ const defaultPlatbackInfoState = {
   currentTime: 0,
   timeRemaining: 0,
   percent: 0,
-  duration: 0
+  duration: 0,
 };
 
 interface AudioPlayerState {
@@ -42,7 +42,7 @@ export const useAudioPlayer = (): AudioPlayerHook => {
   const state = useContext(AudioPlayerContext);
 
   return {
-    ...state
+    ...state,
   };
 };
 
@@ -72,12 +72,12 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         // MusicKit has a weird issue where the start position needs to be subtracted by 1.
         startPosition: queueOptions.startPosition
           ? queueOptions.startPosition - 1
-          : undefined
+          : undefined,
       });
 
       await music.play();
     },
-    [isAppleAuthorized, music]
+    [isAppleAuthorized, music],
   );
 
   const playSpotify = useCallback(
@@ -91,12 +91,12 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         ...(queueOptions.album?.songs?.map((song) => song.url) ?? []),
         ...(queueOptions.playlist?.songs?.map((song) => song.url) ?? []),
         ...(queueOptions.songs?.map((song) => song.url) ?? []),
-        queueOptions.song?.url
+        queueOptions.song?.url,
       ].filter((item) => !!item);
 
       setPlaybackInfo((prevState) => ({
         ...prevState,
-        isLoading: true
+        isLoading: true,
       }));
 
       await fetch(
@@ -105,21 +105,21 @@ export const AudioPlayerProvider = ({ children }: Props) => {
           method: 'PUT',
           body: JSON.stringify({
             uris,
-            offset: { position: queueOptions.startPosition }
+            offset: { position: queueOptions.startPosition },
           }),
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`
-          }
-        }
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
       );
 
       setPlaybackInfo((prevState) => ({
         ...prevState,
-        isLoading: false
+        isLoading: false,
       }));
     },
-    [accessToken, deviceId, isSpotifyAuthorized]
+    [accessToken, deviceId, isSpotifyAuthorized],
   );
 
   const play = useCallback(
@@ -133,7 +133,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
           throw new Error('Unable to play: service not specified');
       }
     },
-    [playAppleMusic, playSpotify, service]
+    [playAppleMusic, playSpotify, service],
   );
 
   const pause = useCallback(async () => {
@@ -175,7 +175,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
     setPlaybackInfo((prevState) => ({
       ...prevState,
-      isLoading: true
+      isLoading: true,
     }));
 
     switch (service) {
@@ -193,7 +193,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
     setPlaybackInfo((prevState) => ({
       ...prevState,
-      isLoading: false
+      isLoading: false,
     }));
   }, [music, nowPlayingItem, service, spotifyPlayer]);
 
@@ -204,7 +204,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
     setPlaybackInfo((prevState) => ({
       ...prevState,
-      isLoading: true
+      isLoading: true,
     }));
 
     switch (service) {
@@ -222,7 +222,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
     setPlaybackInfo((prevState) => ({
       ...prevState,
-      isLoading: false
+      isLoading: false,
     }));
   }, [music, nowPlayingItem, service, spotifyPlayer]);
 
@@ -231,7 +231,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
     if (service === 'apple' && music.player.nowPlayingItem) {
       mediaItem = ConversionUtils.convertAppleMediaItem(
-        music.player.nowPlayingItem
+        music.player.nowPlayingItem,
       );
     } else if (service === 'spotify') {
       const state = await spotifyPlayer.getCurrentState();
@@ -268,12 +268,12 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         ...prevState,
         isPlaying,
         isPaused,
-        isLoading
+        isLoading,
       }));
 
       updateNowPlayingItem();
     },
-    [updateNowPlayingItem]
+    [updateNowPlayingItem],
   );
 
   const handleSpotifyPlaybackStateChange = useCallback(
@@ -283,20 +283,20 @@ export const AudioPlayerProvider = ({ children }: Props) => {
           ...prevState,
           isPlaying: true,
           isPaused: false,
-          isLoading: false
+          isLoading: false,
         }));
       } else if (state.paused) {
         setPlaybackInfo((prevState) => ({
           ...prevState,
           isPlaying: false,
           isPaused: true,
-          isLoading: false
+          isLoading: false,
         }));
       }
 
       updateNowPlayingItem();
     },
-    [updateNowPlayingItem]
+    [updateNowPlayingItem],
   );
 
   const updatePlaybackInfo = useCallback(async () => {
@@ -306,7 +306,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         currentTime: music.player.currentPlaybackTime,
         timeRemaining: music.player.currentPlaybackTimeRemaining,
         percent: music.player.currentPlaybackProgress * 100,
-        duration: music.player.currentPlaybackDuration
+        duration: music.player.currentPlaybackDuration,
       }));
     } else if (service === 'spotify') {
       const { position, duration } =
@@ -321,7 +321,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         currentTime,
         timeRemaining,
         percent,
-        duration: maxTime
+        duration: maxTime,
       }));
     }
   }, [music.player, service, spotifyPlayer]);
@@ -337,7 +337,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
       updatePlaybackInfo();
     },
-    [music.player, service, spotifyPlayer, updatePlaybackInfo]
+    [music.player, service, spotifyPlayer, updatePlaybackInfo],
   );
 
   const handleChangeVolume = useCallback(
@@ -354,7 +354,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
       setVolume(newVolume);
     },
-    [isAppleAuthorized, isSpotifyAuthorized, music.player, spotifyPlayer]
+    [isAppleAuthorized, isSpotifyAuthorized, music.player, spotifyPlayer],
   );
 
   useEventListener<IpodEvent>('playpauseclick', () => {
@@ -377,7 +377,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
     if (isSpotifyAuthorized) {
       spotifyPlayer.addListener(
         'player_state_changed',
-        handleSpotifyPlaybackStateChange
+        handleSpotifyPlaybackStateChange,
       );
 
       const savedVolume = parseFloat(localStorage.getItem(VOLUME_KEY) ?? '0.5');
@@ -387,14 +387,14 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       return () =>
         spotifyPlayer.removeListener(
           'player_state_changed',
-          handleSpotifyPlaybackStateChange
+          handleSpotifyPlaybackStateChange,
         );
     }
   }, [
     handleChangeVolume,
     handleSpotifyPlaybackStateChange,
     isSpotifyAuthorized,
-    spotifyPlayer
+    spotifyPlayer,
   ]);
 
   useEffect(() => {
@@ -415,7 +415,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         seekToTime,
         setVolume: handleChangeVolume,
         updateNowPlayingItem,
-        updatePlaybackInfo
+        updatePlaybackInfo,
       }}
     >
       {children}

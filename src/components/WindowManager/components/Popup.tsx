@@ -8,7 +8,7 @@ import {
   useEventListener,
   useMenuHideWindow,
   useScrollHandler,
-  useWindowContext
+  useWindowContext,
 } from 'hooks';
 import { WindowOptions } from 'providers/WindowProvider';
 import styled, { css } from 'styled-components';
@@ -122,8 +122,8 @@ const Popup = ({ windowStack, index, isHidden }: Props) => {
           {
             type: 'Action',
             label: 'Done',
-            onSelect: () => {}
-          }
+            onSelect: () => {},
+          },
         ];
   }, [windowOptions.listOptions, windowOptions.type]);
 

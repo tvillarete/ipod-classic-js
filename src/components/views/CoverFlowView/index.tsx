@@ -5,7 +5,7 @@ import {
   useDataFetcher,
   useEventListener,
   useSettings,
-  useWindowContext
+  useWindowContext,
 } from 'hooks';
 import styled from 'styled-components';
 
@@ -21,7 +21,7 @@ const CoverFlowView = () => {
   const { isAuthorized } = useSettings();
   const { data: albums, isLoading } = useDataFetcher<IpodApi.Album[]>({
     name: 'albums',
-    artworkSize: 350
+    artworkSize: 350,
   });
 
   const handleMenuClick = useCallback(() => {

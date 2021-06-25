@@ -42,10 +42,10 @@ export const useWindowContext = (): WindowContextHook => {
       setWindowState((prevWindowState) => ({
         ...prevWindowState,
         windowStack: [...prevWindowState.windowStack, window],
-        headerTitle: ViewOptions[window.id].title
+        headerTitle: ViewOptions[window.id].title,
       }));
     },
-    [setWindowState]
+    [setWindowState],
   );
 
   const hideWindow = useCallback(
@@ -54,7 +54,7 @@ export const useWindowContext = (): WindowContextHook => {
       setWindowState((prevWindowState) => {
         const newWindowStack = id
           ? prevWindowState.windowStack.filter(
-              (window: WindowOptions) => window.id !== id
+              (window: WindowOptions) => window.id !== id,
             )
           : prevWindowState.windowStack.slice(0, -1);
 
@@ -62,17 +62,17 @@ export const useWindowContext = (): WindowContextHook => {
           ...prevWindowState,
           windowStack: newWindowStack,
           headerTitle:
-            ViewOptions[newWindowStack[newWindowStack.length - 1].id].title
+            ViewOptions[newWindowStack[newWindowStack.length - 1].id].title,
         };
       });
     },
-    [setWindowState, windowState.windowStack.length]
+    [setWindowState, windowState.windowStack.length],
   );
 
   const resetWindows = useCallback(() => {
     setWindowState((prevState) => ({
       ...prevState,
-      windowStack: prevState.windowStack.slice(0, 1)
+      windowStack: prevState.windowStack.slice(0, 1),
     }));
   }, [setWindowState]);
 
@@ -82,27 +82,27 @@ export const useWindowContext = (): WindowContextHook => {
       const curWindow = windowStack[windowStack.length - 1];
       return curWindow.id === id;
     },
-    [windowState]
+    [windowState],
   );
 
   const setHeaderTitle = useCallback(
     (title?: string) => {
       setWindowState((prevState) => ({
         ...prevState,
-        headerTitle: title
+        headerTitle: title,
       }));
     },
-    [setWindowState]
+    [setWindowState],
   );
 
   const setPreview = useCallback(
     (preview: PREVIEW) => {
       setWindowState((prevState) => ({
         ...prevState,
-        preview
+        preview,
       }));
     },
-    [setWindowState]
+    [setWindowState],
   );
 
   return {
@@ -114,7 +114,7 @@ export const useWindowContext = (): WindowContextHook => {
     headerTitle: windowState.headerTitle,
     preview: windowState.preview,
     setHeaderTitle,
-    setPreview
+    setPreview,
   };
 };
 

@@ -20,10 +20,10 @@ const MusicPreview = () => {
   const {
     data: albums,
     isLoading,
-    hasError
+    hasError,
   } = useDataFetcher<IpodApi.Album[]>({
     name: 'albums',
-    artworkSize: 400
+    artworkSize: 400,
   });
 
   const artworkUrls = useMemo(() => {

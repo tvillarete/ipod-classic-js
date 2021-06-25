@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActionSheetOptionProps,
   PopupOptionProps,
-  SelectableListOption
+  SelectableListOption,
 } from 'components';
 import ViewOptions, { NowPlayingView, WINDOW_TYPE } from 'components/views';
 import { useWindowContext } from 'hooks';
@@ -16,7 +16,7 @@ const useScrollHandler = (
   /** This should match the view's viewId (to enable/disable events for hidden views). */
   id: string,
   /** A list of all scrollable items. Used to cap the scrolling to the last element. */
-  options: SelectableListOption[] = []
+  options: SelectableListOption[] = [],
 ): [number] => {
   const { showWindow, windowStack, setPreview } = useWindowContext();
   const { play } = useAudioPlayer();
@@ -45,7 +45,7 @@ const useScrollHandler = (
         }
       };
     },
-    [isActive, options, setPreview]
+    [isActive, options, setPreview],
   );
 
   const handleForwardScroll = useCallback(() => {
@@ -66,15 +66,18 @@ const useScrollHandler = (
     (
       id: string,
       component: React.ReactNode,
-      windowType?: WINDOW_TYPE.FULL | WINDOW_TYPE.SPLIT | WINDOW_TYPE.COVER_FLOW
+      windowType?:
+        | WINDOW_TYPE.FULL
+        | WINDOW_TYPE.SPLIT
+        | WINDOW_TYPE.COVER_FLOW,
     ) => {
       showWindow({
         id,
         type: windowType ?? (ViewOptions[id]?.type as any) ?? WINDOW_TYPE.FULL,
-        component
+        component,
       });
     },
-    [showWindow]
+    [showWindow],
   );
 
   const handleShowPopup = useCallback(
@@ -84,10 +87,10 @@ const useScrollHandler = (
         id: options.popupId,
         title: options.title,
         description: options.description,
-        listOptions: options.listOptions
+        listOptions: options.listOptions,
       });
     },
-    [showWindow]
+    [showWindow],
   );
 
   const handleShowActionSheet = useCallback(
@@ -95,10 +98,10 @@ const useScrollHandler = (
       showWindow({
         type: WINDOW_TYPE.ACTION_SHEET,
         id: options.id,
-        listOptions: options.listOptions
+        listOptions: options.listOptions,
       });
     },
-    [showWindow]
+    [showWindow],
   );
 
   /** Parses the selected option for a new view to show or song to play. */
@@ -141,7 +144,7 @@ const useScrollHandler = (
     index,
     isActive,
     options,
-    play
+    play,
   ]);
 
   const handleCenterLongClick = useCallback(async () => {
@@ -153,7 +156,7 @@ const useScrollHandler = (
       showWindow({
         type: WINDOW_TYPE.ACTION_SHEET,
         id: ViewOptions.mediaActionSheet.id,
-        listOptions: option.longPressOptions
+        listOptions: option.longPressOptions,
       });
     }
   }, [index, isActive, options, showWindow]);

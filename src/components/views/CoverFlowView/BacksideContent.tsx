@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import {
   LoadingScreen,
   SelectableList,
-  SelectableListOption
+  SelectableListOption,
 } from 'components';
 import { useDataFetcher, useEventListener, useScrollHandler } from 'hooks';
 import styled from 'styled-components';
@@ -55,7 +55,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
   const { data: album, isLoading } = useDataFetcher<IpodApi.Album>({
     name: 'album',
     id: albumId,
-    inLibrary: true
+    inLibrary: true,
   });
 
   const options: SelectableListOption[] = useMemo(
@@ -65,10 +65,10 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
         label: song.name,
         queueOptions: {
           album,
-          startPosition: index
-        }
+          startPosition: index,
+        },
       })) ?? [],
-    [album]
+    [album],
   );
   const [scrollIndex] = useScrollHandler(ViewOptions.coverFlow.id, options);
 

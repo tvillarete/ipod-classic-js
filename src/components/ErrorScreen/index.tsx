@@ -18,7 +18,7 @@ const Text = styled.p`
 `;
 
 const strings = {
-  defaultMessage: 'Something went wrong'
+  defaultMessage: 'Something went wrong',
 };
 
 interface Props {

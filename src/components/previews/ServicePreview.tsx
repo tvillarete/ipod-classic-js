@@ -34,7 +34,7 @@ const strings = {
   spotify: 'Spotify',
   apple: 'Apple Music',
   none: 'None',
-  selected: 'Selected service'
+  selected: 'Selected service',
 };
 
 const ServicePreview = () => {

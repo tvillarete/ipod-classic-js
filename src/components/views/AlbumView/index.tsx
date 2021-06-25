@@ -17,7 +17,7 @@ const AlbumView = ({ id, inLibrary = false }: Props) => {
   const { data: album, isLoading } = useDataFetcher<IpodApi.Album>({
     name: 'album',
     id,
-    inLibrary
+    inLibrary,
   });
 
   const options: SelectableListOption[] = useMemo(
@@ -27,12 +27,12 @@ const AlbumView = ({ id, inLibrary = false }: Props) => {
         label: song.name,
         queueOptions: {
           album,
-          startPosition: index
+          startPosition: index,
         },
         showNowPlayingView: true,
-        longPressOptions: Utils.getMediaOptions('song', song.id)
+        longPressOptions: Utils.getMediaOptions('song', song.id),
       })) ?? [],
-    [album]
+    [album],
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.album.id, options);

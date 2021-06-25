@@ -66,11 +66,11 @@ const useDataFetcher = <TType extends object>(props: Props) => {
 
       if (service === 'apple') {
         const response = await music.api.library.albums(null, {
-          include: 'library-albums'
+          include: 'library-albums',
         });
 
         albums = response.map((item) =>
-          ConversionUtils.convertAppleAlbum(item, options.artworkSize)
+          ConversionUtils.convertAppleAlbum(item, options.artworkSize),
         );
       } else if (service === 'spotify') {
         albums = await spotifyDataFetcher.fetchAlbums();
@@ -78,7 +78,7 @@ const useDataFetcher = <TType extends object>(props: Props) => {
       setData(albums as TType);
       setIsLoading(false);
     },
-    [music.api, service, spotifyDataFetcher]
+    [music.api, service, spotifyDataFetcher],
   );
 
   const fetchAlbum = useCallback(
@@ -97,7 +97,7 @@ const useDataFetcher = <TType extends object>(props: Props) => {
       setData(album as TType);
       setIsLoading(false);
     },
-    [music.api, service, spotifyDataFetcher]
+    [music.api, service, spotifyDataFetcher],
   );
 
   const fetchArtists = useCallback(async () => {
@@ -106,7 +106,7 @@ const useDataFetcher = <TType extends object>(props: Props) => {
     if (service === 'apple') {
       const response = await music.api.library.artists(null, {
         include: 'catalog',
-        limit: 100
+        limit: 100,
       });
 
       artists = response.map(ConversionUtils.convertAppleArtist);
@@ -127,18 +127,18 @@ const useDataFetcher = <TType extends object>(props: Props) => {
           : await music.api.artistRelationship(options.id, 'albums');
 
         albums = response.map((item) =>
-          ConversionUtils.convertAppleAlbum(item, options.artworkSize)
+          ConversionUtils.convertAppleAlbum(item, options.artworkSize),
         );
       } else if (service === 'spotify') {
         albums = await spotifyDataFetcher.fetchArtist(
           options.userId,
-          options.id
+          options.id,
         );
       }
       setData(albums as TType);
       setIsLoading(false);
     },
-    [music.api, service, spotifyDataFetcher]
+    [music.api, service, spotifyDataFetcher],
   );
 
   const fetchPlaylists = useCallback(async () => {
@@ -146,7 +146,7 @@ const useDataFetcher = <TType extends object>(props: Props) => {
 
     if (service === 'apple') {
       const response = await music.api.library.playlists(null, {
-        limit: 100
+        limit: 100,
       });
 
       playlists = response.map(ConversionUtils.convertApplePlaylist);
@@ -170,13 +170,13 @@ const useDataFetcher = <TType extends object>(props: Props) => {
       } else if (service === 'spotify') {
         playlist = await spotifyDataFetcher.fetchPlaylist(
           options.userId,
-          options.id
+          options.id,
         );
       }
       setData(playlist as TType);
       setIsLoading(false);
     },
-    [music.api, service, spotifyDataFetcher]
+    [music.api, service, spotifyDataFetcher],
   );
 
   const handleMount = useCallback(async () => {
@@ -212,7 +212,7 @@ const useDataFetcher = <TType extends object>(props: Props) => {
     fetchArtists,
     fetchPlaylist,
     fetchPlaylists,
-    props
+    props,
   ]);
 
   useEffect(() => {
@@ -230,7 +230,7 @@ const useDataFetcher = <TType extends object>(props: Props) => {
   return {
     isLoading,
     data,
-    hasError
+    hasError,
   };
 };
 

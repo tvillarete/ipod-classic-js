@@ -36,7 +36,7 @@ export const setDocumentSongTitle = (song?: AppleMusicApi.Song) => {
 /** Returns a list of playback options to display in a popup for an album, song, or playlist. */
 export const getMediaOptions = (
   type: 'album' | 'song' | 'playlist',
-  id: string
+  id: string,
 ): SelectableListOption[] => {
   const music = window.MusicKit.getInstance();
 
@@ -46,17 +46,17 @@ export const getMediaOptions = (
       label: 'Play Next',
       onSelect: () =>
         music.playNext({
-          [type]: id
-        })
+          [type]: id,
+        }),
     },
     {
       type: 'Action',
       label: 'Play Later',
       onSelect: () =>
         music.playLater({
-          [type]: id
-        })
-    }
+          [type]: id,
+        }),
+    },
   ];
 };
 

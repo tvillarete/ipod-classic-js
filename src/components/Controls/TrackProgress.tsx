@@ -35,7 +35,7 @@ const TrackProgress = () => {
     isPaused,
     currentTime,
     percent,
-    timeRemaining
+    timeRemaining,
   } = playbackInfo;
 
   /** Update the progress bar every second. */

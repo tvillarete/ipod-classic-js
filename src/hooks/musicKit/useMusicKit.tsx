@@ -5,7 +5,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useState
+  useState,
 } from 'react';
 
 import { ErrorScreen } from 'components';
@@ -67,7 +67,7 @@ export const useMusicKit = (): MusicKitHook => {
     musicKit,
     music,
     signIn,
-    signOut
+    signOut,
   };
 };
 
@@ -91,8 +91,8 @@ export const MusicKitProvider = ({ children }: Props) => {
           undefined,
         app: {
           name: 'iPod.js',
-          build: '1.0'
-        }
+          build: '1.0',
+        },
       });
 
       if (music) {
