@@ -1,8 +1,8 @@
-import { SelectableList, SelectableListOption } from "components";
-import { ViewOptions } from "components/views";
-import { useMenuHideWindow, useScrollHandler } from "hooks";
-import styled from "styled-components";
-import { Unit } from "utils/constants";
+import { SelectableList, SelectableListOption } from 'components';
+import { ViewOptions } from 'components/views';
+import { useMenuHideWindow, useScrollHandler } from 'hooks';
+import styled from 'styled-components';
+import { Unit } from 'utils/constants';
 
 const Container = styled.div`
   display: flex;
@@ -43,19 +43,19 @@ const AboutView = () => {
   useMenuHideWindow(ViewOptions.about.id);
   const options: SelectableListOption[] = [
     {
-      type: "Link",
-      label: "GitHub Repo",
-      url: "https://github.com/tvillarete/ipod-classic-js"
+      type: 'Link',
+      label: 'GitHub Repo',
+      url: 'https://github.com/tvillarete/ipod-classic-js'
     },
     {
-      type: "Link",
-      label: "My Website",
-      url: "http://tannerv.com"
+      type: 'Link',
+      label: 'My Website',
+      url: 'http://tannerv.com'
     },
     {
-      type: "Link",
-      label: "LinkedIn",
-      url: "https://linkedin.com/in/tvillarete"
+      type: 'Link',
+      label: 'LinkedIn',
+      url: 'https://linkedin.com/in/tvillarete'
     }
   ];
 
@@ -69,10 +69,10 @@ const AboutView = () => {
           <Title>iPod.js</Title>
         </TitleContainer>
         <Description>
-          Made with{" "}
+          Made with{' '}
           <span aria-label="heart" role="img">
             ❤️
-          </span>{" "}
+          </span>{' '}
           by Tanner Villarete
         </Description>
         <SelectableList options={options} activeIndex={scrollIndex} />

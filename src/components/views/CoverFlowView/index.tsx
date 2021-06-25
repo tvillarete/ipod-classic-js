@@ -1,16 +1,16 @@
-import React, { useCallback } from "react";
+import React, { useCallback } from 'react';
 
-import { AuthPrompt, LoadingScreen } from "components";
+import { AuthPrompt, LoadingScreen } from 'components';
 import {
   useDataFetcher,
   useEventListener,
   useSettings,
   useWindowContext
-} from "hooks";
-import styled from "styled-components";
+} from 'hooks';
+import styled from 'styled-components';
 
-import CoverFlow from "./CoverFlow";
-import { IpodEvent } from "utils/events";
+import CoverFlow from './CoverFlow';
+import { IpodEvent } from 'utils/events';
 
 const Container = styled.div`
   flex: 1;
@@ -20,7 +20,7 @@ const CoverFlowView = () => {
   const { hideWindow } = useWindowContext();
   const { isAuthorized } = useSettings();
   const { data: albums, isLoading } = useDataFetcher<IpodApi.Album[]>({
-    name: "albums",
+    name: 'albums',
     artworkSize: 350
   });
 
@@ -30,7 +30,7 @@ const CoverFlowView = () => {
     }
   }, [hideWindow, isAuthorized, isLoading]);
 
-  useEventListener<IpodEvent>("menuclick", handleMenuClick);
+  useEventListener<IpodEvent>('menuclick', handleMenuClick);
 
   return (
     <Container>

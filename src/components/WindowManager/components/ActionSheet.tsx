@@ -1,19 +1,19 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { slideUpAnimation } from "animation";
-import { SelectableListOption } from "components";
-import { WINDOW_TYPE } from "components/views";
-import { motion } from "framer-motion";
+import { slideUpAnimation } from 'animation';
+import { SelectableListOption } from 'components';
+import { WINDOW_TYPE } from 'components/views';
+import { motion } from 'framer-motion';
 import {
   useEventListener,
   useMenuHideWindow,
   useScrollHandler,
   useWindowContext
-} from "hooks";
-import { WindowOptions } from "providers/WindowProvider";
-import styled, { css } from "styled-components";
-import { Unit } from "utils/constants";
-import { IpodEvent } from "utils/events";
+} from 'hooks';
+import { WindowOptions } from 'providers/WindowProvider';
+import styled, { css } from 'styled-components';
+import { Unit } from 'utils/constants';
+import { IpodEvent } from 'utils/events';
 
 interface RootContainerProps {
   index: number;
@@ -104,14 +104,14 @@ const ActionSheet = ({ windowStack, index, isHidden }: Props) => {
     return [
       ...listOptions,
       {
-        type: "Action",
-        label: "Cancel",
+        type: 'Action',
+        label: 'Cancel',
         onSelect: () => {}
       }
     ];
   }, [windowOptions]);
 
-  useEventListener<IpodEvent>("centerclick", () => {
+  useEventListener<IpodEvent>('centerclick', () => {
     hideWindow();
   });
 

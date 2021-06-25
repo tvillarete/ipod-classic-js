@@ -1,10 +1,10 @@
-import { fadeScale } from "animation";
-import { AnimatePresence, motion } from "framer-motion";
-import styled, { css } from "styled-components";
-import * as Utils from "utils";
+import { fadeScale } from 'animation';
+import { AnimatePresence, motion } from 'framer-motion';
+import styled, { css } from 'styled-components';
+import * as Utils from 'utils';
 
-import BacksideContent from "./BacksideContent";
-import { Point } from "./CoverFlow";
+import BacksideContent from './BacksideContent';
+import { Point } from './CoverFlow';
 
 const getOffsetPx = (offset: number, midpoint: number) => {
   if (offset === 0) return 0;
@@ -26,8 +26,8 @@ interface ContainerProps {
 
 const Container = styled.div.attrs((props: ContainerProps) => ({
   style: {
-    background: "transparent",
-    backgroundSize: "cover"
+    background: 'transparent',
+    backgroundSize: 'cover'
   }
 }))<ContainerProps>`
   z-index: ${(props) => 1 - Math.abs(props.index - props.activeIndex)};
@@ -44,7 +44,7 @@ const Container = styled.div.attrs((props: ContainerProps) => ({
     css`
       transition: transform 0.3s, opacity 0.35s, background 0.35s;
       transform: translate3d(${props.midpoint.x - 60}px, 4px, 20px)
-        ${props.isSelected && "rotateY(-180deg) translateY(10%) scale(0.96)"};
+        ${props.isSelected && 'rotateY(-180deg) translateY(10%) scale(0.96)'};
 
       ${props.isSelected &&
       css`
@@ -70,7 +70,7 @@ const Container = styled.div.attrs((props: ContainerProps) => ({
     !props.isActive &&
     css`
       transform: translateX(${props.offset}px) scale(1.1) translateZ(-65px)
-        rotateY(${props.index < props.activeIndex ? "70deg" : "-70deg"});
+        rotateY(${props.index < props.activeIndex ? '70deg' : '-70deg'});
     `};
 `;
 

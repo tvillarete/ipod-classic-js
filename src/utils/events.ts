@@ -1,14 +1,14 @@
 /** The click-wheel control associated with the particular event */
 type BaseEventContext =
-  | "wheel"
-  | "center"
-  | "forward"
-  | "backward"
-  | "menu"
-  | "playpause";
+  | 'wheel'
+  | 'center'
+  | 'forward'
+  | 'backward'
+  | 'menu'
+  | 'playpause';
 
 /** The action that is taken on a click-wheel control */
-type BaseEventAction = "click" | "longclick" | "scroll" | "longpress";
+type BaseEventAction = 'click' | 'longclick' | 'scroll' | 'longpress';
 
 /** The custom events that are supported for the iPod */
 export type IpodEvent = `${BaseEventContext}${BaseEventAction}` | `idle`;

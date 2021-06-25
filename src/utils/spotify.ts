@@ -1,8 +1,8 @@
-import { API_URL } from "hooks";
+import { API_URL } from 'hooks';
 
-const ACCESS_TOKEN_KEY = "spotify_access_token";
-const REFRESH_TOKEN_KEY = "spotify_refresh_token";
-const TOKEN_TIMESTAMP_KEY = "spotify_token_timestamp";
+const ACCESS_TOKEN_KEY = 'spotify_access_token';
+const REFRESH_TOKEN_KEY = 'spotify_refresh_token';
+const TOKEN_TIMESTAMP_KEY = 'spotify_token_timestamp';
 
 export type TokenResponse = {
   accessToken?: string;
@@ -59,20 +59,20 @@ const _getRefreshedTokens = async (
     const response = await fetch(
       `${API_URL}/refresh_token?refresh_token=${storedRefreshToken}`,
       {
-        credentials: "same-origin",
-        mode: "cors"
+        credentials: 'same-origin',
+        mode: 'cors'
       }
     );
 
     const { access_token: accessToken } = await response.json();
 
-    console.log("Got refreshed tokens:", { accessToken, storedRefreshToken });
+    console.log('Got refreshed tokens:', { accessToken, storedRefreshToken });
 
     _saveTokens(accessToken, storedRefreshToken);
 
     return { accessToken, refreshToken: storedRefreshToken };
   } catch (error) {
-    console.error("Error fetchinng refresh token:", { error });
+    console.error('Error fetchinng refresh token:', { error });
   }
 
   return {
@@ -88,8 +88,8 @@ const _getRefreshedTokens = async (
 const _getNewTokens = async (): Promise<TokenResponse> => {
   const url = new URL(window.document.URL);
   const urlParams = url.searchParams;
-  const code = urlParams.get("code") ?? undefined;
-  const state = urlParams.get("state") ?? undefined;
+  const code = urlParams.get('code') ?? undefined;
+  const state = urlParams.get('state') ?? undefined;
 
   if (!code || !state) {
     return {};
@@ -99,8 +99,8 @@ const _getNewTokens = async (): Promise<TokenResponse> => {
     const response = await fetch(
       `${API_URL}/callback?state=${state}&code=${code}`,
       {
-        credentials: "same-origin",
-        mode: "cors"
+        credentials: 'same-origin',
+        mode: 'cors'
       }
     );
 
@@ -108,10 +108,10 @@ const _getNewTokens = async (): Promise<TokenResponse> => {
 
     _saveTokens(accessToken, refreshToken);
 
-    urlParams.delete("code");
-    urlParams.delete("state");
+    urlParams.delete('code');
+    urlParams.delete('state');
 
-    window.history.replaceState({}, "", url.toString());
+    window.history.replaceState({}, '', url.toString());
 
     return {
       accessToken,
@@ -120,7 +120,7 @@ const _getNewTokens = async (): Promise<TokenResponse> => {
       isNew: true
     };
   } catch (error) {
-    console.error("error fetching token:", { error });
+    console.error('error fetching token:', { error });
   }
 
   return {
@@ -135,7 +135,7 @@ const _getNewTokens = async (): Promise<TokenResponse> => {
  */
 const _shouldRefreshTokens = () => {
   const lastRefreshTimestamp = parseInt(
-    localStorage.getItem(TOKEN_TIMESTAMP_KEY) ?? ""
+    localStorage.getItem(TOKEN_TIMESTAMP_KEY) ?? ''
   );
   const now = Date.now();
 
@@ -152,7 +152,7 @@ const _shouldRefreshTokens = () => {
 
 const _saveTokens = (accessToken?: string, refreshToken?: string) => {
   if (!accessToken || !refreshToken) {
-    console.error("Error: Attempting to save undefined tokens:", {
+    console.error('Error: Attempting to save undefined tokens:', {
       accessToken,
       refreshToken
     });

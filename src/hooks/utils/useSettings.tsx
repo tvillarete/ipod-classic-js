@@ -1,9 +1,9 @@
-import { createContext, memo, useCallback, useContext, useState } from "react";
+import { createContext, memo, useCallback, useContext, useState } from 'react';
 
-type StreamingService = "apple" | "spotify";
+type StreamingService = 'apple' | 'spotify';
 
-export const SELECTED_SERVICE_KEY = "ipodSelectedService";
-export const VOLUME_KEY = "ipodVolume";
+export const SELECTED_SERVICE_KEY = 'ipodSelectedService';
+export const VOLUME_KEY = 'ipodVolume';
 
 export interface SettingsState {
   service?: StreamingService;

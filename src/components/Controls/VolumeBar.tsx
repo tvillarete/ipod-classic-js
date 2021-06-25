@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import { Unit } from "utils/constants";
+import styled from 'styled-components';
+import { Unit } from 'utils/constants';
 
-import ProgressBar from "./ProgressBar";
+import ProgressBar from './ProgressBar';
 
 const Container = styled.div`
   position: relative;

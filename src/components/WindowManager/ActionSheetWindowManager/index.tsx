@@ -1,8 +1,8 @@
-import { AnimatePresence } from "framer-motion";
-import { WindowOptions } from "providers/WindowProvider";
-import styled from "styled-components";
+import { AnimatePresence } from 'framer-motion';
+import { WindowOptions } from 'providers/WindowProvider';
+import styled from 'styled-components';
 
-import ActionSheet from "../components/ActionSheet";
+import ActionSheet from '../components/ActionSheet';
 
 interface ContainerProps {
   isHidden: boolean;
@@ -14,7 +14,7 @@ const RootContainer = styled.div<ContainerProps>`
   height: 100%;
   width: 100%;
   background: ${({ isHidden }) =>
-    isHidden ? "transparent" : "rgba(0, 0, 0, 0.5)"};
+    isHidden ? 'transparent' : 'rgba(0, 0, 0, 0.5)'};
   transition: all 0.25s ease;
 `;
 

@@ -1,6 +1,6 @@
-import { fade } from "animation";
-import { motion } from "framer-motion";
-import styled from "styled-components";
+import { fade } from 'animation';
+import { motion } from 'framer-motion';
+import styled from 'styled-components';
 
 interface ContainerProps {
   backgroundColor?: string;

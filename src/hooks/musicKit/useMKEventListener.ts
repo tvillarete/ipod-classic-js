@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 /**
  * MusicKit has its own event listener logic that is attached to the `music` instance.

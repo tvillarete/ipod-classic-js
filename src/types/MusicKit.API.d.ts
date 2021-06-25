@@ -265,7 +265,7 @@ declare namespace MusicKit {
       parameters?: QueryParameters
     ): Promise<
       Record<
-        AppleMusicApi.Resource["type"],
+        AppleMusicApi.Resource['type'],
         AppleMusicApi.Relationship<
           | AppleMusicApi.Artist
           | AppleMusicApi.Album

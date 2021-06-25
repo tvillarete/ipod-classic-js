@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect } from 'react';
 
 // Hook
 const useEventListener = <TEvent extends string>(

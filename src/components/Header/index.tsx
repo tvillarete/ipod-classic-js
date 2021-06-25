@@ -1,6 +1,6 @@
-import LoadingIndicator from "components/LoadingIndicator";
-import { useAudioPlayer, useWindowContext } from "hooks";
-import styled from "styled-components";
+import LoadingIndicator from 'components/LoadingIndicator';
+import { useAudioPlayer, useWindowContext } from 'hooks';
+import styled from 'styled-components';
 
 const Container = styled.div`
   width: 100%;

@@ -1,14 +1,14 @@
-import { ErrorScreen } from "components";
-import { WINDOW_TYPE } from "components/views";
-import { useEventListener, useMusicKit, useWindowContext } from "hooks";
-import styled from "styled-components";
-import { IpodEvent } from "utils/events";
+import { ErrorScreen } from 'components';
+import { WINDOW_TYPE } from 'components/views';
+import { useEventListener, useMusicKit, useWindowContext } from 'hooks';
+import styled from 'styled-components';
+import { IpodEvent } from 'utils/events';
 
-import ActionSheetWindowManager from "./ActionSheetWindowManager";
-import CoverFlowWindowManager from "./CoverFlowWindowManager";
-import FullScreenWindowManager from "./FullScreenWindowManager";
-import PopupWindowManager from "./PopupWindowManager";
-import SplitScreenWindowManager from "./SplitScreenWindowManager";
+import ActionSheetWindowManager from './ActionSheetWindowManager';
+import CoverFlowWindowManager from './CoverFlowWindowManager';
+import FullScreenWindowManager from './FullScreenWindowManager';
+import PopupWindowManager from './PopupWindowManager';
+import SplitScreenWindowManager from './SplitScreenWindowManager';
 
 /** Prevents the user from scrolling the display with a mouse. */
 const Mask = styled.div`
@@ -41,7 +41,7 @@ const WindowManager = () => {
 
   const isReady = isConfigured && hasAppleDevToken;
 
-  useEventListener<IpodEvent>("menulongpress", resetWindows);
+  useEventListener<IpodEvent>('menulongpress', resetWindows);
 
   return (
     <div>
@@ -58,7 +58,7 @@ const WindowManager = () => {
           <PopupWindowManager windowStack={popupWindows} />
         </>
       ) : (
-        <ErrorScreen message={"Missing developer token"} />
+        <ErrorScreen message={'Missing developer token'} />
       )}
       <Mask />
     </div>

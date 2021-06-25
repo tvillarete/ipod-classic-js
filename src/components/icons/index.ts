@@ -1,1 +1,1 @@
-export { default as SadMacIcon } from "./SadMacIcon";
+export { default as SadMacIcon } from './SadMacIcon';

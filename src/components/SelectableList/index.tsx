@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-import { LoadingScreen } from "components";
-import ErrorScreen from "components/ErrorScreen";
-import { PREVIEW } from "components/previews";
-import { WINDOW_TYPE } from "components/views";
-import { AnimatePresence } from "framer-motion";
-import { useTimeout } from "hooks";
-import styled from "styled-components";
+import { LoadingScreen } from 'components';
+import ErrorScreen from 'components/ErrorScreen';
+import { PREVIEW } from 'components/previews';
+import { WINDOW_TYPE } from 'components/views';
+import { AnimatePresence } from 'framer-motion';
+import { useTimeout } from 'hooks';
+import styled from 'styled-components';
 
-import SelectableListItem from "./SelectableListItem";
+import SelectableListItem from './SelectableListItem';
 
 export const getConditionalOption = (
   condition?: boolean,
@@ -16,12 +16,12 @@ export const getConditionalOption = (
 ) => (option && condition ? [option] : []);
 
 export type SelectableListOptionType =
-  | "View"
-  | "Link"
-  | "Song"
-  | "Action"
-  | "ActionSheet"
-  | "Popup";
+  | 'View'
+  | 'Link'
+  | 'Song'
+  | 'Action'
+  | 'ActionSheet'
+  | 'Popup';
 
 type SharedOptionProps = {
   type?: SelectableListOptionType;
@@ -33,7 +33,7 @@ type SharedOptionProps = {
 };
 
 type ViewOptionProps = {
-  type: "View";
+  type: 'View';
   /** A unique identifier for the next screen. */
   viewId: string;
   /** The component that will be displayed in the next view. */
@@ -43,12 +43,12 @@ type ViewOptionProps = {
 };
 
 type LinkOptionProps = {
-  type: "Link";
+  type: 'Link';
   url: string;
 };
 
 type SongOptionProps = {
-  type: "Song";
+  type: 'Song';
   /** Options that will be used to fetch and play a song. */
   queueOptions: IpodApi.QueueOptions;
   /**
@@ -59,12 +59,12 @@ type SongOptionProps = {
 };
 
 type ActionOptionProps = {
-  type: "Action";
+  type: 'Action';
   onSelect: () => void;
 };
 
 export type PopupOptionProps = {
-  type: "Popup";
+  type: 'Popup';
   /** A unique identifier for the popup. */
   popupId: string;
   listOptions: SelectableListOption[];
@@ -73,7 +73,7 @@ export type PopupOptionProps = {
 };
 
 export type ActionSheetOptionProps = {
-  type: "ActionSheet";
+  type: 'ActionSheet';
   /** A unique identifier for the action sheet. */
   id: string;
   listOptions: SelectableListOption[];
@@ -107,7 +107,7 @@ const SelectableList = ({
   options,
   activeIndex,
   loading,
-  emptyMessage = "Nothing to see here"
+  emptyMessage = 'Nothing to see here'
 }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -122,7 +122,7 @@ const SelectableList = ({
     if (isMounted && containerRef.current && options.length) {
       const { children } = containerRef.current;
       children[activeIndex]?.scrollIntoView({
-        block: "nearest"
+        block: 'nearest'
       });
     }
   }, [activeIndex, isMounted, options.length]);

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const Container = styled.div`
   position: relative;
@@ -17,7 +17,7 @@ const ProgressContainer = styled.div`
 const Gloss = styled.div`
   position: absolute;
   width: 100%;
-  background: url("gloss-overlay.svg") repeat-x;
+  background: url('gloss-overlay.svg') repeat-x;
   background-size: contain;
   height: 100%;
 `;

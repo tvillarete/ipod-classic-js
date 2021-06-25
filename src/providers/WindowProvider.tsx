@@ -1,8 +1,8 @@
-import { createContext, useState } from "react";
+import { createContext, useState } from 'react';
 
-import { SelectableListOption } from "components";
-import { PREVIEW } from "components/previews";
-import ViewOptions, * as Views from "components/views";
+import { SelectableListOption } from 'components';
+import { PREVIEW } from 'components/previews';
+import ViewOptions, * as Views from 'components/views';
 
 type SharedOptionProps = {
   id: string;
@@ -22,7 +22,7 @@ type ListViewOptionProps<TComponent extends React.ComponentType<any> = any> = {
   /** The React component that will be rendered in the window. */
   component: TComponent;
   /** Props that will be passed to the component. */
-  props?: Omit<React.ComponentProps<TComponent>, "id">;
+  props?: Omit<React.ComponentProps<TComponent>, 'id'>;
   /** Fire an event when the window closes. */
   onClose?: (...args: any[]) => void;
 };
@@ -61,7 +61,7 @@ type WindowContextType = [
 export const WindowContext = createContext<WindowContextType>([
   {
     windowStack: [],
-    headerTitle: "iPod.js",
+    headerTitle: 'iPod.js',
     preview: PREVIEW.MUSIC
   },
   () => {}

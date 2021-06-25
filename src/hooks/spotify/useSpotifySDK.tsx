@@ -5,16 +5,16 @@ import {
   useContext,
   useRef,
   useState
-} from "react";
+} from 'react';
 
-import ViewOptions, { WINDOW_TYPE } from "components/views";
-import { useWindowContext } from "hooks";
-import * as Utils from "utils";
-import * as SpotifyUtils from "utils/spotify";
+import ViewOptions, { WINDOW_TYPE } from 'components/views';
+import { useWindowContext } from 'hooks';
+import * as Utils from 'utils';
+import * as SpotifyUtils from 'utils/spotify';
 
-import { useEffectOnce, useSettings } from "../";
+import { useEffectOnce, useSettings } from '../';
 
-export const API_URL = "https://b7d1fdb16506.ngrok.io";
+export const API_URL = 'https://b7d1fdb16506.ngrok.io';
 
 export interface SpotifySDKState {
   isMounted: boolean;
@@ -51,11 +51,11 @@ export const useSpotifySDK = (): SpotifySDKHook => {
         id: ViewOptions.spotifyNotSupportedPopup.id,
         title: ViewOptions.spotifyNotSupportedPopup.title,
         description:
-          "Spotify sadly only supports web playback on Chrome (desktop)",
+          'Spotify sadly only supports web playback on Chrome (desktop)',
         listOptions: [
           {
-            type: "Action",
-            label: "Okay 😞",
+            type: 'Action',
+            label: 'Okay 😞',
             onSelect: () => {}
           }
         ]
@@ -65,11 +65,11 @@ export const useSpotifySDK = (): SpotifySDKHook => {
 
     if (!isSpotifyAuthorized) {
       window.open(
-        `${API_URL}/${Utils.isDev() ? "login_dev" : "login"}`,
-        "_self"
+        `${API_URL}/${Utils.isDev() ? 'login_dev' : 'login'}`,
+        '_self'
       );
     } else {
-      setService("spotify");
+      setService('spotify');
     }
   }, [isSpotifyAuthorized, setService, showWindow, state.isMounted]);
 
@@ -81,7 +81,7 @@ export const useSpotifySDK = (): SpotifySDKHook => {
 
     // Change to apple music if available.
     if (isAppleAuthorized) {
-      setService("apple");
+      setService('apple');
     } else {
       setService(undefined);
     }
@@ -119,7 +119,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
       setToken(accessToken);
 
       const player = new window.Spotify.Player({
-        name: "iPod Classic",
+        name: 'iPod Classic',
         getOAuthToken: async (cb: (token: string) => void) => {
           const { storedAccessToken } = SpotifyUtils.getExistingTokens();
 
@@ -132,18 +132,18 @@ export const SpotifySDKProvider = ({ children }: Props) => {
         }
       });
 
-      player.addListener("ready", ({ device_id }: any) => {
+      player.addListener('ready', ({ device_id }: any) => {
         console.log({ device_id });
         setDeviceId(device_id);
         setIsSpotifyAuthorized(true);
       });
 
-      player.addListener("authentication_error", ({ message }) => {
+      player.addListener('authentication_error', ({ message }) => {
         console.error(`Spotify authentication error: ${message}`);
         setIsSpotifyAuthorized(false);
       });
 
-      player.addListener("playback_error", ({ message }) => {
+      player.addListener('playback_error', ({ message }) => {
         console.error(message);
       });
 
@@ -153,7 +153,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
 
       /** The user has just signed in; configure the app to use Spotify. */
       if (isNew) {
-        setService("spotify");
+        setService('spotify');
       }
     }
   }, [setIsSpotifyAuthorized, setService]);

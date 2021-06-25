@@ -1,20 +1,20 @@
 const app = {
   init: function () {
-    this.canvas = document.querySelector("#brickBreakerCanvas");
-    this.context = this.canvas ? this.canvas.getContext("2d") : null;
+    this.canvas = document.querySelector('#brickBreakerCanvas');
+    this.context = this.canvas ? this.canvas.getContext('2d') : null;
 
     if (!this.context) {
-      console.log("Error getting application context");
+      console.log('Error getting application context');
       return; //TODO: notify user
     }
 
-    window.addEventListener("centerclick", this.handleCenterClick);
+    window.addEventListener('centerclick', this.handleCenterClick);
     this.inStasis = false;
 
     if (!this.initialized) {
-      window.addEventListener("forwardscroll", () => player.moveRight(), true);
-      window.addEventListener("backwardscroll", () => player.moveLeft(), true);
-      window.addEventListener("menuclick", () => (this.inStasis = true));
+      window.addEventListener('forwardscroll', () => player.moveRight(), true);
+      window.addEventListener('backwardscroll', () => player.moveLeft(), true);
+      window.addEventListener('menuclick', () => (this.inStasis = true));
 
       this.waiting = true;
       this.setupBricks();
@@ -138,7 +138,7 @@ var player = {
   },
 
   draw: function () {
-    app.context.fillStyle = "black";
+    app.context.fillStyle = 'black';
     app.context.fillRect(
       this.position.x,
       this.position.y,
@@ -199,7 +199,7 @@ var ball = {
   },
 
   draw: function () {
-    app.context.fillStyle = "transparent";
+    app.context.fillStyle = 'transparent';
     const context = app.context;
     const centerX = this.position.x;
     const centerY = this.position.y;
@@ -207,10 +207,10 @@ var ball = {
 
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-    context.fillStyle = "black";
+    context.fillStyle = 'black';
     context.fill();
     context.lineWidth = 5;
-    context.strokeStyle = "black";
+    context.strokeStyle = 'black';
     context.stroke();
   },
 
@@ -317,13 +317,13 @@ Brick.prototype.draw = function () {
   // eslint-disable-next-line default-case
   switch (this.health) {
     case 3:
-      app.context.fillStyle = "rgb(0, 240, 0)"; //Green
+      app.context.fillStyle = 'rgb(0, 240, 0)'; //Green
       break;
     case 2:
-      app.context.fillStyle = "rgb(255,140,0"; //Orange?
+      app.context.fillStyle = 'rgb(255,140,0'; //Orange?
       break;
     case 1:
-      app.context.fillStyle = "rgb(200, 0, 0)"; //Red
+      app.context.fillStyle = 'rgb(200, 0, 0)'; //Red
       break;
   }
 

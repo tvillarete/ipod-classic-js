@@ -1,3 +1,3 @@
-export * from "./useSpotifySDK";
+export * from './useSpotifySDK';
 
-export { default as useSpotifyDataFetcher } from "./useSpotifyDataFetcher";
+export { default as useSpotifyDataFetcher } from './useSpotifyDataFetcher';

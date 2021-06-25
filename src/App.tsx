@@ -1,17 +1,17 @@
-import * as React from "react";
+import * as React from 'react';
 
-import { ScrollWheel } from "components";
+import { ScrollWheel } from 'components';
 import {
   AudioPlayerProvider,
   MusicKitProvider,
   SettingsProvider,
   SpotifySDKProvider
-} from "hooks";
-import WindowProvider from "providers/WindowProvider";
-import styled, { createGlobalStyle } from "styled-components";
-import { Screen, Unit } from "utils/constants";
+} from 'hooks';
+import WindowProvider from 'providers/WindowProvider';
+import styled, { createGlobalStyle } from 'styled-components';
+import { Screen, Unit } from 'utils/constants';
 
-import { WindowManager } from "./components";
+import { WindowManager } from './components';
 
 const GlobalStyles = createGlobalStyle`
   * {
