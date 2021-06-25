@@ -1,12 +1,13 @@
 import React, { SyntheticEvent } from 'react';
 import styled from 'styled-components';
 import { useRef } from 'react';
-import { DeviceColor, useEffectOnce, useSettings } from 'hooks';
+import { useEffectOnce, useSettings } from 'hooks';
 import { useEffect } from 'react';
 import MenuIcon from './icons/MenuIcon';
 import RewindIcon from './icons/RewindIcon';
 import PlayPauseIcon from './icons/PlayPauseIcon';
 import FastForwardIcon from './icons/FastForwardIcon';
+import { DeviceTheme, getTheme } from '../../utils/themes';
 
 const Container = styled.div`
   user-select: none;
@@ -27,15 +28,13 @@ const CanvasContainer = styled.div<{ width: number; height: number }>`
   height: ${(props) => props.height}px;
 `;
 
-const Canvas = styled.canvas<{ deviceColor?: DeviceColor }>`
+const Canvas = styled.canvas<{ deviceTheme: DeviceTheme }>`
   border-radius: 50%;
-  border: 1px solid
-    ${({ deviceColor }) => (deviceColor === 'silver' ? '#b9b9b9' : '#1a1a1a')};
-  background: ${({ deviceColor }) =>
-    deviceColor === 'silver' ? 'white' : '#2a2a2a'};
+  border: 1px solid ${({ deviceTheme }) => getTheme(deviceTheme).knob.outline};
+  background: ${({ deviceTheme }) => getTheme(deviceTheme).knob.background};
 `;
 
-const CenterButton = styled.div<{ size: number; deviceColor?: DeviceColor }>`
+const CenterButton = styled.div<{ size: number; deviceTheme: DeviceTheme }>`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -45,13 +44,13 @@ const CenterButton = styled.div<{ size: number; deviceColor?: DeviceColor }>`
   width: ${(props) => props.size / 2.5}px;
   height: ${(props) => props.size / 2.5}px;
   border-radius: 50%;
-  box-shadow: ${({ deviceColor }) =>
-      deviceColor === 'silver' ? 'rgb(191, 191, 191)' : 'rgb(50, 50, 50)'}
+  box-shadow: ${({ deviceTheme }) =>
+    getTheme(deviceTheme).knob.centerButton.boxShadow}
     0px 1em 3em inset;
-  background: ${({ deviceColor }) =>
-    deviceColor === 'silver' ? '#ffffff' : '#7d7c7d'};
+  background: ${({ deviceTheme }) =>
+    getTheme(deviceTheme).knob.centerButton.background};
   border: 1px solid
-    ${({ deviceColor }) => (deviceColor === 'silver' ? '#b9b9b9' : '#1a1a1a')};
+    ${({ deviceTheme }) => getTheme(deviceTheme).knob.centerButton.outline}};
 
   :active {
     filter: brightness(0.9);
@@ -110,7 +109,7 @@ const Knob = ({
   className,
   canvasClassName,
 }: Props) => {
-  const { deviceColor } = useSettings();
+  const { deviceTheme } = useSettings();
   const canvasRef = useRef<HTMLCanvasElement | undefined>();
   const centerButtonRef = useRef<HTMLDivElement | undefined>();
 
@@ -387,7 +386,7 @@ const Knob = ({
     drawCanvas();
   });
 
-  const buttonColor = deviceColor === 'silver' ? '#AFAFAF' : '#FFFFFF';
+  const buttonColor = getTheme(deviceTheme).knob.button;
 
   return (
     <Container className={className}>
@@ -398,7 +397,7 @@ const Knob = ({
           }}
           className={canvasClassName}
           style={{ width: '100%', height: '100%' }}
-          deviceColor={deviceColor}
+          deviceTheme={deviceTheme}
         />
 
         <CenterButton
@@ -407,7 +406,7 @@ const Knob = ({
           }}
           onClick={onClick}
           size={width}
-          deviceColor={deviceColor}
+          deviceTheme={deviceTheme}
         />
         <MenuIcon top={'8%'} margin={'0 auto'} color={buttonColor} />
         <PlayPauseIcon bottom={'8%'} margin={'0 auto'} color={buttonColor} />

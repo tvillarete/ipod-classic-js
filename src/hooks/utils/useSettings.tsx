@@ -1,18 +1,17 @@
 import { createContext, memo, useCallback, useContext, useState } from 'react';
+import {DeviceTheme} from "../../utils/themes";
 
 type StreamingService = 'apple' | 'spotify';
 
 export const SELECTED_SERVICE_KEY = 'ipodSelectedService';
-export const DEVICE_COLOR_KEY = 'ipodSelectedDeviceColor';
+export const DEVICE_COLOR_KEY = 'ipodSelectedDeviceTheme';
 export const VOLUME_KEY = 'ipodVolume';
-
-export type DeviceColor = 'silver' | 'black';
 
 export interface SettingsState {
   service?: StreamingService;
   isSpotifyAuthorized: boolean;
   isAppleAuthorized: boolean;
-  deviceColor?: DeviceColor;
+  deviceTheme: DeviceTheme;
 }
 
 type SettingsContextType = [
@@ -30,7 +29,7 @@ export type SettingsHook = SettingsState & {
   setIsSpotifyAuthorized: (val: boolean) => void;
   setIsAppleAuthorized: (val: boolean) => void;
   setService: (service?: StreamingService) => void;
-  setDeviceColor: (deviceColor: DeviceColor) => void;
+  setDeviceTheme: (deviceTheme: DeviceTheme) => void;
 };
 
 export const useSettings = (): SettingsHook => {
@@ -70,10 +69,10 @@ export const useSettings = (): SettingsHook => {
     [setState]
   );
 
-  const setDeviceColor = useCallback(
-    (deviceColor: DeviceColor) => {
-      setState((prevState) => ({ ...prevState, deviceColor }));
-      localStorage.setItem(DEVICE_COLOR_KEY, deviceColor);
+  const setDeviceTheme = useCallback(
+    (deviceTheme: DeviceTheme) => {
+      setState((prevState) => ({ ...prevState, deviceTheme }));
+      localStorage.setItem(DEVICE_COLOR_KEY, deviceTheme);
     },
     [setState]
   );
@@ -84,7 +83,7 @@ export const useSettings = (): SettingsHook => {
     setIsSpotifyAuthorized,
     setIsAppleAuthorized,
     setService,
-    setDeviceColor,
+    setDeviceTheme,
   };
 };
 
@@ -99,8 +98,8 @@ export const SettingsProvider = memo(({ children }: Props) => {
     service:
       (localStorage.getItem(SELECTED_SERVICE_KEY) as StreamingService) ??
       undefined,
-    deviceColor:
-      (localStorage.getItem(DEVICE_COLOR_KEY) as DeviceColor) ?? 'silver',
+    deviceTheme:
+      (localStorage.getItem(DEVICE_COLOR_KEY) as DeviceTheme) ?? 'silver',
   });
 
   return (

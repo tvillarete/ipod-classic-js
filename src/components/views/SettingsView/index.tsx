@@ -22,8 +22,8 @@ const SettingsView = () => {
     isAppleAuthorized,
     isSpotifyAuthorized,
     service,
-    deviceColor,
-    setDeviceColor,
+    deviceTheme,
+    setDeviceTheme,
   } = useSettings();
   const { signIn: signInWithApple, signOut: signOutApple } = useMusicKit();
   const { signOut: signOutSpotify, signIn: signInWithSpotify } =
@@ -46,11 +46,13 @@ const SettingsView = () => {
         listOptions: [
           {
             type: 'Action',
+            isSelected: service === 'apple',
             label: `Apple Music ${service === 'apple' ? '(Current)' : ''}`,
             onSelect: signInWithApple,
           },
           {
             type: 'Action',
+            isSelected: service === 'spotify',
             label: `Spotify ${service === 'spotify' ? '(Current)' : ''}`,
             onSelect: signInWithSpotify,
           },
@@ -59,20 +61,26 @@ const SettingsView = () => {
       }),
       {
         type: 'ActionSheet',
-        id: ViewOptions.deviceColorActionSheet.id,
-        label: 'Device color',
+        id: ViewOptions.deviceThemeActionSheet.id,
+        label: 'Device theme',
         listOptions: [
           {
             type: 'Action',
-            isSelected: deviceColor === 'silver',
-            label: `Silver ${deviceColor === 'silver' ? '(Current)' : ''}`,
-            onSelect: () => setDeviceColor('silver'),
+            isSelected: deviceTheme === 'silver',
+            label: `Silver ${deviceTheme === 'silver' ? '(Current)' : ''}`,
+            onSelect: () => setDeviceTheme('silver'),
           },
           {
             type: 'Action',
-            isSelected: deviceColor === 'black',
-            label: `Black ${deviceColor === 'black' ? '(Current)' : ''}`,
-            onSelect: () => setDeviceColor('black'),
+            isSelected: deviceTheme === 'black',
+            label: `Black ${deviceTheme === 'black' ? '(Current)' : ''}`,
+            onSelect: () => setDeviceTheme('black'),
+          },
+          {
+            type: 'Action',
+            isSelected: deviceTheme === 'u2',
+            label: `U2 Edition ${deviceTheme === 'u2' ? '(Current)' : ''}`,
+            onSelect: () => setDeviceTheme('u2'),
           },
         ],
         preview: PREVIEW.DEVICE,

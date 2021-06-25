@@ -4,7 +4,6 @@ import { ScrollWheel } from 'components';
 import {
   useSettings,
   AudioPlayerProvider,
-  DeviceColor,
   MusicKitProvider,
   SettingsProvider,
   SpotifySDKProvider,
@@ -14,6 +13,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { Screen, Unit } from 'utils/constants';
 
 import { WindowManager } from './components';
+import { DeviceTheme, getTheme } from './utils/themes';
 
 const GlobalStyles = createGlobalStyle`
   * {
@@ -43,7 +43,7 @@ const Container = styled.div`
   }
 `;
 
-const Shell = styled.div<{ deviceColor?: DeviceColor }>`
+const Shell = styled.div<{ deviceTheme: DeviceTheme }>`
   position: relative;
   height: 100vh;
   margin: auto;
@@ -51,10 +51,7 @@ const Shell = styled.div<{ deviceColor?: DeviceColor }>`
   width: 370px;
   border-radius: 30px;
   box-shadow: inset 0 0 2.4em #555;
-  background: ${({ deviceColor }) =>
-    deviceColor === 'silver'
-      ? 'linear-gradient(180deg, #e3e3e3 0%, #d6d6d6 100%)'
-      : 'linear-gradient(180deg, #7d7c7d 0%, #1e1e1e 100%)'};
+  background: ${({ deviceTheme }) => getTheme(deviceTheme).body.background};
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, transparent), to(rgba(250, 250, 250, 0.3)));
   animation: descend 1.5s ease;
 
@@ -116,9 +113,9 @@ const App: React.FC = () => {
 };
 
 const Ipod = () => {
-  const { deviceColor } = useSettings();
+  const { deviceTheme } = useSettings();
   return (
-    <Shell deviceColor={deviceColor}>
+    <Shell deviceTheme={deviceTheme}>
       <ScreenContainer>
         <SpotifySDKProvider>
           <MusicKitProvider>
