@@ -25,7 +25,7 @@ const ArtistsView = () => {
         viewId: ViewOptions.artist.id,
         component: () => <ArtistView id={artist.id} inLibrary={true} />,
       })) ?? [],
-    [artists],
+    [artists]
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.artists.id, options);

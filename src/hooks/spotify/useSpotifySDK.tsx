@@ -66,7 +66,7 @@ export const useSpotifySDK = (): SpotifySDKHook => {
     if (!isSpotifyAuthorized) {
       window.open(
         `${API_URL}/${Utils.isDev() ? 'login_dev' : 'login'}`,
-        '_self',
+        '_self'
       );
     } else {
       setService('spotify');

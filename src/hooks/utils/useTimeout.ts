@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef } from 'react';
 const useTimeout = (
   callback: () => void, // function to call. No args passed.
   // if you create a new callback each render, then previous callback will be cancelled on render.
-  timeout: number = 0, // delay, ms (default: immediately put into JS Event Queue)
+  timeout: number = 0 // delay, ms (default: immediately put into JS Event Queue)
 ): (() => void) => {
   const timeoutIdRef = useRef<any>();
 

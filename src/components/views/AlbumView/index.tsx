@@ -32,7 +32,7 @@ const AlbumView = ({ id, inLibrary = false }: Props) => {
         showNowPlayingView: true,
         longPressOptions: Utils.getMediaOptions('song', song.id),
       })) ?? [],
-    [album],
+    [album]
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.album.id, options);

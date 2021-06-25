@@ -23,7 +23,7 @@ export const convertAppleSong = (data: AppleMusicApi.Song): IpodApi.Song => ({
 });
 
 export const convertSpotifySongSimplified = (
-  data: SpotifyApi.TrackObjectSimplified,
+  data: SpotifyApi.TrackObjectSimplified
 ): IpodApi.Song => ({
   id: data.id,
   name: data.name,
@@ -34,7 +34,7 @@ export const convertSpotifySongSimplified = (
 });
 
 export const convertSpotifySongFull = (
-  data: SpotifyApi.TrackObjectFull,
+  data: SpotifyApi.TrackObjectFull
 ): IpodApi.Song => ({
   id: data.id,
   name: data.name,
@@ -49,7 +49,7 @@ export const convertSpotifySongFull = (
 // Playlist Conversion
 
 export const convertApplePlaylist = (
-  data: AppleMusicApi.Playlist,
+  data: AppleMusicApi.Playlist
 ): IpodApi.Playlist => ({
   id: data.id,
   name: data.attributes?.name ?? '–',
@@ -63,7 +63,7 @@ export const convertApplePlaylist = (
 });
 
 export const convertSpotifyPlaylistSimplified = (
-  data: SpotifyApi.PlaylistObjectSimplified,
+  data: SpotifyApi.PlaylistObjectSimplified
 ): IpodApi.Playlist => ({
   id: data.id,
   name: data.name,
@@ -75,7 +75,7 @@ export const convertSpotifyPlaylistSimplified = (
 });
 
 export const convertSpotifyPlaylistFull = (
-  data: SpotifyApi.PlaylistObjectFull,
+  data: SpotifyApi.PlaylistObjectFull
 ): IpodApi.Playlist => ({
   id: data.uri,
   name: data.name,
@@ -88,7 +88,7 @@ export const convertSpotifyPlaylistFull = (
 
 export const convertAppleAlbum = (
   data: AppleMusicApi.Album,
-  artworkSize?: number,
+  artworkSize?: number
 ): IpodApi.Album => ({
   id: data.id,
   name: data.attributes?.name ?? '–',
@@ -102,7 +102,7 @@ export const convertAppleAlbum = (
 });
 
 export const convertSpotifyAlbumSimplified = (
-  data: SpotifyApi.AlbumObjectSimplified,
+  data: SpotifyApi.AlbumObjectSimplified
 ): IpodApi.Album => ({
   id: data.id,
   name: data.name,
@@ -113,7 +113,7 @@ export const convertSpotifyAlbumSimplified = (
 });
 
 export const convertSpotifyAlbumFull = (
-  data: SpotifyApi.AlbumObjectFull,
+  data: SpotifyApi.AlbumObjectFull
 ): IpodApi.Album => ({
   id: data.id,
   name: data.name,
@@ -124,7 +124,7 @@ export const convertSpotifyAlbumFull = (
 });
 
 export const convertAppleArtist = (
-  data: AppleMusicApi.Artist,
+  data: AppleMusicApi.Artist
 ): IpodApi.Artist => ({
   id: data.id,
   name: data.attributes?.name ?? '–',
@@ -134,7 +134,7 @@ export const convertAppleArtist = (
 });
 
 export const convertSpotifyArtistSimplified = (
-  data: SpotifyApi.ArtistObjectSimplified,
+  data: SpotifyApi.ArtistObjectSimplified
 ): IpodApi.Artist => ({
   id: data.id,
   name: data.name,
@@ -143,7 +143,7 @@ export const convertSpotifyArtistSimplified = (
 });
 
 export const convertSpotifyArtistFull = (
-  data: SpotifyApi.ArtistObjectFull,
+  data: SpotifyApi.ArtistObjectFull
 ): IpodApi.Artist => ({
   id: data.id,
   name: data.name,
@@ -154,7 +154,7 @@ export const convertSpotifyArtistFull = (
 });
 
 export const convertAppleMediaItem = (
-  mediaItem: MusicKit.MediaItem,
+  mediaItem: MusicKit.MediaItem
 ): IpodApi.MediaItem => ({
   albumName: mediaItem.albumName,
   artistName: mediaItem.artistName,
@@ -169,7 +169,7 @@ export const convertAppleMediaItem = (
 });
 
 export const convertSpotifyMediaItem = (
-  state: Spotify.PlaybackState,
+  state: Spotify.PlaybackState
 ): IpodApi.MediaItem => {
   const track = state.track_window.current_track;
 

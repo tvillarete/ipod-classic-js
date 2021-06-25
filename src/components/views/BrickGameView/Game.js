@@ -143,7 +143,7 @@ var player = {
       this.position.x,
       this.position.y,
       this.size.width,
-      this.size.height,
+      this.size.height
     );
 
     // app.context.textAlign = "center";
@@ -332,7 +332,7 @@ Brick.prototype.draw = function () {
       this.position.x,
       this.position.y,
       this.size.width - 5,
-      this.size.height - 5,
+      this.size.height - 5
     );
 };
 

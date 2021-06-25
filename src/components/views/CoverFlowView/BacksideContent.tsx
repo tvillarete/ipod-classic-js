@@ -68,7 +68,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
           startPosition: index,
         },
       })) ?? [],
-    [album],
+    [album]
   );
   const [scrollIndex] = useScrollHandler(ViewOptions.coverFlow.id, options);
 

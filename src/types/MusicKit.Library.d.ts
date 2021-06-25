@@ -16,7 +16,7 @@ declare namespace MusicKit {
      */
     album(
       id: string,
-      parameters?: QueryParameters,
+      parameters?: QueryParameters
     ): Promise<AppleMusicApi.Album>;
     /**
      * Fetch one or more library albums using their identifiers.
@@ -27,7 +27,7 @@ declare namespace MusicKit {
      */
     albums(
       ids: string[] | null,
-      parameters?: QueryParameters,
+      parameters?: QueryParameters
     ): Promise<AppleMusicApi.Album[]>;
     /**
      * Fetch a library artist using its identifier.
@@ -38,7 +38,7 @@ declare namespace MusicKit {
      */
     artist(
       id: string,
-      parameters?: QueryParameters,
+      parameters?: QueryParameters
     ): Promise<AppleMusicApi.Artist>;
     /**
      * Fetch an artist's relationship by using the artist's identifier.
@@ -46,7 +46,7 @@ declare namespace MusicKit {
      */
     artistRelationship(
       id: string,
-      relationship: string,
+      relationship: string
     ): Promise<AppleMusicApi.Album[]>;
     /**
      * Fetch one or more library artists using their identifiers.
@@ -57,7 +57,7 @@ declare namespace MusicKit {
      */
     artists(
       ids: string[] | null,
-      parameters?: QueryParameters,
+      parameters?: QueryParameters
     ): Promise<AppleMusicApi.Artist[]>;
     /**
      * Fetch a library music video using its identifier.
@@ -68,7 +68,7 @@ declare namespace MusicKit {
      */
     musicVideo(
       id: string,
-      parameters?: QueryParameters,
+      parameters?: QueryParameters
     ): Promise<AppleMusicApi.Resource>;
     /**
      * Fetch one or more library music videos using their identifiers.
@@ -79,7 +79,7 @@ declare namespace MusicKit {
      */
     musicVideos(
       ids: string[] | null,
-      parameters?: QueryParameters,
+      parameters?: QueryParameters
     ): Promise<AppleMusicApi.Resource[]>;
     /**
      * Fetch a library playlist using its identifier.
@@ -90,7 +90,7 @@ declare namespace MusicKit {
      */
     playlist(
       id: string,
-      parameters?: QueryParameters,
+      parameters?: QueryParameters
     ): Promise<AppleMusicApi.Playlist>;
     /**
      * Fetch one or more library playlists using their identifiers.
@@ -101,7 +101,7 @@ declare namespace MusicKit {
      */
     playlists(
       ids: string[] | null,
-      parameters?: QueryParameters,
+      parameters?: QueryParameters
     ): Promise<AppleMusicApi.Playlist[]>;
     /**
      * Search the library using a query.
@@ -112,7 +112,7 @@ declare namespace MusicKit {
      */
     search(
       term: string,
-      parameters?: QueryParameters,
+      parameters?: QueryParameters
     ): Promise<AppleMusicApi.Resource>;
     /**
      * Fetch a library song using its identifier.
@@ -131,7 +131,7 @@ declare namespace MusicKit {
      */
     songs(
       ids: string[] | null,
-      parameters?: QueryParameters,
+      parameters?: QueryParameters
     ): Promise<AppleMusicApi.Song[]>;
   }
 }

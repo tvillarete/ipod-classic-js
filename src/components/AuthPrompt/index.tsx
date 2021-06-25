@@ -60,7 +60,7 @@ const AuthPrompt = ({ message }: Props) => {
 
   useInterval(
     () => setIcon((prevState) => (prevState === 'apple' ? 'spotify' : 'apple')),
-    4000,
+    4000
   );
 
   return (

@@ -74,7 +74,7 @@ const NowPlaying = ({ hideArtwork, onHide }: Props) => {
         onHide();
       }
     },
-    [onHide],
+    [onHide]
   );
 
   useEffectOnce(() => {

@@ -45,7 +45,7 @@ export const useWindowContext = (): WindowContextHook => {
         headerTitle: ViewOptions[window.id].title,
       }));
     },
-    [setWindowState],
+    [setWindowState]
   );
 
   const hideWindow = useCallback(
@@ -54,7 +54,7 @@ export const useWindowContext = (): WindowContextHook => {
       setWindowState((prevWindowState) => {
         const newWindowStack = id
           ? prevWindowState.windowStack.filter(
-              (window: WindowOptions) => window.id !== id,
+              (window: WindowOptions) => window.id !== id
             )
           : prevWindowState.windowStack.slice(0, -1);
 
@@ -66,7 +66,7 @@ export const useWindowContext = (): WindowContextHook => {
         };
       });
     },
-    [setWindowState, windowState.windowStack.length],
+    [setWindowState, windowState.windowStack.length]
   );
 
   const resetWindows = useCallback(() => {
@@ -82,7 +82,7 @@ export const useWindowContext = (): WindowContextHook => {
       const curWindow = windowStack[windowStack.length - 1];
       return curWindow.id === id;
     },
-    [windowState],
+    [windowState]
   );
 
   const setHeaderTitle = useCallback(
@@ -92,7 +92,7 @@ export const useWindowContext = (): WindowContextHook => {
         headerTitle: title,
       }));
     },
-    [setWindowState],
+    [setWindowState]
   );
 
   const setPreview = useCallback(
@@ -102,7 +102,7 @@ export const useWindowContext = (): WindowContextHook => {
         preview,
       }));
     },
-    [setWindowState],
+    [setWindowState]
   );
 
   return {

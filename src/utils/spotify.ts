@@ -53,7 +53,7 @@ export const removeExistingTokens = () => {
  * Valid for 1 hour, at which point the token will expire.
  */
 const _getRefreshedTokens = async (
-  storedRefreshToken: string,
+  storedRefreshToken: string
 ): Promise<TokenResponse> => {
   try {
     const response = await fetch(
@@ -61,7 +61,7 @@ const _getRefreshedTokens = async (
       {
         credentials: 'same-origin',
         mode: 'cors',
-      },
+      }
     );
 
     const { access_token: accessToken } = await response.json();
@@ -101,7 +101,7 @@ const _getNewTokens = async (): Promise<TokenResponse> => {
       {
         credentials: 'same-origin',
         mode: 'cors',
-      },
+      }
     );
 
     const { accessToken, refreshToken } = await response.json();
@@ -135,7 +135,7 @@ const _getNewTokens = async (): Promise<TokenResponse> => {
  */
 const _shouldRefreshTokens = () => {
   const lastRefreshTimestamp = parseInt(
-    localStorage.getItem(TOKEN_TIMESTAMP_KEY) ?? '',
+    localStorage.getItem(TOKEN_TIMESTAMP_KEY) ?? ''
   );
   const now = Date.now();
 

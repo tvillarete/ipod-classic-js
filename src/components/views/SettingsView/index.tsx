@@ -103,7 +103,7 @@ const SettingsView = () => {
       signInWithSpotify,
       signOutApple,
       signOutSpotify,
-    ],
+    ]
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.settings.id, options);

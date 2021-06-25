@@ -12,7 +12,7 @@ import SelectableListItem from './SelectableListItem';
 
 export const getConditionalOption = (
   condition?: boolean,
-  option?: SelectableListOption,
+  option?: SelectableListOption
 ) => (option && condition ? [option] : []);
 
 export type SelectableListOptionType =

@@ -40,11 +40,11 @@ const Scrubber = ({ isScrubbing }: Props) => {
   const [scrubberTime, setScrubberTime] = useState(currentTime);
   const scrubberPercent = useMemo(
     () => Math.round((scrubberTime / duration) * 100),
-    [duration, scrubberTime],
+    [duration, scrubberTime]
   );
   const scrubberTimeRemaining = useMemo(
     () => duration - scrubberTime,
-    [duration, scrubberTime],
+    [duration, scrubberTime]
   );
 
   /** The user is actively scrubbing. We disable the 1s update interval in this case. */
@@ -84,7 +84,7 @@ const Scrubber = ({ isScrubbing }: Props) => {
         setScrubberTime(currentTime);
       }
     },
-    [currentTime, isActive, isPlaying],
+    [currentTime, isActive, isPlaying]
   );
 
   useEventListener<IpodEvent>('forwardscroll', scrubForward);

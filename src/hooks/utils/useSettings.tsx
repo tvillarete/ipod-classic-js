@@ -13,7 +13,7 @@ export interface SettingsState {
 
 type SettingsContextType = [
   SettingsState,
-  React.Dispatch<React.SetStateAction<SettingsState>>,
+  React.Dispatch<React.SetStateAction<SettingsState>>
 ];
 
 export const SettingsContext = createContext<SettingsContextType>([
@@ -37,7 +37,7 @@ export const useSettings = (): SettingsHook => {
         ...prevState,
         isSpotifyAuthorized: val,
       })),
-    [setState],
+    [setState]
   );
 
   const setIsAppleAuthorized = useCallback(
@@ -46,7 +46,7 @@ export const useSettings = (): SettingsHook => {
         ...prevState,
         isAppleAuthorized: val,
       })),
-    [setState],
+    [setState]
   );
 
   const setService = useCallback(
@@ -62,7 +62,7 @@ export const useSettings = (): SettingsHook => {
         localStorage.removeItem(SELECTED_SERVICE_KEY);
       }
     },
-    [setState],
+    [setState]
   );
 
   return {

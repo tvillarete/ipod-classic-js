@@ -32,7 +32,7 @@ const ArtistView = ({ id, inLibrary = false }: Props) => {
         ),
         longPressOptions: Utils.getMediaOptions('album', album.id),
       })) ?? [],
-    [albums, inLibrary],
+    [albums, inLibrary]
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.artist.id, options);

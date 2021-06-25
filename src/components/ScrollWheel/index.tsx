@@ -40,7 +40,7 @@ const ScrollWheel = () => {
 
   const handleCenterClick = useCallback(
     () => window.dispatchEvent(centerClickEvent),
-    [],
+    []
   );
 
   const handleCenterLongPress = useCallback((e: any) => {
@@ -55,7 +55,7 @@ const ScrollWheel = () => {
 
   const handleClockwiseScroll = useCallback(
     () => window.dispatchEvent(forwardScrollEvent),
-    [],
+    []
   );
 
   const handleCounterClockwiseScroll = useCallback(() => {
@@ -91,7 +91,7 @@ const ScrollWheel = () => {
 
       handleResetIdleCheck();
     },
-    [handleResetIdleCheck],
+    [handleResetIdleCheck]
   );
 
   /** Allows for keyboard navigation. */
@@ -126,7 +126,7 @@ const ScrollWheel = () => {
       handleClockwiseScroll,
       handleCenterClick,
       handleWheelClick,
-    ],
+    ]
   );
 
   /** Determine if clockwise/counter-clockwise based on the Knob onChange value. */
@@ -147,7 +147,7 @@ const ScrollWheel = () => {
 
       handleResetIdleCheck();
     },
-    [handleClockwiseScroll, handleCounterClockwiseScroll, handleResetIdleCheck],
+    [handleClockwiseScroll, handleCounterClockwiseScroll, handleResetIdleCheck]
   );
 
   useEventListener('keydown', handleKeyPress);

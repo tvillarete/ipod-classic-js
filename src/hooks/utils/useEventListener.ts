@@ -4,7 +4,7 @@ import { useRef, useEffect } from 'react';
 const useEventListener = <TEvent extends string>(
   eventName: TEvent,
   handler: (...args: any) => void,
-  element = window,
+  element = window
 ) => {
   // Create a ref that stores handler
   const savedHandler = useRef<any>();
@@ -36,7 +36,7 @@ const useEventListener = <TEvent extends string>(
         element.removeEventListener(eventName, eventListener);
       };
     },
-    [eventName, element], // Re-run if eventName or element changes
+    [eventName, element] // Re-run if eventName or element changes
   );
 };
 

@@ -77,7 +77,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
       await music.play();
     },
-    [isAppleAuthorized, music],
+    [isAppleAuthorized, music]
   );
 
   const playSpotify = useCallback(
@@ -111,7 +111,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${accessToken}`,
           },
-        },
+        }
       );
 
       setPlaybackInfo((prevState) => ({
@@ -119,7 +119,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         isLoading: false,
       }));
     },
-    [accessToken, deviceId, isSpotifyAuthorized],
+    [accessToken, deviceId, isSpotifyAuthorized]
   );
 
   const play = useCallback(
@@ -133,7 +133,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
           throw new Error('Unable to play: service not specified');
       }
     },
-    [playAppleMusic, playSpotify, service],
+    [playAppleMusic, playSpotify, service]
   );
 
   const pause = useCallback(async () => {
@@ -231,7 +231,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
     if (service === 'apple' && music.player.nowPlayingItem) {
       mediaItem = ConversionUtils.convertAppleMediaItem(
-        music.player.nowPlayingItem,
+        music.player.nowPlayingItem
       );
     } else if (service === 'spotify') {
       const state = await spotifyPlayer.getCurrentState();
@@ -273,7 +273,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
       updateNowPlayingItem();
     },
-    [updateNowPlayingItem],
+    [updateNowPlayingItem]
   );
 
   const handleSpotifyPlaybackStateChange = useCallback(
@@ -296,7 +296,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
       updateNowPlayingItem();
     },
-    [updateNowPlayingItem],
+    [updateNowPlayingItem]
   );
 
   const updatePlaybackInfo = useCallback(async () => {
@@ -337,7 +337,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
       updatePlaybackInfo();
     },
-    [music.player, service, spotifyPlayer, updatePlaybackInfo],
+    [music.player, service, spotifyPlayer, updatePlaybackInfo]
   );
 
   const handleChangeVolume = useCallback(
@@ -354,7 +354,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
       setVolume(newVolume);
     },
-    [isAppleAuthorized, isSpotifyAuthorized, music.player, spotifyPlayer],
+    [isAppleAuthorized, isSpotifyAuthorized, music.player, spotifyPlayer]
   );
 
   useEventListener<IpodEvent>('playpauseclick', () => {
@@ -377,7 +377,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
     if (isSpotifyAuthorized) {
       spotifyPlayer.addListener(
         'player_state_changed',
-        handleSpotifyPlaybackStateChange,
+        handleSpotifyPlaybackStateChange
       );
 
       const savedVolume = parseFloat(localStorage.getItem(VOLUME_KEY) ?? '0.5');
@@ -387,7 +387,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       return () =>
         spotifyPlayer.removeListener(
           'player_state_changed',
-          handleSpotifyPlaybackStateChange,
+          handleSpotifyPlaybackStateChange
         );
     }
   }, [

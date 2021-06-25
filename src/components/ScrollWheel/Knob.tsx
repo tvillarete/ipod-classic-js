@@ -237,7 +237,7 @@ const Knob = ({
 
     canvasRef.current.removeEventListener(
       'long-press',
-      handleWheelLongPress as any,
+      handleWheelLongPress as any
     );
     document.removeEventListener('touchend', handleTouchEndNoMove);
     document.addEventListener('touchend', handleTouchEnd);
@@ -262,7 +262,7 @@ const Knob = ({
 
     canvasRef.current.addEventListener(
       'long-press',
-      handleWheelLongPress as any,
+      handleWheelLongPress as any
     );
   };
 
@@ -363,7 +363,7 @@ const Knob = ({
 
     canvasRef.current.addEventListener(
       'long-press',
-      handleWheelLongPress as any,
+      handleWheelLongPress as any
     );
 
     // Component Will Unmount
@@ -380,11 +380,11 @@ const Knob = ({
       }
       centerButtonRef.current.removeEventListener(
         'long-press',
-        handleLongPress,
+        handleLongPress
       );
       canvasRef.current.removeEventListener(
         'long-press',
-        handleWheelLongPress as any,
+        handleWheelLongPress as any
       );
     };
   });

@@ -29,7 +29,7 @@ const AlbumsView = () => {
         viewId: ViewOptions.album.id,
         component: () => <AlbumView id={album.id ?? ''} inLibrary />,
       })) ?? [],
-    [albums],
+    [albums]
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.albums.id, options);

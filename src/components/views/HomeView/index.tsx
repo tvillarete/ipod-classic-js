@@ -93,7 +93,7 @@ const HomeView = () => {
         preview: PREVIEW.NOW_PLAYING,
       }),
     ],
-    [isAuthorized, nowPlayingItem, signInWithApple, signInWithSpotify],
+    [isAuthorized, nowPlayingItem, signInWithApple, signInWithSpotify]
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.home.id, options);

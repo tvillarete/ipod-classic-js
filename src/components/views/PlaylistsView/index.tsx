@@ -29,7 +29,7 @@ const PlaylistsView = () => {
         component: () => <PlaylistView id={playlist.id} inLibrary />,
         longPressOptions: Utils.getMediaOptions('playlist', playlist.id),
       })) ?? [],
-    [data],
+    [data]
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.playlists.id, options);

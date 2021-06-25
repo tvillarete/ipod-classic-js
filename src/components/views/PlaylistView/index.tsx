@@ -33,7 +33,7 @@ const PlaylistView = ({ id, inLibrary = false }: Props) => {
         showNowPlayingView: true,
         longPressOptions: Utils.getMediaOptions('song', song.id),
       })) ?? [],
-    [playlist],
+    [playlist]
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.playlist.id, options);

@@ -16,7 +16,7 @@ const useScrollHandler = (
   /** This should match the view's viewId (to enable/disable events for hidden views). */
   id: string,
   /** A list of all scrollable items. Used to cap the scrolling to the last element. */
-  options: SelectableListOption[] = [],
+  options: SelectableListOption[] = []
 ): [number] => {
   const { showWindow, windowStack, setPreview } = useWindowContext();
   const { play } = useAudioPlayer();
@@ -45,7 +45,7 @@ const useScrollHandler = (
         }
       };
     },
-    [isActive, options, setPreview],
+    [isActive, options, setPreview]
   );
 
   const handleForwardScroll = useCallback(() => {
@@ -66,10 +66,7 @@ const useScrollHandler = (
     (
       id: string,
       component: React.ReactNode,
-      windowType?:
-        | WINDOW_TYPE.FULL
-        | WINDOW_TYPE.SPLIT
-        | WINDOW_TYPE.COVER_FLOW,
+      windowType?: WINDOW_TYPE.FULL | WINDOW_TYPE.SPLIT | WINDOW_TYPE.COVER_FLOW
     ) => {
       showWindow({
         id,
@@ -77,7 +74,7 @@ const useScrollHandler = (
         component,
       });
     },
-    [showWindow],
+    [showWindow]
   );
 
   const handleShowPopup = useCallback(
@@ -90,7 +87,7 @@ const useScrollHandler = (
         listOptions: options.listOptions,
       });
     },
-    [showWindow],
+    [showWindow]
   );
 
   const handleShowActionSheet = useCallback(
@@ -101,7 +98,7 @@ const useScrollHandler = (
         listOptions: options.listOptions,
       });
     },
-    [showWindow],
+    [showWindow]
   );
 
   /** Parses the selected option for a new view to show or song to play. */

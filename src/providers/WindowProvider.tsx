@@ -55,7 +55,7 @@ interface WindowState {
 
 type WindowContextType = [
   WindowState,
-  React.Dispatch<React.SetStateAction<WindowState>>,
+  React.Dispatch<React.SetStateAction<WindowState>>
 ];
 
 export const WindowContext = createContext<WindowContextType>([

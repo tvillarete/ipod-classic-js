@@ -70,7 +70,7 @@ const useDataFetcher = <TType extends object>(props: Props) => {
         });
 
         albums = response.map((item) =>
-          ConversionUtils.convertAppleAlbum(item, options.artworkSize),
+          ConversionUtils.convertAppleAlbum(item, options.artworkSize)
         );
       } else if (service === 'spotify') {
         albums = await spotifyDataFetcher.fetchAlbums();
@@ -78,7 +78,7 @@ const useDataFetcher = <TType extends object>(props: Props) => {
       setData(albums as TType);
       setIsLoading(false);
     },
-    [music.api, service, spotifyDataFetcher],
+    [music.api, service, spotifyDataFetcher]
   );
 
   const fetchAlbum = useCallback(
@@ -97,7 +97,7 @@ const useDataFetcher = <TType extends object>(props: Props) => {
       setData(album as TType);
       setIsLoading(false);
     },
-    [music.api, service, spotifyDataFetcher],
+    [music.api, service, spotifyDataFetcher]
   );
 
   const fetchArtists = useCallback(async () => {
@@ -127,18 +127,18 @@ const useDataFetcher = <TType extends object>(props: Props) => {
           : await music.api.artistRelationship(options.id, 'albums');
 
         albums = response.map((item) =>
-          ConversionUtils.convertAppleAlbum(item, options.artworkSize),
+          ConversionUtils.convertAppleAlbum(item, options.artworkSize)
         );
       } else if (service === 'spotify') {
         albums = await spotifyDataFetcher.fetchArtist(
           options.userId,
-          options.id,
+          options.id
         );
       }
       setData(albums as TType);
       setIsLoading(false);
     },
-    [music.api, service, spotifyDataFetcher],
+    [music.api, service, spotifyDataFetcher]
   );
 
   const fetchPlaylists = useCallback(async () => {
@@ -170,13 +170,13 @@ const useDataFetcher = <TType extends object>(props: Props) => {
       } else if (service === 'spotify') {
         playlist = await spotifyDataFetcher.fetchPlaylist(
           options.userId,
-          options.id,
+          options.id
         );
       }
       setData(playlist as TType);
       setIsLoading(false);
     },
-    [music.api, service, spotifyDataFetcher],
+    [music.api, service, spotifyDataFetcher]
   );
 
   const handleMount = useCallback(async () => {

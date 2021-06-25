@@ -39,12 +39,12 @@ const useSpotifyDataFetcher = () => {
         onError: (error) => {
           throw new Error(error);
         },
-      },
+      }
     );
 
     if (response) {
       return response.items.map((item) =>
-        ConversionUtils.convertSpotifyAlbumFull(item.album),
+        ConversionUtils.convertSpotifyAlbumFull(item.album)
       );
     }
   }, [accessToken]);
@@ -63,7 +63,7 @@ const useSpotifyDataFetcher = () => {
         return ConversionUtils.convertSpotifyAlbumFull(response);
       }
     },
-    [accessToken],
+    [accessToken]
   );
 
   const fetchArtists = useCallback(async () => {
@@ -77,7 +77,7 @@ const useSpotifyDataFetcher = () => {
       });
 
     return response?.artists?.items.map(
-      ConversionUtils.convertSpotifyArtistFull,
+      ConversionUtils.convertSpotifyArtistFull
     );
   }, [accessToken]);
 
@@ -93,11 +93,11 @@ const useSpotifyDataFetcher = () => {
 
       if (response) {
         return response.items.map(
-          ConversionUtils.convertSpotifyAlbumSimplified,
+          ConversionUtils.convertSpotifyAlbumSimplified
         );
       }
     },
-    [accessToken],
+    [accessToken]
   );
 
   const fetchPlaylists = useCallback(async () => {
@@ -111,7 +111,7 @@ const useSpotifyDataFetcher = () => {
       });
 
     return response?.items?.map(
-      ConversionUtils.convertSpotifyPlaylistSimplified,
+      ConversionUtils.convertSpotifyPlaylistSimplified
     );
   }, [accessToken]);
 
@@ -129,7 +129,7 @@ const useSpotifyDataFetcher = () => {
         return ConversionUtils.convertSpotifyPlaylistFull(response);
       }
     },
-    [accessToken],
+    [accessToken]
   );
 
   return {
