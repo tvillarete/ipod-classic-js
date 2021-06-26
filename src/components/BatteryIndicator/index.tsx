@@ -1,51 +1,50 @@
 import { useBattery } from 'hooks/battery';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+const batteryHealthyColor = '#A5E07F';
+const batteryWarningColor = '#D17F6B';
 
 const Container = styled.div`
   width: fit-content;
   height: 12px;
   display: flex;
   align-items: center;
-
-  --battery-healthy: #A5E07F;
-  --battery-warning: #D17F6B;
 `;
 
 const ChargeLevelContainer = styled.div`
   height: 100%;
-  width: 20px;
+  width: 24px;
   position: relative;
   display: flex;
-`;
-
-const ChargeLevel = styled.progress<{
-  isCharging?: boolean;
-}>`
-  border-radius: 0;
   border: 1px solid #626262ff;
-  height: 100%;
+  background: #54585b
+    linear-gradient(180deg, transparent 25%, 65%, rgba(255, 255, 255, 0.5));
+`;
+const ChargeLevel = styled.div<{
+  isCharging?: boolean;
+  percent?: number;
+}>`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
 
-  &::-webkit-progress-bar {
-    background: #54585B linear-gradient(
-      180deg,
-      transparent 25%,
-      65%,
-      rgba(255, 255, 255, .5)
-    );
-  }
-
-  &::-webkit-progress-value {
-    background: ${(props) => ((props.value ?? 100) <= 20) && !props.isCharging ? "var(--battery-warning)" : "var(--battery-healthy)"} linear-gradient(
-      180deg,
-      transparent 10%,
-      rgba(255, 255, 255, .5) 20%,
-      35%,
-      transparent 40%,
-      rgba(0, 0, 0, .2) 55%,
-      rgba(0, 0, 0, .3) 65%,
-      rgba(0, 0, 0, .4) 80%
-    );
-  }
+  ${({ percent = 100, isCharging = false }) => css`
+    width: ${percent}%;
+    background: ${percent > 20 || isCharging
+        ? batteryHealthyColor
+        : batteryWarningColor}
+      linear-gradient(
+        180deg,
+        transparent 10%,
+        rgba(255, 255, 255, 0.5) 20%,
+        35%,
+        transparent 40%,
+        rgba(0, 0, 0, 0.2) 55%,
+        rgba(0, 0, 0, 0.3) 65%,
+        rgba(0, 0, 0, 0.4) 80%
+      );
+  `};
 `;
 
 const BatteryCap = styled.div`
@@ -85,17 +84,17 @@ const BatteryIndicator = () => {
 
   const clampedChargePercent = chargePercent <= 15 ? 15 : chargePercent;
 
+  const shouldShowPlugIcon = isCharging && chargePercent === 100;
+  const shouldShowBoltIcon = isCharging && chargePercent < 100;
+
   return (
     <Container>
       <ChargeLevelContainer>
         <IconContainer>
-          { isCharging
-              ? chargePercent === 100
-                ? <PlugIcon src="plug.svg" />
-                : <BoltIcon src="bolt.svg" />
-              : null }
+          { shouldShowPlugIcon ? <PlugIcon src="plug.svg" /> : null }
+          { shouldShowBoltIcon ? <BoltIcon src="bolt.svg" /> : null }
         </IconContainer>
-        <ChargeLevel max={100} value={clampedChargePercent} isCharging={isCharging} />
+        <ChargeLevel percent={clampedChargePercent} isCharging={isCharging} />
       </ChargeLevelContainer>
 
       {/* decorative cap for an authentic battery experience */}
