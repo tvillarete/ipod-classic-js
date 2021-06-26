@@ -71,7 +71,7 @@ const IconContainer = styled.div`
 `;
 
 const StatusIcon = styled.img`
-  opacity: .8;
+  opacity: 0.8;
 `;
 
 const BoltIcon = styled(StatusIcon)`
@@ -82,7 +82,11 @@ const PlugIcon = styled(StatusIcon)`
   height: 6px;
 `;
 
-const BatteryIndicator = () => {
+interface Props {
+  className?: string;
+}
+
+const BatteryIndicator = ({ className }: Props) => {
   const { chargePercent, isCharging } = useBattery();
 
   const clampedChargePercent = chargePercent <= 15 ? 15 : chargePercent;
@@ -91,11 +95,11 @@ const BatteryIndicator = () => {
   const shouldShowBoltIcon = isCharging && chargePercent < 100;
 
   return (
-    <Container>
+    <Container className={className}>
       <ChargeLevelContainer>
         <IconContainer>
-          { shouldShowPlugIcon ? <PlugIcon src="plug.svg" /> : null }
-          { shouldShowBoltIcon ? <BoltIcon src="bolt.svg" /> : null }
+          {shouldShowPlugIcon && <PlugIcon src="plug.svg" />}
+          {shouldShowBoltIcon && <BoltIcon src="bolt.svg" />}
         </IconContainer>
         <ChargeLevel percent={clampedChargePercent} isCharging={isCharging} />
       </ChargeLevelContainer>

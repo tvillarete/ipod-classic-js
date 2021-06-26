@@ -32,6 +32,10 @@ const Icon = styled.img`
   margin-left: 8px;
 `;
 
+const StyledBatteryIndicator = styled(BatteryIndicator)`
+  margin-left: 8px;
+`;
+
 const Header = () => {
   const { headerTitle } = useWindowContext();
   const { playbackInfo } = useAudioPlayer();
@@ -49,7 +53,7 @@ const Header = () => {
         )}
         {isPlaying && !isPaused && <Icon src="play.svg" />}
         {isPaused && <Icon src="pause.svg" />}
-        <BatteryIndicator />
+        <StyledBatteryIndicator />
       </IconContainer>
     </Container>
   ) : null;
