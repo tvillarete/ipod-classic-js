@@ -1,10 +1,13 @@
 import { createContext, memo, useCallback, useContext, useState } from 'react';
-import {DeviceTheme} from "../../utils/themes";
+import { DeviceTheme } from '../../utils/themes';
 
 type StreamingService = 'apple' | 'spotify';
 
+type DeviceSide = 'front' | 'back';
+
 export const SELECTED_SERVICE_KEY = 'ipodSelectedService';
 export const DEVICE_COLOR_KEY = 'ipodSelectedDeviceTheme';
+export const DEVICE_SIDE_KEY = 'ipodSelectedDeviceSide';
 export const VOLUME_KEY = 'ipodVolume';
 
 export interface SettingsState {
@@ -12,6 +15,7 @@ export interface SettingsState {
   isSpotifyAuthorized: boolean;
   isAppleAuthorized: boolean;
   deviceTheme: DeviceTheme;
+  deviceSide: DeviceSide;
 }
 
 type SettingsContextType = [
@@ -30,6 +34,7 @@ export type SettingsHook = SettingsState & {
   setIsAppleAuthorized: (val: boolean) => void;
   setService: (service?: StreamingService) => void;
   setDeviceTheme: (deviceTheme: DeviceTheme) => void;
+  setDeviceSide: (deviceSide: DeviceSide) => void;
 };
 
 export const useSettings = (): SettingsHook => {
@@ -77,6 +82,14 @@ export const useSettings = (): SettingsHook => {
     [setState]
   );
 
+  const setDeviceSide = useCallback(
+    (deviceSide: DeviceSide) => {
+      setState((prevState) => ({ ...prevState, deviceSide }));
+      localStorage.setItem(DEVICE_SIDE_KEY, deviceSide);
+    },
+    [setState]
+  );
+
   return {
     ...state,
     isAuthorized: state.isAppleAuthorized || state.isSpotifyAuthorized,
@@ -84,6 +97,7 @@ export const useSettings = (): SettingsHook => {
     setIsAppleAuthorized,
     setService,
     setDeviceTheme,
+    setDeviceSide,
   };
 };
 
@@ -100,6 +114,8 @@ export const SettingsProvider = memo(({ children }: Props) => {
       undefined,
     deviceTheme:
       (localStorage.getItem(DEVICE_COLOR_KEY) as DeviceTheme) ?? 'silver',
+    deviceSide:
+      (localStorage.getItem(DEVICE_SIDE_KEY) as DeviceSide) ?? 'front',
   });
 
   return (

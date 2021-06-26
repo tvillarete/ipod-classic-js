@@ -15,6 +15,10 @@ import { Screen, Unit } from 'utils/constants';
 import { WindowManager } from './components';
 import { DeviceTheme, getTheme } from './utils/themes';
 
+import BackCase from './components/BackCase';
+import useMediaQuery from './hooks/utils/useMediaQuery';
+import { useCallback } from 'react';
+
 const GlobalStyles = createGlobalStyle`
   * {
     box-sizing: border-box;
@@ -43,7 +47,7 @@ const Container = styled.div`
   }
 `;
 
-const Shell = styled.div<{ deviceTheme: DeviceTheme }>`
+const BaseShell = styled.div`
   position: relative;
   height: 100vh;
   margin: auto;
@@ -51,18 +55,12 @@ const Shell = styled.div<{ deviceTheme: DeviceTheme }>`
   width: 370px;
   border-radius: 30px;
   box-shadow: inset 0 0 2.4em #555;
-  background: ${({ deviceTheme }) => getTheme(deviceTheme).body.background};
+  background: #ffffff;
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, transparent), to(rgba(250, 250, 250, 0.3)));
   animation: descend 1.5s ease;
 
   @media (prefers-color-scheme: dark) {
     box-shadow: inset 0 0 2.4em black;
-  }
-
-  @media screen and (max-width: 400px) {
-    animation: none;
-    border-radius: 0;
-    -webkit-box-reflect: unset;
   }
 
   @keyframes descend {
@@ -75,6 +73,21 @@ const Shell = styled.div<{ deviceTheme: DeviceTheme }>`
       transform: scale(1);
       opacity: 1;
     }
+  }
+`;
+
+const BackShell = styled(BaseShell)`
+  background-image: url('back_case.svg');
+  background-size: cover;
+`;
+
+const FrontShell = styled(BaseShell)<{ deviceTheme: DeviceTheme }>`
+  background: ${({ deviceTheme }) => getTheme(deviceTheme).body.background};
+
+  @media screen and (max-width: 400px) {
+    animation: none;
+    border-radius: 0;
+    -webkit-box-reflect: unset;
   }
 `;
 
@@ -101,35 +114,57 @@ const ScreenContainer = styled.div`
   }
 `;
 
-const App: React.FC = () => {
+const Providers = ({ children }: { children: React.ReactChild }) => (
+  <SettingsProvider>
+    <SpotifySDKProvider>
+      <MusicKitProvider>
+        <AudioPlayerProvider>
+          <WindowProvider>{children}</WindowProvider>
+        </AudioPlayerProvider>
+      </MusicKitProvider>
+    </SpotifySDKProvider>
+  </SettingsProvider>
+);
+
+const Ipod = () => {
+  const { deviceTheme, deviceSide, setDeviceSide } = useSettings();
+  const isMobile = useMediaQuery(`(max-device-width: 1224px)`);
+
+  const shouldHideFront = isMobile && deviceSide === 'back';
+
+  const handleBackShellClick = useCallback(() => {
+    if (!isMobile) {
+      return;
+    }
+    setDeviceSide('front');
+  }, [isMobile, setDeviceSide]);
+
   return (
-    <Container>
-      <GlobalStyles />
-      <SettingsProvider>
-        <Ipod />
-      </SettingsProvider>
-    </Container>
+    <>
+      {!shouldHideFront && (
+        <FrontShell deviceTheme={deviceTheme}>
+          <ScreenContainer>
+            <WindowManager />
+          </ScreenContainer>
+          <ScrollWheel />
+        </FrontShell>
+      )}
+      {deviceSide === 'back' && (
+        <BackShell onClick={handleBackShellClick}>
+          <BackCase />
+        </BackShell>
+      )}
+    </>
   );
 };
 
-const Ipod = () => {
-  const { deviceTheme } = useSettings();
-  return (
-    <Shell deviceTheme={deviceTheme}>
-      <ScreenContainer>
-        <SpotifySDKProvider>
-          <MusicKitProvider>
-            <AudioPlayerProvider>
-              <WindowProvider>
-                <WindowManager />
-              </WindowProvider>
-            </AudioPlayerProvider>
-          </MusicKitProvider>
-        </SpotifySDKProvider>
-      </ScreenContainer>
-      <ScrollWheel />
-    </Shell>
-  );
-};
+const App: React.FC = () => (
+  <Container>
+    <GlobalStyles />
+    <Providers>
+      <Ipod />
+    </Providers>
+  </Container>
+);
 
 export default App;
