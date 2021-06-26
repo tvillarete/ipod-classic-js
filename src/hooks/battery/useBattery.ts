@@ -21,7 +21,7 @@ const noop = () => {};
  */
 const useBattery = () => {
   const [chargePercent, setChargePercent] = useState<number>(100);
-  const [isCharging, setIsCharging] = useState<boolean>(true);
+  const [isCharging, setIsCharging] = useState<boolean>(false);
 
   useEffect(() => {
     let detachListeners: () => void = noop;
