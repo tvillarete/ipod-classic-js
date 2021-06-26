@@ -17,6 +17,7 @@ import { DeviceTheme, getTheme } from './utils/themes';
 
 import BackCase from './components/BackCase';
 import useMediaQuery from './hooks/utils/useMediaQuery';
+import { useCallback } from 'react';
 
 const GlobalStyles = createGlobalStyle`
   * {
@@ -54,18 +55,12 @@ const BaseShell = styled.div`
   width: 370px;
   border-radius: 30px;
   box-shadow: inset 0 0 2.4em #555;
-  background: ${({ deviceTheme }) => getTheme(deviceTheme).body.background};
+  background: #ffffff;
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, transparent), to(rgba(250, 250, 250, 0.3)));
   animation: descend 1.5s ease;
 
   @media (prefers-color-scheme: dark) {
     box-shadow: inset 0 0 2.4em black;
-  }
-
-  @media screen and (max-width: 400px) {
-    animation: none;
-    border-radius: 0;
-    -webkit-box-reflect: unset;
   }
 
   @keyframes descend {
@@ -82,13 +77,18 @@ const BaseShell = styled.div`
 `;
 
 const BackShell = styled(BaseShell)`
-  background: white;
   background-image: url('back_case.svg');
   background-size: cover;
 `;
 
-const Shell = styled(BaseShell)<{ deviceTheme: DeviceTheme }>`
+const FrontShell = styled(BaseShell)<{ deviceTheme: DeviceTheme }>`
   background: ${({ deviceTheme }) => getTheme(deviceTheme).body.background};
+
+  @media screen and (max-width: 400px) {
+    animation: none;
+    border-radius: 0;
+    -webkit-box-reflect: unset;
+  }
 `;
 
 const ScreenContainer = styled.div`
@@ -128,32 +128,29 @@ const Providers = ({ children }: { children: React.ReactChild }) => (
 
 const Ipod = () => {
   const { deviceTheme, deviceSide, setDeviceSide } = useSettings();
-  // const isMobile = useMediaQuery(
-  //   `(min-width: ${Screen.XS.Size.Min})`
-  // );
+  const isMobile = useMediaQuery(`(max-device-width: 1224px)`);
 
-  const isMobile = false;
   const shouldHideFront = isMobile && deviceSide === 'back';
+
+  const handleBackShellClick = useCallback(() => {
+    if (!isMobile) {
+      return;
+    }
+    setDeviceSide('front');
+  }, [isMobile, setDeviceSide]);
 
   return (
     <>
       {!shouldHideFront && (
-        <Shell deviceTheme={deviceTheme}>
+        <FrontShell deviceTheme={deviceTheme}>
           <ScreenContainer>
             <WindowManager />
           </ScreenContainer>
           <ScrollWheel />
-        </Shell>
+        </FrontShell>
       )}
       {deviceSide === 'back' && (
-        <BackShell
-          onClick={() => {
-            if (!isMobile) {
-              return;
-            }
-            setDeviceSide('front');
-          }}
-        >
+        <BackShell onClick={handleBackShellClick}>
           <BackCase />
         </BackShell>
       )}

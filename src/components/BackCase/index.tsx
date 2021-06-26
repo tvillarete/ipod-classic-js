@@ -84,8 +84,8 @@ const BackCase = () => {
         <img alt="U2-autographs" height="160px" src={'u2_autographs.png'} />
       </Autographs>
       <Etch deviceTheme={deviceTheme}>
-        <Line1>Manky's iPod</Line1>
-        <Line2>Stay Hungry & Foolish ❤️</Line2>
+        <Line1>Steve Jobs</Line1>
+        <Line2>Stay Hungry, Stay Foolish ❤️</Line2>
       </Etch>
       <AppleIcon height="65px" src={'apple.svg'} />
       <IpodJs>iPod</IpodJs>
