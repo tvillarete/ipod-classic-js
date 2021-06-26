@@ -6,6 +6,9 @@ const Container = styled.div`
   height: 12px;
   display: flex;
   align-items: center;
+
+  --battery-healthy: #A5E07F;
+  --battery-warning: #D17F6B;
 `;
 
 const ChargeLevelContainer = styled.div`
@@ -23,46 +26,35 @@ const ChargeLevel = styled.progress<{
   height: 100%;
 
   &::-webkit-progress-bar {
-    background-color: transparent;
+    background: #54585B linear-gradient(
+      180deg,
+      transparent 25%,
+      65%,
+      rgba(255, 255, 255, .5)
+    );
   }
 
   &::-webkit-progress-value {
-    background-color: ${(props) => ((props.value ?? 100) <= 20) && !props.isCharging ? "#B74124" : "#4E932C"};
+    background: ${(props) => ((props.value ?? 100) <= 20) && !props.isCharging ? "var(--battery-warning)" : "var(--battery-healthy)"} linear-gradient(
+      180deg,
+      transparent 10%,
+      rgba(255, 255, 255, .5) 20%,
+      35%,
+      transparent 40%,
+      rgba(0, 0, 0, .2) 55%,
+      rgba(0, 0, 0, .3) 65%,
+      rgba(0, 0, 0, .4) 80%
+    );
   }
 `;
 
-const ChargeLevelGloss = styled.div`
-  padding: 1px;
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  height: 100%;
-
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    transparent 10%,
-    rgba(255,255,255, 1) 20%,
-    rgba(255, 255, 255, .82) 30%,
-    rgba(255, 255, 255, .29) 45%,
-    rgba(0, 0, 0, .16) 60%,
-    rgba(0, 0, 0, .31) 80%,
-    rgba(0, 0, 0, .29) 90%,
-    transparent 100%
-  );
-  background-clip: content-box;
-  opacity: .7;
-`;
-
 const BatteryCap = styled.div`
-  width: 3px;
-  height: 8px;
+  width: 2px;
+  height: 4px;
 
   border: 1px solid #626262;
   border-left: 0;
-  border-radius: 0 1px 1px 0;
+  border-radius: 0 1.5px 1.5px 0;
 
   background: #c4c4c4;
 `;
@@ -96,7 +88,6 @@ const BatteryIndicator = () => {
   return (
     <Container>
       <ChargeLevelContainer>
-        <ChargeLevelGloss />
         <IconContainer>
           { isCharging
               ? chargePercent === 100
