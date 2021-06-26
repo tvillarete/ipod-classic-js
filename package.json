@@ -4,6 +4,10 @@
   "license": "MIT",
   "private": true,
   "homepage": "./",
+  "author": {
+    "name": "tvillarete"
+  },
+  "description": "An iPod Classic that connects to Apple Music and Spotify. Built with React & Styled Components",
   "dependencies": {
     "framer-motion": "^4.0.3",
     "he": "^1.2.0",
@@ -19,7 +23,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron": "npm run build && electron --enable-transparent-visuals --disable-gpu electron.js",
+    "electron-packager": "electron-packager-interactive"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -52,6 +58,11 @@
     "@types/spotify-api": "^0.0.8",
     "@types/spotify-web-playback-sdk": "^0.1.8",
     "@types/styled-components": "^5.1.9",
+    "electron": "^13.1.4",
+    "electron-installer-debian": "^3.1.0",
+    "electron-installer-zip": "^0.1.2",
+    "electron-packager": "^15.2.0",
+    "electron-packager-interactive": "^0.1.3",
     "typescript": "4.1.2"
   }
 }

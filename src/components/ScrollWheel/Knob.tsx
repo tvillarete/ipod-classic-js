@@ -17,6 +17,11 @@ const Container = styled.div`
   margin: auto 0;
   touch-action: none;
   transform: translate3d(0, 0, 0);
+  
+  * {
+  -webkit-app-region: no-drag !important;
+  }
+  -webkit-app-region: no-drag !important;
 `;
 
 const CanvasContainer = styled.div<{ width: number; height: number }>`
@@ -26,6 +31,7 @@ const CanvasContainer = styled.div<{ width: number; height: number }>`
   align-items: center;
   width: ${(props) => props.width}px;
   height: ${(props) => props.height}px;
+  -webkit-app-region: no-drag !important;
 `;
 
 const Canvas = styled.canvas<{ deviceTheme: DeviceTheme }>`

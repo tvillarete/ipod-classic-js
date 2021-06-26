@@ -20,14 +20,19 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
 
+    html {
+      background: transparent;
+    }
+
    body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
       font-size: 16px;
       user-select: none;
       -webkit-touch-callout: none;
+      background: transparent;
 
       @media (prefers-color-scheme: dark) {
-        background: black;
+        background: white;
       }
    }
 `;
@@ -87,6 +92,8 @@ const ScreenContainer = styled.div`
   overflow: hidden;
   background: white;
   animation: fadeFromBlack 0.5s;
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
 
   @keyframes fadeFromBlack {
     0% {
