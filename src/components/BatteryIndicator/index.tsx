@@ -66,7 +66,7 @@ const IconContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  // bump the icons above the charge level
+  /* bump the icons above the charge level */
   z-index: 1;
 `;
 
