@@ -20,6 +20,7 @@ const ChargeLevelContainer = styled.div`
   background: #54585b
     linear-gradient(180deg, transparent 25%, 65%, rgba(255, 255, 255, 0.5));
 `;
+
 const ChargeLevel = styled.div<{
   isCharging?: boolean;
   percent?: number;
@@ -65,6 +66,8 @@ const IconContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  // bump the icons above the charge level
+  z-index: 1;
 `;
 
 const StatusIcon = styled.img`
