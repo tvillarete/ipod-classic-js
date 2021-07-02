@@ -17,6 +17,10 @@ const useMKEventListener = (
 
     const music = musicKit.getInstance();
 
+    if (!music) {
+      return;
+    }
+
     music.addEventListener(event, callback);
 
     return () => {

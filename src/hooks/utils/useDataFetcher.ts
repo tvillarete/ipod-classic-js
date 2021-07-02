@@ -65,11 +65,11 @@ const useDataFetcher = <TType extends object>(props: Props) => {
       let albums: IpodApi.Album[] | undefined;
 
       if (service === 'apple') {
-        const response = await music.api.library.albums(null, {
-          include: 'library-albums',
-        });
+        const response = await (music.api as any).music(
+          `/v1/me/library/albums`
+        );
 
-        albums = response.map((item) =>
+        albums = response.data.data.map((item: AppleMusicApi.Album) =>
           ConversionUtils.convertAppleAlbum(item, options.artworkSize)
         );
       } else if (service === 'spotify') {
@@ -87,10 +87,13 @@ const useDataFetcher = <TType extends object>(props: Props) => {
 
       if (service === 'apple') {
         const response = options.inLibrary
-          ? await music.api.library.album(options.id)
-          : await music.api.album(options.id);
+          ? await (music.api as any).music(
+              `/v1/me/library/albums/${options.id}`
+            )
+          : // TODO: Update this to v3
+            await music.api.album(options.id);
 
-        album = ConversionUtils.convertAppleAlbum(response);
+        album = ConversionUtils.convertAppleAlbum(response.data.data[0]);
       } else if (service === 'spotify') {
         album = await spotifyDataFetcher.fetchAlbum(options.userId, options.id);
       }

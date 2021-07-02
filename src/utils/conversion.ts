@@ -93,7 +93,7 @@ export const convertAppleAlbum = (
   id: data.id,
   name: data.attributes?.name ?? '–',
   artistName: data.attributes?.artistName,
-  url: data.attributes?.url ?? '',
+  url: data.href ?? '',
   artwork: {
     url:
       getAppleArtwork(artworkSize ?? 100, data.attributes?.artwork?.url) ?? '',
