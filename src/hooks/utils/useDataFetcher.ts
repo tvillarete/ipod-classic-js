@@ -107,12 +107,11 @@ const useDataFetcher = <TType extends object>(props: Props) => {
     let artists: IpodApi.Artist[] | undefined;
 
     if (service === 'apple') {
-      const response = await music.api.library.artists(null, {
-        include: 'catalog',
-        limit: 100,
-      });
+      const response = await (music.api as any).music(
+        `v1/me/library/artists?include=catalog&limit=100`
+      );
 
-      artists = response.map(ConversionUtils.convertAppleArtist);
+      artists = response.data.data.map(ConversionUtils.convertAppleArtist);
     } else if (service === 'spotify') {
       artists = await spotifyDataFetcher.fetchArtists();
     }
@@ -126,10 +125,13 @@ const useDataFetcher = <TType extends object>(props: Props) => {
 
       if (service === 'apple') {
         const response = options.inLibrary
-          ? await music.api.library.artistRelationship(options.id, 'albums')
-          : await music.api.artistRelationship(options.id, 'albums');
+          ? await (music.api as any).music(
+              `v1/me/library/artists/${options.id}/albums`
+            )
+          : // ? await music.api.library.artistRelationship(options.id, 'albums')
+            await music.api.artistRelationship(options.id, 'albums');
 
-        albums = response.map((item) =>
+        albums = response.data.data.map((item: AppleMusicApi.Album) =>
           ConversionUtils.convertAppleAlbum(item, options.artworkSize)
         );
       } else if (service === 'spotify') {
@@ -148,17 +150,17 @@ const useDataFetcher = <TType extends object>(props: Props) => {
     let playlists: IpodApi.Playlist[] | undefined;
 
     if (service === 'apple') {
-      const response = await music.api.library.playlists(null, {
-        limit: 100,
-      });
+      const response = await (music.api as any).music(
+        `v1/me/library/playlist-folders/p.playlistsroot/children`
+      );
 
-      playlists = response.map(ConversionUtils.convertApplePlaylist);
+      playlists = response.data.data.map(ConversionUtils.convertApplePlaylist);
     } else if (service === 'spotify') {
       playlists = await spotifyDataFetcher.fetchPlaylists();
     }
     setData(playlists as TType);
     setIsLoading(false);
-  }, [music.api.library, service, spotifyDataFetcher]);
+  }, [music.api, service, spotifyDataFetcher]);
 
   const fetchPlaylist = useCallback(
     async (options: PlaylistFetcherProps) => {
@@ -166,10 +168,12 @@ const useDataFetcher = <TType extends object>(props: Props) => {
 
       if (service === 'apple') {
         const response = options.inLibrary
-          ? await music.api.library.playlist(options.id)
+          ? await (music.api as any).music(
+              `v1/me/library/playlists/${options.id}?include=tracks`
+            )
           : await music.api.playlist(options.id);
 
-        playlist = ConversionUtils.convertApplePlaylist(response);
+        playlist = ConversionUtils.convertApplePlaylist(response.data.data[0]);
       } else if (service === 'spotify') {
         playlist = await spotifyDataFetcher.fetchPlaylist(
           options.userId,

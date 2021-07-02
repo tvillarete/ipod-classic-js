@@ -53,7 +53,7 @@ export const convertApplePlaylist = (
 ): IpodApi.Playlist => ({
   id: data.id,
   name: data.attributes?.name ?? '–',
-  url: data.attributes?.url ?? '',
+  url: data.href ?? '',
   curatorName: data.attributes?.curatorName ?? '',
   artwork: {
     url: getAppleArtwork(100, data.attributes?.artwork?.url) ?? '',
@@ -129,7 +129,6 @@ export const convertAppleArtist = (
   id: data.id,
   name: data.attributes?.name ?? '–',
   url: data.attributes?.url ?? '',
-  artwork: undefined,
   albums: data.relationships?.albums?.data.map(convertAppleAlbum) ?? [],
 });
 

@@ -64,19 +64,28 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         throw new Error('Unable to play: Not authorized');
       }
 
-      // MusicKit JS V3 expects only a single media type with no empty keys.
-      // We're filtering out any keys that are undefined.
+      /**
+       * MusicKit JS V3 doesn't seem to support passing in a single playlist id to the queue.
+       * A workaround is to just grab the song ids instead.
+       * */
+      const playlistSongs = queueOptions.playlist?.songs?.map(({ id }) => id);
+
+      /**
+       * MusicKit JS V3 expects only a single media type with no empty keys.
+       * We're filtering out any keys that are undefined.
+       *
+       * @example { album: 'a.12345', startPosition: 0 }
+       */
       const queue = Object.fromEntries(
         Object.entries({
           album: queueOptions.album?.id,
-          playlist: queueOptions.playlist?.id,
-          songs: queueOptions.songs?.map((song) => song.url),
+          songs: playlistSongs ?? queueOptions.songs?.map((song) => song.url),
           song: queueOptions.song?.id,
           startPosition: queueOptions.startPosition,
-        }).filter(([_, value]) => !!value)
+        }).filter(([_, value]) => value !== undefined)
       );
 
-      await music.setQueue(queue);
+      await music.setQueue({ ...queue });
 
       await music.play();
     },
