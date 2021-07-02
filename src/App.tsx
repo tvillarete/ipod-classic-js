@@ -2,11 +2,11 @@ import * as React from 'react';
 
 import { ScrollWheel } from 'components';
 import {
-  useSettings,
   AudioPlayerProvider,
   MusicKitProvider,
   SettingsProvider,
   SpotifySDKProvider,
+  useSettings,
 } from 'hooks';
 import WindowProvider from 'providers/WindowProvider';
 import styled, { createGlobalStyle } from 'styled-components';
@@ -20,35 +20,39 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
 
-   body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-      font-size: 16px;
-      user-select: none;
-      -webkit-touch-callout: none;
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+      'Segoe UI Symbol';
+    font-size: 16px;
+    user-select: none;
+    -webkit-touch-callout: none;
 
-      @media (prefers-color-scheme: dark) {
-        background: black;
-      }
-   }
+    @media (prefers-color-scheme: dark) {
+      background: black;
+    }
+  }
 `;
 
 const Container = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  @media screen and (min-width: 750px) {
-    height: 100vh;
-    display: flex;
-  }
 `;
 
 const Shell = styled.div<{ deviceTheme: DeviceTheme }>`
   position: relative;
-  height: 100vh;
-  margin: auto;
-  max-height: 36.5em;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   width: 370px;
+  max-height: 37em;
+  margin: auto;
   border-radius: 30px;
   box-shadow: inset 0 0 2.4em #555;
   background: ${({ deviceTheme }) => getTheme(deviceTheme).body.background};
@@ -59,8 +63,10 @@ const Shell = styled.div<{ deviceTheme: DeviceTheme }>`
     box-shadow: inset 0 0 2.4em black;
   }
 
-  @media screen and (max-width: 400px) {
+  ${Screen.SM.MediaQuery} {
     animation: none;
+    width: 100vw;
+    max-height: unset;
     border-radius: 0;
     -webkit-box-reflect: unset;
   }
@@ -81,7 +87,7 @@ const Shell = styled.div<{ deviceTheme: DeviceTheme }>`
 const ScreenContainer = styled.div`
   position: relative;
   height: 260px;
-  margin: ${Unit.LG} ${Unit.LG} ${Unit.XL};
+  margin: ${Unit.LG} ${Unit.LG} 0;
   border: 4px solid black;
   border-radius: ${Unit.XS};
   overflow: hidden;
@@ -94,10 +100,8 @@ const ScreenContainer = styled.div`
     }
   }
 
-  ${Screen.SM} {
-    @media screen and (max-height: 750px) {
-      margin: ${Unit.SM} ${Unit.SM} ${Unit.XL};
-    }
+  ${Screen.SM.MediaQuery} {
+    margin: ${Unit.SM} ${Unit.SM} 0;
   }
 `;
 
