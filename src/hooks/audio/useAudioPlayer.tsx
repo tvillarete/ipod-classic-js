@@ -166,8 +166,10 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
     switch (service) {
       case 'apple':
+        // TODO: Update types for MusicKit V3
         if ((music as any).isPlaying) {
           music.pause();
+          // TODO: Update types for MusicKit V3
         } else if (!(music as any).isPlaying) {
           music.play();
         }
@@ -192,6 +194,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
     switch (service) {
       case 'apple':
+        // TODO: Update types for MusicKit V3
         if ((music as any).nowPlayingItem) {
           await music.skipToNextItem();
         }
@@ -221,6 +224,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
     switch (service) {
       case 'apple':
+        // TODO: Update types for MusicKit V3
         if ((music as any).nowPlayingItem) {
           await music.skipToPreviousItem();
         }
@@ -241,6 +245,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   const updateNowPlayingItem = useCallback(async () => {
     let mediaItem: IpodApi.MediaItem | undefined;
 
+    // TODO: Update types for MusicKit V3
     if (service === 'apple' && (music as any).nowPlayingItem) {
       // TODO: Update types for MusicKit V3
       mediaItem = ConversionUtils.convertAppleMediaItem(
@@ -316,6 +321,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
     if (service === 'apple') {
       setPlaybackInfo((prevState) => ({
         ...prevState,
+        // TODO: Update types for MusicKit V3
         currentTime: (music as any).currentPlaybackTime,
         timeRemaining: (music as any).currentPlaybackTimeRemaining,
         percent: (music as any).currentPlaybackProgress * 100,
@@ -342,6 +348,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   const seekToTime = useCallback(
     async (time: number) => {
       if (service === 'apple') {
+        // TODO: Update types for MusicKit V3
         await (music as any).player.seekToTime(time);
       } else if (service === 'spotify') {
         // Seek to time (in ms)
@@ -360,6 +367,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       }
 
       if (isAppleAuthorized) {
+        // TODO: Update types for MusicKit V3
         (music as any).volume = newVolume;
       }
 
