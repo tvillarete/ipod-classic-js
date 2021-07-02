@@ -82,9 +82,9 @@ export const MusicKitProvider = ({ children }: Props) => {
   const { setIsAppleAuthorized, setService: setStreamingService } =
     useSettings();
 
-  useEffect(() => {
+  const handleConfigure = useCallback(async () => {
     try {
-      const music = musicKit.configure({
+      const music = await musicKit.configure({
         developerToken:
           DEVELOPER_TOKEN ??
           new URLSearchParams(window.location.search).get('token') ??
@@ -106,6 +106,12 @@ export const MusicKitProvider = ({ children }: Props) => {
       setHasDevToken(false);
     }
   }, [musicKit, setIsAppleAuthorized]);
+
+  useEffect(() => {
+    if (!isConfigured) {
+      handleConfigure();
+    }
+  }, [handleConfigure, isConfigured]);
 
   useMKEventListener('userTokenDidChange', (e) => {
     if (e.userToken) {
