@@ -8,7 +8,7 @@ const XS = {
 };
 
 const SM = {
-  MediaQuery: '@media (max-width: 400px)',
+  MediaQuery: '@media (max-width: 576px)',
   Size: {
     Min: 576,
     Max: 767,
