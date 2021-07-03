@@ -159,7 +159,9 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   }, [setIsSpotifyAuthorized, setService]);
 
   useEffectOnce(() => {
-    window.onSpotifyWebPlaybackSDKReady = handleMount;
+    if (window.Spotify) {
+      handleMount();
+    }
   });
 
   return (
