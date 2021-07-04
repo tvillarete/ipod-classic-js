@@ -39,7 +39,7 @@ const Artwork = styled.img`
 
 const InfoContainer = styled.div`
   flex: 1;
-  margin: auto 0 auto ${Unit.XS};
+  margin: auto 0 auto clamp(0.5rem, 5vw, 0.5rem);
 `;
 
 const Text = styled.h3`
