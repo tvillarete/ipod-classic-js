@@ -11,6 +11,7 @@ import {
   GamesView,
   MusicView,
   NowPlayingView,
+  SearchView,
   SettingsView,
   ViewOptions,
   WINDOW_TYPE,
@@ -51,6 +52,13 @@ const HomeView = () => {
         label: 'Music',
         viewId: ViewOptions.music.id,
         component: () => <MusicView />,
+        preview: PREVIEW.MUSIC,
+      },
+      {
+        type: 'View',
+        label: 'Search',
+        viewId: ViewOptions.search.id,
+        component: () => <SearchView />,
         preview: PREVIEW.MUSIC,
       },
       {

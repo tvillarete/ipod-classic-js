@@ -39,12 +39,18 @@ type PopupViewOptionProps = {
   listOptions: SelectableListOption[];
 };
 
+type KeyboardViewOptionProps = {
+  type: Views.WINDOW_TYPE.KEYBOARD;
+  initialValue?: string;
+};
+
 export type WindowOptions<TComponent extends React.ComponentType<any> = any> =
   SharedOptionProps &
     (
       | ListViewOptionProps<TComponent>
       | ActionSheetViewOptionProps
       | PopupViewOptionProps
+      | KeyboardViewOptionProps
     );
 
 interface WindowState {
