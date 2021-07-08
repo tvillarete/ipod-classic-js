@@ -164,6 +164,8 @@ export const SpotifySDKProvider = ({ children }: Props) => {
       /** This indicates that the user is using an unsupported account tier. */
       player.addListener('account_error', () => {
         handleUnsupportedAccountError();
+        setIsSpotifyAuthorized(false);
+        SpotifyUtils.removeExistingTokens();
       });
 
       player.addListener('playback_error', ({ message }) => {
