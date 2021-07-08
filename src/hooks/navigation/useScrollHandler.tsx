@@ -9,6 +9,7 @@ import ViewOptions, { NowPlayingView, WINDOW_TYPE } from 'components/views';
 import { useWindowContext } from 'hooks';
 
 import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
+import useHapticFeedback from 'hooks/useHapticFeedback';
 import { IpodEvent } from 'utils/events';
 
 /** Gets the initial index for the scroll position. If there is a selected option,
@@ -40,6 +41,7 @@ const useScrollHandler = (
   options: SelectableListOption[] = [],
   selectedOption?: SelectableListOption
 ): [number] => {
+  const { triggerHaptics } = useHapticFeedback();
   const { showWindow, windowStack, setPreview } = useWindowContext();
   const { play } = useAudioPlayer();
   const [index, setIndex] = useState(getInitIndex(options, selectedOption));
@@ -72,17 +74,19 @@ const useScrollHandler = (
 
   const handleForwardScroll = useCallback(() => {
     if (index < options.length - 1 && isActive) {
+      triggerHaptics(10);
       setIndex(index + 1);
       handleCheckForPreview(index + 1);
     }
-  }, [handleCheckForPreview, index, isActive, options.length]);
+  }, [handleCheckForPreview, index, isActive, options.length, triggerHaptics]);
 
   const handleBackwardScroll = useCallback(() => {
     if (index > 0 && isActive) {
+      triggerHaptics(10);
       setIndex(index - 1);
       handleCheckForPreview(index - 1);
     }
-  }, [handleCheckForPreview, index, isActive]);
+  }, [handleCheckForPreview, index, isActive, triggerHaptics]);
 
   const handleShowView = useCallback(
     (
@@ -127,6 +131,7 @@ const useScrollHandler = (
   const handleCenterClick = useCallback(async () => {
     const option = options[index];
     if (!isActive || !option) return;
+    triggerHaptics(10);
 
     if (timeoutIdRef.current) {
       clearTimeout(timeoutIdRef.current);
@@ -164,6 +169,7 @@ const useScrollHandler = (
     isActive,
     options,
     play,
+    triggerHaptics,
   ]);
 
   const handleCenterLongClick = useCallback(async () => {
