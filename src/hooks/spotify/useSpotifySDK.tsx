@@ -115,7 +115,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
     showWindow({
       type: WINDOW_TYPE.POPUP,
       id: ViewOptions.spotifyNonPremiumPopup.id,
-      title: 'Premium Account Required',
+      title: 'Unable to sign in',
       description:
         'Spotify requires a Premium account to play music on the web',
       listOptions: [
