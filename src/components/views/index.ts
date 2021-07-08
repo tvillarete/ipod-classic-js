@@ -89,6 +89,11 @@ export const ViewOptions: Record<string, ViewOption> = {
     title: 'Unsupported browser',
     type: WINDOW_TYPE.POPUP,
   },
+  spotifyNonPremiumPopup: {
+    id: 'spotifyNonPremiumPopup',
+    title: 'Premium',
+    type: WINDOW_TYPE.POPUP,
+  },
 };
 
 export default ViewOptions;

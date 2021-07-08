@@ -121,15 +121,15 @@ const Ipod = () => {
   return (
     <Shell deviceTheme={deviceTheme}>
       <ScreenContainer>
-        <SpotifySDKProvider>
-          <MusicKitProvider>
-            <AudioPlayerProvider>
-              <WindowProvider>
+        <WindowProvider>
+          <SpotifySDKProvider>
+            <MusicKitProvider>
+              <AudioPlayerProvider>
                 <WindowManager />
-              </WindowProvider>
-            </AudioPlayerProvider>
-          </MusicKitProvider>
-        </SpotifySDKProvider>
+              </AudioPlayerProvider>
+            </MusicKitProvider>
+          </SpotifySDKProvider>
+        </WindowProvider>
       </ScreenContainer>
       <ScrollWheel />
     </Shell>
