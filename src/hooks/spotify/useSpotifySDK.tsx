@@ -104,11 +104,29 @@ interface Props {
 }
 
 export const SpotifySDKProvider = ({ children }: Props) => {
+  const { showWindow, hideWindow } = useWindowContext();
   const { setIsSpotifyAuthorized, setService } = useSettings();
   const [token, setToken] = useState<string>();
   const [deviceId, setDeviceId] = useState<string>();
   const spotifyPlayerRef = useRef<Spotify.Player | undefined>();
   const [isMounted, setIsMounted] = useState(false);
+
+  const handleUnsupportedAccountError = useCallback(() => {
+    showWindow({
+      type: WINDOW_TYPE.POPUP,
+      id: ViewOptions.spotifyNonPremiumPopup.id,
+      title: 'Unable to sign in',
+      description:
+        'Spotify requires a Premium account to play music on the web',
+      listOptions: [
+        {
+          type: 'Action',
+          label: 'Okay 😞',
+          onSelect: hideWindow,
+        },
+      ],
+    });
+  }, [hideWindow, showWindow]);
 
   /** Fetch access tokens and, if successful, then set up the playback sdk. */
   const handleMount = useCallback(async () => {
@@ -143,6 +161,11 @@ export const SpotifySDKProvider = ({ children }: Props) => {
         setIsSpotifyAuthorized(false);
       });
 
+      /** This indicates that the user is using an unsupported account tier. */
+      player.addListener('account_error', () => {
+        handleUnsupportedAccountError();
+      });
+
       player.addListener('playback_error', ({ message }) => {
         console.error(message);
       });
@@ -156,11 +179,13 @@ export const SpotifySDKProvider = ({ children }: Props) => {
         setService('spotify');
       }
     }
-  }, [setIsSpotifyAuthorized, setService]);
+  }, [handleUnsupportedAccountError, setIsSpotifyAuthorized, setService]);
 
   useEffectOnce(() => {
     if (window.Spotify) {
       handleMount();
+    } else {
+      window.onSpotifyWebPlaybackSDKReady = handleMount;
     }
   });
 
