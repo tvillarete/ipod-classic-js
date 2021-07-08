@@ -17,8 +17,14 @@ import {
 
 const SettingsView = () => {
   useMenuHideWindow(ViewOptions.settings.id);
-  const { isAuthorized, isAppleAuthorized, isSpotifyAuthorized, service } =
-    useSettings();
+  const {
+    isAuthorized,
+    isAppleAuthorized,
+    isSpotifyAuthorized,
+    service,
+    deviceTheme,
+    setDeviceTheme,
+  } = useSettings();
   const { signIn: signInWithApple, signOut: signOutApple } = useMusicKit();
   const { signOut: signOutSpotify, signIn: signInWithSpotify } =
     useSpotifySDK();
@@ -40,19 +46,45 @@ const SettingsView = () => {
         listOptions: [
           {
             type: 'Action',
+            isSelected: service === 'apple',
             label: `Apple Music ${service === 'apple' ? '(Current)' : ''}`,
-            onSelect: () => {
-              signInWithApple();
-            },
+            onSelect: signInWithApple,
           },
           {
             type: 'Action',
+            isSelected: service === 'spotify',
             label: `Spotify ${service === 'spotify' ? '(Current)' : ''}`,
             onSelect: signInWithSpotify,
           },
         ],
         preview: PREVIEW.SERVICE,
       }),
+      {
+        type: 'ActionSheet',
+        id: ViewOptions.deviceThemeActionSheet.id,
+        label: 'Device theme',
+        listOptions: [
+          {
+            type: 'Action',
+            isSelected: deviceTheme === 'silver',
+            label: `Silver ${deviceTheme === 'silver' ? '(Current)' : ''}`,
+            onSelect: () => setDeviceTheme('silver'),
+          },
+          {
+            type: 'Action',
+            isSelected: deviceTheme === 'black',
+            label: `Black ${deviceTheme === 'black' ? '(Current)' : ''}`,
+            onSelect: () => setDeviceTheme('black'),
+          },
+          {
+            type: 'Action',
+            isSelected: deviceTheme === 'u2',
+            label: `U2 Edition ${deviceTheme === 'u2' ? '(Current)' : ''}`,
+            onSelect: () => setDeviceTheme('u2'),
+          },
+        ],
+        preview: PREVIEW.THEME,
+      },
       /** Show the sign in option if not signed into any service. */
       ...getConditionalOption(!isAuthorized, {
         type: 'ActionSheet',
@@ -62,9 +94,7 @@ const SettingsView = () => {
           {
             type: 'Action',
             label: 'Apple Music',
-            onSelect: () => {
-              signInWithApple();
-            },
+            onSelect: signInWithApple,
           },
           {
             type: 'Action',
@@ -95,6 +125,8 @@ const SettingsView = () => {
       }),
     ],
     [
+      deviceTheme,
+      setDeviceTheme,
       isAppleAuthorized,
       isAuthorized,
       isSpotifyAuthorized,

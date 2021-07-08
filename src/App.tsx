@@ -6,50 +6,56 @@ import {
   MusicKitProvider,
   SettingsProvider,
   SpotifySDKProvider,
+  useSettings,
 } from 'hooks';
 import WindowProvider from 'providers/WindowProvider';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Screen, Unit } from 'utils/constants';
 
 import { WindowManager } from './components';
+import { DeviceTheme, getTheme } from './utils/themes';
 
 const GlobalStyles = createGlobalStyle`
   * {
     box-sizing: border-box;
   }
 
-   body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-      font-size: 16px;
-      user-select: none;
-      -webkit-touch-callout: none;
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+      'Segoe UI Symbol';
+    font-size: 16px;
+    user-select: none;
+    -webkit-touch-callout: none;
 
-      @media (prefers-color-scheme: dark) {
-        background: black;
-      }
-   }
-`;
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  @media screen and (min-width: 750px) {
-    height: 100vh;
-    display: flex;
+    @media (prefers-color-scheme: dark) {
+      background: black;
+    }
   }
 `;
 
-const Shell = styled.div`
+const Container = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Shell = styled.div<{ deviceTheme: DeviceTheme }>`
   position: relative;
-  height: 100vh;
-  margin: auto;
-  max-height: 36.5em;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   width: 370px;
+  max-height: 37em;
+  margin: auto;
   border-radius: 30px;
   box-shadow: inset 0 0 2.4em #555;
-  background: linear-gradient(180deg, #e3e3e3 0%, #d6d6d6 100%);
+  background: ${({ deviceTheme }) => getTheme(deviceTheme).body.background};
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, transparent), to(rgba(250, 250, 250, 0.3)));
   animation: descend 1.5s ease;
 
@@ -57,8 +63,10 @@ const Shell = styled.div`
     box-shadow: inset 0 0 2.4em black;
   }
 
-  @media screen and (max-width: 400px) {
+  ${Screen.SM.MediaQuery} {
     animation: none;
+    width: 100vw;
+    max-height: unset;
     border-radius: 0;
     -webkit-box-reflect: unset;
   }
@@ -79,7 +87,7 @@ const Shell = styled.div`
 const ScreenContainer = styled.div`
   position: relative;
   height: 260px;
-  margin: ${Unit.LG} ${Unit.LG} ${Unit.XL};
+  margin: ${Unit.LG} ${Unit.LG} 0;
   border: 4px solid black;
   border-radius: ${Unit.XS};
   overflow: hidden;
@@ -92,10 +100,8 @@ const ScreenContainer = styled.div`
     }
   }
 
-  ${Screen.SM} {
-    @media screen and (max-height: 750px) {
-      margin: ${Unit.SM} ${Unit.SM} ${Unit.XL};
-    }
+  ${Screen.SM.MediaQuery} {
+    margin: ${Unit.SM} ${Unit.SM} 0;
   }
 `;
 
@@ -104,22 +110,29 @@ const App: React.FC = () => {
     <Container>
       <GlobalStyles />
       <SettingsProvider>
-        <Shell>
-          <ScreenContainer>
-            <SpotifySDKProvider>
-              <MusicKitProvider>
-                <AudioPlayerProvider>
-                  <WindowProvider>
-                    <WindowManager />
-                  </WindowProvider>
-                </AudioPlayerProvider>
-              </MusicKitProvider>
-            </SpotifySDKProvider>
-          </ScreenContainer>
-          <ScrollWheel />
-        </Shell>
+        <Ipod />
       </SettingsProvider>
     </Container>
+  );
+};
+
+const Ipod = () => {
+  const { deviceTheme } = useSettings();
+  return (
+    <Shell deviceTheme={deviceTheme}>
+      <ScreenContainer>
+        <SpotifySDKProvider>
+          <MusicKitProvider>
+            <AudioPlayerProvider>
+              <WindowProvider>
+                <WindowManager />
+              </WindowProvider>
+            </AudioPlayerProvider>
+          </MusicKitProvider>
+        </SpotifySDKProvider>
+      </ScreenContainer>
+      <ScrollWheel />
+    </Shell>
   );
 };
 

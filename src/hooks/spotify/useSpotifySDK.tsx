@@ -159,14 +159,15 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   }, [setIsSpotifyAuthorized, setService]);
 
   useEffectOnce(() => {
-    window.onSpotifyWebPlaybackSDKReady = handleMount;
+    if (window.Spotify) {
+      handleMount();
+    }
   });
 
   return (
     <SpotifySDKContext.Provider
       value={{
-        spotifyPlayer:
-          spotifyPlayerRef.current ?? ({} as Spotify.Player),
+        spotifyPlayer: spotifyPlayerRef.current ?? ({} as Spotify.Player),
         accessToken: token,
         deviceId,
         isMounted,

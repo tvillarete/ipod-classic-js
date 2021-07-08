@@ -13,6 +13,7 @@ import {
 import { WindowOptions } from 'providers/WindowProvider';
 import styled, { css } from 'styled-components';
 import { Unit } from 'utils/constants';
+import { IpodEvent } from 'utils/events';
 
 interface RootContainerProps {
   index: number;
@@ -128,7 +129,7 @@ const Popup = ({ windowStack, index, isHidden }: Props) => {
 
   const [scrollIndex] = useScrollHandler(windowOptions.id, listOptions);
 
-  useEventListener('centerclick', () => {
+  useEventListener<IpodEvent>('centerclick', () => {
     hideWindow();
   });
 

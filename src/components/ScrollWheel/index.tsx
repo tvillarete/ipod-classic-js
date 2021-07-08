@@ -1,8 +1,10 @@
 import { useCallback, useRef, useState } from 'react';
 
-import { useEffectOnce, useEventListener } from 'hooks';
+import { useEffectOnce, useEventListener, useSettings } from 'hooks';
 
 import Knob from './Knob';
+import { createIpodEvent } from 'utils/events';
+import { getTheme } from '../../utils/themes';
 
 enum WHEEL_QUADRANT {
   TOP = 1,
@@ -11,29 +13,30 @@ enum WHEEL_QUADRANT {
   RIGHT = 4,
 }
 
-enum KEY_CODE {
-  ARROW_UP = 38,
-  ARROW_DOWN = 40,
-  ARROW_LEFT = 37,
-  ARROW_RIGHT = 39,
-  ESC = 27,
-  ENTER = 13,
-  SPACE = 32,
-}
+type SupportedKeyCode =
+  | 'ArrowUp'
+  | 'ArrowDown'
+  | 'ArrowLeft'
+  | 'ArrowRight'
+  | 'Escape'
+  | 'Enter'
+  | ' '
+  | 'Spacebar';
 
-const centerClickEvent = new Event('centerclick');
-const centerLongClickEvent = new Event('centerlongclick');
-const forwardScrollEvent = new Event('forwardscroll');
-const backwardScrollEvent = new Event('backwardscroll');
-const wheelClickEvent = new Event('wheelclick');
-const menuClickEvent = new Event('menuclick');
-const menuLongPressEvent = new Event('menulongpress');
-const backClickEvent = new Event('backclick');
-const forwardClickEvent = new Event('forwardclick');
-const playPauseClickEvent = new Event('playpauseclick');
-const idleEvent = new Event('idle');
+const centerClickEvent = createIpodEvent('centerclick');
+const centerLongClickEvent = createIpodEvent('centerlongclick');
+const forwardScrollEvent = createIpodEvent('forwardscroll');
+const backwardScrollEvent = createIpodEvent('backwardscroll');
+const wheelClickEvent = createIpodEvent('wheelclick');
+const menuClickEvent = createIpodEvent('menuclick');
+const menuLongPressEvent = createIpodEvent('menulongpress');
+const backClickEvent = createIpodEvent('backwardclick');
+const forwardClickEvent = createIpodEvent('forwardclick');
+const playPauseClickEvent = createIpodEvent('playpauseclick');
+const idleEvent = createIpodEvent('idle');
 
 const ScrollWheel = () => {
+  const { deviceTheme } = useSettings();
   const [count, setCount] = useState(0);
   const timeoutIdRef = useRef<any>();
 
@@ -96,22 +99,23 @@ const ScrollWheel = () => {
   /** Allows for keyboard navigation. */
   const handleKeyPress = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
-      switch (event.keyCode) {
-        case KEY_CODE.ARROW_UP:
-        case KEY_CODE.ARROW_LEFT:
+      switch (event.key as SupportedKeyCode) {
+        case 'ArrowUp':
+        case 'ArrowLeft':
           handleCounterClockwiseScroll();
           break;
-        case KEY_CODE.ARROW_DOWN:
-        case KEY_CODE.ARROW_RIGHT:
+        case 'ArrowDown':
+        case 'ArrowRight':
           handleClockwiseScroll();
           break;
-        case KEY_CODE.ENTER:
+        case 'Enter':
           handleCenterClick();
           break;
-        case KEY_CODE.SPACE:
+        case ' ':
+        case 'Spacebar':
           handleWheelClick(WHEEL_QUADRANT.BOTTOM);
           break;
-        case KEY_CODE.ESC:
+        case 'Escape':
           handleWheelClick(WHEEL_QUADRANT.TOP);
           break;
       }
@@ -130,25 +134,22 @@ const ScrollWheel = () => {
   /** Determine if clockwise/counter-clockwise based on the Knob onChange value. */
   const handleScroll = useCallback(
     (val: number) => {
-      if (val === 0 && count === 100) {
-        handleClockwiseScroll();
-      } else if (val === 100 && count === 0) {
-        handleCounterClockwiseScroll();
-      } else if (val > count) {
-        handleClockwiseScroll();
-      } else if (val < count) {
-        handleCounterClockwiseScroll();
-      }
-      setCount(val);
+      setCount((currentCount) => {
+        if (val === 5 && currentCount === 100) {
+          handleClockwiseScroll();
+        } else if (val === 100 && currentCount === 5) {
+          handleCounterClockwiseScroll();
+        } else if (val > currentCount) {
+          handleClockwiseScroll();
+        } else if (val < currentCount) {
+          handleCounterClockwiseScroll();
+        }
+        return val;
+      });
 
       handleResetIdleCheck();
     },
-    [
-      count,
-      handleClockwiseScroll,
-      handleCounterClockwiseScroll,
-      handleResetIdleCheck,
-    ]
+    [handleClockwiseScroll, handleCounterClockwiseScroll, handleResetIdleCheck]
   );
 
   useEventListener('keydown', handleKeyPress);
@@ -168,7 +169,7 @@ const ScrollWheel = () => {
       height={220}
       step={5}
       fgColor="transparent"
-      bgColor={'white'}
+      bgColor={getTheme(deviceTheme).knob.background}
       thickness={0.6}
       onClick={handleCenterClick}
       onLongPress={handleCenterLongPress}

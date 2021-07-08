@@ -13,6 +13,7 @@ import {
 import { WindowOptions } from 'providers/WindowProvider';
 import styled, { css } from 'styled-components';
 import { Unit } from 'utils/constants';
+import { IpodEvent } from 'utils/events';
 
 interface RootContainerProps {
   index: number;
@@ -110,11 +111,20 @@ const ActionSheet = ({ windowStack, index, isHidden }: Props) => {
     ];
   }, [windowOptions]);
 
-  useEventListener('centerclick', () => {
+  const selectedOption: SelectableListOption | undefined = useMemo(
+    () => options.find((option) => option.isSelected === true),
+    [options]
+  );
+
+  useEventListener<IpodEvent>('centerclick', () => {
     hideWindow();
   });
 
-  const [scrollIndex] = useScrollHandler(windowOptions.id, options);
+  const [scrollIndex] = useScrollHandler(
+    windowOptions.id,
+    options,
+    selectedOption
+  );
 
   return (
     <RootContainer

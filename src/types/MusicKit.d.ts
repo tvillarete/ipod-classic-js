@@ -22,11 +22,17 @@ declare namespace MusicKit {
    * @param height The desired artwork height.
    * @param width the desired artwork width.
    */
-  function formatArtworkURL(artwork: Artwork, height: number, width: number): string;
+  function formatArtworkURL(
+    artwork: Artwork,
+    height: number,
+    width: number
+  ): string;
   /**
    * Returns an object with milliseconds formatted into hours and minutes.
    */
-  function formattedMilliseconds(milliseconds: number): FormattedPlaybackDuration;
+  function formattedMilliseconds(
+    milliseconds: number
+  ): FormattedPlaybackDuration;
   /**
    * Returns an object with seconds formatted into hours and minutes.
    */

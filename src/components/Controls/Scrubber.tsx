@@ -7,6 +7,7 @@ import { formatTime } from 'utils';
 import { Unit } from 'utils/constants';
 
 import ProgressBar from './ProgressBar';
+import { IpodEvent } from 'utils/events';
 
 const Container = styled.div`
   position: relative;
@@ -41,10 +42,10 @@ const Scrubber = ({ isScrubbing }: Props) => {
     () => Math.round((scrubberTime / duration) * 100),
     [duration, scrubberTime]
   );
-  const scrubberTimeRemaining = useMemo(() => duration - scrubberTime, [
-    duration,
-    scrubberTime,
-  ]);
+  const scrubberTimeRemaining = useMemo(
+    () => duration - scrubberTime,
+    [duration, scrubberTime]
+  );
 
   /** The user is actively scrubbing. We disable the 1s update interval in this case. */
   const [isActive, setIsActive] = useState(false);
@@ -86,8 +87,8 @@ const Scrubber = ({ isScrubbing }: Props) => {
     [currentTime, isActive, isPlaying]
   );
 
-  useEventListener('forwardscroll', scrubForward);
-  useEventListener('backwardscroll', scrubBackward);
+  useEventListener<IpodEvent>('forwardscroll', scrubForward);
+  useEventListener<IpodEvent>('backwardscroll', scrubBackward);
 
   /** Update the progress bar every second. */
   useInterval(refresh, 1000);

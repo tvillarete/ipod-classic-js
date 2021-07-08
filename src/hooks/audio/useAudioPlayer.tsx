@@ -8,19 +8,22 @@ import {
 
 import { useEventListener, useMKEventListener } from 'hooks';
 import * as ConversionUtils from 'utils/conversion';
+import { IpodEvent } from 'utils/events';
 
 import { useMusicKit, useSettings, useSpotifySDK, VOLUME_KEY } from '../';
 
-export interface AudioPlayerState {
-  playbackInfo: {
-    isPlaying: boolean;
-    isPaused: boolean;
-    isLoading: boolean;
-    currentTime: number;
-    timeRemaining: number;
-    percent: number;
-    duration: number;
-  };
+const defaultPlatbackInfoState = {
+  isPlaying: false,
+  isPaused: false,
+  isLoading: false,
+  currentTime: 0,
+  timeRemaining: 0,
+  percent: 0,
+  duration: 0,
+};
+
+interface AudioPlayerState {
+  playbackInfo: typeof defaultPlatbackInfoState;
   nowPlayingItem?: IpodApi.MediaItem;
   volume: number;
   play: (queueOptions: IpodApi.QueueOptions) => Promise<void>;
@@ -53,17 +56,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   const { music } = useMusicKit();
   const [volume, setVolume] = useState(0.5);
   const [nowPlayingItem, setNowPlayingItem] = useState<IpodApi.MediaItem>();
-  const [playbackInfo, setPlaybackInfo] = useState<
-    AudioPlayerState['playbackInfo']
-  >({
-    isPlaying: false,
-    isPaused: false,
-    isLoading: false,
-    currentTime: 0,
-    timeRemaining: 0,
-    percent: 0,
-    duration: 0,
-  });
+  const [playbackInfo, setPlaybackInfo] = useState(defaultPlatbackInfoState);
 
   const playAppleMusic = useCallback(
     async (queueOptions: IpodApi.QueueOptions) => {
@@ -71,16 +64,28 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         throw new Error('Unable to play: Not authorized');
       }
 
-      await music.setQueue({
-        album: queueOptions.album?.id,
-        playlist: queueOptions.playlist?.id,
-        songs: queueOptions.songs?.map((song) => song.url),
-        song: queueOptions.song?.id,
-        // MusicKit has a weird issue where the start position needs to be subtracted by 1.
-        startPosition: queueOptions.startPosition
-          ? queueOptions.startPosition - 1
-          : undefined,
-      });
+      /**
+       * MusicKit JS V3 doesn't seem to support passing in a single playlist id to the queue.
+       * A workaround is to just grab the song ids instead.
+       * */
+      const playlistSongs = queueOptions.playlist?.songs?.map(({ id }) => id);
+
+      /**
+       * MusicKit JS V3 expects only a single media type with no empty keys.
+       * We're filtering out any keys that are undefined.
+       *
+       * @example { album: 'a.12345', startPosition: 0 }
+       */
+      const queue = Object.fromEntries(
+        Object.entries({
+          album: queueOptions.album?.id,
+          songs: playlistSongs ?? queueOptions.songs?.map((song) => song.url),
+          song: queueOptions.song?.id,
+          startPosition: queueOptions.startPosition,
+        }).filter(([_, value]) => value !== undefined)
+      );
+
+      await music.setQueue({ ...queue });
 
       await music.play();
     },
@@ -161,14 +166,17 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
     switch (service) {
       case 'apple':
-        if (music.player.isPlaying) {
-          return music.pause();
-        } else if (!music.player.isPlaying) {
+        // TODO: Update types for MusicKit V3
+        if ((music as any).isPlaying) {
+          music.pause();
+          // TODO: Update types for MusicKit V3
+        } else if (!(music as any).isPlaying) {
           music.play();
         }
         break;
       case 'spotify':
-        return spotifyPlayer.togglePlay();
+        spotifyPlayer.togglePlay();
+        break;
       default:
         throw new Error('Unable to play: service not specified');
     }
@@ -186,7 +194,8 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
     switch (service) {
       case 'apple':
-        if (music.player.nowPlayingItem) {
+        // TODO: Update types for MusicKit V3
+        if ((music as any).nowPlayingItem) {
           await music.skipToNextItem();
         }
         break;
@@ -215,7 +224,8 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
     switch (service) {
       case 'apple':
-        if (music.player.nowPlayingItem) {
+        // TODO: Update types for MusicKit V3
+        if ((music as any).nowPlayingItem) {
           await music.skipToPreviousItem();
         }
         break;
@@ -235,9 +245,11 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   const updateNowPlayingItem = useCallback(async () => {
     let mediaItem: IpodApi.MediaItem | undefined;
 
-    if (service === 'apple' && music.player.nowPlayingItem) {
+    // TODO: Update types for MusicKit V3
+    if (service === 'apple' && (music as any).nowPlayingItem) {
+      // TODO: Update types for MusicKit V3
       mediaItem = ConversionUtils.convertAppleMediaItem(
-        music.player.nowPlayingItem
+        (music as any).nowPlayingItem
       );
     } else if (service === 'spotify') {
       const state = await spotifyPlayer.getCurrentState();
@@ -248,7 +260,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
     }
 
     setNowPlayingItem(mediaItem);
-  }, [music.player.nowPlayingItem, service, spotifyPlayer]);
+  }, [music, service, spotifyPlayer]);
 
   const handleApplePlaybackStateChange = useCallback(
     ({ state }: { state: MusicKit.PlaybackStates }) => {
@@ -309,15 +321,17 @@ export const AudioPlayerProvider = ({ children }: Props) => {
     if (service === 'apple') {
       setPlaybackInfo((prevState) => ({
         ...prevState,
-        currentTime: music.player.currentPlaybackTime,
-        timeRemaining: music.player.currentPlaybackTimeRemaining,
-        percent: music.player.currentPlaybackProgress * 100,
-        duration: music.player.currentPlaybackDuration,
+        // TODO: Update types for MusicKit V3
+        currentTime: (music as any).currentPlaybackTime,
+        timeRemaining: (music as any).currentPlaybackTimeRemaining,
+        percent: (music as any).currentPlaybackProgress * 100,
+        duration: (music as any).currentPlaybackDuration,
       }));
     } else if (service === 'spotify') {
-      const state = await spotifyPlayer.getCurrentState();
-      const currentTime = (state?.position ?? 0) / 1000;
-      const maxTime = (state?.duration ?? 0) / 1000;
+      const { position, duration } =
+        (await spotifyPlayer.getCurrentState()) ?? {};
+      const currentTime = (position ?? 0) / 1000;
+      const maxTime = (duration ?? 0) / 1000;
       const timeRemaining = maxTime - currentTime;
       const percent = Math.round((currentTime / maxTime) * 100);
 
@@ -329,12 +343,13 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         duration: maxTime,
       }));
     }
-  }, [music.player, service, spotifyPlayer]);
+  }, [music, service, spotifyPlayer]);
 
   const seekToTime = useCallback(
     async (time: number) => {
       if (service === 'apple') {
-        await music.player.seekToTime(time);
+        // TODO: Update types for MusicKit V3
+        await (music as any).player.seekToTime(time);
       } else if (service === 'spotify') {
         // Seek to time (in ms)
         await spotifyPlayer.seek(time * 1000);
@@ -342,7 +357,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
       updatePlaybackInfo();
     },
-    [music.player, service, spotifyPlayer, updatePlaybackInfo]
+    [music, service, spotifyPlayer, updatePlaybackInfo]
   );
 
   const handleChangeVolume = useCallback(
@@ -352,25 +367,26 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       }
 
       if (isAppleAuthorized) {
-        music.player.volume = newVolume;
+        // TODO: Update types for MusicKit V3
+        (music as any).volume = newVolume;
       }
 
       localStorage.setItem(VOLUME_KEY, `${newVolume}`);
 
       setVolume(newVolume);
     },
-    [isAppleAuthorized, isSpotifyAuthorized, music.player, spotifyPlayer]
+    [isAppleAuthorized, isSpotifyAuthorized, music, spotifyPlayer]
   );
 
-  useEventListener('playpauseclick', () => {
+  useEventListener<IpodEvent>('playpauseclick', () => {
     togglePlayPause();
   });
 
-  useEventListener('forwardclick', () => {
+  useEventListener<IpodEvent>('forwardclick', () => {
     skipNext();
   });
 
-  useEventListener('backclick', () => {
+  useEventListener<IpodEvent>('backwardclick', () => {
     skipPrevious();
   });
 
