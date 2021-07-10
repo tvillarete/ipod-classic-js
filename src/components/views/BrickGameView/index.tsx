@@ -25,7 +25,8 @@ const Canvas = styled.canvas`
 const BrickGame = () => {
   useMenuHideWindow(ViewOptions.brickGame.id);
   useEffect(() => {
-    Game.init();
+    const game = new Game();
+    game.init();
   }, []);
 
   return (
