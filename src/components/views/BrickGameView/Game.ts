@@ -95,9 +95,9 @@ class App {
   };
 
   drawBricks = () => {
-    this.bricks.forEach(function (brick) {
+    for (const brick of this.bricks) {
       brick.draw();
-    });
+    }
   };
 
   //TODO: this will change per level
@@ -143,7 +143,7 @@ class App {
 
 class Player {
   app: App;
-  position: { x: number; y: number };
+  position: Coordinates;
   score: number;
   lives: number;
   physics: { speed: number };
