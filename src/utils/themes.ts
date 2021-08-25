@@ -1,12 +1,16 @@
 import * as Theme from './constants/Theme';
-export type DeviceTheme = 'silver' | 'black' | 'u2';
 
-export const getTheme = (deviceTheme: DeviceTheme) => {
-  if (deviceTheme === 'silver') {
-    return Theme.Silver;
-  } else if (deviceTheme === 'black') {
-    return Theme.Black;
-  } else {
-    return Theme.U2;
+export type DeviceThemeName = 'silver' | 'black' | 'u2' | 'mnelia';
+
+export const getTheme = (deviceTheme: DeviceThemeName): Theme.DeviceTheme => {
+  switch (deviceTheme) {
+    case 'black':
+      return Theme.Mnelia;
+    case 'u2':
+      return Theme.U2;
+    case 'mnelia':
+      return Theme.Silver;
+    default:
+      return Theme.Silver;
   }
 };
