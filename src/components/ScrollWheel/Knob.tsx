@@ -1,13 +1,13 @@
-import React, { SyntheticEvent } from 'react';
-import styled from 'styled-components';
-import { useRef } from 'react';
+import React, { SyntheticEvent, useEffect, useRef } from 'react';
+
 import { useEffectOnce, useSettings } from 'hooks';
-import { useEffect } from 'react';
-import MenuIcon from './icons/MenuIcon';
-import RewindIcon from './icons/RewindIcon';
-import PlayPauseIcon from './icons/PlayPauseIcon';
+import styled from 'styled-components';
+
+import { DeviceThemeName, getTheme } from '../../utils/themes';
 import FastForwardIcon from './icons/FastForwardIcon';
-import { DeviceTheme, getTheme } from '../../utils/themes';
+import MenuIcon from './icons/MenuIcon';
+import PlayPauseIcon from './icons/PlayPauseIcon';
+import RewindIcon from './icons/RewindIcon';
 
 const Container = styled.div`
   user-select: none;
@@ -28,13 +28,13 @@ const CanvasContainer = styled.div<{ width: number; height: number }>`
   height: ${(props) => props.height}px;
 `;
 
-const Canvas = styled.canvas<{ deviceTheme: DeviceTheme }>`
+const Canvas = styled.canvas<{ deviceTheme: DeviceThemeName }>`
   border-radius: 50%;
   border: 1px solid ${({ deviceTheme }) => getTheme(deviceTheme).knob.outline};
   background: ${({ deviceTheme }) => getTheme(deviceTheme).knob.background};
 `;
 
-const CenterButton = styled.div<{ size: number; deviceTheme: DeviceTheme }>`
+const CenterButton = styled.div<{ size: number; deviceTheme: DeviceThemeName }>`
   position: absolute;
   top: 0;
   bottom: 0;

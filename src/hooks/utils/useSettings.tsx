@@ -1,5 +1,6 @@
 import { createContext, memo, useCallback, useContext, useState } from 'react';
-import {DeviceTheme} from "../../utils/themes";
+
+import { DeviceThemeName, getThemeParam } from '../../utils/themes';
 
 type StreamingService = 'apple' | 'spotify';
 
@@ -11,7 +12,7 @@ export interface SettingsState {
   service?: StreamingService;
   isSpotifyAuthorized: boolean;
   isAppleAuthorized: boolean;
-  deviceTheme: DeviceTheme;
+  deviceTheme: DeviceThemeName;
 }
 
 type SettingsContextType = [
@@ -29,7 +30,7 @@ export type SettingsHook = SettingsState & {
   setIsSpotifyAuthorized: (val: boolean) => void;
   setIsAppleAuthorized: (val: boolean) => void;
   setService: (service?: StreamingService) => void;
-  setDeviceTheme: (deviceTheme: DeviceTheme) => void;
+  setDeviceTheme: (deviceTheme: DeviceThemeName) => void;
 };
 
 export const useSettings = (): SettingsHook => {
@@ -70,7 +71,7 @@ export const useSettings = (): SettingsHook => {
   );
 
   const setDeviceTheme = useCallback(
-    (deviceTheme: DeviceTheme) => {
+    (deviceTheme: DeviceThemeName) => {
       setState((prevState) => ({ ...prevState, deviceTheme }));
       localStorage.setItem(DEVICE_COLOR_KEY, deviceTheme);
     },
@@ -92,6 +93,8 @@ interface Props {
 }
 
 export const SettingsProvider = memo(({ children }: Props) => {
+  const themeParam = getThemeParam();
+
   const [settingsState, setSettingsState] = useState<SettingsState>({
     isAppleAuthorized: false,
     isSpotifyAuthorized: false,
@@ -99,7 +102,9 @@ export const SettingsProvider = memo(({ children }: Props) => {
       (localStorage.getItem(SELECTED_SERVICE_KEY) as StreamingService) ??
       undefined,
     deviceTheme:
-      (localStorage.getItem(DEVICE_COLOR_KEY) as DeviceTheme) ?? 'silver',
+      themeParam ??
+      (localStorage.getItem(DEVICE_COLOR_KEY) as DeviceThemeName) ??
+      'silver',
   });
 
   return (
