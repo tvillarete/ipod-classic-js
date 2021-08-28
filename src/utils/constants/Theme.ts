@@ -9,6 +9,10 @@ export type DeviceTheme = {
       background: string;
       styles?: Record<string, string | number>;
     };
+    sticker3?: {
+      background: string;
+      styles?: Record<string, string | number>;
+    };
   };
   knob: {
     background: string;
@@ -99,6 +103,18 @@ const Mnelia: DeviceTheme = {
         marginRight: '-10%',
         marginBottom: '-35%',
         mixBlendMode: 'multiply',
+      },
+    },
+    sticker3: {
+      background: 'url("mnelia_signature.png") no-repeat',
+      styles: {
+        position: 'absolute',
+        bottom: '42%',
+        width: '60px',
+        height: '40px',
+        backgroundSize: 'contain',
+        right: 15,
+        opacity: '50%',
       },
     },
   },
