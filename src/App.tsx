@@ -99,6 +99,13 @@ const Sticker2 = styled.div<{ deviceTheme: DeviceThemeName }>`
   ${({ deviceTheme }) => getTheme(deviceTheme).body.sticker2?.styles ?? {}};
 `;
 
+const Sticker3 = styled.div<{ deviceTheme: DeviceThemeName }>`
+  position: absolute;
+  background: ${({ deviceTheme }) =>
+    getTheme(deviceTheme).body.sticker3?.background};
+  ${({ deviceTheme }) => getTheme(deviceTheme).body.sticker3?.styles ?? {}};
+`;
+
 const ScreenContainer = styled.div`
   position: relative;
   height: 260px;
@@ -137,6 +144,7 @@ const Ipod = () => {
     <Shell deviceTheme={deviceTheme}>
       <Sticker deviceTheme={deviceTheme} />
       <Sticker2 deviceTheme={deviceTheme} />
+      <Sticker3 deviceTheme={deviceTheme} />
       <ScreenContainer>
         <WindowProvider>
           <SpotifySDKProvider>
