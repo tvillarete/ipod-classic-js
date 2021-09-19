@@ -211,7 +211,7 @@ class Ball {
     this.position = { x: 0, y: 250 };
     this.size = { height: 10, width: 10 };
     this.physics = { speed: 5 };
-    this.direction = { x: 1, y: 1 };
+    this.direction = { x: Math.cos(Math.PI / 4), y: Math.sin(Math.PI / 4) };
   }
 
   draw = () => {
@@ -237,8 +237,8 @@ class Ball {
   reset = () => {
     this.position.x = 0;
     this.position.y = 250;
-    this.direction.x = 1;
-    this.direction.y = 1;
+    this.direction.x = Math.cos(Math.PI / 4);
+    this.direction.y = Math.sin(Math.PI / 4);
   };
 
   update = () => {
@@ -246,16 +246,13 @@ class Ball {
       return;
     }
 
-    if (this.position.x <= 0)
-      //Left Bounds
-      this.direction.x = 1;
-    if (this.position.x >= this.app.canvas.width)
-      //Right Bounds
-      this.direction.x = -1;
-    if (this.position.y <= 0)
+    if (this.position.x < 0 || this.position.x > this.app.canvas.width)
+      //Left and Right Bounds
+      this.direction.x = -this.direction.x;
+    if (this.position.y < 0)
       //Top Bounds
-      this.direction.y = 1;
-    if (this.position.y >= this.app.canvas.height)
+      this.direction.y = -this.direction.y;
+    if (this.position.y > this.app.canvas.height)
       //Bottom Bounds
       this.app.die(); //TODO: die
 
@@ -284,7 +281,17 @@ class Ball {
       return;
     if (this.position.x + this.size.width < this.app.player.position.x) return;
 
-    this.direction.y = -1; //Moving up now
+    // Maps a value from the "in" range to the "out" range. Maybe this should go in a Mathy utils file?
+    const mapValue = (value: number, in_min: number, in_max: number, out_min: number, out_max: number) => {
+      return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
+    // Moving up with a custom angle, based on where the ball is hit
+    const hitPosition = this.position.x - this.app.player.position.x;
+    const angle = mapValue(hitPosition, 0, this.app.player.size.width, 0 + 0.5, Math.PI - 0.5);
+    const vx = Math.cos(angle);
+    const vy = Math.sin(angle);
+    this.direction.x = -vx;
+    this.direction.y = -vy;
   };
 
   checkCollisionWithBricks = () => {
@@ -306,24 +313,24 @@ class Ball {
       //Update direction based on where we hit the brick
 
       //Moving towards lower right
-      if (this.direction.x === 1 && this.direction.y === 1) {
-        if (this.position.y > brick.position.y) this.direction.x = -1;
-        else this.direction.y = -1;
+      if (this.direction.x > 0 && this.direction.y > 0) {
+        if (this.position.y > brick.position.y) this.direction.x = -this.direction.x;
+        else this.direction.y = -this.direction.y;
       }
       //Moving towards lower left
-      else if (this.direction.x === -1 && this.direction.y === 1) {
-        if (this.position.y > brick.position.y) this.direction.x = 1;
-        else this.direction.y = -1;
+      else if (this.direction.x < 0 && this.direction.y > 0) {
+        if (this.position.y > brick.position.y) this.direction.x = -this.direction.x;
+        else this.direction.y = -this.direction.y;
       }
       //Moving towards upper right
-      else if (this.direction.x === 1 && this.direction.y === -1) {
-        if (this.position.y > brick.position.y) this.direction.x = -1;
-        else this.direction.y = -1;
+      else if (this.direction.x > 0 && this.direction.y < 0) {
+        if (this.position.x > brick.position.x) this.direction.y = -this.direction.y;
+        else this.direction.x = -this.direction.x;
       }
       //Moving towards upper-left
-      else if (this.direction.x === -1 && this.direction.y === -1) {
-        if (this.position.y > brick.position.y) this.direction.x = 1;
-        else this.direction.y = -1;
+      else if (this.direction.x < 0 && this.direction.y < 0) {
+        if (this.position.x > brick.position.x + brick.size.width) this.direction.x = -this.direction.x;
+        else this.direction.y = -this.direction.y;
       }
     }
   };
@@ -352,7 +359,7 @@ class Brick {
         this.app.context.fillStyle = 'rgb(0, 240, 0)'; //Green
         break;
       case 2:
-        this.app.context.fillStyle = 'rgb(255,140,0'; //Orange?
+        this.app.context.fillStyle = 'rgb(255, 140, 0)'; //Orange? Looks orange to me :)
         break;
       case 1:
         this.app.context.fillStyle = 'rgb(200, 0, 0)'; //Red
