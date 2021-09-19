@@ -359,7 +359,7 @@ class Brick {
         this.app.context.fillStyle = 'rgb(0, 240, 0)'; //Green
         break;
       case 2:
-        this.app.context.fillStyle = 'rgb(255, 140, 0)'; //Orange? Looks orange to me :)
+        this.app.context.fillStyle = 'rgb(255, 140, 0)'; //Orange
         break;
       case 1:
         this.app.context.fillStyle = 'rgb(200, 0, 0)'; //Red
