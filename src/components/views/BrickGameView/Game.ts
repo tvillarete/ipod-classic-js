@@ -282,8 +282,8 @@ class Ball {
     if (this.position.x + this.size.width < this.app.player.position.x) return;
 
     // Maps a value from the "in" range to the "out" range. Maybe this should go in a Mathy utils file?
-    const mapValue = (value: number, in_min: number, in_max: number, out_min: number, out_max: number) => {
-      return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    const mapValue = (value: number, inMin: number, inMax: number, outMin: number, outMax: number) => {
+      return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     }
     // Moving up with a custom angle, based on where the ball is hit
     const hitPosition = this.position.x - this.app.player.position.x;
