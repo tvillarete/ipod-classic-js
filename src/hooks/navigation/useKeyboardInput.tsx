@@ -14,11 +14,15 @@ interface Props {
   /** By default, we only allow dispatching of keypresses by the keyboard.
    * This can be overridden by setting `readOnly` to false. */
   readOnly?: boolean;
+  onEnterPress?: () => void;
+  onChange?: (value: string) => void;
 }
 
 const useKeyboardInput = ({
   initialValue = '',
   readOnly = true,
+  onEnterPress = () => {},
+  onChange = () => {},
 }: Props = {}): KeyboardInputHook => {
   const { showWindow, hideWindow } = useWindowContext();
   const [value, setValue] = useState(initialValue);
@@ -28,18 +32,24 @@ const useKeyboardInput = ({
     const { key } = detail;
 
     if (key === 'Enter') {
+      onEnterPress();
       hideWindow(ViewOptions.keyboard.id);
       return;
     }
 
     setValue((prevValue) => {
-      if (key === 'Backspace') {
-        return prevValue.slice(0, -1);
+      let newValue = prevValue;
+
+      if (key === 'Backspace' || key === 'delete') {
+        newValue = prevValue.slice(0, -1);
       } else if (key === ' ') {
-        return `${prevValue} `;
+        newValue = `${prevValue} `;
+      } else {
+        newValue = `${prevValue}${key}`;
       }
 
-      return `${prevValue}${key}`;
+      onChange(newValue);
+      return newValue;
     });
   });
 

@@ -185,3 +185,12 @@ export const convertSpotifyMediaItem = (
     url: track.uri,
   };
 };
+
+export const convertSpotifySearchResults = (
+  results: SpotifyApi.SearchResponse
+): IpodApi.SearchResults => {
+  return {
+    artists: results.artists?.items.map(convertSpotifyArtistFull) ?? [],
+    songs: results.tracks?.items.map(convertSpotifySongFull) ?? [],
+  };
+};

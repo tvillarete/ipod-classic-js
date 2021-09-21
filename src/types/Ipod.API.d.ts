@@ -55,4 +55,9 @@ declare namespace IpodApi {
     playlistName?: string;
     previewUrl?: string;
   }
+
+  interface SearchResults {
+    artists: Artist[];
+    songs: Song[];
+  }
 }

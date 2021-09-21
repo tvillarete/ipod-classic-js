@@ -4,12 +4,7 @@ import { popInAnimation } from 'animation';
 import { SelectableListOption } from 'components';
 import { WINDOW_TYPE } from 'components/views';
 import { motion } from 'framer-motion';
-import {
-  useKeyboardInput,
-  useMenuHideWindow,
-  useScrollHandler,
-  useWindowContext,
-} from 'hooks';
+import { useKeyboardInput, useMenuHideWindow, useScrollHandler } from 'hooks';
 import { WindowOptions } from 'providers/WindowProvider';
 import styled, { css } from 'styled-components';
 import { Unit } from 'utils/constants';
@@ -132,7 +127,6 @@ interface Props {
 const KeyboardInput = ({ windowStack, index, isHidden }: Props) => {
   const windowOptions = windowStack[index];
   useMenuHideWindow(windowOptions.id);
-  const { hideWindow } = useWindowContext();
   const containerRef = useRef<HTMLDivElement>(null);
 
   if (windowOptions.type !== WINDOW_TYPE.KEYBOARD) {
@@ -147,9 +141,6 @@ const KeyboardInput = ({ windowStack, index, isHidden }: Props) => {
   const handleSelect = useCallback(
     (key: string) => {
       switch (key) {
-        case 'Enter':
-          hideWindow();
-          break;
         default:
           const inputEvent = new CustomEvent('input', {
             detail: {
@@ -161,7 +152,7 @@ const KeyboardInput = ({ windowStack, index, isHidden }: Props) => {
           break;
       }
     },
-    [hideWindow, windowOptions.id]
+    [windowOptions.id]
   );
 
   const listOptions: SelectableListOption[] = useMemo(() => {
