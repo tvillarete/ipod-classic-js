@@ -135,7 +135,7 @@ const useSpotifyDataFetcher = () => {
   const fetchSearchResults = useCallback(
     async (query: string) => {
       const response = await fetchSpotifyApi<SpotifyApi.SearchResponse>({
-        endpoint: `search?q=${query}&type=track%2Cartist&limit=10`,
+        endpoint: `search?q=${query}&type=track%2Cartist%2Calbum%2Cplaylist&limit=15`,
         accessToken,
         onError: (error) => {
           throw new Error(error);

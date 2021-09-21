@@ -1,12 +1,14 @@
 import React, { useCallback, useMemo, useState } from 'react';
 
 import {
+  AlbumsView,
   ArtistsView,
   getConditionalOption,
+  PlaylistsView,
   SelectableList,
   SelectableListOption,
 } from 'components';
-import { ViewOptions } from 'components/views';
+import { SongsView, ViewOptions } from 'components/views';
 import {
   useDataFetcher,
   useEffectOnce,
@@ -30,8 +32,6 @@ const SearchView = () => {
     lazy: true,
   });
 
-  console.log({ searchResults });
-
   const handleEnterPress = useCallback(() => {
     if (searchTerm) {
       fetch();
@@ -45,6 +45,9 @@ const SearchView = () => {
 
   const options: SelectableListOption[] = useMemo(() => {
     const artists = searchResults?.artists;
+    const albums = searchResults?.albums;
+    const songs = searchResults?.songs;
+    const playlists = searchResults?.playlists;
 
     const arr: SelectableListOption[] = [
       {
@@ -56,17 +59,54 @@ const SearchView = () => {
         imageUrl: 'search_icon.svg',
         onSelect: showKeyboard,
       },
-      ...getConditionalOption(!!artists, {
+      ...getConditionalOption(!!artists?.length, {
         type: 'View',
         label: 'Artists',
         viewId: ViewOptions.artists.id,
-        component: () => <ArtistsView />,
-        sublabel: `${artists!.length} ${pluralize('artist', artists!.length)}`,
+        component: () => (
+          <ArtistsView artists={artists} inLibrary={false} showImages />
+        ),
+        imageUrl: 'artists_icon.svg',
+        sublabel: `${artists?.length} ${pluralize('artist', artists?.length)}`,
+      }),
+      ...getConditionalOption(!!albums?.length, {
+        type: 'View',
+        label: 'Albums',
+        viewId: ViewOptions.albums.id,
+        component: () => <AlbumsView albums={albums} inLibrary={false} />,
+        imageUrl: 'albums_icon.svg',
+        sublabel: `${albums?.length} ${pluralize('album', albums?.length)}`,
+      }),
+      ...getConditionalOption(!!songs?.length, {
+        type: 'View',
+        label: 'Songs',
+        viewId: ViewOptions.songs.id,
+        component: () => <SongsView songs={songs!} />,
+        imageUrl: 'song_icon.svg',
+        sublabel: `${songs?.length} ${pluralize('song', songs?.length)}`,
+      }),
+      ...getConditionalOption(!!playlists?.length, {
+        type: 'View',
+        label: 'Playlists',
+        viewId: ViewOptions.playlists.id,
+        component: () => <PlaylistsView playlists={playlists!} />,
+        imageUrl: 'playlist_icon.svg',
+        sublabel: `${playlists?.length} ${pluralize(
+          'playlist',
+          playlists?.length
+        )}`,
       }),
     ];
 
     return arr;
-  }, [searchResults?.artists, searchTerm, showKeyboard]);
+  }, [
+    searchResults?.albums,
+    searchResults?.artists,
+    searchResults?.playlists,
+    searchResults?.songs,
+    searchTerm,
+    showKeyboard,
+  ]);
 
   useEffectOnce(() => {
     showKeyboard();

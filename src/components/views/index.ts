@@ -13,6 +13,7 @@ export { default as PlaylistView } from './PlaylistView';
 export { default as PlaylistsView } from './PlaylistsView';
 export { default as SearchView } from './SearchView';
 export { default as SettingsView } from './SettingsView';
+export { default as SongsView } from './SongsView';
 
 export enum WINDOW_TYPE {
   SPLIT = 'SPLIT',
@@ -42,6 +43,7 @@ export const ViewOptions: Record<string, ViewOption> = {
   artist: { id: 'artist', title: 'Artist', type: WINDOW_TYPE.FULL },
   albums: { id: 'albums', title: 'Albums', type: WINDOW_TYPE.FULL },
   album: { id: 'album', title: 'Album', type: WINDOW_TYPE.FULL },
+  songs: { id: 'songs', title: 'Songs', type: WINDOW_TYPE.FULL },
   nowPlaying: {
     id: 'nowPlaying',
     title: 'Now Playing',

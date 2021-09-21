@@ -191,6 +191,9 @@ export const convertSpotifySearchResults = (
 ): IpodApi.SearchResults => {
   return {
     artists: results.artists?.items.map(convertSpotifyArtistFull) ?? [],
+    albums: results.albums?.items.map(convertSpotifyAlbumSimplified) ?? [],
     songs: results.tracks?.items.map(convertSpotifySongFull) ?? [],
+    playlists:
+      results.playlists?.items.map(convertSpotifyPlaylistSimplified) ?? [],
   };
 };

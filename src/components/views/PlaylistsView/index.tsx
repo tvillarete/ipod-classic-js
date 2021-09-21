@@ -11,25 +11,34 @@ import * as Utils from 'utils';
 
 import ViewOptions, { PlaylistView } from '../';
 
-const PlaylistsView = () => {
+interface Props {
+  playlists?: IpodApi.Playlist[];
+  inLibrary?: boolean;
+}
+
+const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
   useMenuHideWindow(ViewOptions.playlists.id);
   const { isAuthorized } = useSettings();
-  const { data, isLoading } = useDataFetcher<IpodApi.Playlist[]>({
+  const { data: fetchedPlaylists, isLoading } = useDataFetcher<
+    IpodApi.Playlist[]
+  >({
     name: 'playlists',
   });
 
   const options: SelectableListOption[] = useMemo(
     () =>
-      data?.map((playlist) => ({
+      (playlists ?? fetchedPlaylists)?.map((playlist) => ({
         type: 'View',
         label: playlist.name,
         sublabel: playlist.description || `By ${playlist.curatorName}`,
         imageUrl: playlist.artwork?.url,
         viewId: ViewOptions.playlist.id,
-        component: () => <PlaylistView id={playlist.id} inLibrary />,
+        component: () => (
+          <PlaylistView id={playlist.id} inLibrary={inLibrary} />
+        ),
         longPressOptions: Utils.getMediaOptions('playlist', playlist.id),
       })) ?? [],
-    [data]
+    [fetchedPlaylists, inLibrary, playlists]
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.playlists.id, options);

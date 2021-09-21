@@ -59,5 +59,7 @@ declare namespace IpodApi {
   interface SearchResults {
     artists: Artist[];
     songs: Song[];
+    albums: Album[];
+    playlists: Playlist[];
   }
 }
