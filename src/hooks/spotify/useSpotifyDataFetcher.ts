@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import { useSpotifySDK } from 'hooks';
+import { uniqBy } from 'lodash';
 import * as ConversionUtils from 'utils/conversion';
 
 type FetchSpotifyApiArgs = {
@@ -92,8 +93,9 @@ const useSpotifyDataFetcher = () => {
       });
 
       if (response) {
-        return response.items.map(
-          ConversionUtils.convertSpotifyAlbumSimplified
+        return uniqBy(
+          response.items.map(ConversionUtils.convertSpotifyAlbumSimplified),
+          (item) => item.name
         );
       }
     },

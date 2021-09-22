@@ -59,7 +59,7 @@ const SearchView = () => {
         sublabel: searchTerm
           ? `Results for: ${searchTerm}`
           : 'Enter text to search',
-        imageUrl: 'search.svg',
+        imageUrl: 'search_icon.svg',
         onSelect: showKeyboard,
       },
       ...getConditionalOption(!!artists?.length, {

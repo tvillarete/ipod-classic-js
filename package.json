@@ -5,8 +5,10 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
+    "@types/lodash.uniqby": "^4.7.6",
     "framer-motion": "^4.0.3",
     "he": "^1.2.0",
+    "lodash.uniqby": "^4.7.0",
     "long-press-event": "^2.4.4",
     "pluralize": "^8.0.0",
     "prettier": "^2.3.1",
