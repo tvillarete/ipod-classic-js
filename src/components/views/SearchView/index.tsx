@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
   AlbumsView,
   ArtistsView,
+  AuthPrompt,
   getConditionalOption,
   PlaylistsView,
   SelectableList,
@@ -15,11 +16,13 @@ import {
   useKeyboardInput,
   useMenuHideWindow,
   useScrollHandler,
+  useSettings,
 } from 'hooks';
 import pluralize from 'pluralize';
 
 const SearchView = () => {
   useMenuHideWindow(ViewOptions.search.id);
+  const { isAuthorized } = useSettings();
   const [searchTerm, setSearchTerm] = useState('');
 
   const {
@@ -109,17 +112,22 @@ const SearchView = () => {
   ]);
 
   useEffectOnce(() => {
-    showKeyboard();
+    if (isAuthorized) {
+      showKeyboard();
+    }
   });
 
   const [scrollIndex] = useScrollHandler(ViewOptions.search.id, options);
 
-  return (
+  return isAuthorized ? (
     <SelectableList
+      loading={isLoading}
       options={options}
       activeIndex={scrollIndex}
-      loading={isLoading}
+      emptyMessage="No results"
     />
+  ) : (
+    <AuthPrompt message="Sign in to search" />
   );
 };
 
