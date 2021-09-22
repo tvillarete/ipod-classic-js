@@ -1,6 +1,10 @@
 import React, { useMemo } from 'react';
 
-import { SelectableList, SelectableListOption } from 'components';
+import {
+  getConditionalOption,
+  SelectableList,
+  SelectableListOption,
+} from 'components';
 import { PREVIEW } from 'components/previews';
 import {
   AlbumsView,
@@ -8,11 +12,18 @@ import {
   CoverFlowView,
   NowPlayingView,
   PlaylistsView,
+  SearchView,
   ViewOptions,
 } from 'components/views';
-import { useMenuHideWindow, useMusicKit, useScrollHandler } from 'hooks';
+import {
+  useMenuHideWindow,
+  useMusicKit,
+  useScrollHandler,
+  useSettings,
+} from 'hooks';
 
 const MusicView = () => {
+  const { service } = useSettings();
   const { music } = useMusicKit();
   useMenuHideWindow(ViewOptions.music.id);
 
@@ -46,6 +57,14 @@ const MusicView = () => {
         component: () => <AlbumsView />,
         preview: PREVIEW.MUSIC,
       },
+      // Search functionality is only supported with Spotify (for now...)
+      ...getConditionalOption(service === 'spotify', {
+        type: 'View',
+        label: 'Search',
+        viewId: ViewOptions.search.id,
+        component: () => <SearchView />,
+        preview: PREVIEW.MUSIC,
+      }),
     ];
 
     if (music.isAuthorized && music.player?.nowPlayingItem?.isPlayable) {
@@ -59,7 +78,7 @@ const MusicView = () => {
     }
 
     return arr;
-  }, [music.isAuthorized, music.player?.nowPlayingItem?.isPlayable]);
+  }, [music.isAuthorized, music.player?.nowPlayingItem?.isPlayable, service]);
 
   const [scrollIndex] = useScrollHandler(ViewOptions.music.id, options);
 

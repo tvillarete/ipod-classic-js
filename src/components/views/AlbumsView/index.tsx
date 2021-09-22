@@ -11,25 +11,34 @@ import * as Utils from 'utils';
 
 import ViewOptions, { AlbumView } from '../';
 
-const AlbumsView = () => {
+interface Props {
+  albums?: IpodApi.Album[];
+  inLibrary?: boolean;
+}
+
+const AlbumsView = ({ albums, inLibrary = true }: Props) => {
   const { isAuthorized } = useSettings();
   useMenuHideWindow(ViewOptions.albums.id);
 
-  const { data: albums, isLoading } = useDataFetcher<IpodApi.Album[]>({
+  const { data: fetchedAlbums, isLoading } = useDataFetcher<IpodApi.Album[]>({
     name: 'albums',
+    // Don't fetch if we're passed an initial array of albums
+    lazy: !!albums,
   });
 
   const options: SelectableListOption[] = useMemo(
     () =>
-      albums?.map((album) => ({
+      (albums ?? fetchedAlbums)?.map((album) => ({
         type: 'View',
         label: album.name,
         sublabel: album.artistName,
         imageUrl: Utils.getArtwork(50, album.artwork?.url),
         viewId: ViewOptions.album.id,
-        component: () => <AlbumView id={album.id ?? ''} inLibrary />,
+        component: () => (
+          <AlbumView id={album.id ?? ''} inLibrary={inLibrary} />
+        ),
       })) ?? [],
-    [albums]
+    [albums, fetchedAlbums, inLibrary]
   );
 
   const [scrollIndex] = useScrollHandler(ViewOptions.albums.id, options);
