@@ -1,17 +1,19 @@
 export { default as AboutView } from './AboutView';
-export { default as CoverFlowView } from './CoverFlowView';
-export { default as HomeView } from './HomeView';
-export { default as MusicView } from './MusicView';
+export { default as AlbumView } from './AlbumView';
+export { default as AlbumsView } from './AlbumsView';
 export { default as ArtistsView } from './ArtistsView';
 export { default as ArtistView } from './ArtistView';
-export { default as AlbumsView } from './AlbumsView';
-export { default as AlbumView } from './AlbumView';
-export { default as NowPlayingView } from './NowPlayingView';
-export { default as PlaylistsView } from './PlaylistsView';
-export { default as PlaylistView } from './PlaylistView';
-export { default as GamesView } from './GamesView';
 export { default as BrickGameView } from './BrickGameView';
+export { default as CoverFlowView } from './CoverFlowView';
+export { default as GamesView } from './GamesView';
+export { default as HomeView } from './HomeView';
+export { default as MusicView } from './MusicView';
+export { default as NowPlayingView } from './NowPlayingView';
+export { default as PlaylistView } from './PlaylistView';
+export { default as PlaylistsView } from './PlaylistsView';
+export { default as SearchView } from './SearchView';
 export { default as SettingsView } from './SettingsView';
+export { default as SongsView } from './SongsView';
 
 export enum WINDOW_TYPE {
   SPLIT = 'SPLIT',
@@ -19,6 +21,7 @@ export enum WINDOW_TYPE {
   COVER_FLOW = 'COVER_FLOW',
   ACTION_SHEET = 'ACTION_SHEET',
   POPUP = 'POPUP',
+  KEYBOARD = 'KEYBOARD',
 }
 
 type ViewOption = {
@@ -40,6 +43,7 @@ export const ViewOptions: Record<string, ViewOption> = {
   artist: { id: 'artist', title: 'Artist', type: WINDOW_TYPE.FULL },
   albums: { id: 'albums', title: 'Albums', type: WINDOW_TYPE.FULL },
   album: { id: 'album', title: 'Album', type: WINDOW_TYPE.FULL },
+  songs: { id: 'songs', title: 'Songs', type: WINDOW_TYPE.FULL },
   nowPlaying: {
     id: 'nowPlaying',
     title: 'Now Playing',
@@ -47,6 +51,7 @@ export const ViewOptions: Record<string, ViewOption> = {
   },
   playlists: { id: 'playlists', title: 'Playlists', type: WINDOW_TYPE.FULL },
   playlist: { id: 'playlist', title: 'Playlist', type: WINDOW_TYPE.FULL },
+  search: { id: 'search', title: 'Search', type: WINDOW_TYPE.FULL },
   brickGame: { id: 'brickGame', title: 'Brick', type: WINDOW_TYPE.FULL },
 
   // CoverFlow view
@@ -93,6 +98,13 @@ export const ViewOptions: Record<string, ViewOption> = {
     id: 'spotifyNonPremiumPopup',
     title: 'Premium',
     type: WINDOW_TYPE.POPUP,
+  },
+
+  // Keyboard
+  keyboard: {
+    id: 'keyboard',
+    title: 'Keyboard',
+    type: WINDOW_TYPE.KEYBOARD,
   },
 };
 

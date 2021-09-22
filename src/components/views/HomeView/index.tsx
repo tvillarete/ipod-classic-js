@@ -104,7 +104,8 @@ const HomeView = () => {
     const shouldShowNowPlaying =
       !!nowPlayingItem &&
       activeView.id !== ViewOptions.nowPlaying.id &&
-      activeView.id !== ViewOptions.coverFlow.id;
+      activeView.id !== ViewOptions.coverFlow.id &&
+      activeView.id !== ViewOptions.keyboard.id;
 
     // Only show the now playing view if we're playing a song and not already on that view.
     if (shouldShowNowPlaying) {

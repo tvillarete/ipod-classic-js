@@ -6,7 +6,8 @@ import {
   useState,
 } from 'react';
 
-import { useEventListener, useMKEventListener } from 'hooks';
+import { ViewOptions } from 'components';
+import { useEventListener, useMKEventListener, useWindowContext } from 'hooks';
 import * as ConversionUtils from 'utils/conversion';
 import { IpodEvent } from 'utils/events';
 
@@ -51,6 +52,7 @@ interface Props {
 }
 
 export const AudioPlayerProvider = ({ children }: Props) => {
+  const { windowStack } = useWindowContext();
   const { service, isSpotifyAuthorized, isAppleAuthorized } = useSettings();
   const { spotifyPlayer, accessToken, deviceId } = useSpotifySDK();
   const { music } = useMusicKit();
@@ -160,7 +162,10 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   }, [music, service, spotifyPlayer]);
 
   const togglePlayPause = useCallback(async () => {
-    if (!nowPlayingItem) {
+    const activeWindow = windowStack[windowStack.length - 1];
+
+    // Don't toggle play/pause when using the on-screen keyboard.
+    if (!nowPlayingItem || activeWindow.id === ViewOptions.keyboard.id) {
       return;
     }
 
@@ -180,7 +185,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       default:
         throw new Error('Unable to play: service not specified');
     }
-  }, [music, nowPlayingItem, service, spotifyPlayer]);
+  }, [music, nowPlayingItem, service, spotifyPlayer, windowStack]);
 
   const skipNext = useCallback(async () => {
     if (!nowPlayingItem) {

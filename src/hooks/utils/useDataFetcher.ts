@@ -9,6 +9,8 @@ interface UserLibraryProps {
 
 interface CommonFetcherProps {
   name: string;
+  /** Data will not be fetched until the `fetch` function is called. */
+  lazy?: boolean;
 }
 
 interface PlaylistsFetcherProps {
@@ -40,6 +42,11 @@ interface ArtistFetcherProps extends UserLibraryProps {
   artworkSize?: number;
 }
 
+interface SearchFetcherProps extends UserLibraryProps {
+  name: 'search';
+  query: string;
+}
+
 type Props = CommonFetcherProps &
   (
     | PlaylistsFetcherProps
@@ -48,6 +55,7 @@ type Props = CommonFetcherProps &
     | AlbumFetcherProps
     | ArtistsFetcherProps
     | ArtistFetcherProps
+    | SearchFetcherProps
   );
 
 const useDataFetcher = <TType extends object>(props: Props) => {
@@ -159,13 +167,30 @@ const useDataFetcher = <TType extends object>(props: Props) => {
     [appleDataFetcher, service, spotifyDataFetcher]
   );
 
-  const handleMount = useCallback(async () => {
+  const fetchSearchResults = useCallback(
+    async (options: SearchFetcherProps) => {
+      setIsLoading(true);
+      let searchResults: IpodApi.SearchResults | undefined;
+
+      if (service === 'spotify') {
+        searchResults = await spotifyDataFetcher.fetchSearchResults(
+          options.query
+        );
+      }
+
+      setData(searchResults as TType);
+      setIsLoading(false);
+    },
+    [service, spotifyDataFetcher]
+  );
+
+  const handleFetch = useCallback(async () => {
     setHasError(false);
     setIsLoading(true);
 
     switch (props.name) {
       case 'albums':
-        await fetchAlbums();
+        fetchAlbums();
         break;
       case 'album':
         await fetchAlbum(props);
@@ -182,6 +207,9 @@ const useDataFetcher = <TType extends object>(props: Props) => {
       case 'playlist':
         await fetchPlaylist(props);
         break;
+      case 'search':
+        await fetchSearchResults(props);
+        break;
     }
 
     setIsMounted(true);
@@ -192,25 +220,40 @@ const useDataFetcher = <TType extends object>(props: Props) => {
     fetchArtists,
     fetchPlaylist,
     fetchPlaylists,
+    fetchSearchResults,
     props,
   ]);
 
   useEffect(() => {
+    // Data fetching will be manually triggered when lazy is true.
+    if (props.lazy) {
+      setIsLoading(false);
+      return;
+    }
+
     if (
       !isMounted &&
       ((service === 'apple' && isAppleAuthorized) ||
         (service === 'spotify' && isSpotifyAuthorized))
     ) {
-      handleMount();
+      handleFetch();
     } else {
       setIsLoading(false);
     }
-  }, [handleMount, isAppleAuthorized, isMounted, isSpotifyAuthorized, service]);
+  }, [
+    handleFetch,
+    isAppleAuthorized,
+    isMounted,
+    isSpotifyAuthorized,
+    props.lazy,
+    service,
+  ]);
 
   return {
     isLoading,
     data,
     hasError,
+    fetch: handleFetch,
   };
 };
 

@@ -7,6 +7,7 @@ import { IpodEvent } from 'utils/events';
 import ActionSheetWindowManager from './ActionSheetWindowManager';
 import CoverFlowWindowManager from './CoverFlowWindowManager';
 import FullScreenWindowManager from './FullScreenWindowManager';
+import KeyboardWindowManager from './KeyboardWindowManager';
 import PopupWindowManager from './PopupWindowManager';
 import SplitScreenWindowManager from './SplitScreenWindowManager';
 
@@ -38,6 +39,9 @@ const WindowManager = () => {
   const popupWindows = windowStack.filter(
     (window) => window.type === WINDOW_TYPE.POPUP
   );
+  const keyboardWindows = windowStack.filter(
+    (window) => window.type === WINDOW_TYPE.KEYBOARD
+  );
 
   const isReady = isConfigured && hasAppleDevToken;
 
@@ -56,6 +60,7 @@ const WindowManager = () => {
           <FullScreenWindowManager windowStack={fullViewWindows} />
           <ActionSheetWindowManager windowStack={actionSheetWindows} />
           <PopupWindowManager windowStack={popupWindows} />
+          <KeyboardWindowManager windowStack={keyboardWindows} />
         </>
       ) : (
         <ErrorScreen message={'Missing developer token'} />

@@ -132,6 +132,23 @@ const useSpotifyDataFetcher = () => {
     [accessToken]
   );
 
+  const fetchSearchResults = useCallback(
+    async (query: string) => {
+      const response = await fetchSpotifyApi<SpotifyApi.SearchResponse>({
+        endpoint: `search?q=${query}&type=track%2Cartist%2Calbum%2Cplaylist&limit=15`,
+        accessToken,
+        onError: (error) => {
+          throw new Error(error);
+        },
+      });
+
+      if (response) {
+        return ConversionUtils.convertSpotifySearchResults(response);
+      }
+    },
+    [accessToken]
+  );
+
   return {
     fetchAlbums,
     fetchAlbum,
@@ -139,6 +156,7 @@ const useSpotifyDataFetcher = () => {
     fetchArtist,
     fetchPlaylists,
     fetchPlaylist,
+    fetchSearchResults,
   };
 };
 
