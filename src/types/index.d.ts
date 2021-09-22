@@ -1,3 +1,4 @@
+/// <reference path="AppleMusic.API.d.ts" />
 /// <reference path="MusicKit.d.ts" />
 /// <reference path="MusicKit.API.d.ts" />
 /// <reference path="MusicKit.Events.d.ts" />

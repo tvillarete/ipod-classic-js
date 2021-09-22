@@ -1779,11 +1779,6 @@
   resolved "https://registry.npmjs.org/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@types/apple-music-api@^0.4.0":
-  version "0.4.1"
-  resolved "https://registry.npmjs.org/@types/apple-music-api/-/apple-music-api-0.4.1.tgz#c58174001ddd4c5a41dc9295d375f3a93a3fdd4f"
-  integrity sha512-/kChBviD0Ga9eHog6B0gh3RngKOySyxgBGG0uJQ0Czsr/lSBWIgzhZhC4MVyLyZ9jAV0nwm9eRH19MQmVDAndg==
-
 "@types/aria-query@^4.2.0":
   version "4.2.2"
   resolved "https://registry.npmjs.org/@types/aria-query/-/aria-query-4.2.2.tgz#ed4e0ad92306a704f9fb132a0cfcf77486dbe2bc"
