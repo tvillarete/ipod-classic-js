@@ -33,6 +33,7 @@ const ArtistsView = ({
     () =>
       (artists ?? fetchedArtists)?.map((artist) => ({
         type: 'View',
+        headerTitle: artist.name,
         label: artist.name,
         viewId: ViewOptions.artist.id,
         imageUrl: showImages

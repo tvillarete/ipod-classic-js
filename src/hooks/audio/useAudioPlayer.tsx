@@ -300,7 +300,11 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   );
 
   const handleSpotifyPlaybackStateChange = useCallback(
-    (state: Spotify.PlaybackState) => {
+    (state?: Spotify.PlaybackState) => {
+      if (!state) {
+        return;
+      }
+
       if (state.disallows.resuming) {
         setPlaybackInfo((prevState) => ({
           ...prevState,

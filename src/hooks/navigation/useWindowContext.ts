@@ -42,7 +42,7 @@ export const useWindowContext = (): WindowContextHook => {
       setWindowState((prevWindowState) => ({
         ...prevWindowState,
         windowStack: [...prevWindowState.windowStack, window],
-        headerTitle: ViewOptions[window.id].title,
+        headerTitle: window.headerTitle ?? ViewOptions[window.id].title,
       }));
     },
     [setWindowState]
@@ -58,11 +58,14 @@ export const useWindowContext = (): WindowContextHook => {
             )
           : prevWindowState.windowStack.slice(0, -1);
 
+        const activeView = newWindowStack[newWindowStack.length - 1];
+        const headerTitle =
+          activeView.headerTitle ?? ViewOptions[activeView.id].title;
+
         return {
           ...prevWindowState,
           windowStack: newWindowStack,
-          headerTitle:
-            ViewOptions[newWindowStack[newWindowStack.length - 1].id].title,
+          headerTitle,
         };
       });
     },

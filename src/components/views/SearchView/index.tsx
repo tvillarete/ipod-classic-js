@@ -92,7 +92,9 @@ const SearchView = () => {
         type: 'View',
         label: 'Playlists',
         viewId: ViewOptions.playlists.id,
-        component: () => <PlaylistsView playlists={playlists!} />,
+        component: () => (
+          <PlaylistsView playlists={playlists!} inLibrary={false} />
+        ),
         imageUrl: 'playlist_icon.svg',
         sublabel: `${playlists?.length} ${pluralize(
           'playlist',

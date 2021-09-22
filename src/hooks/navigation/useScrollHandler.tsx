@@ -7,10 +7,10 @@ import {
 } from 'components';
 import ViewOptions, { NowPlayingView, WINDOW_TYPE } from 'components/views';
 import { useWindowContext } from 'hooks';
-
-import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
 import useHapticFeedback from 'hooks/useHapticFeedback';
 import { IpodEvent } from 'utils/events';
+
+import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
 
 /** Gets the initial index for the scroll position. If there is a selected option,
  * this will initialize our initial scroll position at the selectedOption  */
@@ -92,12 +92,17 @@ const useScrollHandler = (
     (
       id: string,
       component: React.ReactNode,
-      windowType?: WINDOW_TYPE.FULL | WINDOW_TYPE.SPLIT | WINDOW_TYPE.COVER_FLOW
+      windowType?:
+        | WINDOW_TYPE.FULL
+        | WINDOW_TYPE.SPLIT
+        | WINDOW_TYPE.COVER_FLOW,
+      headerTitle?: string
     ) => {
       showWindow({
         id,
         type: windowType ?? (ViewOptions[id]?.type as any) ?? WINDOW_TYPE.FULL,
         component,
+        headerTitle,
       });
     },
     [showWindow]
@@ -149,7 +154,12 @@ const useScrollHandler = (
         window.open(option.url, '_blank');
         break;
       case 'View':
-        handleShowView(option.viewId, option.component, option.windowType);
+        handleShowView(
+          option.viewId,
+          option.component,
+          option.windowType,
+          option.headerTitle
+        );
         break;
       case 'Action':
         option.onSelect();
