@@ -133,7 +133,6 @@ const useMKDataFetcher = () => {
       });
 
       const hi = ConversionUtils.convertAppleSearchResults(response);
-      console.log({ hi });
       return hi;
     },
     [fetchAppleMusicApi]

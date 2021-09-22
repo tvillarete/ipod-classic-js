@@ -201,8 +201,7 @@ export const convertSpotifySearchResults = (
 export const convertAppleSearchResults = (
   search: AppleMusicApi.SearchResponse
 ): IpodApi.SearchResults => {
-  const results = search.results;
-  console.log(results.albums);
+  const { results } = search;
 
   return {
     artists: results.artists?.data.map(convertAppleArtist) ?? [],
