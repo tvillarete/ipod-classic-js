@@ -35,7 +35,9 @@ const ArtistsView = ({
         type: 'View',
         label: artist.name,
         viewId: ViewOptions.artist.id,
-        imageUrl: showImages ? Utils.getArtwork(50, artist.artwork?.url) : '',
+        imageUrl: showImages
+          ? Utils.getArtwork(50, artist.artwork?.url) ?? 'artists_icon.svg'
+          : '',
         component: () => <ArtistView id={artist.id} inLibrary={inLibrary} />,
       })) ?? [],
     [artists, fetchedArtists, inLibrary, showImages]
