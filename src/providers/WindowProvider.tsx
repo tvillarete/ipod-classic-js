@@ -9,6 +9,7 @@ type SharedOptionProps = {
   type: Views.WINDOW_TYPE;
   /** Fire an event when the window closes. */
   onClose?: (...args: any[]) => void;
+  headerTitle?: string;
   /** Any extra styles you want to pass to the window. */
   styles?: Record<string, any>;
 };

@@ -30,6 +30,7 @@ const AlbumsView = ({ albums, inLibrary = true }: Props) => {
     () =>
       (albums ?? fetchedAlbums)?.map((album) => ({
         type: 'View',
+        headerTitle: album.name,
         label: album.name,
         sublabel: album.artistName,
         imageUrl: Utils.getArtwork(50, album.artwork?.url),

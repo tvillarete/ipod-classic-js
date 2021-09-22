@@ -8,7 +8,7 @@ export const getAppleArtwork = (size: number | string, url?: string) => {
     return undefined;
   }
 
-  return url.replace('{w}', `${size}`).replace('{h}', `${size}`);
+  return url.replace('{w}', `${size || 100}`).replace('{h}', `${size || 100}`);
 };
 
 export const convertAppleSong = (data: AppleMusicApi.Song): IpodApi.Song => ({
@@ -98,7 +98,7 @@ export const convertAppleAlbum = (
     url:
       getAppleArtwork(artworkSize ?? 100, data.attributes?.artwork?.url) ?? '',
   },
-  songs: data.relationships?.tracks.data.map(convertAppleSong) ?? [],
+  songs: data.relationships?.tracks?.data?.map(convertAppleSong) ?? [],
 });
 
 export const convertSpotifyAlbumSimplified = (
@@ -195,5 +195,19 @@ export const convertSpotifySearchResults = (
     songs: results.tracks?.items.map(convertSpotifySongFull) ?? [],
     playlists:
       results.playlists?.items.map(convertSpotifyPlaylistSimplified) ?? [],
+  };
+};
+
+export const convertAppleSearchResults = (
+  search: AppleMusicApi.SearchResponse
+): IpodApi.SearchResults => {
+  const { results } = search;
+
+  return {
+    artists: results.artists?.data.map(convertAppleArtist) ?? [],
+    albums:
+      results.albums?.data.map((album) => convertAppleAlbum(album, 100)) ?? [],
+    songs: results.songs?.data.map(convertAppleSong) ?? [],
+    playlists: results.playlists?.data.map(convertApplePlaylist) ?? [],
   };
 };

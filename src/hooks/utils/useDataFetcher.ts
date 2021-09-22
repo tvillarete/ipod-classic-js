@@ -176,12 +176,16 @@ const useDataFetcher = <TType extends object>(props: Props) => {
         searchResults = await spotifyDataFetcher.fetchSearchResults(
           options.query
         );
+      } else if (service === 'apple') {
+        searchResults = await appleDataFetcher.fetchSearchResults(
+          options.query
+        );
       }
 
       setData(searchResults as TType);
       setIsLoading(false);
     },
-    [service, spotifyDataFetcher]
+    [appleDataFetcher, service, spotifyDataFetcher]
   );
 
   const handleFetch = useCallback(async () => {

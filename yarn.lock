@@ -1926,15 +1926,15 @@
 
 "@types/lodash.uniqby@^4.7.6":
   version "4.7.6"
-  resolved "https://packages.convoy.com/artifactory/api/npm/npm/@types/lodash.uniqby/-/lodash.uniqby-4.7.6.tgz#672827a701403f07904fe37f0721ae92abfa80e8"
-  integrity sha1-ZygnpwFAPweQT+N/ByGukqv6gOg=
+  resolved "https://registry.npmjs.org/@types/lodash.uniqby/-/lodash.uniqby-4.7.6.tgz#672827a701403f07904fe37f0721ae92abfa80e8"
+  integrity sha512-9wBhrm1y6asW50Joj6tsySCNUgzK2tCqL7vtKIej0E9RyeBFdcte7fxUosmFuMoOU0eHqOMK76kCCrK99jxHgg==
   dependencies:
     "@types/lodash" "*"
 
 "@types/lodash@*":
   version "4.14.173"
-  resolved "https://packages.convoy.com/artifactory/api/npm/npm/@types/lodash/-/lodash-4.14.173.tgz#9d3b674c67a26cf673756f6aca7b429f237f91ed"
-  integrity sha1-nTtnTGeibPZzdW9qyntCnyN/ke0=
+  resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.173.tgz#9d3b674c67a26cf673756f6aca7b429f237f91ed"
+  integrity sha512-vv0CAYoaEjCw/mLy96GBTnRoZrSxkGE0BKzKimdR8P3OzrNYNvBgtW7p055A+E8C31vXNUhWKoFCbhq7gbyhFg==
 
 "@types/minimatch@*":
   version "3.0.5"
@@ -7270,7 +7270,7 @@ lodash.uniq@^4.5.0:
 
 lodash.uniqby@^4.7.0:
   version "4.7.0"
-  resolved "https://packages.convoy.com/artifactory/api/npm/npm/lodash.uniqby/-/lodash.uniqby-4.7.0.tgz#d99c07a669e9e6d24e1362dfe266c67616af1302"
+  resolved "https://registry.npmjs.org/lodash.uniqby/-/lodash.uniqby-4.7.0.tgz#d99c07a669e9e6d24e1362dfe266c67616af1302"
   integrity sha1-2ZwHpmnp5tJOE2Lf4mbGdhavEwI=
 
 "lodash@>=3.5 <5", lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.5, lodash@^4.7.0:

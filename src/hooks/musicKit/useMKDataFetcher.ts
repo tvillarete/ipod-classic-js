@@ -122,6 +122,22 @@ const useMKDataFetcher = () => {
     [fetchAppleMusicApi]
   );
 
+  const fetchSearchResults = useCallback(
+    async (query: string) => {
+      const response = await fetchAppleMusicApi<AppleMusicApi.SearchResponse>({
+        endpoint: `search`,
+        params: {
+          term: query,
+          types: 'albums,artists,playlists,songs',
+        },
+      });
+
+      const hi = ConversionUtils.convertAppleSearchResults(response);
+      return hi;
+    },
+    [fetchAppleMusicApi]
+  );
+
   return {
     fetchAlbums,
     fetchAlbum,
@@ -129,6 +145,7 @@ const useMKDataFetcher = () => {
     fetchArtistAlbums,
     fetchPlaylists,
     fetchPlaylist,
+    fetchSearchResults,
   };
 };
 

@@ -23,6 +23,7 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
     IpodApi.Playlist[]
   >({
     name: 'playlists',
+    lazy: !!playlists,
   });
 
   const options: SelectableListOption[] = useMemo(
@@ -33,6 +34,7 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
         sublabel: playlist.description || `By ${playlist.curatorName}`,
         imageUrl: playlist.artwork?.url,
         viewId: ViewOptions.playlist.id,
+        headerTitle: playlist.name,
         component: () => (
           <PlaylistView id={playlist.id} inLibrary={inLibrary} />
         ),

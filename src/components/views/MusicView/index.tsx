@@ -57,14 +57,13 @@ const MusicView = () => {
         component: () => <AlbumsView />,
         preview: PREVIEW.MUSIC,
       },
-      // Search functionality is only supported with Spotify (for now...)
-      ...getConditionalOption(service === 'spotify', {
+      {
         type: 'View',
         label: 'Search',
         viewId: ViewOptions.search.id,
         component: () => <SearchView />,
         preview: PREVIEW.MUSIC,
-      }),
+      },
     ];
 
     if (music.isAuthorized && music.player?.nowPlayingItem?.isPlayable) {

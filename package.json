@@ -5,7 +5,6 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "@types/lodash.uniqby": "^4.7.6",
     "framer-motion": "^4.0.3",
     "he": "^1.2.0",
     "lodash.uniqby": "^4.7.0",
@@ -50,6 +49,7 @@
     "@types/apple-music-api": "^0.4.0",
     "@types/he": "^1.1.1",
     "@types/jest": "24.0.19",
+    "@types/lodash.uniqby": "^4.7.6",
     "@types/node": "12.19.6",
     "@types/pluralize": "^0.0.29",
     "@types/react": "17.0.1",
