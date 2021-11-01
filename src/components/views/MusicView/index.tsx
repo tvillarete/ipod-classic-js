@@ -1,10 +1,6 @@
 import React, { useMemo } from 'react';
 
-import {
-  getConditionalOption,
-  SelectableList,
-  SelectableListOption,
-} from 'components';
+import { SelectableList, SelectableListOption } from 'components';
 import { PREVIEW } from 'components/previews';
 import {
   AlbumsView,
@@ -15,15 +11,9 @@ import {
   SearchView,
   ViewOptions,
 } from 'components/views';
-import {
-  useMenuHideWindow,
-  useMusicKit,
-  useScrollHandler,
-  useSettings,
-} from 'hooks';
+import { useMenuHideWindow, useMusicKit, useScrollHandler } from 'hooks';
 
 const MusicView = () => {
-  const { service } = useSettings();
   const { music } = useMusicKit();
   useMenuHideWindow(ViewOptions.music.id);
 
@@ -77,7 +67,7 @@ const MusicView = () => {
     }
 
     return arr;
-  }, [music.isAuthorized, music.player?.nowPlayingItem?.isPlayable, service]);
+  }, [music.isAuthorized, music.player?.nowPlayingItem?.isPlayable]);
 
   const [scrollIndex] = useScrollHandler(ViewOptions.music.id, options);
 
