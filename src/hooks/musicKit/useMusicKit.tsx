@@ -16,7 +16,8 @@ import { useEventListener, useMKEventListener, useSettings } from 'hooks';
  * @see https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const DEVELOPER_TOKEN: string | undefined = undefined;
+const DEVELOPER_TOKEN: string | undefined =
+  process.env.REACT_APP_APPLE_DEV_TOKEN;
 
 export interface MusicKitState {
   musicKit: typeof MusicKit;
