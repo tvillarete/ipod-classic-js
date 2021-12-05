@@ -17,6 +17,7 @@ const Container = styled(motion.div)`
 
 const MusicPreview = () => {
   const { isSpotifyAuthorized, isAppleAuthorized } = useSettings();
+
   const {
     data: albums,
     isLoading,

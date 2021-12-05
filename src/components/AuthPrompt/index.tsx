@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useInterval } from 'hooks';
+import { useInterval, useMusicKit } from 'hooks';
 import styled, { css } from 'styled-components';
 import { Unit } from 'utils/constants';
 
@@ -56,10 +56,20 @@ interface Props {
 }
 
 const AuthPrompt = ({ message }: Props) => {
-  const [icon, setIcon] = useState<'apple' | 'spotify'>('apple');
+  const { isConfigured: isMkConfigured } = useMusicKit();
+  const [icon, setIcon] = useState<'apple' | 'spotify'>(
+    isMkConfigured ? 'apple' : 'spotify'
+  );
 
   useInterval(
-    () => setIcon((prevState) => (prevState === 'apple' ? 'spotify' : 'apple')),
+    () =>
+      setIcon((prevState) => {
+        if (prevState === 'apple' || !isMkConfigured) {
+          return 'spotify';
+        }
+
+        return 'apple';
+      }),
     4000
   );
 
@@ -70,11 +80,13 @@ const AuthPrompt = ({ message }: Props) => {
         alt="app_icon"
         src="apple_music_icon.svg"
       />
-      <StyledImg
-        isHidden={icon === 'apple'}
-        alt="app_icon"
-        src="spotify_icon.svg"
-      />
+      {isMkConfigured && (
+        <StyledImg
+          isHidden={icon === 'apple'}
+          alt="app_icon"
+          src="spotify_icon.svg"
+        />
+      )}
       <Title>{strings.title[icon]}</Title>
       <Text>{message ?? strings.defaultMessage}</Text>
     </RootContainer>

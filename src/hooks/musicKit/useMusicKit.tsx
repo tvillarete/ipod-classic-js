@@ -8,7 +8,6 @@ import React, {
   useState,
 } from 'react';
 
-import { ErrorScreen } from 'components';
 import { useEventListener, useMKEventListener, useSettings } from 'hooks';
 
 /**
@@ -43,7 +42,7 @@ export const useMusicKit = (): MusicKitHook => {
       return {} as MusicKit.MusicKitInstance;
     }
 
-    return window.MusicKit.getInstance();
+    return window.MusicKit?.getInstance();
   }, [hasDevToken, isConfigured]);
 
   const signIn = useCallback(async () => {
@@ -130,11 +129,7 @@ export const MusicKitProvider = ({ children }: Props) => {
 
   return (
     <MusicKitContext.Provider value={{ musicKit, isConfigured, hasDevToken }}>
-      {isConfigured ? (
-        children
-      ) : (
-        <ErrorScreen message={'Missing Apple developer token'} />
-      )}
+      {children}
     </MusicKitContext.Provider>
   );
 };
