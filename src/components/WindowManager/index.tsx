@@ -1,6 +1,5 @@
-import { ErrorScreen } from 'components';
 import { WINDOW_TYPE } from 'components/views';
-import { useEventListener, useMusicKit, useWindowContext } from 'hooks';
+import { useEventListener, useWindowContext } from 'hooks';
 import styled from 'styled-components';
 import { IpodEvent } from 'utils/events';
 
@@ -22,7 +21,6 @@ const Mask = styled.div`
 `;
 
 const WindowManager = () => {
-  const { isConfigured, hasDevToken: hasAppleDevToken } = useMusicKit();
   const { windowStack, resetWindows } = useWindowContext();
   const splitViewWindows = windowStack.filter(
     (window) => window.type === WINDOW_TYPE.SPLIT
@@ -43,28 +41,20 @@ const WindowManager = () => {
     (window) => window.type === WINDOW_TYPE.KEYBOARD
   );
 
-  const isReady = isConfigured && hasAppleDevToken;
-
   useEventListener<IpodEvent>('menulongpress', resetWindows);
 
   return (
     <div>
-      {isReady ? (
-        <>
-          <CoverFlowWindowManager window={coverFlowWindow} />
-          <SplitScreenWindowManager
-            windowStack={splitViewWindows}
-            menuHidden={fullViewWindows.length > 0}
-            allHidden={!!coverFlowWindow}
-          />
-          <FullScreenWindowManager windowStack={fullViewWindows} />
-          <ActionSheetWindowManager windowStack={actionSheetWindows} />
-          <PopupWindowManager windowStack={popupWindows} />
-          <KeyboardWindowManager windowStack={keyboardWindows} />
-        </>
-      ) : (
-        <ErrorScreen message={'Missing developer token'} />
-      )}
+      <CoverFlowWindowManager window={coverFlowWindow} />
+      <SplitScreenWindowManager
+        windowStack={splitViewWindows}
+        menuHidden={fullViewWindows.length > 0}
+        allHidden={!!coverFlowWindow}
+      />
+      <FullScreenWindowManager windowStack={fullViewWindows} />
+      <ActionSheetWindowManager windowStack={actionSheetWindows} />
+      <PopupWindowManager windowStack={popupWindows} />
+      <KeyboardWindowManager windowStack={keyboardWindows} />
       <Mask />
     </div>
   );

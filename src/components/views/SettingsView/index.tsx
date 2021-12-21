@@ -25,7 +25,11 @@ const SettingsView = () => {
     deviceTheme,
     setDeviceTheme,
   } = useSettings();
-  const { signIn: signInWithApple, signOut: signOutApple } = useMusicKit();
+  const {
+    signIn: signInWithApple,
+    signOut: signOutApple,
+    isConfigured: isMkConfigured,
+  } = useMusicKit();
   const { signOut: signOutSpotify, signIn: signInWithSpotify } =
     useSpotifySDK();
 
@@ -91,11 +95,11 @@ const SettingsView = () => {
         id: ViewOptions.signinPopup.id,
         label: 'Sign in',
         listOptions: [
-          {
+          ...getConditionalOption(isMkConfigured, {
             type: 'Action',
             label: 'Apple Music',
-            onSelect: signInWithApple,
-          },
+            onSelect: signOutApple,
+          }),
           {
             type: 'Action',
             label: 'Spotify',
@@ -125,16 +129,17 @@ const SettingsView = () => {
       }),
     ],
     [
-      deviceTheme,
-      setDeviceTheme,
-      isAppleAuthorized,
       isAuthorized,
-      isSpotifyAuthorized,
       service,
       signInWithApple,
       signInWithSpotify,
+      deviceTheme,
+      isMkConfigured,
       signOutApple,
+      isAppleAuthorized,
+      isSpotifyAuthorized,
       signOutSpotify,
+      setDeviceTheme,
     ]
   );
 

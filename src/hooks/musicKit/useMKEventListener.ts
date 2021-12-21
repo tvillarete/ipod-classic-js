@@ -9,9 +9,9 @@ const useMKEventListener = (
   callback: (...args: any) => void
 ) => {
   useEffect(() => {
-    const musicKit = window.MusicKit;
+    const musicKit = window.MusicKit || undefined;
 
-    if (musicKit.errors.length) {
+    if (!musicKit || musicKit.errors.length) {
       return;
     }
 
