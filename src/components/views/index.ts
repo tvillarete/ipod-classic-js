@@ -14,6 +14,7 @@ export { default as PlaylistsView } from './PlaylistsView';
 export { default as SearchView } from './SearchView';
 export { default as SettingsView } from './SettingsView';
 export { default as SongsView } from './SongsView';
+export { default as WordleView } from './WordleView';
 
 export enum WINDOW_TYPE {
   SPLIT = 'SPLIT',
@@ -24,13 +25,7 @@ export enum WINDOW_TYPE {
   KEYBOARD = 'KEYBOARD',
 }
 
-type ViewOption = {
-  id: string;
-  title: string;
-  type: WINDOW_TYPE;
-};
-
-export const ViewOptions: Record<string, ViewOption> = {
+export const ViewOptions = {
   // Split Screen Views
   home: { id: 'home', title: 'iPod.js', type: WINDOW_TYPE.SPLIT },
   music: { id: 'music', title: 'Music', type: WINDOW_TYPE.SPLIT },
@@ -53,6 +48,7 @@ export const ViewOptions: Record<string, ViewOption> = {
   playlist: { id: 'playlist', title: 'Playlist', type: WINDOW_TYPE.FULL },
   search: { id: 'search', title: 'Search', type: WINDOW_TYPE.FULL },
   brickGame: { id: 'brickGame', title: 'Brick', type: WINDOW_TYPE.FULL },
+  wordle: { id: 'wordle', title: 'Wordle', type: WINDOW_TYPE.FULL },
 
   // CoverFlow view
   coverFlow: {
@@ -97,6 +93,11 @@ export const ViewOptions: Record<string, ViewOption> = {
   spotifyNonPremiumPopup: {
     id: 'spotifyNonPremiumPopup',
     title: 'Premium',
+    type: WINDOW_TYPE.POPUP,
+  },
+  wordleNotInListPopup: {
+    id: 'wordleNotInListPopup',
+    title: 'Not in word list',
     type: WINDOW_TYPE.POPUP,
   },
 

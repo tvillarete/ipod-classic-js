@@ -9,6 +9,10 @@ export interface WindowContextHook {
   showWindow: (window: WindowOptions) => void;
   /** Given an id, remove the window from the stack (otherwise, pop the top window). */
   hideWindow: (id?: string) => void;
+  updateWindow: (
+    id: string,
+    updatedWindowOptions: Omit<WindowOptions, 'id' | 'type'>
+  ) => void;
   /** Removes all windows except the first from the windowStack. */
   resetWindows: () => void;
   /** Returns an array of WindowOptions. */
@@ -39,10 +43,14 @@ export const useWindowContext = (): WindowContextHook => {
 
   const showWindow = useCallback(
     (window: WindowOptions) => {
+      const headerTitle =
+        window.headerTitle ??
+        ViewOptions[window.id as keyof typeof ViewOptions].title;
+
       setWindowState((prevWindowState) => ({
         ...prevWindowState,
         windowStack: [...prevWindowState.windowStack, window],
-        headerTitle: window.headerTitle ?? ViewOptions[window.id].title,
+        headerTitle,
       }));
     },
     [setWindowState]
@@ -60,7 +68,8 @@ export const useWindowContext = (): WindowContextHook => {
 
         const activeView = newWindowStack[newWindowStack.length - 1];
         const headerTitle =
-          activeView.headerTitle ?? ViewOptions[activeView.id].title;
+          activeView.headerTitle ??
+          ViewOptions[activeView.id as keyof typeof ViewOptions].title;
 
         return {
           ...prevWindowState,
@@ -70,6 +79,26 @@ export const useWindowContext = (): WindowContextHook => {
       });
     },
     [setWindowState, windowState.windowStack.length]
+  );
+
+  const updateWindow = useCallback(
+    (id: string, updatedWindowOptions: Omit<WindowOptions, 'id' | 'type'>) => {
+      setWindowState((prevWindowState) => {
+        const newWindowStack = prevWindowState.windowStack.map((window) => {
+          if (window.id === id) {
+            return { ...window, ...updatedWindowOptions };
+          }
+
+          return window;
+        });
+
+        return {
+          ...prevWindowState,
+          windowStack: newWindowStack,
+        };
+      });
+    },
+    [setWindowState]
   );
 
   const resetWindows = useCallback(() => {
@@ -111,6 +140,7 @@ export const useWindowContext = (): WindowContextHook => {
   return {
     showWindow,
     hideWindow,
+    updateWindow,
     resetWindows,
     isWindowActive,
     windowStack: windowState.windowStack,

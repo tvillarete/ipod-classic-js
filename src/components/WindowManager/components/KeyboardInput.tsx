@@ -4,9 +4,9 @@ import { popInAnimation } from 'animation';
 import { SelectableListOption } from 'components';
 import { WINDOW_TYPE } from 'components/views';
 import { motion } from 'framer-motion';
-import { useKeyboardInput, useMenuHideWindow, useScrollHandler } from 'hooks';
+import { useMenuHideWindow, useScrollHandler } from 'hooks';
 import { WindowOptions } from 'providers/WindowProvider';
-import styled, { css } from 'styled-components';
+import styled, { css, CSSObject } from 'styled-components';
 import { Unit } from 'utils/constants';
 
 interface RootContainerProps {
@@ -65,7 +65,10 @@ const OptionText = styled.h3`
   width: 20px;
 `;
 
-const OptionContainer = styled.div<{ highlighted: boolean }>`
+const OptionContainer = styled.div<{
+  highlighted: boolean;
+  overrideStyles?: CSSObject;
+}>`
   text-align: center;
 
   ${({ highlighted }) =>
@@ -73,7 +76,10 @@ const OptionContainer = styled.div<{ highlighted: boolean }>`
     css`
       background: linear-gradient(180deg, #8aebf7 0%, #258af9 100%);
       border-radius: 4px;
+      color: white !important;
     `};
+
+  ${({ overrideStyles = {} }) => overrideStyles};
 `;
 
 const keyboardOptions = [
@@ -133,11 +139,6 @@ const KeyboardInput = ({ windowStack, index, isHidden }: Props) => {
     throw new Error('Keyboard option not supplied');
   }
 
-  useKeyboardInput({
-    initialValue: windowOptions.initialValue,
-    readOnly: false,
-  });
-
   const handleSelect = useCallback(
     (key: string) => {
       switch (key) {
@@ -156,12 +157,14 @@ const KeyboardInput = ({ windowStack, index, isHidden }: Props) => {
   );
 
   const listOptions: SelectableListOption[] = useMemo(() => {
-    return keyboardOptions.map((option) => ({
-      type: 'Action',
-      label: option.label,
-      onSelect: () => handleSelect(option.key),
-    }));
-  }, [handleSelect]);
+    return keyboardOptions
+      .filter((option) => !windowOptions.omittedKeys?.includes(option.key))
+      .map((option) => ({
+        type: 'Action',
+        label: option.label,
+        onSelect: () => handleSelect(option.key),
+      }));
+  }, [handleSelect, windowOptions.omittedKeys]);
 
   const [scrollIndex] = useScrollHandler(windowOptions.id, listOptions);
 
@@ -187,6 +190,9 @@ const KeyboardInput = ({ windowStack, index, isHidden }: Props) => {
             <OptionContainer
               key={`keyboard-option-${option.label}`}
               highlighted={scrollIndex === i}
+              overrideStyles={
+                windowOptions.styledKeys?.[option.label.toLowerCase()]
+              }
             >
               <OptionText>{option.label}</OptionText>
             </OptionContainer>

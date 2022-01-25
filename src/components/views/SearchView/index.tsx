@@ -43,6 +43,7 @@ const SearchView = () => {
 
   const { showKeyboard } = useKeyboardInput({
     onChange: (value) => setSearchTerm(value),
+    initialValue: searchTerm,
     onEnterPress: handleEnterPress,
   });
 

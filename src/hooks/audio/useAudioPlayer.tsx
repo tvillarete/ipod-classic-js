@@ -404,7 +404,10 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   useMKEventListener('queuePositionDidChange', updateNowPlayingItem);
 
   useEffect(() => {
-    if (isSpotifyAuthorized) {
+    if (
+      isSpotifyAuthorized &&
+      typeof spotifyPlayer.addListener === 'function'
+    ) {
       spotifyPlayer.addListener(
         'player_state_changed',
         handleSpotifyPlaybackStateChange

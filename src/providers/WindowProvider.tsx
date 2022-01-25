@@ -3,6 +3,7 @@ import { createContext, useState } from 'react';
 import { SelectableListOption } from 'components';
 import { PREVIEW } from 'components/previews';
 import ViewOptions, * as Views from 'components/views';
+import { CSSObject } from 'styled-components';
 
 type SharedOptionProps = {
   id: string;
@@ -40,9 +41,11 @@ type PopupViewOptionProps = {
   listOptions: SelectableListOption[];
 };
 
-type KeyboardViewOptionProps = {
+export type KeyboardViewOptionProps = {
   type: Views.WINDOW_TYPE.KEYBOARD;
   initialValue?: string;
+  omittedKeys?: string[];
+  styledKeys?: Record<string, CSSObject>;
 };
 
 export type WindowOptions<TComponent extends React.ComponentType<any> = any> =

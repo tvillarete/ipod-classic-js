@@ -3,10 +3,15 @@ import { useCallback, useState } from 'react';
 import { ViewOptions, WINDOW_TYPE } from 'components';
 import { useWindowContext } from 'hooks';
 import { useEventListener } from 'hooks/utils';
+import { KeyboardViewOptionProps } from 'providers/WindowProvider';
 
 interface KeyboardInputHook {
   value: string;
   showKeyboard: () => void;
+  hideKeyboard: () => void;
+  updateKeyboard: (
+    options: Omit<KeyboardViewOptionProps, 'type' | 'initialValue'>
+  ) => void;
 }
 
 interface Props {
@@ -14,6 +19,11 @@ interface Props {
   /** By default, we only allow dispatching of keypresses by the keyboard.
    * This can be overridden by setting `readOnly` to false. */
   readOnly?: boolean;
+  /** Hide the keyboard when enter is pressed. */
+  hideOnEnter?: boolean;
+  headerTitle?: string;
+  omittedKeys?: string[];
+  clearOnEnter?: boolean;
   onEnterPress?: () => void;
   onChange?: (value: string) => void;
 }
@@ -21,19 +31,35 @@ interface Props {
 const useKeyboardInput = ({
   initialValue = '',
   readOnly = true,
+  hideOnEnter = true,
+  headerTitle = 'Keyboard',
+  omittedKeys = [],
+  clearOnEnter = false,
   onEnterPress = () => {},
   onChange = () => {},
 }: Props = {}): KeyboardInputHook => {
-  const { showWindow, hideWindow } = useWindowContext();
+  const { showWindow, hideWindow, updateWindow, isWindowActive } =
+    useWindowContext();
   const [value, setValue] = useState(initialValue);
 
   useEventListener('input', ({ detail }) => {
-    // TODO: Only trigger keyboard input for one screen at a time.
     const { key } = detail;
 
     if (key === 'Enter') {
+      if (!isWindowActive(ViewOptions.keyboard.id)) {
+        return;
+      }
+
       onEnterPress();
-      hideWindow(ViewOptions.keyboard.id);
+
+      if (clearOnEnter) {
+        setValue('');
+      }
+
+      if (hideOnEnter) {
+        hideWindow(ViewOptions.keyboard.id);
+      }
+
       return;
     }
 
@@ -85,13 +111,30 @@ const useKeyboardInput = ({
   const showKeyboard = useCallback(() => {
     showWindow({
       id: ViewOptions.keyboard.id,
+      headerTitle,
       type: WINDOW_TYPE.KEYBOARD,
+      omittedKeys,
     });
-  }, [showWindow]);
+  }, [showWindow, headerTitle, omittedKeys]);
+
+  const updateKeyboard = useCallback(
+    (options: Omit<KeyboardViewOptionProps, 'type' | 'initialValue'>) => {
+      updateWindow(ViewOptions.keyboard.id, {
+        ...options,
+      } as any);
+    },
+    [updateWindow]
+  );
+
+  const hideKeyboard = useCallback(() => {
+    hideWindow(ViewOptions.keyboard.id);
+  }, [hideWindow]);
 
   return {
     value,
     showKeyboard,
+    hideKeyboard,
+    updateKeyboard,
   };
 };
 

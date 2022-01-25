@@ -98,9 +98,17 @@ const useScrollHandler = (
         | WINDOW_TYPE.COVER_FLOW,
       headerTitle?: string
     ) => {
+      if (!(id in ViewOptions)) {
+        console.error(`View with id ${id} does not exist.`);
+        return;
+      }
+
       showWindow({
         id,
-        type: windowType ?? (ViewOptions[id]?.type as any) ?? WINDOW_TYPE.FULL,
+        type:
+          windowType ??
+          (ViewOptions[id as keyof typeof ViewOptions]?.type as any) ??
+          WINDOW_TYPE.FULL,
         component,
         headerTitle,
       });
@@ -135,6 +143,7 @@ const useScrollHandler = (
   /** Parses the selected option for a new view to show or song to play. */
   const handleCenterClick = useCallback(async () => {
     const option = options[index];
+
     if (!isActive || !option) return;
     triggerHaptics(10);
 
