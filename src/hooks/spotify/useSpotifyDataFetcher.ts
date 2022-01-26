@@ -17,7 +17,8 @@ const fetchSpotifyApi = async <TSpotifyApiType extends object>({
 }: FetchSpotifyApiArgs) => {
   try {
     if (!accessToken) {
-      throw new Error('Provide a Spotify API Access token');
+      console.error('fetchSpotifyApi: accessToken is not defined');
+      return;
     }
 
     const res = await fetch(`https://api.spotify.com/v1/${endpoint}`, {

@@ -84,9 +84,9 @@ interface Props {
 const WindowProvider = ({ children }: Props) => {
   const windowStack: WindowOptions[] = [
     {
-      id: ViewOptions.home.id,
-      type: Views.WINDOW_TYPE.SPLIT,
-      component: Views.HomeView,
+      id: ViewOptions.wordle.id,
+      type: Views.WINDOW_TYPE.FULL,
+      component: Views.WordleView,
     },
   ];
   const [windowState, setWindowState] = useState<WindowState>({

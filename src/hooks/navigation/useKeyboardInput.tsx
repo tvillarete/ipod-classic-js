@@ -21,8 +21,11 @@ interface Props {
   readOnly?: boolean;
   /** Hide the keyboard when enter is pressed. */
   hideOnEnter?: boolean;
+  /** When the keyboard is displayed, choose what title shows in the header. */
   headerTitle?: string;
+  /** Hide certain letters or numbers that are by default present on the keyboard. */
   omittedKeys?: string[];
+  /** Clear the current text value when the "Enter" key is pressed. */
   clearOnEnter?: boolean;
   onEnterPress?: () => void;
   onChange?: (value: string) => void;
@@ -81,7 +84,7 @@ const useKeyboardInput = ({
 
   const handleKeypress = useCallback(
     ({ key }) => {
-      if (readOnly) {
+      if (readOnly || !isWindowActive(ViewOptions.keyboard.id)) {
         return;
       }
 
@@ -93,7 +96,7 @@ const useKeyboardInput = ({
 
       window.dispatchEvent(inputEvent);
     },
-    [readOnly]
+    [readOnly, isWindowActive]
   );
 
   const handleKeydown = useCallback(

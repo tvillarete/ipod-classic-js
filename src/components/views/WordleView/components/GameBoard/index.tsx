@@ -9,12 +9,13 @@ import {
   useScrollHandler,
   useWindowContext,
 } from 'hooks';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { getKeyboardStyles, submitGuess } from '../../actions/guess';
 import { WORDLE_OMITTED_KEYS } from '../../constants';
 import { useGameStateContext } from '../../providers/GameStateProvider';
-import { Guess, GuessResponse } from '../../types';
+import { GuessResponse } from '../../types';
+import GameBoardCell from './components/GameBoardCell';
 
 const RootContainer = styled.div`
   display: flex;
@@ -30,41 +31,7 @@ const RowContainer = styled.div`
   justify-content: center;
 `;
 
-const CellContainer = styled.div<{ state: Guess['state']; isActive?: boolean }>`
-  display: flex;
-  justify-content: center;
-  flex: 1;
-  max-width: 40px;
-  margin: 1px;
-  border: 2px solid
-    ${({ isActive = false }) => (isActive ? '#707074' : '#3a3a3c')};
-  font-weight: bold;
-  text-align: center;
-
-  ${({ state }) => {
-    let background = 'transparent';
-    switch (state) {
-      case 'correct':
-        background = `#538d4e;`;
-        break;
-      case 'wrong':
-        background = `#3a3a3c;`;
-        break;
-      case 'partial':
-        background = ` #b59f3b;`;
-        break;
-      default:
-        background = `transparent;`;
-        break;
-    }
-
-    return css`
-      background: ${background};
-    `;
-  }}
-`;
-
-const KeyboardButton = styled.div<{ isActive?: boolean }>`
+const ShowKeyboardButton = styled.div<{ isActive?: boolean }>`
   border-radius: 4px;
   text-align: center;
   padding: 8px;
@@ -75,10 +42,6 @@ const KeyboardButton = styled.div<{ isActive?: boolean }>`
     padding: 2px;
     border-radius: 2px;
   }
-`;
-
-const CellText = styled.p`
-  margin: 0;
 `;
 
 const GameBoard = () => {
@@ -94,9 +57,9 @@ const GameBoard = () => {
     [dispatch]
   );
 
-  const handleResult = useCallback(
-    (result: GuessResponse) => {
-      if (result.outcome === 'error') {
+  const handleGuessResponse = useCallback(
+    (response: GuessResponse) => {
+      if (response.outcome === 'error') {
         showWindow({
           id: ViewOptions.wordleNotInListPopup.id,
           type: WINDOW_TYPE.POPUP,
@@ -110,13 +73,13 @@ const GameBoard = () => {
           ],
         });
 
-        dispatch({ type: 'onError', data: result });
+        dispatch({ type: 'onError', data: response });
         return;
       }
 
       dispatch({
         type: 'onCommitGuess',
-        data: { ...result },
+        data: { ...response },
       });
     },
     [dispatch, showWindow]
@@ -130,8 +93,7 @@ const GameBoard = () => {
     omittedKeys: WORDLE_OMITTED_KEYS,
     onChange: handleKeyboardChange,
     onEnterPress: () => {
-      console.log('Submitting');
-      const result: GuessResponse = submitGuess({
+      const response: GuessResponse = submitGuess({
         guess,
         keyboardMap,
         numGuesses: activeRow,
@@ -139,7 +101,7 @@ const GameBoard = () => {
 
       const keyboardStyles = getKeyboardStyles(keyboardMap);
 
-      handleResult(result);
+      handleGuessResponse(response);
 
       updateKeyboard({
         styledKeys: keyboardStyles,
@@ -178,25 +140,20 @@ const GameBoard = () => {
     <RootContainer>
       {guesses.map((row, rowIndex) => (
         <RowContainer key={`row-${rowIndex}`}>
-          {row.map((cell, cellIndex) => {
-            const isActive = rowIndex === activeRow;
-            const text = isActive ? guess[cellIndex] : cell.letter;
-
-            return (
-              <CellContainer
-                isActive={isActive}
-                state={cell.state}
-                key={`cell-${cellIndex}`}
-              >
-                <CellText>{text?.toUpperCase()}</CellText>
-              </CellContainer>
-            );
-          })}
+          {row.map((cellGuess, cellIndex) => (
+            <GameBoardCell
+              key={`cell-${rowIndex}-${cellIndex}`}
+              index={cellIndex}
+              isActive={rowIndex === activeRow}
+              initialValue={guess[cellIndex]}
+              guess={cellGuess}
+            />
+          ))}
         </RowContainer>
       ))}
-      <KeyboardButton isActive={scrollIndex === 0}>
+      <ShowKeyboardButton isActive={scrollIndex === 0}>
         <img alt="Show keyboard" src="keyboard_icon.svg" />
-      </KeyboardButton>
+      </ShowKeyboardButton>
     </RootContainer>
   );
 };
