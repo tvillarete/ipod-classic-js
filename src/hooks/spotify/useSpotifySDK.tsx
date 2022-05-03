@@ -14,7 +14,7 @@ import * as SpotifyUtils from 'utils/spotify';
 
 import { useEffectOnce, useSettings } from '../';
 
-export const API_URL = 'https://b7d1fdb16506.ngrok.io';
+export const API_URL = 'https://308c-174-127-165-218.ngrok.io';
 
 export interface SpotifySDKState {
   isMounted: boolean;
