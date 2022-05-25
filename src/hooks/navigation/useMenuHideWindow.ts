@@ -21,4 +21,16 @@ const useMenuHideWindow = (id: string) => {
   useEventListener<IpodEvent>('menuclick', handleClick);
 };
 
-export default useMenuHideWindow;
+const useMenuHideWindowCenter = (id: string) => {
+  const { windowStack, hideWindow } = useWindowContext();
+
+  const handleClick = useCallback(() => {
+    if (windowStack[windowStack.length - 1].id === id) {
+      hideWindow();
+    }
+  }, [hideWindow, id, windowStack]);
+
+  useEventListener<IpodEvent>('centerclick', handleClick);
+};
+
+export {useMenuHideWindow ,useMenuHideWindowCenter};
