@@ -53,7 +53,7 @@ export const ViewOptions: Record<string, ViewOption> = {
   playlist: { id: 'playlist', title: 'Playlist', type: WINDOW_TYPE.FULL },
   search: { id: 'search', title: 'Search', type: WINDOW_TYPE.FULL },
   brickGame: { id: 'brickGame', title: 'Brick', type: WINDOW_TYPE.FULL },
-
+  game2048: { id: 'game2048', title: 'Game', type: WINDOW_TYPE.FULL },
   // CoverFlow view
   coverFlow: {
     id: 'coverFlow',
