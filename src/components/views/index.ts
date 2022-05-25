@@ -4,6 +4,7 @@ export { default as AlbumsView } from './AlbumsView';
 export { default as ArtistsView } from './ArtistsView';
 export { default as ArtistView } from './ArtistView';
 export { default as BrickGameView } from './BrickGameView';
+export { default as GameView2048 } from './GameView2048';
 export { default as CoverFlowView } from './CoverFlowView';
 export { default as GamesView } from './GamesView';
 export { default as HomeView } from './HomeView';
