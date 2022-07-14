@@ -1,6 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useMKDataFetcher, useSettings, useSpotifyDataFetcher } from 'hooks';
+import {
+  useMKDataFetcher,
+  useMusicKit,
+  useSettings,
+  useSpotifyDataFetcher,
+} from 'hooks';
 
 interface UserLibraryProps {
   inLibrary?: boolean;
@@ -62,10 +67,18 @@ const useDataFetcher = <TType extends object>(props: Props) => {
   const spotifyDataFetcher = useSpotifyDataFetcher();
   const appleDataFetcher = useMKDataFetcher();
   const { service, isAppleAuthorized, isSpotifyAuthorized } = useSettings();
+  const { isConfigured } = useMusicKit();
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [data, setData] = useState<TType>();
   const [isMounted, setIsMounted] = useState(false);
+
+  const canFetch = useMemo(() => {
+    return (
+      (service === 'apple' && isAppleAuthorized && isConfigured) ||
+      (service === 'spotify' && isSpotifyAuthorized)
+    );
+  }, [isAppleAuthorized, isConfigured, isSpotifyAuthorized, service]);
 
   const fetchAlbums = useCallback(async () => {
     let albums: IpodApi.Album[] | undefined;
@@ -77,7 +90,6 @@ const useDataFetcher = <TType extends object>(props: Props) => {
     }
 
     setData(albums as TType);
-    setIsLoading(false);
   }, [appleDataFetcher, service, spotifyDataFetcher]);
 
   const fetchAlbum = useCallback(
@@ -94,7 +106,6 @@ const useDataFetcher = <TType extends object>(props: Props) => {
       }
 
       setData(album as TType);
-      setIsLoading(false);
     },
     [appleDataFetcher, service, spotifyDataFetcher]
   );
@@ -108,7 +119,6 @@ const useDataFetcher = <TType extends object>(props: Props) => {
       artists = await spotifyDataFetcher.fetchArtists();
     }
     setData(artists as TType);
-    setIsLoading(false);
   }, [appleDataFetcher, service, spotifyDataFetcher]);
 
   const fetchArtistAlbums = useCallback(
@@ -128,7 +138,6 @@ const useDataFetcher = <TType extends object>(props: Props) => {
       }
 
       setData(albums as TType);
-      setIsLoading(false);
     },
     [appleDataFetcher, service, spotifyDataFetcher]
   );
@@ -143,7 +152,6 @@ const useDataFetcher = <TType extends object>(props: Props) => {
     }
 
     setData(playlists as TType);
-    setIsLoading(false);
   }, [appleDataFetcher, service, spotifyDataFetcher]);
 
   const fetchPlaylist = useCallback(
@@ -162,14 +170,12 @@ const useDataFetcher = <TType extends object>(props: Props) => {
         );
       }
       setData(playlist as TType);
-      setIsLoading(false);
     },
     [appleDataFetcher, service, spotifyDataFetcher]
   );
 
   const fetchSearchResults = useCallback(
     async (options: SearchFetcherProps) => {
-      setIsLoading(true);
       let searchResults: IpodApi.SearchResults | undefined;
 
       if (service === 'spotify') {
@@ -183,7 +189,6 @@ const useDataFetcher = <TType extends object>(props: Props) => {
       }
 
       setData(searchResults as TType);
-      setIsLoading(false);
     },
     [appleDataFetcher, service, spotifyDataFetcher]
   );
@@ -194,7 +199,7 @@ const useDataFetcher = <TType extends object>(props: Props) => {
 
     switch (props.name) {
       case 'albums':
-        fetchAlbums();
+        await fetchAlbums();
         break;
       case 'album':
         await fetchAlbum(props);
@@ -216,7 +221,7 @@ const useDataFetcher = <TType extends object>(props: Props) => {
         break;
     }
 
-    setIsMounted(true);
+    setIsLoading(false);
   }, [
     fetchAlbum,
     fetchAlbums,
@@ -228,30 +233,27 @@ const useDataFetcher = <TType extends object>(props: Props) => {
     props,
   ]);
 
-  useEffect(() => {
+  const handleMount = useCallback(async () => {
+    if (isMounted) {
+      return;
+    }
+
     // Data fetching will be manually triggered when lazy is true.
     if (props.lazy) {
       setIsLoading(false);
       return;
     }
 
-    if (
-      !isMounted &&
-      ((service === 'apple' && isAppleAuthorized) ||
-        (service === 'spotify' && isSpotifyAuthorized))
-    ) {
-      handleFetch();
-    } else {
-      setIsLoading(false);
+    await handleFetch();
+
+    setIsMounted(true);
+  }, [handleFetch, isMounted, props.lazy]);
+
+  useEffect(() => {
+    if (canFetch) {
+      handleMount();
     }
-  }, [
-    handleFetch,
-    isAppleAuthorized,
-    isMounted,
-    isSpotifyAuthorized,
-    props.lazy,
-    service,
-  ]);
+  }, [handleMount, canFetch]);
 
   return {
     isLoading,

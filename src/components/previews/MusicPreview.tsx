@@ -37,10 +37,10 @@ const MusicPreview = () => {
 
   return (
     <Container {...previewSlideRight}>
-      {isLoading ? (
-        <LoadingScreen backgroundColor="linear-gradient(180deg, #B1B5C0 0%, #686E7A 100%)" />
-      ) : !isSpotifyAuthorized && !isAppleAuthorized ? (
+      {!isSpotifyAuthorized && !isAppleAuthorized ? (
         <AuthPrompt message="Sign in to view your library" />
+      ) : isLoading && !albums ? (
+        <LoadingScreen backgroundColor="linear-gradient(180deg, #B1B5C0 0%, #686E7A 100%)" />
       ) : (
         <KenBurns urls={artworkUrls} />
       )}

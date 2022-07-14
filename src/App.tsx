@@ -140,6 +140,7 @@ const App: React.FC = () => {
 
 const Ipod = () => {
   const { deviceTheme } = useSettings();
+
   return (
     <Shell deviceTheme={deviceTheme}>
       <Sticker deviceTheme={deviceTheme} />
