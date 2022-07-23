@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { AuthPrompt, SelectableList, SelectableListOption } from 'components';
 import {
-  useDataFetcher,
+  useFetchPlaylists,
   useMenuHideWindow,
   useScrollHandler,
   useSettings,
@@ -19,10 +19,7 @@ interface Props {
 const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
   useMenuHideWindow(ViewOptions.playlists.id);
   const { isAuthorized } = useSettings();
-  const { data: fetchedPlaylists, isLoading } = useDataFetcher<
-    IpodApi.Playlist[]
-  >({
-    name: 'playlists',
+  const { data: fetchedPlaylists, isLoading } = useFetchPlaylists({
     lazy: !!playlists,
   });
 

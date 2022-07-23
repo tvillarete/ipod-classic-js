@@ -5,6 +5,7 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
+    "@tanstack/react-query": "^4.0.10",
     "framer-motion": "^4.0.3",
     "he": "^1.2.0",
     "lodash.uniqby": "^4.7.0",

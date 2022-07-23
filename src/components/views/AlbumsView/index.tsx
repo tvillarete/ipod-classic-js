@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { AuthPrompt, SelectableList, SelectableListOption } from 'components';
 import {
-  useDataFetcher,
+  useFetchAlbums,
   useMenuHideWindow,
   useScrollHandler,
   useSettings,
@@ -20,8 +20,7 @@ const AlbumsView = ({ albums, inLibrary = true }: Props) => {
   const { isAuthorized } = useSettings();
   useMenuHideWindow(ViewOptions.albums.id);
 
-  const { data: fetchedAlbums, isLoading } = useDataFetcher<IpodApi.Album[]>({
-    name: 'albums',
+  const { data: fetchedAlbums, isLoading } = useFetchAlbums({
     // Don't fetch if we're passed an initial array of albums
     lazy: !!albums,
   });

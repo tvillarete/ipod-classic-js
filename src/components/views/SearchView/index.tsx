@@ -11,7 +11,7 @@ import {
 } from 'components';
 import { SongsView, ViewOptions } from 'components/views';
 import {
-  useDataFetcher,
+  useFetchSearchResults,
   useEffectOnce,
   useKeyboardInput,
   useMenuHideWindow,
@@ -26,20 +26,19 @@ const SearchView = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const {
-    fetch,
+    refetch,
     data: searchResults,
     isLoading,
-  } = useDataFetcher<IpodApi.SearchResults>({
-    name: 'search',
+  } = useFetchSearchResults({
     query: searchTerm,
     lazy: true,
   });
 
   const handleEnterPress = useCallback(() => {
     if (searchTerm) {
-      fetch();
+      refetch();
     }
-  }, [fetch, searchTerm]);
+  }, [refetch, searchTerm]);
 
   const { showKeyboard } = useKeyboardInput({
     onChange: (value) => setSearchTerm(value),

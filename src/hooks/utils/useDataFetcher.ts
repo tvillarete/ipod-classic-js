@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 import {
   useMKDataFetcher,
@@ -13,254 +13,172 @@ interface UserLibraryProps {
 }
 
 interface CommonFetcherProps {
-  name: string;
   /** Data will not be fetched until the `fetch` function is called. */
   lazy?: boolean;
 }
 
-interface PlaylistsFetcherProps {
-  name: 'playlists';
+interface PlaylistFetcherProps extends UserLibraryProps {
+  id: string;
 }
 
-interface PlaylistFetcherProps extends UserLibraryProps {
-  name: 'playlist';
+interface AlbumFetcherProps extends UserLibraryProps {
   id: string;
 }
 
 interface AlbumsFetcherProps {
-  name: 'albums';
   artworkSize?: number;
 }
 
-interface AlbumFetcherProps extends UserLibraryProps {
-  name: 'album';
-  id: string;
-}
-
-interface ArtistsFetcherProps {
-  name: 'artists';
-}
-
 interface ArtistFetcherProps extends UserLibraryProps {
-  name: 'artist';
   id: string;
   artworkSize?: number;
 }
 
 interface SearchFetcherProps extends UserLibraryProps {
-  name: 'search';
   query: string;
 }
 
-type Props = CommonFetcherProps &
-  (
-    | PlaylistsFetcherProps
-    | PlaylistFetcherProps
-    | AlbumsFetcherProps
-    | AlbumFetcherProps
-    | ArtistsFetcherProps
-    | ArtistFetcherProps
-    | SearchFetcherProps
-  );
-
-const useDataFetcher = <TType extends object>(props: Props) => {
+const useDataFetchers = () => {
   const spotifyDataFetcher = useSpotifyDataFetcher();
   const appleDataFetcher = useMKDataFetcher();
   const { service, isAppleAuthorized, isSpotifyAuthorized } = useSettings();
   const { isConfigured } = useMusicKit();
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const [data, setData] = useState<TType>();
-  const [isMounted, setIsMounted] = useState(false);
 
-  const canFetch = useMemo(() => {
-    return (
-      (service === 'apple' && isAppleAuthorized && isConfigured) ||
-      (service === 'spotify' && isSpotifyAuthorized)
-    );
-  }, [isAppleAuthorized, isConfigured, isSpotifyAuthorized, service]);
+  const enabled =
+    (service === 'apple' && isAppleAuthorized && isConfigured) ||
+    (service === 'spotify' && isSpotifyAuthorized);
 
-  const fetchAlbums = useCallback(async () => {
-    let albums: IpodApi.Album[] | undefined;
-
-    if (service === 'apple') {
-      albums = await appleDataFetcher.fetchAlbums();
-    } else if (service === 'spotify') {
-      albums = await spotifyDataFetcher.fetchAlbums();
-    }
-
-    setData(albums as TType);
-  }, [appleDataFetcher, service, spotifyDataFetcher]);
-
-  const fetchAlbum = useCallback(
-    async (options: AlbumFetcherProps) => {
-      let album: IpodApi.Album | undefined;
-
-      if (service === 'apple') {
-        album = await appleDataFetcher.fetchAlbum(
-          options.id,
-          options.inLibrary
-        );
-      } else if (service === 'spotify') {
-        album = await spotifyDataFetcher.fetchAlbum(options.userId, options.id);
-      }
-
-      setData(album as TType);
-    },
-    [appleDataFetcher, service, spotifyDataFetcher]
-  );
-
-  const fetchArtists = useCallback(async () => {
-    let artists: IpodApi.Artist[] | undefined;
-
-    if (service === 'apple') {
-      artists = await appleDataFetcher.fetchArtists();
-    } else if (service === 'spotify') {
-      artists = await spotifyDataFetcher.fetchArtists();
-    }
-    setData(artists as TType);
-  }, [appleDataFetcher, service, spotifyDataFetcher]);
-
-  const fetchArtistAlbums = useCallback(
-    async (options: ArtistFetcherProps) => {
-      let albums: IpodApi.Album[] | undefined;
-
-      if (service === 'apple') {
-        albums = await appleDataFetcher.fetchArtistAlbums(
-          options.id,
-          options.inLibrary
-        );
-      } else if (service === 'spotify') {
-        albums = await spotifyDataFetcher.fetchArtist(
-          options.userId,
-          options.id
-        );
-      }
-
-      setData(albums as TType);
-    },
-    [appleDataFetcher, service, spotifyDataFetcher]
-  );
-
-  const fetchPlaylists = useCallback(async () => {
-    let playlists: IpodApi.Playlist[] | undefined;
-
-    if (service === 'apple') {
-      playlists = await appleDataFetcher.fetchPlaylists();
-    } else if (service === 'spotify') {
-      playlists = await spotifyDataFetcher.fetchPlaylists();
-    }
-
-    setData(playlists as TType);
-  }, [appleDataFetcher, service, spotifyDataFetcher]);
-
-  const fetchPlaylist = useCallback(
-    async (options: PlaylistFetcherProps) => {
-      let playlist: IpodApi.Playlist | undefined;
-
-      if (service === 'apple') {
-        playlist = await appleDataFetcher.fetchPlaylist(
-          options.id,
-          options.inLibrary
-        );
-      } else if (service === 'spotify') {
-        playlist = await spotifyDataFetcher.fetchPlaylist(
-          options.userId,
-          options.id
-        );
-      }
-      setData(playlist as TType);
-    },
-    [appleDataFetcher, service, spotifyDataFetcher]
-  );
-
-  const fetchSearchResults = useCallback(
-    async (options: SearchFetcherProps) => {
-      let searchResults: IpodApi.SearchResults | undefined;
-
-      if (service === 'spotify') {
-        searchResults = await spotifyDataFetcher.fetchSearchResults(
-          options.query
-        );
-      } else if (service === 'apple') {
-        searchResults = await appleDataFetcher.fetchSearchResults(
-          options.query
-        );
-      }
-
-      setData(searchResults as TType);
-    },
-    [appleDataFetcher, service, spotifyDataFetcher]
-  );
-
-  const handleFetch = useCallback(async () => {
-    setHasError(false);
-    setIsLoading(true);
-
-    switch (props.name) {
-      case 'albums':
-        await fetchAlbums();
-        break;
-      case 'album':
-        await fetchAlbum(props);
-        break;
-      case 'artists':
-        await fetchArtists();
-        break;
-      case 'artist':
-        await fetchArtistAlbums(props);
-        break;
-      case 'playlists':
-        await fetchPlaylists();
-        break;
-      case 'playlist':
-        await fetchPlaylist(props);
-        break;
-      case 'search':
-        await fetchSearchResults(props);
-        break;
-    }
-
-    setIsLoading(false);
-  }, [
-    fetchAlbum,
-    fetchAlbums,
-    fetchArtistAlbums,
-    fetchArtists,
-    fetchPlaylist,
-    fetchPlaylists,
-    fetchSearchResults,
-    props,
-  ]);
-
-  const handleMount = useCallback(async () => {
-    if (isMounted) {
-      return;
-    }
-
-    // Data fetching will be manually triggered when lazy is true.
-    if (props.lazy) {
-      setIsLoading(false);
-      return;
-    }
-
-    await handleFetch();
-
-    setIsMounted(true);
-  }, [handleFetch, isMounted, props.lazy]);
-
-  useEffect(() => {
-    if (canFetch) {
-      handleMount();
-    }
-  }, [handleMount, canFetch]);
-
-  return {
-    isLoading,
-    data,
-    hasError,
-    fetch: handleFetch,
-  };
+  return { spotifyDataFetcher, appleDataFetcher, service, enabled };
 };
 
-export default useDataFetcher;
+export const useFetchAlbum = (
+  options: CommonFetcherProps & AlbumFetcherProps
+) => {
+  const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
+    useDataFetchers();
+
+  return useQuery(
+    ['album'],
+    async () => {
+      if (service === 'apple') {
+        return appleDataFetcher.fetchAlbum(options.id, options.inLibrary);
+      } else if (service === 'spotify') {
+        return spotifyDataFetcher.fetchAlbum(options.userId, options.id);
+      }
+    },
+    { enabled: enabled && !options.lazy }
+  );
+};
+
+export const useFetchAlbums = (
+  options: CommonFetcherProps & AlbumsFetcherProps
+) => {
+  const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
+    useDataFetchers();
+
+  return useQuery(
+    ['albums'],
+    async () => {
+      if (service === 'apple') {
+        return appleDataFetcher.fetchAlbums();
+      } else if (service === 'spotify') {
+        return spotifyDataFetcher.fetchAlbums();
+      }
+    },
+    { enabled: enabled && !options.lazy }
+  );
+};
+
+export const useFetchArtists = (options: CommonFetcherProps) => {
+  const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
+    useDataFetchers();
+
+  return useQuery(
+    ['artists'],
+    async () => {
+      if (service === 'apple') {
+        return appleDataFetcher.fetchArtists();
+      } else if (service === 'spotify') {
+        return spotifyDataFetcher.fetchArtists();
+      }
+    },
+    { enabled: enabled && !options.lazy }
+  );
+};
+
+export const useFetchArtistAlbums = (
+  options: CommonFetcherProps & ArtistFetcherProps
+) => {
+  const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
+    useDataFetchers();
+
+  return useQuery(
+    ['artistAlbums'],
+    async () => {
+      if (service === 'apple') {
+        return appleDataFetcher.fetchArtistAlbums(
+          options.id,
+          options.inLibrary
+        );
+      } else if (service === 'spotify') {
+        return spotifyDataFetcher.fetchArtist(options.userId, options.id);
+      }
+    },
+    { enabled: enabled && !options.lazy }
+  );
+};
+
+export const useFetchPlaylists = (options: CommonFetcherProps) => {
+  const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
+    useDataFetchers();
+
+  return useQuery(
+    ['playlists'],
+    async () => {
+      if (service === 'apple') {
+        return appleDataFetcher.fetchPlaylists();
+      } else if (service === 'spotify') {
+        return spotifyDataFetcher.fetchPlaylists();
+      }
+    },
+    { enabled: enabled && !options.lazy }
+  );
+};
+
+export const useFetchPlaylist = (
+  options: CommonFetcherProps & PlaylistFetcherProps
+) => {
+  const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
+    useDataFetchers();
+
+  return useQuery(
+    ['playlists'],
+    async () => {
+      if (service === 'apple') {
+        return appleDataFetcher.fetchPlaylist(options.id, options.inLibrary);
+      } else if (service === 'spotify') {
+        return spotifyDataFetcher.fetchPlaylist(options.userId, options.id);
+      }
+    },
+    { enabled: enabled && !options.lazy }
+  );
+};
+
+export const useFetchSearchResults = (
+  options: CommonFetcherProps & SearchFetcherProps
+) => {
+  const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
+    useDataFetchers();
+
+  return useQuery(
+    ['search'],
+    async () => {
+      if (service === 'spotify') {
+        return spotifyDataFetcher.fetchSearchResults(options.query);
+      } else if (service === 'apple') {
+        return appleDataFetcher.fetchSearchResults(options.query);
+      }
+    },
+    { enabled: enabled && !options.lazy }
+  );
+};
