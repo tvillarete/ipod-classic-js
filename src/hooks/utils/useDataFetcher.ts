@@ -58,7 +58,7 @@ export const useFetchAlbum = (
     useDataFetchers();
 
   return useQuery(
-    ['album'],
+    ['album', { id: options.id }],
     async () => {
       if (service === 'apple') {
         return appleDataFetcher.fetchAlbum(options.id, options.inLibrary);
@@ -113,7 +113,7 @@ export const useFetchArtistAlbums = (
     useDataFetchers();
 
   return useQuery(
-    ['artistAlbums'],
+    ['artistAlbums', { id: options.id }],
     async () => {
       if (service === 'apple') {
         return appleDataFetcher.fetchArtistAlbums(
@@ -152,7 +152,7 @@ export const useFetchPlaylist = (
     useDataFetchers();
 
   return useQuery(
-    ['playlists'],
+    ['playlists', { id: options.id }],
     async () => {
       if (service === 'apple') {
         return appleDataFetcher.fetchPlaylist(options.id, options.inLibrary);
@@ -171,7 +171,7 @@ export const useFetchSearchResults = (
     useDataFetchers();
 
   return useQuery(
-    ['search'],
+    ['search', { query: options.query }],
     async () => {
       if (service === 'spotify') {
         return spotifyDataFetcher.fetchSearchResults(options.query);
