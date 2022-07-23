@@ -28,7 +28,7 @@ const SearchView = () => {
   const {
     refetch,
     data: searchResults,
-    isLoading,
+    isFetching,
   } = useFetchSearchResults({
     query: searchTerm,
     lazy: true,
@@ -122,7 +122,7 @@ const SearchView = () => {
 
   return isAuthorized ? (
     <SelectableList
-      loading={isLoading}
+      loading={isFetching}
       options={options}
       activeIndex={scrollIndex}
       emptyMessage="No results"
