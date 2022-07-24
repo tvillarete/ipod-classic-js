@@ -97,17 +97,17 @@ export const useSpotifySDK = (): SpotifySDKHook => {
 };
 
 interface Props {
-  canAccessSpotify: boolean;
   children: React.ReactNode;
+  token?: string;
 }
 
-export const SpotifySDKProvider = ({ children, canAccessSpotify }: Props) => {
+export const SpotifySDKProvider = ({ children, token }: Props) => {
   const { showWindow, hideWindow } = useWindowContext();
   const { setIsSpotifyAuthorized, setService } = useSettings();
-  const [token, setToken] = useState<string>();
   const [deviceId, setDeviceId] = useState<string>();
   const spotifyPlayerRef = useRef<Spotify.Player | undefined>();
   const [isMounted, setIsMounted] = useState(false);
+  const [isSdkReady, setIsSdkReady] = useState(false);
 
   const handleUnsupportedAccountError = useCallback(() => {
     showWindow({
@@ -128,23 +128,20 @@ export const SpotifySDKProvider = ({ children, canAccessSpotify }: Props) => {
 
   /** Fetch access tokens and, if successful, then set up the playback sdk. */
   const handleConnectToSpotify = useCallback(async () => {
-    const { accessToken, refreshToken, isNew } = await SpotifyUtils.getTokens();
+    const { refreshToken, isNew } = await SpotifyUtils.getTokens();
     setIsMounted(true);
 
-    if (accessToken && refreshToken) {
-      setToken(accessToken);
-
+    console.log({ ifToken: token });
+    if (token /*&& refreshToken */) {
       const player = new window.Spotify.Player({
         name: 'iPod Classic',
-        getOAuthToken: async (cb: (token: string) => void) => {
-          const { storedAccessToken } = SpotifyUtils.getExistingTokens();
-
-          if (!storedAccessToken) {
+        getOAuthToken: async (cb) => {
+          if (!token) {
             console.error("ERROR: Didn't find stored access token");
             return;
           }
 
-          cb(storedAccessToken);
+          cb(token);
         },
       });
 
@@ -179,11 +176,24 @@ export const SpotifySDKProvider = ({ children, canAccessSpotify }: Props) => {
         setService('spotify');
       }
     }
-  }, [handleUnsupportedAccountError, setIsSpotifyAuthorized, setService]);
+  }, [
+    handleUnsupportedAccountError,
+    setIsSpotifyAuthorized,
+    setService,
+    token,
+  ]);
 
-  useEffectOnce(() => {
-    window.onSpotifyWebPlaybackSDKReady = handleConnectToSpotify;
-  });
+  useEffect(() => {
+    console.log({ isSdkReady, token });
+    if (isSdkReady && typeof token === 'string') {
+      console.log('CONNECTING TO SPOTIFY');
+      handleConnectToSpotify();
+    }
+  }, [handleConnectToSpotify, isSdkReady, token]);
+
+  useEffect(() => {
+    window.onSpotifyWebPlaybackSDKReady = () => setIsSdkReady(true);
+  }, []);
 
   return (
     <SpotifySDKContext.Provider

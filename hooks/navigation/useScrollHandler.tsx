@@ -91,7 +91,7 @@ const useScrollHandler = (
   const handleShowView = useCallback(
     (
       id: string,
-      component: React.ReactNode,
+      component: React.ReactNode | ((...args: any) => JSX.Element),
       windowType?:
         | WINDOW_TYPE.FULL
         | WINDOW_TYPE.SPLIT

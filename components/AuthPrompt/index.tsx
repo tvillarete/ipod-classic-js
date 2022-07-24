@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { useInterval, useMusicKit } from "hooks";
-import styled, { css } from "styled-components";
-import { Unit } from "utils/constants";
+import { useInterval, useMusicKit } from 'hooks';
+import styled, { css } from 'styled-components';
+import { Unit } from 'utils/constants';
 
 const RootContainer = styled.div`
   display: flex;
@@ -14,13 +14,13 @@ const RootContainer = styled.div`
   background: white;
 `;
 
-const StyledImg = styled.img<{ isHidden: boolean }>`
+const StyledImg = styled.img<{ $isHidden: boolean }>`
   height: 60px;
   width: 60px;
   transition: all 0.5s ease-in-out;
 
-  ${({ isHidden }) =>
-    isHidden &&
+  ${({ $isHidden }) =>
+    $isHidden &&
     css`
       opacity: 0;
     `};
@@ -45,10 +45,10 @@ const Text = styled.p`
 
 const strings = {
   title: {
-    apple: "Apple Music",
-    spotify: "Spotify",
+    apple: 'Apple Music',
+    spotify: 'Spotify',
   },
-  defaultMessage: "Sign into view this content",
+  defaultMessage: 'Sign into view this content',
 };
 
 interface Props {
@@ -57,36 +57,34 @@ interface Props {
 
 const AuthPrompt = ({ message }: Props) => {
   const { isConfigured: isMkConfigured } = useMusicKit();
-  const [icon, setIcon] = useState<"apple" | "spotify">(
-    isMkConfigured ? "apple" : "spotify"
+  const [icon, setIcon] = useState<'apple' | 'spotify'>(
+    isMkConfigured ? 'apple' : 'spotify'
   );
 
-  useInterval(
-    () =>
-      setIcon((prevState) => {
-        if (prevState === "apple" || !isMkConfigured) {
-          return "spotify";
-        }
+  useInterval(() => {
+    setIcon((prevState) => {
+      if (prevState === 'apple' || !isMkConfigured) {
+        return 'spotify';
+      }
 
-        return "apple";
-      }),
-    4000
-  );
+      return 'apple';
+    });
+  }, 4000);
 
   return (
     <RootContainer>
-      <StyledImg
-        isHidden={icon === "spotify"}
-        alt="app_icon"
-        src="apple_music_icon.svg"
-      />
       {isMkConfigured && (
         <StyledImg
-          isHidden={icon === "apple"}
+          $isHidden={icon === 'spotify'}
           alt="app_icon"
-          src="spotify_icon.svg"
+          src="apple_music_icon.svg"
         />
       )}
+      <StyledImg
+        $isHidden={icon === 'apple'}
+        alt="app_icon"
+        src="spotify_icon.svg"
+      />
       <Title>{strings.title[icon]}</Title>
       <Text>{message ?? strings.defaultMessage}</Text>
     </RootContainer>

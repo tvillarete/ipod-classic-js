@@ -38,7 +38,7 @@ type ViewOptionProps = {
   /** A unique identifier for the next screen. */
   viewId: string;
   /** The component that will be displayed in the next view. */
-  component: React.ReactNode;
+  component: React.ReactNode | ((...args: any) => JSX.Element);
   headerTitle?: string;
   /** Whether to display the default full size view, split view, or in some cases Cover Flow View. */
   windowType?: WINDOW_TYPE.SPLIT | WINDOW_TYPE.FULL | WINDOW_TYPE.COVER_FLOW;

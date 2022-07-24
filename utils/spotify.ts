@@ -97,12 +97,13 @@ const _getNewTokens = async (): Promise<TokenResponse> => {
 
   try {
     const response = await fetch(
-      `${API_URL}/callback?state=${state}&code=${code}`,
+      `/api/auth/callback?state=${state}&code=${code}`,
       {
         credentials: 'same-origin',
         mode: 'cors',
       }
     );
+    console.log({ response });
 
     const { accessToken, refreshToken } = await response.json();
 

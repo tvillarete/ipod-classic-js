@@ -21,18 +21,20 @@ const ArtistView = ({ id, inLibrary = false }: Props) => {
   });
   const options: SelectableListOption[] = useMemo(
     () =>
-      albums?.map((album) => ({
-        type: 'View',
-        headerTitle: album.name,
-        label: album.name,
-        sublabel: album.artistName,
-        imageUrl: Utils.getArtwork(100, album.artwork?.url),
-        viewId: ViewOptions.album.id,
-        component: () => (
-          <AlbumView id={album.id ?? ''} inLibrary={inLibrary} />
-        ),
-        longPressOptions: Utils.getMediaOptions('album', album.id),
-      })) ?? [],
+      albums?.map(
+        (album): SelectableListOption => ({
+          type: 'View',
+          headerTitle: album.name,
+          label: album.name,
+          sublabel: album.artistName,
+          imageUrl: Utils.getArtwork(100, album.artwork?.url),
+          viewId: ViewOptions.album.id,
+          component: () => (
+            <AlbumView id={album.id ?? ''} inLibrary={inLibrary} />
+          ),
+          longPressOptions: Utils.getMediaOptions('album', album.id),
+        })
+      ) ?? [],
     [albums, inLibrary]
   );
 

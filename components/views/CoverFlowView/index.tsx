@@ -34,10 +34,10 @@ const CoverFlowView = () => {
 
   return (
     <Container>
-      {isLoading ? (
-        <LoadingScreen backgroundColor="white" />
-      ) : !isAuthorized ? (
+      {!isAuthorized ? (
         <AuthPrompt message="Sign in to view Cover Flow" />
+      ) : isLoading ? (
+        <LoadingScreen backgroundColor="white" />
       ) : (
         <CoverFlow albums={albums ?? []} />
       )}

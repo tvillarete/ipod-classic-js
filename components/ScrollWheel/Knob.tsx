@@ -45,12 +45,12 @@ const CenterButton = styled.div<{ size: number; deviceTheme: DeviceThemeName }>`
   height: ${(props) => props.size / 2.5}px;
   border-radius: 50%;
   box-shadow: ${({ deviceTheme }) =>
-    getTheme(deviceTheme).knob.centerButton.boxShadow}
+      getTheme(deviceTheme).knob.centerButton.boxShadow}
     0px 1em 3em inset;
   background: ${({ deviceTheme }) =>
     getTheme(deviceTheme).knob.centerButton.background};
-  border: 1px solid
-    ${({ deviceTheme }) => getTheme(deviceTheme).knob.centerButton.outline}};
+  border: ${({ deviceTheme }) =>
+    `1px solid ${getTheme(deviceTheme).knob.centerButton.outline}}`};
 
   :active {
     filter: brightness(0.9);
@@ -341,9 +341,7 @@ const Knob = ({
     }
 
     const isTouchEnabled =
-      'ontouchstart' in window ||
-      navigator.maxTouchPoints > 0 ||
-      navigator.msMaxTouchPoints > 0;
+      'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
     drawCanvas();
     if (isTouchEnabled) {

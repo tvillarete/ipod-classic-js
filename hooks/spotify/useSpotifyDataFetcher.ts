@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { useSpotifySDK } from 'hooks';
-import { uniqBy } from 'lodash';
+import uniqBy from 'lodash.uniqby';
 import * as ConversionUtils from 'utils/conversion';
 
 type FetchSpotifyApiArgs = {

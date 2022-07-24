@@ -4,13 +4,13 @@
   "private": true,
   "homepage": "./",
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "eslint-config-next"
   },
   "dependencies": {
     "axios": "^0.27.2",
@@ -26,12 +26,15 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "styled-components": "^5.3.5",
-    "use-debounce": "^8.0.2"
+    "use-debounce": "^8.0.2",
+    "vercel": "^27.2.0"
   },
   "devDependencies": {
     "@types/cookie": "^0.5.1",
     "@types/he": "^1.1.2",
+    "@types/lodash.uniqby": "^4.7.7",
     "@types/node": "18.0.6",
+    "@types/pluralize": "^0.0.29",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",
     "@types/spotify-api": "^0.0.16",

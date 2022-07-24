@@ -5,17 +5,11 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
-} from "react";
+} from 'react';
 
-import { useEventListener, useMKEventListener, useSettings } from "hooks";
-
-/**
- * This will be used to connect to the Apple Music API.
- * @see https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
- */
-const DEVELOPER_TOKEN: string | undefined =
-  process.env.REACT_APP_APPLE_DEV_TOKEN;
+import { useEventListener, useMKEventListener, useSettings } from 'hooks';
 
 export interface MusicKitState {
   musicKit?: typeof MusicKit;
@@ -32,7 +26,7 @@ export type MusicKitHook = MusicKitState & {
 };
 
 export const useMusicKit = (): MusicKitHook => {
-  const musicKit = typeof window === "undefined" ? undefined : window.MusicKit;
+  const musicKit = typeof window === 'undefined' ? undefined : window.MusicKit;
   const { setIsAppleAuthorized, isSpotifyAuthorized, setService } =
     useSettings();
   const { isConfigured, hasDevToken } = useContext(MusicKitContext);
@@ -50,7 +44,7 @@ export const useMusicKit = (): MusicKitHook => {
       await music.authorize();
     }
 
-    setService("apple");
+    setService('apple');
   }, [music, setService]);
 
   const signOut = useCallback(() => {
@@ -58,7 +52,7 @@ export const useMusicKit = (): MusicKitHook => {
     setIsAppleAuthorized(false);
 
     // Change to Spotify if available.
-    setService(isSpotifyAuthorized ? "spotify" : undefined);
+    setService(isSpotifyAuthorized ? 'spotify' : undefined);
   }, [isSpotifyAuthorized, music, setIsAppleAuthorized, setService]);
 
   return {
@@ -73,10 +67,11 @@ export const useMusicKit = (): MusicKitHook => {
 
 interface Props {
   children: React.ReactNode;
+  token: string;
 }
 
-export const MusicKitProvider = ({ children }: Props) => {
-  const musicKit = typeof window !== "undefined" ? window.MusicKit : undefined;
+export const MusicKitProvider = ({ children, token }: Props) => {
+  const musicKitRef = useRef<typeof MusicKit>();
   const [hasDevToken, setHasDevToken] = useState(false);
   const [isConfigured, setIsConfigured] = useState(false);
   const {
@@ -86,19 +81,13 @@ export const MusicKitProvider = ({ children }: Props) => {
   } = useSettings();
 
   const handleConfigure = useCallback(async () => {
-    if (!musicKit) {
-      return;
-    }
-
+    console.log({ token });
     try {
-      const music = await musicKit.configure({
-        developerToken:
-          DEVELOPER_TOKEN ??
-          new URLSearchParams(window.location.search).get("token") ??
-          undefined,
+      const music = await window.MusicKit.configure({
+        developerToken: token,
         app: {
-          name: "iPod.js",
-          build: "1.0",
+          name: 'iPod.js',
+          build: '1.0',
         },
       });
 
@@ -110,32 +99,34 @@ export const MusicKitProvider = ({ children }: Props) => {
         setIsAppleAuthorized(true);
       }
     } catch (e) {
+      console.error(`MusicKit configuration error:`, e);
       setHasDevToken(false);
     }
-  }, [musicKit, setIsAppleAuthorized]);
+  }, [setIsAppleAuthorized, token]);
 
-  useEffect(() => {
-    if (!isConfigured && musicKit) {
-      handleConfigure();
-    }
-  }, [handleConfigure, isConfigured, musicKit]);
-
-  useMKEventListener("userTokenDidChange", (e) => {
-    if (e.userToken) {
-      setIsAppleAuthorized(true);
-      setStreamingService("apple");
-    } else {
-      setIsAppleAuthorized(false);
-      setStreamingService(isSpotifyAuthorized ? "spotify" : undefined);
-    }
+  useEventListener('musickitloaded', () => {
+    handleConfigure();
   });
 
-  useEventListener("musickitconfigured", () => {
+  useEventListener('musickitconfigured', () => {
+    console.log('Configured');
     setIsConfigured(true);
   });
 
+  useMKEventListener('userTokenDidChange', (e) => {
+    if (e.userToken) {
+      setIsAppleAuthorized(true);
+      setStreamingService('apple');
+    } else {
+      setIsAppleAuthorized(false);
+      setStreamingService(isSpotifyAuthorized ? 'spotify' : undefined);
+    }
+  });
+
   return (
-    <MusicKitContext.Provider value={{ musicKit, isConfigured, hasDevToken }}>
+    <MusicKitContext.Provider
+      value={{ musicKit: musicKitRef.current, isConfigured, hasDevToken }}
+    >
       {children}
     </MusicKitContext.Provider>
   );

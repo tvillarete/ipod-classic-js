@@ -1,24 +1,28 @@
-import { memo } from "react";
-import WindowProvider from "providers/WindowProvider";
-import { ScrollWheel } from "components";
+import { memo } from 'react';
+import WindowProvider from 'providers/WindowProvider';
+import { ScrollWheel } from 'components';
 import {
   AudioPlayerProvider,
   MusicKitProvider,
   SpotifySDKProvider,
   useSettings,
-} from "hooks";
-import { WindowManager } from "components";
-import { useState } from "react";
+} from 'hooks';
+import { WindowManager } from 'components';
+import { useState } from 'react';
 import {
   ScreenContainer,
   Shell,
   Sticker,
   Sticker2,
   Sticker3,
-} from "components/Ipod/Styled";
+} from 'components/Ipod/Styled';
 
-const Ipod = () => {
-  const [isSpotifyMounted, setIsSpotifyMounted] = useState(false);
+type Props = {
+  appleToken: string;
+  spotifyToken: string;
+};
+
+const Ipod = ({ appleToken, spotifyToken }: Props) => {
   const { deviceTheme } = useSettings();
 
   return (
@@ -28,8 +32,8 @@ const Ipod = () => {
       <Sticker3 deviceTheme={deviceTheme} />
       <ScreenContainer>
         <WindowProvider>
-          <SpotifySDKProvider canAccessSpotify={isSpotifyMounted}>
-            <MusicKitProvider>
+          <SpotifySDKProvider token={spotifyToken}>
+            <MusicKitProvider token={appleToken}>
               <AudioPlayerProvider>
                 <WindowManager />
               </AudioPlayerProvider>

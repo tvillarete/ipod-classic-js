@@ -14,4 +14,11 @@ type BaseEventAction = 'click' | 'longclick' | 'scroll' | 'longpress';
 export type IpodEvent = `${BaseEventContext}${BaseEventAction}` | `idle`;
 
 /** Create a type-safe custom event for the iPod */
-export const createIpodEvent = (eventName: IpodEvent) => new Event(eventName);
+export const createIpodEvent = (eventName: IpodEvent) => {
+  if (typeof window === 'undefined') {
+    // TODO: Better typing here
+    return {} as Event;
+  }
+
+  return new Event(eventName);
+};

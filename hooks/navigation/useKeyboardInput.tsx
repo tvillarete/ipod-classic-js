@@ -54,7 +54,7 @@ const useKeyboardInput = ({
   });
 
   const handleKeypress = useCallback(
-    ({ key }) => {
+    ({ key }: KeyboardEvent) => {
       if (readOnly) {
         return;
       }
@@ -71,9 +71,9 @@ const useKeyboardInput = ({
   );
 
   const handleKeydown = useCallback(
-    ({ key }) => {
-      if (key === 'Backspace') {
-        handleKeypress({ key });
+    (event: KeyboardEvent) => {
+      if (event.key === 'Backspace') {
+        handleKeypress(event);
       }
     },
     [handleKeypress]

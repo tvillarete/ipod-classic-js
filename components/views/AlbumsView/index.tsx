@@ -28,17 +28,17 @@ const AlbumsView = ({ albums, inLibrary = true }: Props) => {
 
   const options: SelectableListOption[] = useMemo(
     () =>
-      (albums ?? fetchedAlbums)?.map((album) => ({
-        type: 'View',
-        headerTitle: album.name,
-        label: album.name,
-        sublabel: album.artistName,
-        imageUrl: Utils.getArtwork(50, album.artwork?.url),
-        viewId: ViewOptions.album.id,
-        component: () => (
-          <AlbumView id={album.id ?? ''} inLibrary={inLibrary} />
-        ),
-      })) ?? [],
+      (albums ?? fetchedAlbums)?.map(
+        (album): SelectableListOption => ({
+          type: 'View',
+          headerTitle: album.name,
+          label: album.name,
+          sublabel: album.artistName,
+          imageUrl: Utils.getArtwork(50, album.artwork?.url),
+          viewId: ViewOptions.album.id,
+          component: <AlbumView id={album.id ?? ''} inLibrary={inLibrary} />,
+        })
+      ) ?? [],
     [albums, fetchedAlbums, inLibrary]
   );
 

@@ -1,10 +1,10 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect } from 'react';
 
 // Hook
 const useEventListener = <TEvent extends string>(
   eventName: TEvent,
   handler: (...args: any) => void,
-  element = typeof window === "undefined" ? undefined : window
+  element = typeof window === 'undefined' ? undefined : window
 ) => {
   // Create a ref that stores handler
   const savedHandler = useRef<any>();
@@ -22,7 +22,9 @@ const useEventListener = <TEvent extends string>(
       // Make sure element supports addEventListener
       // On
       const isSupported = element && element.addEventListener;
-      if (!isSupported) return;
+      if (!isSupported) {
+        return;
+      }
 
       // Create event listener that calls handler function stored in ref
       const eventListener = (event: any) =>

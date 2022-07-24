@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import styled from 'styled-components';
 import { SettingsProvider } from 'hooks';
@@ -17,7 +17,12 @@ const Main = styled.div`
   justify-content: center;
 `;
 
-const Home: NextPage = () => {
+type Props = {
+  spotifyToken: string;
+  appleToken: string;
+};
+
+const Home: NextPage<Props> = ({ appleToken, spotifyToken }) => {
   return (
     <>
       <Head>
@@ -63,12 +68,29 @@ const Home: NextPage = () => {
       </Head>
       <Main>
         <SettingsProvider>
-          <Ipod />
+          <Ipod spotifyToken={spotifyToken} appleToken={appleToken} />
         </SettingsProvider>
       </Main>
+      <Script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" />
       <Script src="https://sdk.scdn.co/spotify-player.js" />
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const appleToken = process.env.APPLE_DEVELOPER_TOKEN ?? context.query.token;
+
+  if (context.req.cookies['spotify-token']) {
+    const spotifyToken: string = context.req.cookies['spotify-token'];
+
+    return {
+      props: { spotifyToken, appleToken },
+    };
+  } else {
+    return {
+      props: { spotifyToken: '', appleToken },
+    };
+  }
 };
 
 export default memo(Home);
