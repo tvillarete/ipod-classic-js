@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { ScrollWheel } from 'components';
 import {
@@ -127,14 +128,19 @@ const ScreenContainer = styled.div`
   }
 `;
 
+// Create a client
+const queryClient = new QueryClient();
+
 const App: React.FC = () => {
   return (
-    <Container>
-      <GlobalStyles />
-      <SettingsProvider>
-        <Ipod />
-      </SettingsProvider>
-    </Container>
+    <QueryClientProvider client={queryClient}>
+      <Container>
+        <GlobalStyles />
+        <SettingsProvider>
+          <Ipod />
+        </SettingsProvider>
+      </Container>
+    </QueryClientProvider>
   );
 };
 

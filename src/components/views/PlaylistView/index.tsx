@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { SelectableList, SelectableListOption } from 'components';
 import { ViewOptions } from 'components/views';
-import { useDataFetcher, useMenuHideWindow, useScrollHandler } from 'hooks';
+import { useFetchPlaylist, useMenuHideWindow, useScrollHandler } from 'hooks';
 import * as Utils from 'utils';
 
 interface Props {
@@ -13,8 +13,7 @@ interface Props {
 
 const PlaylistView = ({ id, inLibrary = false }: Props) => {
   useMenuHideWindow(ViewOptions.playlist.id);
-  const { data: playlist, isLoading } = useDataFetcher<IpodApi.Playlist>({
-    name: 'playlist',
+  const { data: playlist, isLoading } = useFetchPlaylist({
     id,
     inLibrary,
   });

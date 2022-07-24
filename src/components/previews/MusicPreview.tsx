@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { previewSlideRight } from 'animation';
 import { AuthPrompt, KenBurns, LoadingScreen } from 'components';
 import { motion } from 'framer-motion';
-import { useDataFetcher, useSettings } from 'hooks';
+import { useFetchAlbums, useSettings } from 'hooks';
 import styled from 'styled-components';
 
 const Container = styled(motion.div)`
@@ -21,19 +21,18 @@ const MusicPreview = () => {
   const {
     data: albums,
     isLoading,
-    hasError,
-  } = useDataFetcher<IpodApi.Album[]>({
-    name: 'albums',
+    error,
+  } = useFetchAlbums({
     artworkSize: 400,
   });
 
   const artworkUrls = useMemo(() => {
-    if (albums && !hasError) {
+    if (albums && !error) {
       return albums.map((album) => album.artwork?.url ?? '');
     }
 
     return [];
-  }, [albums, hasError]);
+  }, [albums, error]);
 
   return (
     <Container {...previewSlideRight}>

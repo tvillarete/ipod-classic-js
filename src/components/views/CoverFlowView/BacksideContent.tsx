@@ -5,7 +5,7 @@ import {
   SelectableList,
   SelectableListOption,
 } from 'components';
-import { useDataFetcher, useEventListener, useScrollHandler } from 'hooks';
+import { useFetchAlbum, useEventListener, useScrollHandler } from 'hooks';
 import styled from 'styled-components';
 
 import ViewOptions from '../';
@@ -52,8 +52,7 @@ interface Props {
 }
 
 const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
-  const { data: album, isLoading } = useDataFetcher<IpodApi.Album>({
-    name: 'album',
+  const { data: album, isLoading } = useFetchAlbum({
     id: albumId,
     inLibrary: true,
   });
