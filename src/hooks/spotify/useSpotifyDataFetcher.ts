@@ -32,23 +32,29 @@ const fetchSpotifyApi = async <TSpotifyApiType extends object>({
 const useSpotifyDataFetcher = () => {
   const { accessToken } = useSpotifySDK();
 
-  const fetchAlbums = useCallback(async () => {
-    const response = await fetchSpotifyApi<SpotifyApi.UsersSavedAlbumsResponse>(
-      {
-        endpoint: `me/albums?limit=50`,
-        accessToken,
-        onError: (error) => {
-          throw new Error(error);
-        },
-      }
-    );
+  const fetchAlbums = useCallback(
+    async ({ pageParam, limit }: { pageParam: number; limit: number }) => {
+      const offset = pageParam * limit;
 
-    if (response) {
-      return response.items.map((item) =>
-        ConversionUtils.convertSpotifyAlbumFull(item.album)
-      );
-    }
-  }, [accessToken]);
+      const response =
+        await fetchSpotifyApi<SpotifyApi.UsersSavedAlbumsResponse>({
+          endpoint: `me/albums?limit=${limit}&offset=${offset}`,
+          accessToken,
+          onError: (error) => {
+            throw new Error(error);
+          },
+        });
+
+      return {
+        data:
+          response?.items.map((item) =>
+            ConversionUtils.convertSpotifyAlbumFull(item.album)
+          ) ?? [],
+        nextPageParam: response?.next ? pageParam + 1 : undefined,
+      };
+    },
+    [accessToken]
+  );
 
   const fetchAlbum = useCallback(
     async (userId = '', id: string) => {

@@ -39,7 +39,8 @@ const useScrollHandler = (
   id: string,
   /** A list of all scrollable items. Used to cap the scrolling to the last element. */
   options: SelectableListOption[] = [],
-  selectedOption?: SelectableListOption
+  selectedOption?: SelectableListOption,
+  onScrolledToEnd?: (...args: any) => any
 ): [number] => {
   const { triggerHaptics } = useHapticFeedback();
   const { showWindow, windowStack, setPreview } = useWindowContext();
@@ -73,20 +74,39 @@ const useScrollHandler = (
   );
 
   const handleForwardScroll = useCallback(() => {
-    if (index < options.length - 1 && isActive) {
-      triggerHaptics(10);
-      setIndex(index + 1);
-      handleCheckForPreview(index + 1);
-    }
-  }, [handleCheckForPreview, index, isActive, options.length, triggerHaptics]);
+    setIndex((prevIndex) => {
+      if (prevIndex < options.length - 1 && isActive) {
+        triggerHaptics(10);
+        handleCheckForPreview(prevIndex + 1);
+
+        if (prevIndex === options.length - 2) {
+          onScrolledToEnd?.(options.length);
+        }
+
+        return prevIndex + 1;
+      }
+
+      return prevIndex;
+    });
+  }, [
+    handleCheckForPreview,
+    isActive,
+    onScrolledToEnd,
+    options.length,
+    triggerHaptics,
+  ]);
 
   const handleBackwardScroll = useCallback(() => {
-    if (index > 0 && isActive) {
-      triggerHaptics(10);
-      setIndex(index - 1);
-      handleCheckForPreview(index - 1);
-    }
-  }, [handleCheckForPreview, index, isActive, triggerHaptics]);
+    setIndex((prevIndex) => {
+      if (prevIndex > 0 && isActive) {
+        triggerHaptics(10);
+        handleCheckForPreview(prevIndex + 1);
+        return prevIndex - 1;
+      }
+
+      return prevIndex;
+    });
+  }, [handleCheckForPreview, isActive, triggerHaptics]);
 
   const handleShowView = useCallback(
     (

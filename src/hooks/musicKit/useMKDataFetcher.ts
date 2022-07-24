@@ -47,21 +47,31 @@ const useMKDataFetcher = () => {
     [isConfigured, music]
   );
 
-  const fetchAlbums = useCallback(async () => {
-    const response = await fetchAppleMusicApi<AppleMusicApi.AlbumResponse>({
-      endpoint: `/albums`,
-      inLibrary: true,
-      params: {
-        limit: 100,
-      },
-    });
+  const fetchAlbums = useCallback(
+    async ({ pageParam, limit }: { pageParam: number; limit: number }) => {
+      const offset = pageParam * limit;
 
-    if (response) {
-      return response.data.map((item: AppleMusicApi.Album) =>
-        ConversionUtils.convertAppleAlbum(item, 300)
-      );
-    }
-  }, [fetchAppleMusicApi]);
+      const response = await fetchAppleMusicApi<AppleMusicApi.AlbumResponse>({
+        endpoint: `/albums`,
+        inLibrary: true,
+        params: {
+          limit,
+          offset,
+        },
+      });
+      const totalResults = response?.meta.total ?? 0;
+
+      return {
+        data:
+          response?.data.map((item: AppleMusicApi.Album) =>
+            ConversionUtils.convertAppleAlbum(item, 300)
+          ) ?? [],
+        nextPageParam:
+          offset >= totalResults - limit ? undefined : pageParam + 1,
+      };
+    },
+    [fetchAppleMusicApi]
+  );
 
   const fetchAlbum = useCallback(
     async (id: string, inLibrary = false) => {

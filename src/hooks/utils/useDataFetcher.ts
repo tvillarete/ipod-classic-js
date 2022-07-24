@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import {
   useMKDataFetcher,
@@ -76,16 +76,24 @@ export const useFetchAlbums = (
   const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
     useDataFetchers();
 
-  return useQuery(
+  return useInfiniteQuery(
     ['albums'],
-    async () => {
+    async ({ pageParam = 0 }) => {
+      const options = {
+        pageParam,
+        limit: 50,
+      };
+
       if (service === 'apple') {
-        return appleDataFetcher.fetchAlbums();
+        return appleDataFetcher.fetchAlbums(options);
       } else if (service === 'spotify') {
-        return spotifyDataFetcher.fetchAlbums();
+        return spotifyDataFetcher.fetchAlbums(options);
       }
     },
-    { enabled: enabled && !options.lazy }
+    {
+      enabled: enabled && !options.lazy,
+      getNextPageParam: (lastPage) => lastPage?.nextPageParam,
+    }
   );
 };
 

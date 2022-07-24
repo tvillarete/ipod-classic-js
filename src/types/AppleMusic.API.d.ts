@@ -6,6 +6,10 @@
 
 declare namespace AppleMusicApi {
   // https://developer.apple.com/documentation/applemusicapi/songresponse
+
+  interface ResponseMetadata {
+    total: number;
+  }
   interface SongResponse {
     data: Song[];
   }
@@ -13,6 +17,7 @@ declare namespace AppleMusicApi {
   // https://developer.apple.com/documentation/applemusicapi/albumresponse
   interface AlbumResponse {
     data: Album[];
+    meta: ResponseMetadata;
   }
 
   // https://developer.apple.com/documentation/applemusicapi/playlistresponse
