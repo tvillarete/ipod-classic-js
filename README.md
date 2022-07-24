@@ -11,8 +11,10 @@ I built this thing to be very extensible – to the point where it can even run 
 ## Details
 
 Here's a breakdown of the Full Stack:
-#### Frontend: 
-- JS: TypeScript, React (Hooks, Context)
+
+#### Frontend:
+
+- JS: Next.js, TypeScript, React (Hooks, Context)
 - CSS: Styled Components, Framer Motion (for some of the animations)
 - Textures/Icons: All SVGs created by me in Figma
 - API: Spotify Web Playback SDK / Apple MusicKit JS
@@ -20,11 +22,14 @@ Here's a breakdown of the Full Stack:
 ## Running Locally
 
 #### NOTE
-If you want to develop locally with this project, you'll need to supply an Apple Developer Token using the `token` query parameter. See https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
+
+If you want to develop with Apple Music, you'll need to supply an Apple Developer Token using the `token` query parameter. See https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
 
 In the project directory, you can run:
 
-### `yarn start`
+```bash
+yarn dev
+```
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
