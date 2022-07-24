@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { AuthPrompt, SelectableList, SelectableListOption } from 'components';
 import {
-  useDataFetcher,
+  useFetchArtists,
   useMenuHideWindow,
   useScrollHandler,
   useSettings,
@@ -24,8 +24,7 @@ const ArtistsView = ({
 }: Props) => {
   useMenuHideWindow(ViewOptions.artists.id);
   const { isAuthorized } = useSettings();
-  const { data: fetchedArtists, isLoading } = useDataFetcher<IpodApi.Artist[]>({
-    name: 'artists',
+  const { data: fetchedArtists, isLoading: isQueryLoading } = useFetchArtists({
     lazy: !!artists,
   });
 
@@ -45,6 +44,11 @@ const ArtistsView = ({
       ) ?? [],
     [artists, fetchedArtists, inLibrary, showImages]
   );
+
+  // If accessing ArtistsView from the SearchView, and there is no data cached,
+  // 'isQueryLoading' will be true. To prevent an infinite loading screen in these
+  // cases, we'll check if we have any 'options'
+  const isLoading = !options.length && isQueryLoading;
 
   const [scrollIndex] = useScrollHandler(ViewOptions.artists.id, options);
 

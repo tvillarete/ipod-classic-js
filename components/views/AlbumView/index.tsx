@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { SelectableList, SelectableListOption } from 'components';
 import { ViewOptions } from 'components/views';
-import { useDataFetcher, useMenuHideWindow, useScrollHandler } from 'hooks';
+import { useFetchAlbum, useMenuHideWindow, useScrollHandler } from 'hooks';
 import * as Utils from 'utils';
 
 interface Props {
@@ -14,8 +14,7 @@ interface Props {
 const AlbumView = ({ id, inLibrary = false }: Props) => {
   useMenuHideWindow(ViewOptions.album.id);
 
-  const { data: album, isLoading } = useDataFetcher<IpodApi.Album>({
-    name: 'album',
+  const { data: album, isLoading } = useFetchAlbum({
     id,
     inLibrary,
   });

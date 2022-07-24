@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import { AuthPrompt, LoadingScreen } from 'components';
 import {
-  useDataFetcher,
+  useFetchAlbums,
   useEventListener,
   useSettings,
   useWindowContext,
@@ -19,8 +19,7 @@ const Container = styled.div`
 const CoverFlowView = () => {
   const { hideWindow } = useWindowContext();
   const { isAuthorized } = useSettings();
-  const { data: albums, isLoading } = useDataFetcher<IpodApi.Album[]>({
-    name: 'albums',
+  const { data: albums, isLoading } = useFetchAlbums({
     artworkSize: 350,
   });
 
