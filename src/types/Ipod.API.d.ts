@@ -62,4 +62,16 @@ declare namespace IpodApi {
     albums: Album[];
     playlists: Playlist[];
   }
+
+  interface PaginationParams {
+    pageParam: number;
+    limit: number;
+    after?: string;
+  }
+
+  interface PaginatedResponse<TType> {
+    data: TType;
+    nextPageParam?: number;
+    after?: string;
+  }
 }

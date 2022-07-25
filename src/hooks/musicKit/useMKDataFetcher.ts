@@ -4,6 +4,25 @@ import { useMusicKit } from 'hooks';
 import queryString from 'query-string';
 import * as ConversionUtils from 'utils/conversion';
 
+/**
+ *  Accepts information about the current API request  as well as
+ *  the response's total number of items. If the total is greater than the current offset,
+ *  return the incremented pageParam.
+ */
+const getNextPageParam = ({
+  limit,
+  offset,
+  prevPageParam,
+  totalResults = 0,
+}: {
+  limit: number;
+  offset: number;
+  prevPageParam: number;
+  totalResults?: number;
+}) => {
+  return offset >= totalResults - limit ? undefined : prevPageParam + 1;
+};
+
 type FetchAppleMusicApiArgs = {
   endpoint: string;
   params?: Record<string, string | number>;
@@ -59,15 +78,19 @@ const useMKDataFetcher = () => {
           offset,
         },
       });
-      const totalResults = response?.meta.total ?? 0;
+      const nextPageParam = getNextPageParam({
+        limit,
+        offset,
+        prevPageParam: pageParam,
+        totalResults: response?.meta.total,
+      });
 
       return {
         data:
           response?.data.map((item: AppleMusicApi.Album) =>
             ConversionUtils.convertAppleAlbum(item, 300)
           ) ?? [],
-        nextPageParam:
-          offset >= totalResults - limit ? undefined : pageParam + 1,
+        nextPageParam,
       };
     },
     [fetchAppleMusicApi]
@@ -87,14 +110,34 @@ const useMKDataFetcher = () => {
     [fetchAppleMusicApi]
   );
 
-  const fetchArtists = useCallback(async () => {
-    const response = await fetchAppleMusicApi<AppleMusicApi.ArtistResponse>({
-      endpoint: `/artists`,
-      inLibrary: true,
-    });
+  const fetchArtists = useCallback(
+    async ({ limit, pageParam }: IpodApi.PaginationParams) => {
+      const offset = pageParam * limit;
 
-    return response?.data.map(ConversionUtils.convertAppleArtist);
-  }, [fetchAppleMusicApi]);
+      const response = await fetchAppleMusicApi<AppleMusicApi.ArtistResponse>({
+        endpoint: `/artists`,
+        params: {
+          limit,
+          offset,
+        },
+        inLibrary: true,
+      });
+      const nextPageParam = getNextPageParam({
+        limit,
+        offset,
+        prevPageParam: pageParam,
+        totalResults: response?.meta.total,
+      });
+
+      const result: IpodApi.PaginatedResponse<IpodApi.Artist[]> = {
+        data: response?.data.map(ConversionUtils.convertAppleArtist) ?? [],
+        nextPageParam,
+      };
+
+      return result;
+    },
+    [fetchAppleMusicApi]
+  );
 
   const fetchArtistAlbums = useCallback(
     async (id: string, inLibrary = false) => {
@@ -110,17 +153,36 @@ const useMKDataFetcher = () => {
     [fetchAppleMusicApi]
   );
 
-  const fetchPlaylists = useCallback(async () => {
-    const response = await fetchAppleMusicApi<AppleMusicApi.PlaylistResponse>({
-      endpoint: '/playlists',
-      params: {
-        limit: 100,
-      },
-      inLibrary: true,
-    });
+  const fetchPlaylists = useCallback(
+    async ({ limit, pageParam }: IpodApi.PaginationParams) => {
+      const offset = pageParam * limit;
 
-    return response?.data.map(ConversionUtils.convertApplePlaylist);
-  }, [fetchAppleMusicApi]);
+      const response = await fetchAppleMusicApi<AppleMusicApi.PlaylistResponse>(
+        {
+          endpoint: '/playlists',
+          params: {
+            limit: 50,
+            offset,
+          },
+          inLibrary: true,
+        }
+      );
+      const nextPageParam = getNextPageParam({
+        limit,
+        offset,
+        prevPageParam: pageParam,
+        totalResults: response?.meta.total,
+      });
+
+      const result: IpodApi.PaginatedResponse<IpodApi.Playlist[]> = {
+        data: response?.data.map(ConversionUtils.convertApplePlaylist) ?? [],
+        nextPageParam,
+      };
+
+      return result;
+    },
+    [fetchAppleMusicApi]
+  );
 
   const fetchPlaylist = useCallback(
     async (playlistId: string, inLibrary = false) => {

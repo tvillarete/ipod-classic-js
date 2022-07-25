@@ -32,10 +32,7 @@ const AlbumsView = ({ albums, inLibrary = true }: Props) => {
 
   const options: SelectableListOption[] = useMemo(() => {
     const data =
-      albums ??
-      fetchedAlbums?.pages.flatMap(
-        (page) => page?.data.map((album) => album) ?? []
-      );
+      albums ?? fetchedAlbums?.pages.flatMap((page) => page?.data ?? []);
 
     return (
       data?.map((album) => ({

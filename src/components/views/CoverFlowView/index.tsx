@@ -24,9 +24,7 @@ const CoverFlowView = () => {
   });
 
   const flattenedAlbums = useMemo(
-    () =>
-      albums?.pages.flatMap((page) => page?.data.map((album) => album) ?? []) ??
-      [],
+    () => albums?.pages.flatMap((page) => page?.data ?? []) ?? [],
     [albums]
   );
 

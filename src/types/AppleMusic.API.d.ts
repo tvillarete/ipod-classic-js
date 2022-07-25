@@ -23,11 +23,13 @@ declare namespace AppleMusicApi {
   // https://developer.apple.com/documentation/applemusicapi/playlistresponse
   interface PlaylistResponse {
     data: Playlist[];
+    meta: ResponseMetadata;
   }
 
   // https://developer.apple.com/documentation/applemusicapi/artistresponse
   interface ArtistResponse {
     data: Artist[];
+    meta: ResponseMetadata;
   }
 
   // https://developer.apple.com/documentation/applemusicapi/relationship

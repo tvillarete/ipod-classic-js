@@ -40,7 +40,11 @@ const useScrollHandler = (
   /** A list of all scrollable items. Used to cap the scrolling to the last element. */
   options: SelectableListOption[] = [],
   selectedOption?: SelectableListOption,
-  onScrolledToEnd?: (...args: any) => any
+  /**
+   * This function is called when the user has scrolled close to the end of the list of options.
+   * Useful for fetching the next page of data before the user reaches the end of the list.
+   */
+  onNearEndOfList?: (...args: any) => any
 ): [number] => {
   const { triggerHaptics } = useHapticFeedback();
   const { showWindow, windowStack, setPreview } = useWindowContext();
@@ -79,8 +83,9 @@ const useScrollHandler = (
         triggerHaptics(10);
         handleCheckForPreview(prevIndex + 1);
 
-        if (prevIndex === options.length - 2) {
-          onScrolledToEnd?.(options.length);
+        // Trigger near-end-of-list callback when we're halfway through the current list.
+        if (prevIndex === Math.round(options.length / 2)) {
+          onNearEndOfList?.(options.length);
         }
 
         return prevIndex + 1;
@@ -91,7 +96,7 @@ const useScrollHandler = (
   }, [
     handleCheckForPreview,
     isActive,
-    onScrolledToEnd,
+    onNearEndOfList,
     options.length,
     triggerHaptics,
   ]);

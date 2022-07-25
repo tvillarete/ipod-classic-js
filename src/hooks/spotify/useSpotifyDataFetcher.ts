@@ -3,16 +3,19 @@ import { useCallback } from 'react';
 import { useSpotifySDK } from 'hooks';
 import { uniqBy } from 'lodash';
 import * as ConversionUtils from 'utils/conversion';
+import querystring from 'query-string';
 
 type FetchSpotifyApiArgs = {
   endpoint: string;
   accessToken?: string;
+  params?: Record<string, any>;
   onError: (error: any) => void;
 };
 
 const fetchSpotifyApi = async <TSpotifyApiType extends object>({
   endpoint,
   accessToken,
+  params = {},
   onError,
 }: FetchSpotifyApiArgs) => {
   try {
@@ -20,9 +23,14 @@ const fetchSpotifyApi = async <TSpotifyApiType extends object>({
       throw new Error('Provide a Spotify API Access token');
     }
 
-    const res = await fetch(`https://api.spotify.com/v1/${endpoint}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+    const queryParams = querystring.stringify(params);
+
+    const res = await fetch(
+      `https://api.spotify.com/v1/${endpoint}?${queryParams}`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
     return (await res.json()) as TSpotifyApiType;
   } catch (error) {
     onError(error);
@@ -33,31 +41,37 @@ const useSpotifyDataFetcher = () => {
   const { accessToken } = useSpotifySDK();
 
   const fetchAlbums = useCallback(
-    async ({ pageParam, limit }: { pageParam: number; limit: number }) => {
+    async ({ pageParam, limit }: IpodApi.PaginationParams) => {
       const offset = pageParam * limit;
 
       const response =
         await fetchSpotifyApi<SpotifyApi.UsersSavedAlbumsResponse>({
-          endpoint: `me/albums?limit=${limit}&offset=${offset}`,
+          endpoint: `me/albums`,
+          params: {
+            limit,
+            offset,
+          },
           accessToken,
           onError: (error) => {
             throw new Error(error);
           },
         });
 
-      return {
+      const result: IpodApi.PaginatedResponse<IpodApi.Album[]> = {
         data:
           response?.items.map((item) =>
             ConversionUtils.convertSpotifyAlbumFull(item.album)
           ) ?? [],
         nextPageParam: response?.next ? pageParam + 1 : undefined,
       };
+
+      return result;
     },
     [accessToken]
   );
 
   const fetchAlbum = useCallback(
-    async (userId = '', id: string) => {
+    async ({ id }: { id: string }) => {
       const response = await fetchSpotifyApi<SpotifyApi.SingleAlbumResponse>({
         endpoint: `albums/${id}`,
         accessToken,
@@ -73,20 +87,36 @@ const useSpotifyDataFetcher = () => {
     [accessToken]
   );
 
-  const fetchArtists = useCallback(async () => {
-    const response =
-      await fetchSpotifyApi<SpotifyApi.UsersFollowedArtistsResponse>({
-        endpoint: `me/following?type=artist&limit=50`,
-        accessToken,
-        onError: (error) => {
-          throw new Error(error);
-        },
-      });
+  const fetchArtists = useCallback(
+    async ({ limit, after }: IpodApi.PaginationParams) => {
+      const response =
+        await fetchSpotifyApi<SpotifyApi.UsersFollowedArtistsResponse>({
+          endpoint: `me/following`,
+          params: {
+            type: 'artist',
+            limit,
+            after,
+          },
+          accessToken,
+          onError: (error) => {
+            throw new Error(error);
+          },
+        });
 
-    return response?.artists?.items.map(
-      ConversionUtils.convertSpotifyArtistFull
-    );
-  }, [accessToken]);
+      const data =
+        response?.artists?.items.map(
+          ConversionUtils.convertSpotifyArtistFull
+        ) ?? [];
+
+      const result: IpodApi.PaginatedResponse<IpodApi.Artist[]> = {
+        data,
+        after: response?.artists.next ? data[data.length - 1]?.id : undefined,
+      };
+
+      return result;
+    },
+    [accessToken]
+  );
 
   const fetchArtist = useCallback(
     async (userId = '', id: string) => {
@@ -108,25 +138,40 @@ const useSpotifyDataFetcher = () => {
     [accessToken]
   );
 
-  const fetchPlaylists = useCallback(async () => {
-    const response =
-      await fetchSpotifyApi<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>({
-        endpoint: 'me/playlists?limit=50',
-        accessToken,
-        onError: (error) => {
-          throw new Error(error);
-        },
-      });
+  const fetchPlaylists = useCallback(
+    async ({ pageParam, limit }: IpodApi.PaginationParams) => {
+      const offset = pageParam * limit;
 
-    return response?.items?.map(
-      ConversionUtils.convertSpotifyPlaylistSimplified
-    );
-  }, [accessToken]);
+      const response =
+        await fetchSpotifyApi<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>({
+          endpoint: 'me/playlists',
+          params: {
+            limit,
+            offset,
+          },
+          accessToken,
+          onError: (error) => {
+            throw new Error(error);
+          },
+        });
+
+      const result: IpodApi.PaginatedResponse<IpodApi.Playlist[]> = {
+        data:
+          response?.items?.map(
+            ConversionUtils.convertSpotifyPlaylistSimplified
+          ) ?? [],
+        nextPageParam: response?.next ? pageParam + 1 : undefined,
+      };
+
+      return result;
+    },
+    [accessToken]
+  );
 
   const fetchPlaylist = useCallback(
-    async (userId = '', id: string) => {
+    async (id: string) => {
       const response = await fetchSpotifyApi<SpotifyApi.PlaylistObjectFull>({
-        endpoint: `users/${userId}/playlists/${id}`,
+        endpoint: `playlists/${id}`,
         accessToken,
         onError: (error) => {
           throw new Error(error);
@@ -143,8 +188,13 @@ const useSpotifyDataFetcher = () => {
   const fetchSearchResults = useCallback(
     async (query: string) => {
       const response = await fetchSpotifyApi<SpotifyApi.SearchResponse>({
-        endpoint: `search?q=${query}&type=track%2Cartist%2Calbum%2Cplaylist&limit=15`,
+        endpoint: `search`,
         accessToken,
+        params: {
+          q: query,
+          type: 'track,artist,album,playlist',
+          limit: 15,
+        },
         onError: (error) => {
           throw new Error(error);
         },
