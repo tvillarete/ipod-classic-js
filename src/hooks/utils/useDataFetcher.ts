@@ -103,7 +103,7 @@ export const useFetchArtists = (options: CommonFetcherProps) => {
 
   return useInfiniteQuery(
     ['artists'],
-    async ({ pageParam }) => {
+    async ({ pageParam = 0 }) => {
       const params = {
         pageParam,
         limit: 20,
