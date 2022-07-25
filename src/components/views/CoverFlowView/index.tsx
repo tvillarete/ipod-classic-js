@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useMemo, useCallback } from 'react';
 
 import { AuthPrompt, LoadingScreen } from 'components';
 import {
@@ -23,6 +23,11 @@ const CoverFlowView = () => {
     artworkSize: 350,
   });
 
+  const flattenedAlbums = useMemo(
+    () => albums?.pages.flatMap((page) => page?.data ?? []) ?? [],
+    [albums]
+  );
+
   const handleMenuClick = useCallback(() => {
     if (!isAuthorized || isLoading) {
       hideWindow();
@@ -38,7 +43,7 @@ const CoverFlowView = () => {
       ) : !isAuthorized ? (
         <AuthPrompt message="Sign in to view Cover Flow" />
       ) : (
-        <CoverFlow albums={albums ?? []} />
+        <CoverFlow albums={flattenedAlbums} />
       )}
     </Container>
   );

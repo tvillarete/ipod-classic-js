@@ -19,14 +19,21 @@ interface Props {
 const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
   useMenuHideWindow(ViewOptions.playlists.id);
   const { isAuthorized } = useSettings();
-  const { data: fetchedPlaylists, isLoading: isQueryLoading } =
-    useFetchPlaylists({
-      lazy: !!playlists,
-    });
+  const {
+    data: fetchedPlaylists,
+    fetchNextPage,
+    isFetchingNextPage,
+    isLoading: isQueryLoading,
+  } = useFetchPlaylists({
+    lazy: !!playlists,
+  });
 
-  const options: SelectableListOption[] = useMemo(
-    () =>
-      (playlists ?? fetchedPlaylists)?.map((playlist) => ({
+  const options: SelectableListOption[] = useMemo(() => {
+    const data =
+      playlists ?? fetchedPlaylists?.pages.flatMap((page) => page?.data ?? []);
+
+    return (
+      data?.map((playlist) => ({
         type: 'View',
         label: playlist.name,
         sublabel: playlist.description || `By ${playlist.curatorName}`,
@@ -37,23 +44,29 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
           <PlaylistView id={playlist.id} inLibrary={inLibrary} />
         ),
         longPressOptions: Utils.getMediaOptions('playlist', playlist.id),
-      })) ?? [],
-    [fetchedPlaylists, inLibrary, playlists]
-  );
+      })) ?? []
+    );
+  }, [fetchedPlaylists, inLibrary, playlists]);
 
   // If accessing PlaylistsView from the SearchView, and there is no data cached,
   // 'isQueryLoading' will be true. To prevent an infinite loading screen in these
   // cases, we'll check if we have any 'options'
   const isLoading = !options.length && isQueryLoading;
 
-  const [scrollIndex] = useScrollHandler(ViewOptions.playlists.id, options);
+  const [scrollIndex] = useScrollHandler(
+    ViewOptions.playlists.id,
+    options,
+    undefined,
+    fetchNextPage
+  );
 
   return isAuthorized ? (
     <SelectableList
-      loading={isLoading}
-      options={options}
       activeIndex={scrollIndex}
       emptyMessage="No saved playlists"
+      loading={isLoading}
+      loadingNextItems={isFetchingNextPage}
+      options={options}
     />
   ) : (
     <AuthPrompt message="Sign in to view your playlists" />

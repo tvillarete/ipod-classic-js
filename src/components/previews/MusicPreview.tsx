@@ -28,7 +28,9 @@ const MusicPreview = () => {
 
   const artworkUrls = useMemo(() => {
     if (albums && !error) {
-      return albums.map((album) => album.artwork?.url ?? '');
+      return albums.pages.flatMap(
+        (page) => page?.data.map((album) => album.artwork?.url ?? '') ?? []
+      );
     }
 
     return [];
