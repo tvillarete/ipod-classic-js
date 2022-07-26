@@ -4,9 +4,8 @@
   "private": true,
   "homepage": "./",
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "start": "NODE_OPTIONS='--inspect' vercel dev",
     "build": "next build",
-    "start": "next start",
     "lint": "next lint"
   },
   "eslintConfig": {

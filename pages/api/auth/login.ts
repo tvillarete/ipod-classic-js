@@ -1,9 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const generateRandomString = (length: number): string => {
-  let text = "";
+  let text = '';
   const possible =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
   for (let i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -12,11 +12,11 @@ const generateRandomString = (length: number): string => {
 };
 
 const login = (req: NextApiRequest, res: NextApiResponse) => {
-  const scope: string = "streaming user-read-email user-read-private";
-  const spotify_redirect_uri = "http://localhost:3000/api/auth/callback";
+  const scope: string = 'streaming user-read-email user-read-private';
+  const spotify_redirect_uri = `${req.headers.referer}api/auth/callback`;
   const state: string = generateRandomString(16);
 
-  let spotify_client_id: string = "";
+  let spotify_client_id: string = '';
   if (process.env.SPOTIFY_CLIENT_ID) {
     spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
   } else {
@@ -26,7 +26,7 @@ const login = (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const auth_query_parameters = new URLSearchParams({
-    response_type: "code",
+    response_type: 'code',
     client_id: spotify_client_id,
     scope: scope,
     redirect_uri: spotify_redirect_uri,
@@ -34,7 +34,7 @@ const login = (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   res.redirect(
-    "https://accounts.spotify.com/authorize/?" +
+    'https://accounts.spotify.com/authorize/?' +
       auth_query_parameters.toString()
   );
 };

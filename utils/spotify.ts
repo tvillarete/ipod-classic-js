@@ -44,9 +44,10 @@ export const getExistingTokens = () => {
 };
 
 export const removeExistingTokens = () => {
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
-  localStorage.removeItem(REFRESH_TOKEN_KEY);
-  localStorage.removeItem(TOKEN_TIMESTAMP_KEY);
+  fetch('/api/auth/logout');
+  // localStorage.removeItem(ACCESS_TOKEN_KEY);
+  // localStorage.removeItem(REFRESH_TOKEN_KEY);
+  // localStorage.removeItem(TOKEN_TIMESTAMP_KEY);
 };
 
 /** Accepts a refresh token and returns a fresh access token.
