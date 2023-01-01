@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "vercel dev",
     "lint": "next lint"
   },
   "eslintConfig": {
@@ -41,8 +41,12 @@
     "@types/spotify-api": "^0.0.16",
     "@types/spotify-web-playback-sdk": "^0.1.12",
     "@types/styled-components": "^5.1.25",
-    "eslint": "8.20.0",
-    "eslint-config-next": "12.2.3",
+    "eslint": "8.26.0",
+    "eslint-config-next": "12.3.1",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-react": "^7.31.10",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-memo": "^0.0.3",
     "eslint-plugin-unused-imports": "^2.0.0",
     "typescript": "4.7.4"
   }
