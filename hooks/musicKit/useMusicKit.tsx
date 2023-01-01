@@ -3,7 +3,6 @@ import React, {
   memo,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -81,7 +80,6 @@ export const MusicKitProvider = ({ children, token }: Props) => {
   } = useSettings();
 
   const handleConfigure = useCallback(async () => {
-    console.log({ token });
     try {
       const music = await window.MusicKit.configure({
         developerToken: token,
@@ -108,8 +106,8 @@ export const MusicKitProvider = ({ children, token }: Props) => {
     handleConfigure();
   });
 
-  useEventListener('musickitconfigured', () => {
-    console.log('Configured');
+  useEventListener('musickitconfigured', (e) => {
+    console.log('MusicKit configured');
     setIsConfigured(true);
   });
 
