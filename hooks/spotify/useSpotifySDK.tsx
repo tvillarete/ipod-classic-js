@@ -46,7 +46,7 @@ export const useSpotifySDK = (): SpotifySDKHook => {
    */
   const signIn = useCallback(() => {
     if (!isSpotifyAuthorized) {
-      window.open(`/api/auth/login`, '_self');
+      window.open(`/api/spotify/login`, '_self');
     } else if (!state.isPlayerConnected) {
       showWindow({
         type: WINDOW_TYPE.POPUP,

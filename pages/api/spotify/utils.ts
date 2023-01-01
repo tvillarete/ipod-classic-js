@@ -6,7 +6,7 @@ export const getSpotifyClientId = () => {
     return process.env.SPOTIFY_CLIENT_ID;
   } else {
     console.error(
-      'Undefined Error: An environmental variable, "SPOTIFY_CLIENT_ID", has something wrong.'
+      'Undefined Error: An environment variable - SPOTIFY_CLIENT_ID - is not working properly'
     );
   }
 };
@@ -16,9 +16,15 @@ export const getSpotifyClientSecret = () => {
     return process.env.SPOTIFY_CLIENT_SECRET;
   } else {
     console.error(
-      'Undefined Error: An environmental variable, "SPOTIFY_CLIENT_SECRET", has something wrong.'
+      'Undefined Error: An environment variable - SPOTIFY_CLIENT_SECRET - is not working properly'
     );
   }
+};
+
+export const getSpotifyRedirectUri = () => {
+  return process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000/api/spotify/callback'
+    : 'https://tannerv.com/ipod/api/spotify/callback';
 };
 
 export const getSpotifyAuthorizationHeader = (
@@ -27,7 +33,7 @@ export const getSpotifyAuthorizationHeader = (
 ) => {
   if (!clientId || !clientSecret) {
     console.error(
-      'getSpotifyAuthorizationHeader: clientId or clientSecret is undefined.'
+      'getSpotifyAuthorizationHeader: clientId or clientSecret is undefined'
     );
   }
 

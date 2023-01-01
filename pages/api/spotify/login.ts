@@ -1,4 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import {
+  getSpotifyClientId,
+  getSpotifyRedirectUri,
+} from 'pages/api/spotify/utils';
 
 const generateRandomString = (length: number): string => {
   let text = '';
@@ -11,20 +15,18 @@ const generateRandomString = (length: number): string => {
   return text;
 };
 
-const login = (req: NextApiRequest, res: NextApiResponse) => {
+const login = (_: NextApiRequest, res: NextApiResponse) => {
   const scope =
     'user-read-private user-read-email user-library-read user-follow-read playlist-read-collaborative playlist-read-private streaming user-read-playback-state user-read-currently-playing user-modify-playback-state';
 
-  const spotify_redirect_uri = 'http://localhost:3000/api/auth/callback';
+  const spotify_redirect_uri = getSpotifyRedirectUri();
+  const spotify_client_id = getSpotifyClientId();
   const state: string = generateRandomString(16);
+  console.log({ spotify_redirect_uri });
 
-  let spotify_client_id: string = '';
-  if (process.env.SPOTIFY_CLIENT_ID) {
-    spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
-  } else {
-    console.error(
-      'Undefined Error: An environmental variable, "SPOTIFY_CLIENT_ID", has something wrong.'
-    );
+  if (!spotify_redirect_uri || !spotify_client_id) {
+    res.status(500).json({ error: 'Missing Spotify redirect URI' });
+    return;
   }
 
   const auth_query_parameters = new URLSearchParams({

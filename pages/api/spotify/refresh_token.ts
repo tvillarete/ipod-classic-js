@@ -5,7 +5,7 @@ import {
   getSpotifyClientId,
   getSpotifyClientSecret,
   setCookie,
-} from 'pages/api/auth/utils';
+} from 'pages/api/spotify/utils';
 
 const refresh_token = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = (req.query.refresh_token as string) ?? '';
