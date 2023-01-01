@@ -1,19 +1,18 @@
 import {
   createContext,
-  memo,
   useCallback,
   useContext,
   useEffect,
   useState,
-} from "react";
+} from 'react';
+import { getServiceParam, SELECTED_SERVICE_KEY } from 'utils/service';
 
-import { DeviceThemeName, getThemeParam } from "../../utils/themes";
+import { DeviceThemeName, getThemeParam } from '../../utils/themes';
 
-type StreamingService = "apple" | "spotify";
+type StreamingService = 'apple' | 'spotify';
 
-export const SELECTED_SERVICE_KEY = "ipodSelectedService";
-export const DEVICE_COLOR_KEY = "ipodSelectedDeviceTheme";
-export const VOLUME_KEY = "ipodVolume";
+export const DEVICE_COLOR_KEY = 'ipodSelectedDeviceTheme';
+export const VOLUME_KEY = 'ipodVolume';
 
 export interface SettingsState {
   service?: StreamingService;
@@ -63,7 +62,7 @@ export const useSettings = (): SettingsHook => {
 
   const setService = useCallback(
     (service?: StreamingService) => {
-      if (typeof window === "undefined") {
+      if (typeof window === 'undefined') {
         return;
       }
 
@@ -105,26 +104,28 @@ interface Props {
 
 export const SettingsProvider = ({ children }: Props) => {
   const themeParam = getThemeParam();
+  const serviceParam = getServiceParam();
 
   const [settingsState, setSettingsState] = useState<SettingsState>({
     isAppleAuthorized: false,
     isSpotifyAuthorized: false,
     service: undefined,
-    deviceTheme: "silver",
+    deviceTheme: 'silver',
   });
 
   const handleMount = useCallback(() => {
     setSettingsState((prevState) => ({
       ...prevState,
       service:
+        serviceParam ??
         (localStorage.getItem(SELECTED_SERVICE_KEY) as StreamingService) ??
         undefined,
       deviceTheme:
         themeParam ??
         (localStorage.getItem(DEVICE_COLOR_KEY) as DeviceThemeName) ??
-        "silver",
+        'silver',
     }));
-  }, [themeParam]);
+  }, [serviceParam, themeParam]);
 
   useEffect(() => {
     handleMount();
