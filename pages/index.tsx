@@ -18,11 +18,16 @@ const Main = styled.div`
 `;
 
 type Props = {
-  spotifyToken: string;
-  appleToken: string;
+  spotifyAccessToken: string;
+  appleAccessToken: string;
+  spotifyRefreshToken: string;
 };
 
-const Home: NextPage<Props> = ({ appleToken, spotifyToken }) => {
+const Home: NextPage<Props> = ({
+  appleAccessToken,
+  spotifyAccessToken,
+  spotifyRefreshToken,
+}) => {
   return (
     <>
       <Head>
@@ -68,7 +73,11 @@ const Home: NextPage<Props> = ({ appleToken, spotifyToken }) => {
       </Head>
       <Main>
         <SettingsProvider>
-          <Ipod spotifyToken={spotifyToken} appleToken={appleToken} />
+          <Ipod
+            spotifyAccessToken={spotifyAccessToken}
+            spotifyRefreshToken={spotifyRefreshToken}
+            appleAccessToken={appleAccessToken}
+          />
         </SettingsProvider>
       </Main>
       <Script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" />
@@ -78,19 +87,15 @@ const Home: NextPage<Props> = ({ appleToken, spotifyToken }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const appleToken = process.env.APPLE_DEVELOPER_TOKEN ?? context.query.token;
+  const appleAccessToken =
+    process.env.APPLE_DEVELOPER_TOKEN ?? context.query.token ?? null;
+  const spotifyTokens = context.req.cookies['spotify-tokens'];
+  const [spotifyAccessToken = null, spotifyRefreshToken = null] =
+    spotifyTokens?.split(',') ?? [];
 
-  if (context.req.cookies['spotify-token']) {
-    const spotifyToken: string = context.req.cookies['spotify-token'];
-
-    return {
-      props: { spotifyToken, appleToken },
-    };
-  } else {
-    return {
-      props: { spotifyToken: '', appleToken },
-    };
-  }
+  return {
+    props: { spotifyAccessToken, appleAccessToken, spotifyRefreshToken },
+  };
 };
 
 export default memo(Home);

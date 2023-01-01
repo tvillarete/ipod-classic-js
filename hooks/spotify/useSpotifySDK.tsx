@@ -9,16 +9,15 @@ import {
 } from 'react';
 
 import ViewOptions, { WINDOW_TYPE } from 'components/views';
-import { useWindowContext } from 'hooks';
-import * as Utils from 'utils';
+import { useInterval, useWindowContext } from 'hooks';
 import * as SpotifyUtils from 'utils/spotify';
 
-import { useEffectOnce, useSettings } from '../';
+import { useSettings } from '..';
 
 export const API_URL = 'https://308c-174-127-165-218.ngrok.io';
 
 export interface SpotifySDKState {
-  isMounted: boolean;
+  isPlayerConnected: boolean;
   spotifyPlayer: Spotify.Player;
   accessToken?: string;
   deviceId?: string;
@@ -46,7 +45,9 @@ export const useSpotifySDK = (): SpotifySDKHook => {
    * redirected back to the app.
    */
   const signIn = useCallback(() => {
-    if (!state.isMounted) {
+    if (!isSpotifyAuthorized) {
+      window.open(`/api/auth/login`, '_self');
+    } else if (!state.isPlayerConnected) {
       showWindow({
         type: WINDOW_TYPE.POPUP,
         id: ViewOptions.spotifyNotSupportedPopup.id,
@@ -60,21 +61,16 @@ export const useSpotifySDK = (): SpotifySDKHook => {
           },
         ],
       });
-      return;
-    }
-
-    if (!isSpotifyAuthorized) {
-      window.open(`/api/auth/login`, '_self');
     } else {
       setService('spotify');
     }
-  }, [isSpotifyAuthorized, setService, showWindow, state.isMounted]);
+  }, [isSpotifyAuthorized, setService, showWindow, state.isPlayerConnected]);
 
-  const signOut = useCallback(() => {
+  const signOut = useCallback(async () => {
     state.spotifyPlayer.disconnect();
     setIsSpotifyAuthorized(false);
 
-    SpotifyUtils.removeExistingTokens();
+    await SpotifyUtils.logOutSpotify();
 
     // Change to apple music if available.
     if (isAppleAuthorized) {
@@ -98,16 +94,24 @@ export const useSpotifySDK = (): SpotifySDKHook => {
 
 interface Props {
   children: React.ReactNode;
-  token?: string;
+  initialAccessToken?: string;
+  refreshToken?: string;
 }
 
-export const SpotifySDKProvider = ({ children, token }: Props) => {
+export const SpotifySDKProvider = ({
+  children,
+  initialAccessToken,
+  refreshToken,
+}: Props) => {
   const { showWindow, hideWindow } = useWindowContext();
   const { setIsSpotifyAuthorized, setService } = useSettings();
   const [deviceId, setDeviceId] = useState<string>();
   const spotifyPlayerRef = useRef<Spotify.Player | undefined>();
-  const [isMounted, setIsMounted] = useState(false);
+  const [isPlayerConnected, setIsMounted] = useState(false);
   const [isSdkReady, setIsSdkReady] = useState(false);
+  const [accessToken, setAccessToken] = useState<string | undefined>(
+    initialAccessToken
+  );
 
   const handleUnsupportedAccountError = useCallback(() => {
     showWindow({
@@ -128,25 +132,25 @@ export const SpotifySDKProvider = ({ children, token }: Props) => {
 
   /** Fetch access tokens and, if successful, then set up the playback sdk. */
   const handleConnectToSpotify = useCallback(async () => {
-    const { refreshToken, isNew } = await SpotifyUtils.getTokens();
     setIsMounted(true);
 
-    console.log({ ifToken: token });
-    if (token /*&& refreshToken */) {
+    if (accessToken) {
       const player = new window.Spotify.Player({
         name: 'iPod Classic',
         getOAuthToken: async (cb) => {
-          if (!token) {
-            console.error("ERROR: Didn't find stored access token");
+          if (!accessToken) {
+            console.error(
+              'handleConnectToSpotify: Access token was not provided'
+            );
             return;
           }
 
-          cb(token);
+          cb(accessToken);
         },
       });
 
       player.addListener('ready', ({ device_id }: any) => {
-        console.log({ device_id });
+        console.log(`Spotify Player is connected with ID: ${device_id}`);
         setDeviceId(device_id);
         setIsSpotifyAuthorized(true);
       });
@@ -160,7 +164,8 @@ export const SpotifySDKProvider = ({ children, token }: Props) => {
       player.addListener('account_error', () => {
         handleUnsupportedAccountError();
         setIsSpotifyAuthorized(false);
-        SpotifyUtils.removeExistingTokens();
+
+        SpotifyUtils.logOutSpotify();
       });
 
       player.addListener('playback_error', ({ message }) => {
@@ -170,26 +175,26 @@ export const SpotifySDKProvider = ({ children, token }: Props) => {
       player.connect();
 
       spotifyPlayerRef.current = player;
-
-      /** The user has just signed in; configure the app to use Spotify. */
-      if (isNew) {
-        setService('spotify');
-      }
     }
-  }, [
-    handleUnsupportedAccountError,
-    setIsSpotifyAuthorized,
-    setService,
-    token,
-  ]);
+  }, [handleUnsupportedAccountError, setIsSpotifyAuthorized, accessToken]);
+
+  const handleRefreshTokens = useCallback(async () => {
+    const { accessToken: updatedAccessToken } =
+      await SpotifyUtils.getRefreshedSpotifyTokens(refreshToken);
+
+    console.log(`Refreshed access token: ${updatedAccessToken}`);
+
+    setAccessToken(updatedAccessToken);
+  }, [refreshToken]);
+
+  // Refresh the access token every 55 minutes.
+  useInterval(handleRefreshTokens, 3500000, !accessToken);
 
   useEffect(() => {
-    console.log({ isSdkReady, token });
-    if (isSdkReady && typeof token === 'string') {
-      console.log('CONNECTING TO SPOTIFY');
+    if (isSdkReady && typeof accessToken === 'string' && !isPlayerConnected) {
       handleConnectToSpotify();
     }
-  }, [handleConnectToSpotify, isSdkReady, token]);
+  }, [handleConnectToSpotify, isSdkReady, accessToken, isPlayerConnected]);
 
   useEffect(() => {
     window.onSpotifyWebPlaybackSDKReady = () => setIsSdkReady(true);
@@ -199,9 +204,9 @@ export const SpotifySDKProvider = ({ children, token }: Props) => {
     <SpotifySDKContext.Provider
       value={{
         spotifyPlayer: spotifyPlayerRef.current ?? ({} as Spotify.Player),
-        accessToken: token,
+        accessToken,
         deviceId,
-        isMounted,
+        isPlayerConnected,
       }}
     >
       {children}

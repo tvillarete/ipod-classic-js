@@ -8,7 +8,6 @@ import {
   useSettings,
 } from 'hooks';
 import { WindowManager } from 'components';
-import { useState } from 'react';
 import {
   ScreenContainer,
   Shell,
@@ -18,11 +17,16 @@ import {
 } from 'components/Ipod/Styled';
 
 type Props = {
-  appleToken: string;
-  spotifyToken: string;
+  appleAccessToken: string;
+  spotifyAccessToken?: string;
+  spotifyRefreshToken?: string;
 };
 
-const Ipod = ({ appleToken, spotifyToken }: Props) => {
+const Ipod = ({
+  appleAccessToken,
+  spotifyAccessToken,
+  spotifyRefreshToken,
+}: Props) => {
   const { deviceTheme } = useSettings();
 
   return (
@@ -32,8 +36,11 @@ const Ipod = ({ appleToken, spotifyToken }: Props) => {
       <Sticker3 deviceTheme={deviceTheme} />
       <ScreenContainer>
         <WindowProvider>
-          <SpotifySDKProvider token={spotifyToken}>
-            <MusicKitProvider token={appleToken}>
+          <SpotifySDKProvider
+            initialAccessToken={spotifyAccessToken}
+            refreshToken={spotifyRefreshToken}
+          >
+            <MusicKitProvider token={appleAccessToken}>
               <AudioPlayerProvider>
                 <WindowManager />
               </AudioPlayerProvider>
