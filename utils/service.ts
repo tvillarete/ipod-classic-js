@@ -23,8 +23,14 @@ export const getServiceParam = () => {
   }
 
   localStorage.setItem(SELECTED_SERVICE_KEY, serviceParam);
+
   params.delete("service");
-  window.location.search = params.toString();
+
+  const hasParams = Array.from(params).length > 0;
+  const paramsStr = hasParams ? `?${params.toString()}` : "";
+  const newUrl = `${location.origin}${location.pathname}${paramsStr}`.trim();
+
+  window.history.replaceState({}, "", newUrl);
 
   return serviceParam as keyof typeof supportedServices | undefined;
 };
