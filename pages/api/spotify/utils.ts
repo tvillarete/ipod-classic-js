@@ -22,9 +22,9 @@ export const getSpotifyClientSecret = () => {
 };
 
 export const getSpotifyRedirectUri = () => {
-  return process.env.NODE_ENV === "development"
-    ? "http://localhost:3000/api/spotify/callback"
-    : "https://tannerv.com/ipod/api/spotify/callback";
+  return process.env.VERCEL_ENV === "development"
+    ? `http://${process.env.VERCEL_URL}/api/spotify/callback`
+    : `https://${process.env.VERCEL_URL}/api/spotify/callback`;
 };
 
 export const getSpotifyAuthorizationHeader = (
