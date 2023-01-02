@@ -69,6 +69,7 @@ const KenBurns = ({ urls }: Props) => {
     <Container>
       {stack.slice(0, 2).map((path, index) => (
         <Image
+          alt="Artwork"
           key={`ken-burns-${path}`}
           zIndex={3 - index}
           src={path}

@@ -33,7 +33,7 @@ const Subtext = styled.h3`
 const SettingsPreview = () => {
   return (
     <Container>
-      <Image src="react_logo.svg" />
+      <Image alt="React logo" src="react_logo.svg" />
       <Text>iPod.js</Text>
       <Subtext>by Tanner V</Subtext>
     </Container>

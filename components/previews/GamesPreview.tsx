@@ -27,7 +27,7 @@ const Text = styled.h3`
 const GamesPreview = () => {
   return (
     <Container>
-      <Image src="dice.svg" />
+      <Image alt="Dice" src="dice.svg" />
       <Text>Games</Text>
     </Container>
   );

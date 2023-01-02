@@ -17,7 +17,7 @@ const Image = styled.img`
 
 const ThemePreview = () => (
   <Container>
-    <Image src="themes_preview.png" />
+    <Image alt="Themes" src="themes_preview.png" />
   </Container>
 );
 

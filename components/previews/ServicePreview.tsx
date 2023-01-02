@@ -47,7 +47,7 @@ const ServicePreview = () => {
 
   return (
     <Container>
-      <Image src={imgUrl} />
+      <Image alt="Service" src={imgUrl} />
       <Text>{text}</Text>
       <Subtext>{strings.selected}</Subtext>
     </Container>

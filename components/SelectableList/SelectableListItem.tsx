@@ -65,7 +65,7 @@ interface Props {
 const SelectableListItem = ({ option, isActive }: Props) => {
   return (
     <Container isActive={isActive}>
-      {option.imageUrl && <Image src={option.imageUrl} />}
+      {option.imageUrl && <Image alt="List item" src={option.imageUrl} />}
       <LabelContainer>
         <Label>{option.label}</Label>
         {option.sublabel && <Sublabel>{option.sublabel}</Sublabel>}
