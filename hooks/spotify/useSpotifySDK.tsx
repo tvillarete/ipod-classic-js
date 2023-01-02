@@ -14,8 +14,6 @@ import * as SpotifyUtils from "utils/spotify";
 
 import { useSettings } from "..";
 
-export const API_URL = "https://308c-174-127-165-218.ngrok.io";
-
 export interface SpotifySDKState {
   isPlayerConnected: boolean;
   spotifyPlayer: Spotify.Player;

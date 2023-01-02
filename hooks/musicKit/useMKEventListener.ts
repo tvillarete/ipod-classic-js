@@ -11,7 +11,7 @@ const useMKEventListener = (
   useEffect(() => {
     const musicKit = window.MusicKit || undefined;
 
-    if (!musicKit || musicKit.errors.length) {
+    if (!musicKit || musicKit.errors?.length) {
       return;
     }
 
