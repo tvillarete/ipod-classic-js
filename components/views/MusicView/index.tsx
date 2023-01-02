@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo } from "react";
 
-import { SelectableList, SelectableListOption } from 'components';
-import { PREVIEW } from 'components/previews';
+import { SelectableList, SelectableListOption } from "components";
+import { PREVIEW } from "components/previews";
 import {
   AlbumsView,
   ArtistsView,
@@ -10,8 +10,8 @@ import {
   PlaylistsView,
   SearchView,
   ViewOptions,
-} from 'components/views';
-import { useMenuHideWindow, useMusicKit, useScrollHandler } from 'hooks';
+} from "components/views";
+import { useMenuHideWindow, useMusicKit, useScrollHandler } from "hooks";
 
 const MusicView = () => {
   const { music } = useMusicKit();
@@ -20,36 +20,36 @@ const MusicView = () => {
   const options: SelectableListOption[] = useMemo(() => {
     const arr: SelectableListOption[] = [
       {
-        type: 'View',
-        label: 'Cover Flow',
+        type: "View",
+        label: "Cover Flow",
         viewId: ViewOptions.coverFlow.id,
         component: () => <CoverFlowView />,
         preview: PREVIEW.MUSIC,
       },
       {
-        type: 'View',
-        label: 'Playlists',
+        type: "View",
+        label: "Playlists",
         viewId: ViewOptions.playlists.id,
         component: () => <PlaylistsView />,
         preview: PREVIEW.MUSIC,
       },
       {
-        type: 'View',
-        label: 'Artists',
+        type: "View",
+        label: "Artists",
         viewId: ViewOptions.artists.id,
         component: () => <ArtistsView />,
         preview: PREVIEW.MUSIC,
       },
       {
-        type: 'View',
-        label: 'Albums',
+        type: "View",
+        label: "Albums",
         viewId: ViewOptions.albums.id,
         component: () => <AlbumsView />,
         preview: PREVIEW.MUSIC,
       },
       {
-        type: 'View',
-        label: 'Search',
+        type: "View",
+        label: "Search",
         viewId: ViewOptions.search.id,
         component: () => <SearchView />,
         preview: PREVIEW.MUSIC,
@@ -58,8 +58,8 @@ const MusicView = () => {
 
     if (music.isAuthorized && music.player?.nowPlayingItem?.isPlayable) {
       arr.push({
-        type: 'View',
-        label: 'Now playing',
+        type: "View",
+        label: "Now playing",
         viewId: ViewOptions.nowPlaying.id,
         component: () => <NowPlayingView />,
         preview: PREVIEW.NOW_PLAYING,

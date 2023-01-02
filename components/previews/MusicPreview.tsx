@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { previewSlideRight } from 'animation';
-import { AuthPrompt, KenBurns, LoadingScreen } from 'components';
-import { motion } from 'framer-motion';
-import { useFetchAlbums, useSettings } from 'hooks';
-import styled from 'styled-components';
+import { previewSlideRight } from "animation";
+import { AuthPrompt, KenBurns, LoadingScreen } from "components";
+import { motion } from "framer-motion";
+import { useFetchAlbums, useSettings } from "hooks";
+import styled from "styled-components";
 
 const Container = styled(motion.div)`
   z-index: 1;
@@ -28,7 +28,7 @@ const MusicPreview = () => {
 
   const artworkUrls = useMemo(() => {
     if (albums && !error) {
-      return albums.map((album) => album.artwork?.url ?? '');
+      return albums.map((album) => album.artwork?.url ?? "");
     }
 
     return [];

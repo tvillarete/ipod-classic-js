@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
-import { useSettings } from 'hooks';
-import styled from 'styled-components';
-import { Unit } from 'utils/constants';
+import { motion } from "framer-motion";
+import { useSettings } from "hooks";
+import styled from "styled-components";
+import { Unit } from "utils/constants";
 
 const Container = styled(motion.div)`
   display: flex;
@@ -31,19 +31,19 @@ const Subtext = styled(Text)`
 `;
 
 const strings = {
-  spotify: 'Spotify',
-  apple: 'Apple Music',
-  none: 'None',
-  selected: 'Selected service',
+  spotify: "Spotify",
+  apple: "Apple Music",
+  none: "None",
+  selected: "Selected service",
 };
 
 const ServicePreview = () => {
   const { service } = useSettings();
 
   const imgUrl =
-    service === 'spotify' ? 'spotify_icon.svg' : 'apple_music_icon.svg';
+    service === "spotify" ? "spotify_icon.svg" : "apple_music_icon.svg";
 
-  const text = strings[service ?? 'none'];
+  const text = strings[service ?? "none"];
 
   return (
     <Container>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 declare global {
   interface BatteryManager extends EventTarget {
@@ -42,16 +42,16 @@ const useBattery = () => {
           setIsCharging(batteryManager.charging);
         };
 
-        batteryManager.addEventListener('levelchange', onLevelChange);
-        batteryManager.addEventListener('chargingchange', onChargingChange);
+        batteryManager.addEventListener("levelchange", onLevelChange);
+        batteryManager.addEventListener("chargingchange", onChargingChange);
 
         onLevelChange();
         onChargingChange();
 
         detachListeners = () => {
-          batteryManager.removeEventListener('levelchange', onLevelChange);
+          batteryManager.removeEventListener("levelchange", onLevelChange);
           batteryManager.removeEventListener(
-            'chargingchange',
+            "chargingchange",
             onChargingChange
           );
         };

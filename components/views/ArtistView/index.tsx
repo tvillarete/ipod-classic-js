@@ -1,13 +1,13 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { SelectableList, SelectableListOption } from 'components';
-import { AlbumView, ViewOptions } from 'components/views';
+import { SelectableList, SelectableListOption } from "components";
+import { AlbumView, ViewOptions } from "components/views";
 import {
   useFetchArtistAlbums,
   useMenuHideWindow,
   useScrollHandler,
-} from 'hooks';
-import * as Utils from 'utils';
+} from "hooks";
+import * as Utils from "utils";
 
 interface Props {
   id: string;
@@ -26,16 +26,16 @@ const ArtistView = ({ id, inLibrary = false }: Props) => {
     () =>
       albums?.map(
         (album): SelectableListOption => ({
-          type: 'View',
+          type: "View",
           headerTitle: album.name,
           label: album.name,
           sublabel: album.artistName,
           imageUrl: Utils.getArtwork(100, album.artwork?.url),
           viewId: ViewOptions.album.id,
           component: () => (
-            <AlbumView id={album.id ?? ''} inLibrary={inLibrary} />
+            <AlbumView id={album.id ?? ""} inLibrary={inLibrary} />
           ),
-          longPressOptions: Utils.getMediaOptions('album', album.id),
+          longPressOptions: Utils.getMediaOptions("album", album.id),
         })
       ) ?? [],
     [albums, inLibrary]

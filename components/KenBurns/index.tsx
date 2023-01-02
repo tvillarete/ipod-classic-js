@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import { useInterval } from 'hooks';
-import styled from 'styled-components';
+import { useInterval } from "hooks";
+import styled from "styled-components";
 
 const Container = styled.div``;
 
@@ -16,7 +16,7 @@ const Image = styled.img<ImageProps>`
   position: absolute;
   height: 100%;
   right: 0;
-  animation: ${(props) => props.startedAnimation && 'kenBurns'} 20s;
+  animation: ${(props) => props.startedAnimation && "kenBurns"} 20s;
   opacity: ${(props) => props.isHidden && 0};
   transition: opacity 2s;
 

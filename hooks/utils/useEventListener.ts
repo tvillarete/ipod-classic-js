@@ -1,10 +1,10 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
 
 // Hook
 const useEventListener = <TEvent extends string>(
   eventName: TEvent,
   handler: (...args: any) => void,
-  element = typeof window === 'undefined' ? undefined : window
+  element = typeof window === "undefined" ? undefined : window
 ) => {
   // Create a ref that stores handler
   const savedHandler = useRef<any>();

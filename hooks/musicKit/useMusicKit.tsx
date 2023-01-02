@@ -6,9 +6,9 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from 'react';
+} from "react";
 
-import { useEventListener, useMKEventListener, useSettings } from 'hooks';
+import { useEventListener, useMKEventListener, useSettings } from "hooks";
 
 export interface MusicKitState {
   musicKit?: typeof MusicKit;
@@ -25,7 +25,7 @@ export type MusicKitHook = MusicKitState & {
 };
 
 export const useMusicKit = (): MusicKitHook => {
-  const musicKit = typeof window === 'undefined' ? undefined : window.MusicKit;
+  const musicKit = typeof window === "undefined" ? undefined : window.MusicKit;
   const { setIsAppleAuthorized, isSpotifyAuthorized, setService } =
     useSettings();
   const { isConfigured, hasDevToken } = useContext(MusicKitContext);
@@ -43,7 +43,7 @@ export const useMusicKit = (): MusicKitHook => {
       await music.authorize();
     }
 
-    setService('apple');
+    setService("apple");
   }, [music, setService]);
 
   const signOut = useCallback(() => {
@@ -51,7 +51,7 @@ export const useMusicKit = (): MusicKitHook => {
     setIsAppleAuthorized(false);
 
     // Change to Spotify if available.
-    setService(isSpotifyAuthorized ? 'spotify' : undefined);
+    setService(isSpotifyAuthorized ? "spotify" : undefined);
   }, [isSpotifyAuthorized, music, setIsAppleAuthorized, setService]);
 
   return {
@@ -84,8 +84,8 @@ export const MusicKitProvider = ({ children, token }: Props) => {
       const music = await window.MusicKit.configure({
         developerToken: token,
         app: {
-          name: 'iPod.js',
-          build: '1.0',
+          name: "iPod.js",
+          build: "1.0",
         },
       });
 
@@ -102,22 +102,22 @@ export const MusicKitProvider = ({ children, token }: Props) => {
     }
   }, [setIsAppleAuthorized, token]);
 
-  useEventListener('musickitloaded', () => {
+  useEventListener("musickitloaded", () => {
     handleConfigure();
   });
 
-  useEventListener('musickitconfigured', (e) => {
-    console.log('MusicKit configured');
+  useEventListener("musickitconfigured", (e) => {
+    console.log("MusicKit configured");
     setIsConfigured(true);
   });
 
-  useMKEventListener('userTokenDidChange', (e) => {
+  useMKEventListener("userTokenDidChange", (e) => {
     if (e.userToken) {
       setIsAppleAuthorized(true);
-      setStreamingService('apple');
+      setStreamingService("apple");
     } else {
       setIsAppleAuthorized(false);
-      setStreamingService(isSpotifyAuthorized ? 'spotify' : undefined);
+      setStreamingService(isSpotifyAuthorized ? "spotify" : undefined);
     }
   });
 

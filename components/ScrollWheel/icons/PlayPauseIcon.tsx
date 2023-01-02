@@ -1,4 +1,4 @@
-import { WheelButton, WheelButtonProps } from '../Styled';
+import { WheelButton, WheelButtonProps } from "../Styled";
 
 interface Props extends WheelButtonProps {
   color?: string;

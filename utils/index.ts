@@ -1,4 +1,4 @@
-import { SelectableListOption } from 'components';
+import { SelectableListOption } from "components";
 
 /** Accepts a url with '{w}' and '{h}' and replaces them with the specified size */
 export const getArtwork = (size: number | string, url?: string) => {
@@ -6,7 +6,7 @@ export const getArtwork = (size: number | string, url?: string) => {
     return undefined;
   }
 
-  return url.replace('{w}', `${size}`).replace('{h}', `${size}`);
+  return url.replace("{w}", `${size}`).replace("{h}", `${size}`);
 };
 
 export const formatTime = (seconds = 0, guide = seconds) => {
@@ -17,10 +17,10 @@ export const formatTime = (seconds = 0, guide = seconds) => {
   const gh = Math.floor(guide / 3600);
 
   if (isNaN(seconds) || seconds === Infinity) {
-    h = m = s = '-';
+    h = m = s = "-";
   }
 
-  h = h > 0 || gh > 0 ? `${h}:` : '';
+  h = h > 0 || gh > 0 ? `${h}:` : "";
   m = `${(h || gm >= 10) && m < 10 ? `0${m}` : m}:`;
   s = s < 10 ? `0${s}` : s;
 
@@ -29,29 +29,29 @@ export const formatTime = (seconds = 0, guide = seconds) => {
 
 export const setDocumentSongTitle = (song?: AppleMusicApi.Song) => {
   document.title = song
-    ? `${song.attributes?.name ?? 'Music'} – iPod.js`
-    : 'iPod.js';
+    ? `${song.attributes?.name ?? "Music"} – iPod.js`
+    : "iPod.js";
 };
 
 /** Returns a list of playback options to display in a popup for an album, song, or playlist. */
 export const getMediaOptions = (
-  type: 'album' | 'song' | 'playlist',
+  type: "album" | "song" | "playlist",
   id: string
 ): SelectableListOption[] => {
   const music = window.MusicKit.getInstance();
 
   return [
     {
-      type: 'Action',
-      label: 'Play Next',
+      type: "Action",
+      label: "Play Next",
       onSelect: () =>
         music.playNext({
           [type]: id,
         }),
     },
     {
-      type: 'Action',
-      label: 'Play Later',
+      type: "Action",
+      label: "Play Later",
       onSelect: () =>
         music.playLater({
           [type]: id,
@@ -60,4 +60,4 @@ export const getMediaOptions = (
   ];
 };
 
-export const isDev = () => window.location.origin.includes('localhost:3000');
+export const isDev = () => window.location.origin.includes("localhost:3000");

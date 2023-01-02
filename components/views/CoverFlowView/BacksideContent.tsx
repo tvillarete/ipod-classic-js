@@ -1,15 +1,15 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
 import {
   LoadingScreen,
   SelectableList,
   SelectableListOption,
-} from 'components';
-import { useFetchAlbum, useEventListener, useScrollHandler } from 'hooks';
-import styled from 'styled-components';
+} from "components";
+import { useFetchAlbum, useEventListener, useScrollHandler } from "hooks";
+import styled from "styled-components";
 
-import ViewOptions from '../';
-import { IpodEvent } from 'utils/events';
+import ViewOptions from "..";
+import { IpodEvent } from "utils/events";
 
 const Container = styled.div`
   position: absolute;
@@ -47,7 +47,7 @@ const ListContainer = styled.div`
 `;
 
 interface Props {
-  albumId: IpodApi.Album['id'];
+  albumId: IpodApi.Album["id"];
   setPlayingAlbum: (val: boolean) => void;
 }
 
@@ -60,7 +60,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
   const options: SelectableListOption[] = useMemo(
     () =>
       album?.songs.map((song, index) => ({
-        type: 'Song',
+        type: "Song",
         label: song.name,
         queueOptions: {
           album,
@@ -71,7 +71,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
   );
   const [scrollIndex] = useScrollHandler(ViewOptions.coverFlow.id, options);
 
-  useEventListener<IpodEvent>('centerclick', () => setPlayingAlbum(true));
+  useEventListener<IpodEvent>("centerclick", () => setPlayingAlbum(true));
 
   return (
     <Container>

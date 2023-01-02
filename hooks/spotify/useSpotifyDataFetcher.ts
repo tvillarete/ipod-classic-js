@@ -1,8 +1,8 @@
-import { useCallback } from 'react';
+import { useCallback } from "react";
 
-import { useSpotifySDK } from 'hooks';
-import uniqBy from 'lodash.uniqby';
-import * as ConversionUtils from 'utils/conversion';
+import { useSpotifySDK } from "hooks";
+import uniqBy from "lodash.uniqby";
+import * as ConversionUtils from "utils/conversion";
 
 type FetchSpotifyApiArgs = {
   endpoint: string;
@@ -17,7 +17,7 @@ const fetchSpotifyApi = async <TSpotifyApiType extends object>({
 }: FetchSpotifyApiArgs) => {
   try {
     if (!accessToken) {
-      throw new Error('Provide a Spotify API Access token');
+      throw new Error("Provide a Spotify API Access token");
     }
 
     const res = await fetch(`https://api.spotify.com/v1/${endpoint}`, {
@@ -51,7 +51,7 @@ const useSpotifyDataFetcher = () => {
   }, [accessToken]);
 
   const fetchAlbum = useCallback(
-    async (userId = '', id: string) => {
+    async (userId = "", id: string) => {
       const response = await fetchSpotifyApi<SpotifyApi.SingleAlbumResponse>({
         endpoint: `albums/${id}`,
         accessToken,
@@ -83,7 +83,7 @@ const useSpotifyDataFetcher = () => {
   }, [accessToken]);
 
   const fetchArtist = useCallback(
-    async (userId = '', id: string) => {
+    async (userId = "", id: string) => {
       const response = await fetchSpotifyApi<SpotifyApi.ArtistsAlbumsResponse>({
         endpoint: `artists/${id}/albums`,
         accessToken,
@@ -105,7 +105,7 @@ const useSpotifyDataFetcher = () => {
   const fetchPlaylists = useCallback(async () => {
     const response =
       await fetchSpotifyApi<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>({
-        endpoint: 'me/playlists?limit=50',
+        endpoint: "me/playlists?limit=50",
         accessToken,
         onError: (error) => {
           throw new Error(error);
@@ -118,7 +118,7 @@ const useSpotifyDataFetcher = () => {
   }, [accessToken]);
 
   const fetchPlaylist = useCallback(
-    async (userId = '', id: string) => {
+    async (userId = "", id: string) => {
       const response = await fetchSpotifyApi<SpotifyApi.PlaylistObjectFull>({
         endpoint: `users/${userId}/playlists/${id}`,
         accessToken,

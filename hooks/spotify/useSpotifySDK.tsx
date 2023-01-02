@@ -6,15 +6,15 @@ import {
   useEffect,
   useRef,
   useState,
-} from 'react';
+} from "react";
 
-import ViewOptions, { WINDOW_TYPE } from 'components/views';
-import { useInterval, useWindowContext } from 'hooks';
-import * as SpotifyUtils from 'utils/spotify';
+import ViewOptions, { WINDOW_TYPE } from "components/views";
+import { useInterval, useWindowContext } from "hooks";
+import * as SpotifyUtils from "utils/spotify";
 
-import { useSettings } from '..';
+import { useSettings } from "..";
 
-export const API_URL = 'https://308c-174-127-165-218.ngrok.io';
+export const API_URL = "https://308c-174-127-165-218.ngrok.io";
 
 export interface SpotifySDKState {
   isPlayerConnected: boolean;
@@ -46,23 +46,23 @@ export const useSpotifySDK = (): SpotifySDKHook => {
    */
   const signIn = useCallback(() => {
     if (!isSpotifyAuthorized) {
-      window.open(`/api/spotify/login`, '_self');
+      window.open(`/api/spotify/login`, "_self");
     } else if (!state.isPlayerConnected) {
       showWindow({
         type: WINDOW_TYPE.POPUP,
         id: ViewOptions.spotifyNotSupportedPopup.id,
         title: ViewOptions.spotifyNotSupportedPopup.title,
-        description: 'Spotify was unable to mount on this browser :(',
+        description: "Spotify was unable to mount on this browser :(",
         listOptions: [
           {
-            type: 'Action',
-            label: 'Okay 😞',
+            type: "Action",
+            label: "Okay 😞",
             onSelect: () => {},
           },
         ],
       });
     } else {
-      setService('spotify');
+      setService("spotify");
     }
   }, [isSpotifyAuthorized, setService, showWindow, state.isPlayerConnected]);
 
@@ -74,7 +74,7 @@ export const useSpotifySDK = (): SpotifySDKHook => {
 
     // Change to apple music if available.
     if (isAppleAuthorized) {
-      setService('apple');
+      setService("apple");
     } else {
       setService(undefined);
     }
@@ -117,13 +117,13 @@ export const SpotifySDKProvider = ({
     showWindow({
       type: WINDOW_TYPE.POPUP,
       id: ViewOptions.spotifyNonPremiumPopup.id,
-      title: 'Unable to sign in',
+      title: "Unable to sign in",
       description:
-        'Spotify requires a Premium account to play music on the web',
+        "Spotify requires a Premium account to play music on the web",
       listOptions: [
         {
-          type: 'Action',
-          label: 'Okay 😞',
+          type: "Action",
+          label: "Okay 😞",
           onSelect: hideWindow,
         },
       ],
@@ -136,11 +136,11 @@ export const SpotifySDKProvider = ({
 
     if (accessToken) {
       const player = new window.Spotify.Player({
-        name: 'iPod Classic',
+        name: "iPod Classic",
         getOAuthToken: async (cb) => {
           if (!accessToken) {
             console.error(
-              'handleConnectToSpotify: Access token was not provided'
+              "handleConnectToSpotify: Access token was not provided"
             );
             return;
           }
@@ -149,26 +149,26 @@ export const SpotifySDKProvider = ({
         },
       });
 
-      player.addListener('ready', ({ device_id }: any) => {
+      player.addListener("ready", ({ device_id }: any) => {
         console.log(`Spotify Player is connected with ID: ${device_id}`);
         setDeviceId(device_id);
         setIsSpotifyAuthorized(true);
       });
 
-      player.addListener('authentication_error', ({ message }) => {
+      player.addListener("authentication_error", ({ message }) => {
         console.error(`Spotify authentication error: ${message}`);
         setIsSpotifyAuthorized(false);
       });
 
       /** This indicates that the user is using an unsupported account tier. */
-      player.addListener('account_error', () => {
+      player.addListener("account_error", () => {
         handleUnsupportedAccountError();
         setIsSpotifyAuthorized(false);
 
         SpotifyUtils.logOutSpotify();
       });
 
-      player.addListener('playback_error', ({ message }) => {
+      player.addListener("playback_error", ({ message }) => {
         console.error(message);
       });
 
@@ -191,7 +191,7 @@ export const SpotifySDKProvider = ({
   useInterval(handleRefreshTokens, 3500000, !accessToken);
 
   useEffect(() => {
-    if (isSdkReady && typeof accessToken === 'string' && !isPlayerConnected) {
+    if (isSdkReady && typeof accessToken === "string" && !isPlayerConnected) {
       handleConnectToSpotify();
     }
   }, [handleConnectToSpotify, isSdkReady, accessToken, isPlayerConnected]);

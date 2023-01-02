@@ -1,15 +1,15 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { AuthPrompt, SelectableList, SelectableListOption } from 'components';
+import { AuthPrompt, SelectableList, SelectableListOption } from "components";
 import {
   useFetchPlaylists,
   useMenuHideWindow,
   useScrollHandler,
   useSettings,
-} from 'hooks';
-import * as Utils from 'utils';
+} from "hooks";
+import * as Utils from "utils";
 
-import ViewOptions, { PlaylistView } from '../';
+import ViewOptions, { PlaylistView } from "..";
 
 interface Props {
   playlists?: IpodApi.Playlist[];
@@ -27,7 +27,7 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
   const options: SelectableListOption[] = useMemo(
     () =>
       (playlists ?? fetchedPlaylists)?.map((playlist) => ({
-        type: 'View',
+        type: "View",
         label: playlist.name,
         sublabel: playlist.description || `By ${playlist.curatorName}`,
         imageUrl: playlist.artwork?.url,
@@ -36,7 +36,7 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
         component: () => (
           <PlaylistView id={playlist.id} inLibrary={inLibrary} />
         ),
-        longPressOptions: Utils.getMediaOptions('playlist', playlist.id),
+        longPressOptions: Utils.getMediaOptions("playlist", playlist.id),
       })) ?? [],
     [fetchedPlaylists, inLibrary, playlists]
   );

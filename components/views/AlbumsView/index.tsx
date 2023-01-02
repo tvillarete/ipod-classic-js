@@ -1,15 +1,15 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { AuthPrompt, SelectableList, SelectableListOption } from 'components';
+import { AuthPrompt, SelectableList, SelectableListOption } from "components";
 import {
   useFetchAlbums,
   useMenuHideWindow,
   useScrollHandler,
   useSettings,
-} from 'hooks';
-import * as Utils from 'utils';
+} from "hooks";
+import * as Utils from "utils";
 
-import ViewOptions, { AlbumView } from '../';
+import ViewOptions, { AlbumView } from "..";
 
 interface Props {
   albums?: IpodApi.Album[];
@@ -29,13 +29,13 @@ const AlbumsView = ({ albums, inLibrary = true }: Props) => {
     () =>
       (albums ?? fetchedAlbums)?.map(
         (album): SelectableListOption => ({
-          type: 'View',
+          type: "View",
           headerTitle: album.name,
           label: album.name,
           sublabel: album.artistName,
           imageUrl: Utils.getArtwork(50, album.artwork?.url),
           viewId: ViewOptions.album.id,
-          component: <AlbumView id={album.id ?? ''} inLibrary={inLibrary} />,
+          component: <AlbumView id={album.id ?? ""} inLibrary={inLibrary} />,
         })
       ) ?? [],
     [albums, fetchedAlbums, inLibrary]

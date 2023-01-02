@@ -12,7 +12,7 @@ export const getRefreshedSpotifyTokens = async (
   };
 
   if (!refreshToken) {
-    console.error('getRefreshedSpotifyTokens: No stored refresh token found');
+    console.error("getRefreshedSpotifyTokens: No stored refresh token found");
 
     return emptyReturnValue;
   }
@@ -21,8 +21,8 @@ export const getRefreshedSpotifyTokens = async (
     const response = await fetch(
       `/api/spotify/refresh_token?refresh_token=${refreshToken}`,
       {
-        credentials: 'same-origin',
-        mode: 'cors',
+        credentials: "same-origin",
+        mode: "cors",
       }
     );
 
@@ -30,7 +30,7 @@ export const getRefreshedSpotifyTokens = async (
 
     return { accessToken, refreshToken };
   } catch (error) {
-    console.error('Error fetching refresh token:', { error });
+    console.error("Error fetching refresh token:", { error });
   }
 
   return emptyReturnValue;
@@ -38,8 +38,8 @@ export const getRefreshedSpotifyTokens = async (
 
 export const logOutSpotify = async (): Promise<void> => {
   try {
-    await fetch('/api/spotify/logout');
+    await fetch("/api/spotify/logout");
   } catch (error) {
-    console.error('Error logging out:', { error });
+    console.error("Error logging out:", { error });
   }
 };

@@ -1,11 +1,11 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from "react";
 
 import {
   getConditionalOption,
   SelectableList,
   SelectableListOption,
-} from 'components';
-import { PREVIEW } from 'components/previews';
+} from "components";
+import { PREVIEW } from "components/previews";
 import {
   CoverFlowView,
   GamesView,
@@ -14,7 +14,7 @@ import {
   SettingsView,
   ViewOptions,
   WINDOW_TYPE,
-} from 'components/views';
+} from "components/views";
 import {
   useAudioPlayer,
   useEventListener,
@@ -23,11 +23,11 @@ import {
   useSettings,
   useSpotifySDK,
   useWindowContext,
-} from 'hooks';
-import { IpodEvent } from 'utils/events';
+} from "hooks";
+import { IpodEvent } from "utils/events";
 
 const strings = {
-  nowPlaying: 'Now Playing',
+  nowPlaying: "Now Playing",
 };
 
 const HomeView = () => {
@@ -41,54 +41,54 @@ const HomeView = () => {
   const options: SelectableListOption[] = useMemo(
     () => [
       {
-        type: 'View',
-        label: 'Cover Flow',
+        type: "View",
+        label: "Cover Flow",
         viewId: ViewOptions.coverFlow.id,
         component: () => <CoverFlowView />,
         preview: PREVIEW.MUSIC,
       },
       {
-        type: 'View',
-        label: 'Music',
+        type: "View",
+        label: "Music",
         viewId: ViewOptions.music.id,
         component: () => <MusicView />,
         preview: PREVIEW.MUSIC,
       },
       {
-        type: 'View',
-        label: 'Games',
+        type: "View",
+        label: "Games",
         viewId: ViewOptions.games.id,
         component: () => <GamesView />,
         preview: PREVIEW.GAMES,
       },
       {
-        type: 'View',
-        label: 'Settings',
+        type: "View",
+        label: "Settings",
         viewId: ViewOptions.settings.id,
         component: () => <SettingsView />,
         preview: PREVIEW.SETTINGS,
       },
       // Show the sign in buttons if the user is not logged in.
       ...getConditionalOption(!isAuthorized, {
-        type: 'ActionSheet',
+        type: "ActionSheet",
         id: ViewOptions.signinPopup.id,
-        label: 'Sign in',
+        label: "Sign in",
         listOptions: [
           ...getConditionalOption(isMkConfigured, {
-            type: 'Action',
-            label: 'Apple Music',
+            type: "Action",
+            label: "Apple Music",
             onSelect: signInWithApple,
           }),
           {
-            type: 'Action',
-            label: 'Spotify',
+            type: "Action",
+            label: "Spotify",
             onSelect: signInWithSpotify,
           },
         ],
         preview: PREVIEW.MUSIC,
       }),
       ...getConditionalOption(!!nowPlayingItem, {
-        type: 'View',
+        type: "View",
         label: strings.nowPlaying,
         viewId: ViewOptions.nowPlaying.id,
         component: () => <NowPlayingView />,
@@ -125,7 +125,7 @@ const HomeView = () => {
     }
   }, [nowPlayingItem, showWindow, windowStack]);
 
-  useEventListener<IpodEvent>('idle', handleIdleState);
+  useEventListener<IpodEvent>("idle", handleIdleState);
 
   return <SelectableList options={options} activeIndex={scrollIndex} />;
 };

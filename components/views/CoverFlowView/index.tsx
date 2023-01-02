@@ -1,16 +1,16 @@
-import React, { useCallback } from 'react';
+import React, { useCallback } from "react";
 
-import { AuthPrompt, LoadingScreen } from 'components';
+import { AuthPrompt, LoadingScreen } from "components";
 import {
   useFetchAlbums,
   useEventListener,
   useSettings,
   useWindowContext,
-} from 'hooks';
-import styled from 'styled-components';
+} from "hooks";
+import styled from "styled-components";
 
-import CoverFlow from './CoverFlow';
-import { IpodEvent } from 'utils/events';
+import CoverFlow from "./CoverFlow";
+import { IpodEvent } from "utils/events";
 
 const Container = styled.div`
   flex: 1;
@@ -29,7 +29,7 @@ const CoverFlowView = () => {
     }
   }, [hideWindow, isAuthorized, isLoading]);
 
-  useEventListener<IpodEvent>('menuclick', handleMenuClick);
+  useEventListener<IpodEvent>("menuclick", handleMenuClick);
 
   return (
     <Container>

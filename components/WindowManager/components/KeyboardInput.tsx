@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
-import { popInAnimation } from 'animation';
-import { SelectableListOption } from 'components';
-import { WINDOW_TYPE } from 'components/views';
-import { motion } from 'framer-motion';
-import { useKeyboardInput, useMenuHideWindow, useScrollHandler } from 'hooks';
-import { WindowOptions } from 'providers/WindowProvider';
-import styled, { css } from 'styled-components';
-import { Unit } from 'utils/constants';
+import { popInAnimation } from "animation";
+import { SelectableListOption } from "components";
+import { WINDOW_TYPE } from "components/views";
+import { motion } from "framer-motion";
+import { useKeyboardInput, useMenuHideWindow, useScrollHandler } from "hooks";
+import { WindowOptions } from "providers/WindowProvider";
+import styled, { css } from "styled-components";
+import { Unit } from "utils/constants";
 
 interface RootContainerProps {
   index: number;
@@ -77,45 +77,45 @@ const OptionContainer = styled.div<{ highlighted: boolean }>`
 `;
 
 const keyboardOptions = [
-  { key: 'Enter', label: '✓' },
-  { key: 'delete', label: '⌫' },
-  { key: ' ', label: '␣' },
-  { key: 'a', label: 'A' },
-  { key: 'b', label: 'B' },
-  { key: 'c', label: 'C' },
-  { key: 'd', label: 'D' },
-  { key: 'e', label: 'E' },
-  { key: 'f', label: 'F' },
-  { key: 'g', label: 'G' },
-  { key: 'h', label: 'H' },
-  { key: 'i', label: 'I' },
-  { key: 'j', label: 'J' },
-  { key: 'k', label: 'K' },
-  { key: 'l', label: 'L' },
-  { key: 'm', label: 'M' },
-  { key: 'n', label: 'N' },
-  { key: 'o', label: 'O' },
-  { key: 'p', label: 'P' },
-  { key: 'q', label: 'Q' },
-  { key: 'r', label: 'R' },
-  { key: 's', label: 'S' },
-  { key: 't', label: 'T' },
-  { key: 'u', label: 'U' },
-  { key: 'v', label: 'V' },
-  { key: 'w', label: 'W' },
-  { key: 'x', label: 'X' },
-  { key: 'y', label: 'Y' },
-  { key: 'z', label: 'Z' },
-  { key: '1', label: '1' },
-  { key: '2', label: '2' },
-  { key: '3', label: '3' },
-  { key: '4', label: '4' },
-  { key: '5', label: '5' },
-  { key: '6', label: '6' },
-  { key: '7', label: '7' },
-  { key: '8', label: '8' },
-  { key: '9', label: '9' },
-  { key: '0', label: '0' },
+  { key: "Enter", label: "✓" },
+  { key: "delete", label: "⌫" },
+  { key: " ", label: "␣" },
+  { key: "a", label: "A" },
+  { key: "b", label: "B" },
+  { key: "c", label: "C" },
+  { key: "d", label: "D" },
+  { key: "e", label: "E" },
+  { key: "f", label: "F" },
+  { key: "g", label: "G" },
+  { key: "h", label: "H" },
+  { key: "i", label: "I" },
+  { key: "j", label: "J" },
+  { key: "k", label: "K" },
+  { key: "l", label: "L" },
+  { key: "m", label: "M" },
+  { key: "n", label: "N" },
+  { key: "o", label: "O" },
+  { key: "p", label: "P" },
+  { key: "q", label: "Q" },
+  { key: "r", label: "R" },
+  { key: "s", label: "S" },
+  { key: "t", label: "T" },
+  { key: "u", label: "U" },
+  { key: "v", label: "V" },
+  { key: "w", label: "W" },
+  { key: "x", label: "X" },
+  { key: "y", label: "Y" },
+  { key: "z", label: "Z" },
+  { key: "1", label: "1" },
+  { key: "2", label: "2" },
+  { key: "3", label: "3" },
+  { key: "4", label: "4" },
+  { key: "5", label: "5" },
+  { key: "6", label: "6" },
+  { key: "7", label: "7" },
+  { key: "8", label: "8" },
+  { key: "9", label: "9" },
+  { key: "0", label: "0" },
 ];
 
 interface Props {
@@ -130,7 +130,7 @@ const KeyboardInput = ({ windowStack, index, isHidden }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   if (windowOptions.type !== WINDOW_TYPE.KEYBOARD) {
-    throw new Error('Keyboard option not supplied');
+    throw new Error("Keyboard option not supplied");
   }
 
   useKeyboardInput({
@@ -142,7 +142,7 @@ const KeyboardInput = ({ windowStack, index, isHidden }: Props) => {
     (key: string) => {
       switch (key) {
         default:
-          const inputEvent = new CustomEvent('input', {
+          const inputEvent = new CustomEvent("input", {
             detail: {
               id: windowOptions.id,
               key,
@@ -157,7 +157,7 @@ const KeyboardInput = ({ windowStack, index, isHidden }: Props) => {
 
   const listOptions: SelectableListOption[] = useMemo(() => {
     return keyboardOptions.map((option) => ({
-      type: 'Action',
+      type: "Action",
       label: option.label,
       onSelect: () => handleSelect(option.key),
     }));
@@ -170,7 +170,7 @@ const KeyboardInput = ({ windowStack, index, isHidden }: Props) => {
     if (containerRef.current) {
       const { children } = containerRef.current;
       children[scrollIndex]?.scrollIntoView({
-        block: 'nearest',
+        block: "nearest",
       });
     }
   }, [scrollIndex]);

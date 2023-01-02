@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { SelectableList, SelectableListOption } from 'components';
-import { ViewOptions } from 'components/views';
-import { useMenuHideWindow, useScrollHandler } from 'hooks';
-import * as Utils from 'utils';
+import { SelectableList, SelectableListOption } from "components";
+import { ViewOptions } from "components/views";
+import { useMenuHideWindow, useScrollHandler } from "hooks";
+import * as Utils from "utils";
 
 interface Props {
   songs: IpodApi.Song[];
@@ -15,7 +15,7 @@ const SongsView = ({ songs }: Props) => {
   const options: SelectableListOption[] = useMemo(
     () =>
       songs.map((song) => ({
-        type: 'Song',
+        type: "Song",
         label: song.name,
         sublabel: `${song.artistName} • ${song.albumName}`,
         queueOptions: {
@@ -24,7 +24,7 @@ const SongsView = ({ songs }: Props) => {
         },
         imageUrl: Utils.getArtwork(50, song.artwork?.url),
         showNowPlayingView: true,
-        longPressOptions: Utils.getMediaOptions('song', song.id),
+        longPressOptions: Utils.getMediaOptions("song", song.id),
       })) ?? [],
     [songs]
   );

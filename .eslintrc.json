@@ -25,6 +25,14 @@
     "react/react-in-jsx-scope": "off",
     "react/require-default-props": ["off"],
     "react/state-in-constructor": ["off"],
-    "react/static-property-placement": ["off"]
+    "react/static-property-placement": ["off"],
+    "quotes": [
+      "error",
+      "double",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
+    ]
   }
 }

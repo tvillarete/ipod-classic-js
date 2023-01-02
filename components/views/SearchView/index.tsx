@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from "react";
 
 import {
   AlbumsView,
@@ -8,8 +8,8 @@ import {
   PlaylistsView,
   SelectableList,
   SelectableListOption,
-} from 'components';
-import { SongsView, ViewOptions } from 'components/views';
+} from "components";
+import { SongsView, ViewOptions } from "components/views";
 import {
   useFetchSearchResults,
   useEffectOnce,
@@ -17,13 +17,13 @@ import {
   useMenuHideWindow,
   useScrollHandler,
   useSettings,
-} from 'hooks';
-import pluralize from 'pluralize';
+} from "hooks";
+import pluralize from "pluralize";
 
 const SearchView = () => {
   useMenuHideWindow(ViewOptions.search.id);
   const { isAuthorized } = useSettings();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const {
     refetch,
@@ -53,50 +53,50 @@ const SearchView = () => {
 
     const arr: SelectableListOption[] = [
       {
-        type: 'Action',
-        label: 'Search',
+        type: "Action",
+        label: "Search",
         sublabel: searchTerm
           ? `Results for: ${searchTerm}`
-          : 'Enter text to search',
-        imageUrl: 'search_icon.svg',
+          : "Enter text to search",
+        imageUrl: "search_icon.svg",
         onSelect: showKeyboard,
       },
       ...getConditionalOption(!!artists?.length, {
-        type: 'View',
-        label: 'Artists',
+        type: "View",
+        label: "Artists",
         viewId: ViewOptions.artists.id,
         component: () => (
           <ArtistsView artists={artists} inLibrary={false} showImages />
         ),
-        imageUrl: 'artists_icon.svg',
-        sublabel: `${artists?.length} ${pluralize('artist', artists?.length)}`,
+        imageUrl: "artists_icon.svg",
+        sublabel: `${artists?.length} ${pluralize("artist", artists?.length)}`,
       }),
       ...getConditionalOption(!!albums?.length, {
-        type: 'View',
-        label: 'Albums',
+        type: "View",
+        label: "Albums",
         viewId: ViewOptions.albums.id,
         component: () => <AlbumsView albums={albums} inLibrary={false} />,
-        imageUrl: 'albums_icon.svg',
-        sublabel: `${albums?.length} ${pluralize('album', albums?.length)}`,
+        imageUrl: "albums_icon.svg",
+        sublabel: `${albums?.length} ${pluralize("album", albums?.length)}`,
       }),
       ...getConditionalOption(!!songs?.length, {
-        type: 'View',
-        label: 'Songs',
+        type: "View",
+        label: "Songs",
         viewId: ViewOptions.songs.id,
         component: () => <SongsView songs={songs!} />,
-        imageUrl: 'song_icon.svg',
-        sublabel: `${songs?.length} ${pluralize('song', songs?.length)}`,
+        imageUrl: "song_icon.svg",
+        sublabel: `${songs?.length} ${pluralize("song", songs?.length)}`,
       }),
       ...getConditionalOption(!!playlists?.length, {
-        type: 'View',
-        label: 'Playlists',
+        type: "View",
+        label: "Playlists",
         viewId: ViewOptions.playlists.id,
         component: () => (
           <PlaylistsView playlists={playlists!} inLibrary={false} />
         ),
-        imageUrl: 'playlist_icon.svg',
+        imageUrl: "playlist_icon.svg",
         sublabel: `${playlists?.length} ${pluralize(
-          'playlist',
+          "playlist",
           playlists?.length
         )}`,
       }),

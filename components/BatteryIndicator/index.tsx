@@ -1,8 +1,8 @@
-import { useBattery } from 'hooks/battery';
-import styled, { css } from 'styled-components';
+import { useBattery } from "hooks/battery";
+import styled, { css } from "styled-components";
 
-const batteryHealthyColor = '#A5E07F';
-const batteryWarningColor = '#D17F6B';
+const batteryHealthyColor = "#A5E07F";
+const batteryWarningColor = "#D17F6B";
 
 const Container = styled.div`
   width: fit-content;

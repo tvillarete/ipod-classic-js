@@ -51,7 +51,7 @@ declare namespace AppleMusicApi {
 
   // https://developer.apple.com/documentation/applemusicapi/song
   interface Song extends Resource {
-    type: 'songs';
+    type: "songs";
     // https://developer.apple.com/documentation/applemusicapi/song/attributes
     attributes?:
       | {
@@ -91,7 +91,7 @@ declare namespace AppleMusicApi {
 
   // https://developer.apple.com/documentation/applemusicapi/station
   interface Station extends Resource {
-    type: 'stations';
+    type: "stations";
     artwork: Artwork;
     durationInMillis?: number | undefined;
     editorialNotes?: EditorialNotes | undefined;
@@ -142,7 +142,7 @@ declare namespace AppleMusicApi {
         }
       | undefined;
     relationships?: ArtistRelationships | undefined;
-    type: 'artists';
+    type: "artists";
   }
 
   // https://developer.apple.com/documentation/applemusicapi/artist/relationships
@@ -162,7 +162,7 @@ declare namespace AppleMusicApi {
           albumName?: string | undefined;
           artistName: string;
           artwork?: Artwork | undefined;
-          contentRating?: 'clean' | 'explicit' | undefined;
+          contentRating?: "clean" | "explicit" | undefined;
           copyright?: string | undefined;
           editorialNotes?: EditorialNotes | undefined;
           genreNames: string[];
@@ -179,7 +179,7 @@ declare namespace AppleMusicApi {
         }
       | undefined;
     relationships?: AlbumRelationships | undefined;
-    type: 'albums';
+    type: "albums";
   }
 
   // https://developer.apple.com/documentation/applemusicapi/album/relationships
@@ -194,7 +194,7 @@ declare namespace AppleMusicApi {
     attributes: {
       name: string;
     };
-    type: 'genres';
+    type: "genres";
   }
 
   // https://developer.apple.com/documentation/applemusicapi/playlist
@@ -210,10 +210,10 @@ declare namespace AppleMusicApi {
           name: string;
           playParams?: PlayParameters | undefined;
           playlistType:
-            | 'user-shared'
-            | 'editorial'
-            | 'external'
-            | 'personal-mix';
+            | "user-shared"
+            | "editorial"
+            | "external"
+            | "personal-mix";
           url: string;
         }
       | undefined;
@@ -224,7 +224,7 @@ declare namespace AppleMusicApi {
           tracks?: Relationship<Song> | undefined;
         }
       | undefined;
-    type: 'playlists';
+    type: "playlists";
   }
 
   // https://developer.apple.com/documentation/applemusicapi/curator
@@ -242,6 +242,6 @@ declare namespace AppleMusicApi {
           playlists?: Relationship<Playlist> | undefined;
         }
       | undefined;
-    type: 'curators';
+    type: "curators";
   }
 }

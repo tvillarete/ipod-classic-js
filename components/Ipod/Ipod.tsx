@@ -1,20 +1,20 @@
-import { memo } from 'react';
-import WindowProvider from 'providers/WindowProvider';
-import { ScrollWheel } from 'components';
+import { memo } from "react";
+import WindowProvider from "providers/WindowProvider";
+import { ScrollWheel } from "components";
 import {
   AudioPlayerProvider,
   MusicKitProvider,
   SpotifySDKProvider,
   useSettings,
-} from 'hooks';
-import { WindowManager } from 'components';
+} from "hooks";
+import { WindowManager } from "components";
 import {
   ScreenContainer,
   Shell,
   Sticker,
   Sticker2,
   Sticker3,
-} from 'components/Ipod/Styled';
+} from "components/Ipod/Styled";
 
 type Props = {
   appleAccessToken: string;

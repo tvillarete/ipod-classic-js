@@ -1,1 +1,1 @@
-export { default as useBattery } from './useBattery';
+export { default as useBattery } from "./useBattery";

@@ -1,9 +1,9 @@
-import { useCallback } from 'react';
+import { useCallback } from "react";
 
-import { Controls } from 'components';
-import { useAudioPlayer, useEffectOnce, useMKEventListener } from 'hooks';
-import styled from 'styled-components';
-import { Unit } from 'utils/constants';
+import { Controls } from "components";
+import { useAudioPlayer, useEffectOnce, useMKEventListener } from "hooks";
+import styled from "styled-components";
+import { Unit } from "utils/constants";
 
 const Container = styled.div`
   height: 100%;
@@ -82,7 +82,7 @@ const NowPlaying = ({ hideArtwork, onHide }: Props) => {
     updatePlaybackInfo();
   });
 
-  useMKEventListener('playbackStateDidChange', handlePlaybackChange);
+  useMKEventListener("playbackStateDidChange", handlePlaybackChange);
 
   return (
     <Container>

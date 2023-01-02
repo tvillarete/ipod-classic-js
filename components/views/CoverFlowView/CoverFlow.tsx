@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import { fade } from 'animation';
-import { NowPlaying } from 'components';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEventListener, useWindowContext } from 'hooks';
-import styled from 'styled-components';
+import { fade } from "animation";
+import { NowPlaying } from "components";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEventListener, useWindowContext } from "hooks";
+import styled from "styled-components";
 
-import AlbumCover from './AlbumCover';
-import { IpodEvent } from 'utils/events';
+import AlbumCover from "./AlbumCover";
+import { IpodEvent } from "utils/events";
 
 export type Point = {
   x: number;
@@ -110,10 +110,10 @@ const CoverFlow = ({ albums }: Props) => {
 
   useEffect(updateMidpoint, [updateMidpoint]);
 
-  useEventListener<IpodEvent>('centerclick', selectAlbum);
-  useEventListener<IpodEvent>('menuclick', handleMenuClick);
-  useEventListener<IpodEvent>('forwardscroll', forwardScroll);
-  useEventListener<IpodEvent>('backwardscroll', backwardScroll);
+  useEventListener<IpodEvent>("centerclick", selectAlbum);
+  useEventListener<IpodEvent>("menuclick", handleMenuClick);
+  useEventListener<IpodEvent>("forwardscroll", forwardScroll);
+  useEventListener<IpodEvent>("backwardscroll", backwardScroll);
 
   return (
     <Container>

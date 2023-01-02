@@ -1,13 +1,13 @@
-import React, { SyntheticEvent, useEffect, useRef } from 'react';
+import React, { SyntheticEvent, useEffect, useRef } from "react";
 
-import { useEffectOnce, useSettings } from 'hooks';
-import styled from 'styled-components';
+import { useEffectOnce, useSettings } from "hooks";
+import styled from "styled-components";
 
-import { DeviceThemeName, getTheme } from '../../utils/themes';
-import FastForwardIcon from './icons/FastForwardIcon';
-import MenuIcon from './icons/MenuIcon';
-import PlayPauseIcon from './icons/PlayPauseIcon';
-import RewindIcon from './icons/RewindIcon';
+import { DeviceThemeName, getTheme } from "../../utils/themes";
+import FastForwardIcon from "./icons/FastForwardIcon";
+import MenuIcon from "./icons/MenuIcon";
+import PlayPauseIcon from "./icons/PlayPauseIcon";
+import RewindIcon from "./icons/RewindIcon";
 
 const Container = styled.div`
   user-select: none;
@@ -104,8 +104,8 @@ const Knob = ({
   width = 200,
   height = 200,
   thickness = 0.35,
-  bgColor = '#EEE',
-  fgColor = '#EA2',
+  bgColor = "#EEE",
+  fgColor = "#EA2",
   className,
   canvasClassName,
 }: Props) => {
@@ -115,7 +115,7 @@ const Knob = ({
 
   const handleLongPress = (event: Event) => {
     event.preventDefault();
-    (event.target as any).setAttribute('longpress', new Date().getTime());
+    (event.target as any).setAttribute("longpress", new Date().getTime());
     onLongPress(event);
     return false;
   };
@@ -126,7 +126,7 @@ const Knob = ({
 
   const handleWheelLongPress = (event: LongPressEvent) => {
     event.preventDefault();
-    (event.target as any).setAttribute('longpress', new Date().getTime());
+    (event.target as any).setAttribute("longpress", new Date().getTime());
 
     const rect = (event.target as Element).getBoundingClientRect();
     const x = event.detail.clientX - rect.left;
@@ -190,15 +190,15 @@ const Knob = ({
 
   const handleMouseDown = (e: Event) => {
     onChange(eventToValue(e));
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUpNoMove);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUpNoMove);
   };
 
   const handleTouchStart = (e: Event) => {
     onChange(eventToValue(e));
-    document.addEventListener('touchmove', handleTouchMove);
-    document.addEventListener('touchend', handleTouchEndNoMove);
-    document.removeEventListener('mousedown', handleMouseDown);
+    document.addEventListener("touchmove", handleTouchMove);
+    document.addEventListener("touchend", handleTouchEndNoMove);
+    document.removeEventListener("mousedown", handleMouseDown);
   };
 
   const handleMouseMove = (e: Event) => {
@@ -209,8 +209,8 @@ const Knob = ({
       onChange(eventToValue(e));
     }
 
-    document.removeEventListener('mouseup', handleMouseUpNoMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.removeEventListener("mouseup", handleMouseUpNoMove);
+    document.addEventListener("mouseup", handleMouseUp);
   };
 
   const handleTouchMove = (e: Event) => {
@@ -228,32 +228,32 @@ const Knob = ({
     }
 
     canvasRef.current.removeEventListener(
-      'long-press',
+      "long-press",
       handleWheelLongPress as any
     );
-    document.removeEventListener('touchend', handleTouchEndNoMove);
-    document.addEventListener('touchend', handleTouchEnd);
+    document.removeEventListener("touchend", handleTouchEndNoMove);
+    document.addEventListener("touchend", handleTouchEnd);
   };
 
   const handleMouseUp = (e: Event) => {
     onChangeEnd(eventToValue(e));
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
   };
 
   const handleTouchEnd = (e: Event) => {
     const touchEvent = e as TouchEvent;
     const touchIndex = touchEvent.targetTouches.length - 1;
     onChangeEnd(touchEvent.targetTouches[touchIndex] as any);
-    document.removeEventListener('touchmove', handleTouchMove);
-    document.removeEventListener('touchend', handleTouchEnd);
+    document.removeEventListener("touchmove", handleTouchMove);
+    document.removeEventListener("touchend", handleTouchEnd);
 
     if (!canvasRef.current) {
       return;
     }
 
     canvasRef.current.addEventListener(
-      'long-press',
+      "long-press",
       handleWheelLongPress as any
     );
   };
@@ -282,9 +282,9 @@ const Knob = ({
       onWheelClick(quadrant);
     }
 
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-    document.removeEventListener('mouseup', handleMouseUpNoMove);
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+    document.removeEventListener("mouseup", handleMouseUpNoMove);
   };
 
   const handleTouchEndNoMove = (e: Event) => {
@@ -301,16 +301,16 @@ const Knob = ({
       onWheelClick(quadrant);
     }
 
-    document.removeEventListener('touchmove', handleTouchMove);
-    document.removeEventListener('touchend', handleTouchEnd);
-    document.removeEventListener('touchend', handleTouchEndNoMove);
+    document.removeEventListener("touchmove", handleTouchMove);
+    document.removeEventListener("touchend", handleTouchEnd);
+    document.removeEventListener("touchend", handleTouchEndNoMove);
   };
 
   const drawCanvas = () => {
     if (!canvasRef.current) {
       return;
     }
-    const ctx = canvasRef.current.getContext('2d')!;
+    const ctx = canvasRef.current.getContext("2d")!;
     const scale = getCanvasScale(ctx);
     canvasRef.current.width = width * scale; // clears the canvas
     canvasRef.current.height = height * scale;
@@ -319,7 +319,7 @@ const Knob = ({
     const lineWidth = xy * thickness;
     const radius = xy - lineWidth / 2;
     ctx.lineWidth = lineWidth;
-    ctx.lineCap = 'butt';
+    ctx.lineCap = "butt";
     // background arc
     ctx.beginPath();
     ctx.strokeStyle = bgColor;
@@ -341,18 +341,18 @@ const Knob = ({
     }
 
     const isTouchEnabled =
-      'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
     drawCanvas();
     if (isTouchEnabled) {
-      canvasRef.current.addEventListener('touchstart', handleTouchStart);
+      canvasRef.current.addEventListener("touchstart", handleTouchStart);
     } else {
-      canvasRef.current.addEventListener('mousedown', handleMouseDown);
+      canvasRef.current.addEventListener("mousedown", handleMouseDown);
     }
-    centerButtonRef.current.addEventListener('long-press', handleLongPress);
+    centerButtonRef.current.addEventListener("long-press", handleLongPress);
 
     canvasRef.current.addEventListener(
-      'long-press',
+      "long-press",
       handleWheelLongPress as any
     );
 
@@ -364,16 +364,16 @@ const Knob = ({
       }
 
       if (isTouchEnabled) {
-        canvasRef.current.removeEventListener('touchstart', handleTouchStart);
+        canvasRef.current.removeEventListener("touchstart", handleTouchStart);
       } else {
-        canvasRef.current.removeEventListener('mousedown', handleMouseDown);
+        canvasRef.current.removeEventListener("mousedown", handleMouseDown);
       }
       centerButtonRef.current.removeEventListener(
-        'long-press',
+        "long-press",
         handleLongPress
       );
       canvasRef.current.removeEventListener(
-        'long-press',
+        "long-press",
         handleWheelLongPress as any
       );
     };
@@ -394,7 +394,7 @@ const Knob = ({
             canvasRef.current = ref ?? undefined;
           }}
           className={canvasClassName}
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: "100%", height: "100%" }}
           deviceTheme={deviceTheme}
         />
 
@@ -406,10 +406,10 @@ const Knob = ({
           size={width}
           deviceTheme={deviceTheme}
         />
-        <MenuIcon top={'8%'} margin={'0 auto'} color={buttonColor} />
-        <PlayPauseIcon bottom={'8%'} margin={'0 auto'} color={buttonColor} />
-        <RewindIcon left={'8%'} margin={'auto 0'} color={buttonColor} />
-        <FastForwardIcon right={'8%'} margin={'auto 0'} color={buttonColor} />
+        <MenuIcon top="8%" margin="0 auto" color={buttonColor} />
+        <PlayPauseIcon bottom="8%" margin="0 auto" color={buttonColor} />
+        <RewindIcon left="8%" margin="auto 0" color={buttonColor} />
+        <FastForwardIcon right="8%" margin="auto 0" color={buttonColor} />
       </CanvasContainer>
     </Container>
   );

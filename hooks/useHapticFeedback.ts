@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 
-const canUseHaptics = typeof navigator !== 'undefined' && 'vibrate' in navigator;
+const canUseHaptics = typeof navigator !== "undefined" && "vibrate" in navigator;
 
 const useHapticFeedback = () => {
   const triggerHaptics = useCallback((pattern: number | number[]) => {

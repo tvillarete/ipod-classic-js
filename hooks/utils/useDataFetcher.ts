@@ -1,11 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
 import {
   useMKDataFetcher,
   useMusicKit,
   useSettings,
   useSpotifyDataFetcher,
-} from 'hooks';
+} from "hooks";
 
 interface UserLibraryProps {
   inLibrary?: boolean;
@@ -45,8 +45,8 @@ const useDataFetchers = () => {
   const { isConfigured } = useMusicKit();
 
   const enabled =
-    (service === 'apple' && isAppleAuthorized && isConfigured) ||
-    (service === 'spotify' && isSpotifyAuthorized);
+    (service === "apple" && isAppleAuthorized && isConfigured) ||
+    (service === "spotify" && isSpotifyAuthorized);
 
   return { spotifyDataFetcher, appleDataFetcher, service, enabled };
 };
@@ -58,11 +58,11 @@ export const useFetchAlbum = (
     useDataFetchers();
 
   return useQuery(
-    ['album', { id: options.id }],
+    ["album", { id: options.id }],
     async () => {
-      if (service === 'apple') {
+      if (service === "apple") {
         return appleDataFetcher.fetchAlbum(options.id, options.inLibrary);
-      } else if (service === 'spotify') {
+      } else if (service === "spotify") {
         return spotifyDataFetcher.fetchAlbum(options.userId, options.id);
       }
     },
@@ -77,11 +77,11 @@ export const useFetchAlbums = (
     useDataFetchers();
 
   return useQuery(
-    ['albums'],
+    ["albums"],
     async () => {
-      if (service === 'apple') {
+      if (service === "apple") {
         return appleDataFetcher.fetchAlbums();
-      } else if (service === 'spotify') {
+      } else if (service === "spotify") {
         return spotifyDataFetcher.fetchAlbums();
       }
     },
@@ -94,11 +94,11 @@ export const useFetchArtists = (options: CommonFetcherProps) => {
     useDataFetchers();
 
   return useQuery(
-    ['artists'],
+    ["artists"],
     async () => {
-      if (service === 'apple') {
+      if (service === "apple") {
         return appleDataFetcher.fetchArtists();
-      } else if (service === 'spotify') {
+      } else if (service === "spotify") {
         return spotifyDataFetcher.fetchArtists();
       }
     },
@@ -113,14 +113,14 @@ export const useFetchArtistAlbums = (
     useDataFetchers();
 
   return useQuery(
-    ['artistAlbums', { id: options.id }],
+    ["artistAlbums", { id: options.id }],
     async () => {
-      if (service === 'apple') {
+      if (service === "apple") {
         return appleDataFetcher.fetchArtistAlbums(
           options.id,
           options.inLibrary
         );
-      } else if (service === 'spotify') {
+      } else if (service === "spotify") {
         return spotifyDataFetcher.fetchArtist(options.userId, options.id);
       }
     },
@@ -133,11 +133,11 @@ export const useFetchPlaylists = (options: CommonFetcherProps) => {
     useDataFetchers();
 
   return useQuery(
-    ['playlists'],
+    ["playlists"],
     async () => {
-      if (service === 'apple') {
+      if (service === "apple") {
         return appleDataFetcher.fetchPlaylists();
-      } else if (service === 'spotify') {
+      } else if (service === "spotify") {
         return spotifyDataFetcher.fetchPlaylists();
       }
     },
@@ -152,11 +152,11 @@ export const useFetchPlaylist = (
     useDataFetchers();
 
   return useQuery(
-    ['playlists', { id: options.id }],
+    ["playlists", { id: options.id }],
     async () => {
-      if (service === 'apple') {
+      if (service === "apple") {
         return appleDataFetcher.fetchPlaylist(options.id, options.inLibrary);
-      } else if (service === 'spotify') {
+      } else if (service === "spotify") {
         return spotifyDataFetcher.fetchPlaylist(options.userId, options.id);
       }
     },
@@ -171,11 +171,11 @@ export const useFetchSearchResults = (
     useDataFetchers();
 
   return useQuery(
-    ['search', { query: options.query }],
+    ["search", { query: options.query }],
     async () => {
-      if (service === 'spotify') {
+      if (service === "spotify") {
         return spotifyDataFetcher.fetchSearchResults(options.query);
-      } else if (service === 'apple') {
+      } else if (service === "apple") {
         return appleDataFetcher.fetchSearchResults(options.query);
       }
     },

@@ -1,7 +1,7 @@
-import { useCallback, useRef, useState } from 'react';
-import { IpodEvent } from 'utils/events';
+import { useCallback, useRef, useState } from "react";
+import { IpodEvent } from "utils/events";
 
-import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
+import { useAudioPlayer, useEffectOnce, useEventListener } from "..";
 
 interface VolumeHandlerHook {
   volume: number;
@@ -68,10 +68,10 @@ const useVolumeHandler = (): VolumeHandlerHook => {
     setVolume(newVolume);
   }, [setActiveState, volume, enabled, setVolume]);
 
-  useEventListener<IpodEvent>('forwardscroll', increaseVolume);
-  useEventListener<IpodEvent>('backwardscroll', decreaseVolume);
+  useEventListener<IpodEvent>("forwardscroll", increaseVolume);
+  useEventListener<IpodEvent>("backwardscroll", decreaseVolume);
   /** Don't mistake a scroll for a click. */
-  useEventListener<IpodEvent>('wheelclick', () => setActive(false));
+  useEventListener<IpodEvent>("wheelclick", () => setActive(false));
 
   return {
     setEnabled,

@@ -1,10 +1,10 @@
-import { memo } from 'react';
-import type { GetServerSideProps, NextPage } from 'next';
-import Head from 'next/head';
-import styled from 'styled-components';
-import { SettingsProvider } from 'hooks';
-import Script from 'next/script';
-import { Ipod } from 'components/Ipod';
+import { memo } from "react";
+import type { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
+import styled from "styled-components";
+import { SettingsProvider } from "hooks";
+import Script from "next/script";
+import { Ipod } from "components/Ipod";
 
 const Main = styled.div`
   position: fixed;
@@ -89,9 +89,9 @@ const Home: NextPage<Props> = ({
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const appleAccessToken =
     process.env.APPLE_DEVELOPER_TOKEN ?? context.query.token ?? null;
-  const spotifyTokens = context.req.cookies['spotify-tokens'];
+  const spotifyTokens = context.req.cookies["spotify-tokens"];
   const [spotifyAccessToken = null, spotifyRefreshToken = null] =
-    spotifyTokens?.split(',') ?? [];
+    spotifyTokens?.split(",") ?? [];
 
   return {
     props: { spotifyAccessToken, appleAccessToken, spotifyRefreshToken },

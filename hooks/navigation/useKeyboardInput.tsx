@@ -1,8 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from "react";
 
-import { ViewOptions, WINDOW_TYPE } from 'components';
-import { useWindowContext } from 'hooks';
-import { useEventListener } from 'hooks/utils';
+import { ViewOptions, WINDOW_TYPE } from "components";
+import { useWindowContext } from "hooks";
+import { useEventListener } from "hooks/utils";
 
 interface KeyboardInputHook {
   value: string;
@@ -19,7 +19,7 @@ interface Props {
 }
 
 const useKeyboardInput = ({
-  initialValue = '',
+  initialValue = "",
   readOnly = true,
   onEnterPress = () => {},
   onChange = () => {},
@@ -27,11 +27,11 @@ const useKeyboardInput = ({
   const { showWindow, hideWindow } = useWindowContext();
   const [value, setValue] = useState(initialValue);
 
-  useEventListener('input', ({ detail }) => {
+  useEventListener("input", ({ detail }) => {
     // TODO: Only trigger keyboard input for one screen at a time.
     const { key } = detail;
 
-    if (key === 'Enter') {
+    if (key === "Enter") {
       onEnterPress();
       hideWindow(ViewOptions.keyboard.id);
       return;
@@ -40,9 +40,9 @@ const useKeyboardInput = ({
     setValue((prevValue) => {
       let newValue = prevValue;
 
-      if (key === 'Backspace' || key === 'delete') {
+      if (key === "Backspace" || key === "delete") {
         newValue = prevValue.slice(0, -1);
-      } else if (key === ' ') {
+      } else if (key === " ") {
         newValue = `${prevValue} `;
       } else {
         newValue = `${prevValue}${key}`;
@@ -59,7 +59,7 @@ const useKeyboardInput = ({
         return;
       }
 
-      const inputEvent = new CustomEvent('input', {
+      const inputEvent = new CustomEvent("input", {
         detail: {
           key,
         },
@@ -72,15 +72,15 @@ const useKeyboardInput = ({
 
   const handleKeydown = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key === 'Backspace') {
+      if (event.key === "Backspace") {
         handleKeypress(event);
       }
     },
     [handleKeypress]
   );
 
-  useEventListener('keypress', handleKeypress);
-  useEventListener('keydown', handleKeydown);
+  useEventListener("keypress", handleKeypress);
+  useEventListener("keydown", handleKeydown);
 
   const showKeyboard = useCallback(() => {
     showWindow({

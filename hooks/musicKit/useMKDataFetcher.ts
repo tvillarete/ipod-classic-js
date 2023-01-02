@@ -1,8 +1,8 @@
-import { useCallback } from 'react';
+import { useCallback } from "react";
 
-import { useMusicKit } from 'hooks';
-import queryString from 'query-string';
-import * as ConversionUtils from 'utils/conversion';
+import { useMusicKit } from "hooks";
+import queryString from "query-string";
+import * as ConversionUtils from "utils/conversion";
 
 type FetchAppleMusicApiArgs = {
   endpoint: string;
@@ -102,7 +102,7 @@ const useMKDataFetcher = () => {
 
   const fetchPlaylists = useCallback(async () => {
     const response = await fetchAppleMusicApi<AppleMusicApi.PlaylistResponse>({
-      endpoint: '/playlists',
+      endpoint: "/playlists",
       params: {
         limit: 100,
       },
@@ -118,7 +118,7 @@ const useMKDataFetcher = () => {
         {
           endpoint: `/playlists/${playlistId}`,
           params: {
-            include: 'tracks',
+            include: "tracks",
           },
           inLibrary,
         }
@@ -139,7 +139,7 @@ const useMKDataFetcher = () => {
         endpoint: `search`,
         params: {
           term: query,
-          types: 'albums,artists,playlists,songs',
+          types: "albums,artists,playlists,songs",
         },
       });
 

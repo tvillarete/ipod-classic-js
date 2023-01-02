@@ -1,14 +1,14 @@
-import { WINDOW_TYPE } from 'components/views';
-import { useEventListener, useWindowContext } from 'hooks';
-import styled from 'styled-components';
-import { IpodEvent } from 'utils/events';
+import { WINDOW_TYPE } from "components/views";
+import { useEventListener, useWindowContext } from "hooks";
+import styled from "styled-components";
+import { IpodEvent } from "utils/events";
 
-import ActionSheetWindowManager from './ActionSheetWindowManager';
-import CoverFlowWindowManager from './CoverFlowWindowManager';
-import FullScreenWindowManager from './FullScreenWindowManager';
-import KeyboardWindowManager from './KeyboardWindowManager';
-import PopupWindowManager from './PopupWindowManager';
-import SplitScreenWindowManager from './SplitScreenWindowManager';
+import ActionSheetWindowManager from "./ActionSheetWindowManager";
+import CoverFlowWindowManager from "./CoverFlowWindowManager";
+import FullScreenWindowManager from "./FullScreenWindowManager";
+import KeyboardWindowManager from "./KeyboardWindowManager";
+import PopupWindowManager from "./PopupWindowManager";
+import SplitScreenWindowManager from "./SplitScreenWindowManager";
 
 /** Prevents the user from scrolling the display with a mouse. */
 const Mask = styled.div`
@@ -41,7 +41,7 @@ const WindowManager = () => {
     (window) => window.type === WINDOW_TYPE.KEYBOARD
   );
 
-  useEventListener<IpodEvent>('menulongpress', resetWindows);
+  useEventListener<IpodEvent>("menulongpress", resetWindows);
 
   return (
     <div>

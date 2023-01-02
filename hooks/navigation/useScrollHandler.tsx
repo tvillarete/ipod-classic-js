@@ -1,16 +1,16 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   ActionSheetOptionProps,
   PopupOptionProps,
   SelectableListOption,
-} from 'components';
-import ViewOptions, { NowPlayingView, WINDOW_TYPE } from 'components/views';
-import { useWindowContext } from 'hooks';
-import useHapticFeedback from 'hooks/useHapticFeedback';
-import { IpodEvent } from 'utils/events';
+} from "components";
+import ViewOptions, { NowPlayingView, WINDOW_TYPE } from "components/views";
+import { useWindowContext } from "hooks";
+import useHapticFeedback from "hooks/useHapticFeedback";
+import { IpodEvent } from "utils/events";
 
-import { useAudioPlayer, useEffectOnce, useEventListener } from '../';
+import { useAudioPlayer, useEffectOnce, useEventListener } from "..";
 
 /** Gets the initial index for the scroll position. If there is a selected option,
  * this will initialize our initial scroll position at the selectedOption  */
@@ -143,17 +143,17 @@ const useScrollHandler = (
     }
 
     switch (option.type) {
-      case 'Song':
+      case "Song":
         await play(option.queueOptions);
 
         if (option.showNowPlayingView) {
           handleShowView(ViewOptions.nowPlaying.id, () => <NowPlayingView />);
         }
         break;
-      case 'Link':
-        window.open(option.url, '_blank');
+      case "Link":
+        window.open(option.url, "_blank");
         break;
-      case 'View':
+      case "View":
         handleShowView(
           option.viewId,
           option.component,
@@ -161,13 +161,13 @@ const useScrollHandler = (
           option.headerTitle
         );
         break;
-      case 'Action':
+      case "Action":
         option.onSelect();
         break;
-      case 'Popup':
+      case "Popup":
         handleShowPopup(option);
         break;
-      case 'ActionSheet':
+      case "ActionSheet":
         handleShowActionSheet(option);
         break;
     }
@@ -212,10 +212,10 @@ const useScrollHandler = (
     }
   });
 
-  useEventListener<IpodEvent>('centerclick', handleCenterClick);
-  useEventListener<IpodEvent>('centerlongclick', handleCenterLongClick);
-  useEventListener<IpodEvent>('forwardscroll', handleForwardScroll);
-  useEventListener<IpodEvent>('backwardscroll', handleBackwardScroll);
+  useEventListener<IpodEvent>("centerclick", handleCenterClick);
+  useEventListener<IpodEvent>("centerlongclick", handleCenterLongClick);
+  useEventListener<IpodEvent>("forwardscroll", handleForwardScroll);
+  useEventListener<IpodEvent>("backwardscroll", handleBackwardScroll);
 
   return [index];
 };

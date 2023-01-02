@@ -18,33 +18,33 @@ class App {
     this.player = new Player(this);
     this.ball = new Ball(this);
     this.bricks = [];
-    this.canvas = document.querySelector('#brickBreakerCanvas');
-    this.context = this.canvas ? this.canvas.getContext('2d') : null;
+    this.canvas = document.querySelector("#brickBreakerCanvas");
+    this.context = this.canvas ? this.canvas.getContext("2d") : null;
     this.timeout = 33;
     this.inStasis = false;
   }
 
   init = () => {
     if (!this.context) {
-      console.log('Error getting application context');
+      console.log("Error getting application context");
       return; //TODO: notify user
     }
 
-    window.addEventListener('centerclick', this.handleCenterClick);
+    window.addEventListener("centerclick", this.handleCenterClick);
     this.inStasis = false;
 
     if (!this.initialized) {
       window.addEventListener(
-        'forwardscroll',
+        "forwardscroll",
         () => this.player.moveRight(),
         true
       );
       window.addEventListener(
-        'backwardscroll',
+        "backwardscroll",
         () => this.player.moveLeft(),
         true
       );
-      window.addEventListener('menuclick', () => {
+      window.addEventListener("menuclick", () => {
         this.inStasis = true;
       });
 
@@ -163,7 +163,7 @@ class Player {
       return;
     }
 
-    this.app.context.fillStyle = 'black';
+    this.app.context.fillStyle = "black";
     this.app.context.fillRect(
       this.position.x,
       this.position.y,
@@ -224,13 +224,13 @@ class Ball {
     const centerY = this.position.y;
     const radius = 10;
 
-    context.fillStyle = 'transparent';
+    context.fillStyle = "transparent";
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-    context.fillStyle = 'black';
+    context.fillStyle = "black";
     context.fill();
     context.lineWidth = 5;
-    context.strokeStyle = 'black';
+    context.strokeStyle = "black";
     context.stroke();
   };
 
@@ -356,13 +356,13 @@ class Brick {
 
     switch (this.health) {
       case 3:
-        this.app.context.fillStyle = 'rgb(0, 240, 0)'; //Green
+        this.app.context.fillStyle = "rgb(0, 240, 0)"; //Green
         break;
       case 2:
-        this.app.context.fillStyle = 'rgb(255, 140, 0)'; //Orange
+        this.app.context.fillStyle = "rgb(255, 140, 0)"; //Orange
         break;
       case 1:
-        this.app.context.fillStyle = 'rgb(200, 0, 0)'; //Red
+        this.app.context.fillStyle = "rgb(200, 0, 0)"; //Red
         break;
       default:
         break;

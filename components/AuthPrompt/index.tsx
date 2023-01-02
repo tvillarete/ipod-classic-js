@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import { useInterval, useMusicKit } from 'hooks';
-import styled, { css } from 'styled-components';
-import { Unit } from 'utils/constants';
+import { useInterval, useMusicKit } from "hooks";
+import styled, { css } from "styled-components";
+import { Unit } from "utils/constants";
 
 const RootContainer = styled.div`
   display: flex;
@@ -45,10 +45,10 @@ const Text = styled.p`
 
 const strings = {
   title: {
-    apple: 'Apple Music',
-    spotify: 'Spotify',
+    apple: "Apple Music",
+    spotify: "Spotify",
   },
-  defaultMessage: 'Sign into view this content',
+  defaultMessage: "Sign into view this content",
 };
 
 interface Props {
@@ -57,17 +57,17 @@ interface Props {
 
 const AuthPrompt = ({ message }: Props) => {
   const { isConfigured: isMkConfigured } = useMusicKit();
-  const [icon, setIcon] = useState<'apple' | 'spotify'>(
-    isMkConfigured ? 'apple' : 'spotify'
+  const [icon, setIcon] = useState<"apple" | "spotify">(
+    isMkConfigured ? "apple" : "spotify"
   );
 
   useInterval(() => {
     setIcon((prevState) => {
-      if (prevState === 'apple' || !isMkConfigured) {
-        return 'spotify';
+      if (prevState === "apple" || !isMkConfigured) {
+        return "spotify";
       }
 
-      return 'apple';
+      return "apple";
     });
   }, 4000);
 
@@ -75,13 +75,13 @@ const AuthPrompt = ({ message }: Props) => {
     <RootContainer>
       {isMkConfigured && (
         <StyledImg
-          $isHidden={icon === 'spotify'}
+          $isHidden={icon === "spotify"}
           alt="app_icon"
           src="apple_music_icon.svg"
         />
       )}
       <StyledImg
-        $isHidden={icon === 'apple'}
+        $isHidden={icon === "apple"}
         alt="app_icon"
         src="spotify_icon.svg"
       />

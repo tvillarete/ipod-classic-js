@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import * as Types from './types';
-export * from './types';
+import styled from "styled-components";
+import * as Types from "./types";
+export * from "./types";
 
 export const WheelButton = styled.svg<Types.WheelButtonProps>`
   position: absolute;

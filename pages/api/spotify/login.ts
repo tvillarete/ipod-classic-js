@@ -1,13 +1,13 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from "next";
 import {
   getSpotifyClientId,
   getSpotifyRedirectUri,
-} from 'pages/api/spotify/utils';
+} from "pages/api/spotify/utils";
 
 const generateRandomString = (length: number): string => {
-  let text = '';
+  let text = "";
   const possible =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
   for (let i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -17,7 +17,7 @@ const generateRandomString = (length: number): string => {
 
 const login = (_: NextApiRequest, res: NextApiResponse) => {
   const scope =
-    'user-read-private user-read-email user-library-read user-follow-read playlist-read-collaborative playlist-read-private streaming user-read-playback-state user-read-currently-playing user-modify-playback-state';
+    "user-read-private user-read-email user-library-read user-follow-read playlist-read-collaborative playlist-read-private streaming user-read-playback-state user-read-currently-playing user-modify-playback-state";
 
   const spotify_redirect_uri = getSpotifyRedirectUri();
   const spotify_client_id = getSpotifyClientId();
@@ -25,12 +25,12 @@ const login = (_: NextApiRequest, res: NextApiResponse) => {
   console.log({ spotify_redirect_uri });
 
   if (!spotify_redirect_uri || !spotify_client_id) {
-    res.status(500).json({ error: 'Missing Spotify redirect URI' });
+    res.status(500).json({ error: "Missing Spotify redirect URI" });
     return;
   }
 
   const auth_query_parameters = new URLSearchParams({
-    response_type: 'code',
+    response_type: "code",
     client_id: spotify_client_id,
     scope: scope,
     redirect_uri: spotify_redirect_uri,
@@ -38,7 +38,7 @@ const login = (_: NextApiRequest, res: NextApiResponse) => {
   });
 
   res.redirect(
-    'https://accounts.spotify.com/authorize/?' +
+    "https://accounts.spotify.com/authorize/?" +
       auth_query_parameters.toString()
   );
 };

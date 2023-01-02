@@ -1,8 +1,8 @@
-import { AnimatePresence } from 'framer-motion';
-import { WindowOptions } from 'providers/WindowProvider';
-import styled from 'styled-components';
+import { AnimatePresence } from "framer-motion";
+import { WindowOptions } from "providers/WindowProvider";
+import styled from "styled-components";
 
-import KeyboardInput from '../components/KeyboardInput';
+import KeyboardInput from "../components/KeyboardInput";
 
 interface ContainerProps {
   isHidden: boolean;

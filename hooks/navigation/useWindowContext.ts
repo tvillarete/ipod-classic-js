@@ -1,8 +1,8 @@
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext } from "react";
 
-import { PREVIEW } from 'components/previews';
-import ViewOptions from 'components/views';
-import { WindowContext, WindowOptions } from 'providers/WindowProvider';
+import { PREVIEW } from "components/previews";
+import ViewOptions from "components/views";
+import { WindowContext, WindowOptions } from "providers/WindowProvider";
 
 export interface WindowContextHook {
   /** Push an instance of WindowOptions to the windowStack. */
