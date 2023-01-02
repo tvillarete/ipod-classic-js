@@ -83,7 +83,9 @@ export const convertSpotifyPlaylistFull = (
   url: data.uri,
   artwork: { url: data.images[0]?.url ?? '' },
   description: data.description ?? '',
-  songs: data.tracks.items.map((item) => convertSpotifySongFull(item.track)),
+  songs: data.tracks.items
+    .filter((item) => !!item)
+    .map((item) => convertSpotifySongFull(item.track!)),
 });
 
 export const convertAppleAlbum = (
