@@ -37,6 +37,8 @@ const ArtistsView = ({
     const data =
       artists ?? fetchedArtists?.pages.flatMap((page) => page?.data ?? []);
 
+    data?.sort((a, b) => a.name.localeCompare(b.name));
+
     return (
       data?.map((artist) => ({
         type: 'View',
