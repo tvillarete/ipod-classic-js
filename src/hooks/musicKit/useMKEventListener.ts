@@ -11,7 +11,8 @@ const useMKEventListener = (
   useEffect(() => {
     const musicKit = window.MusicKit || undefined;
 
-    if (!musicKit || musicKit.errors.length) {
+    if (!musicKit || musicKit.errors?.length) {
+      console.error('Error while mounting MusicKit: ', musicKit.errors);
       return;
     }
 
