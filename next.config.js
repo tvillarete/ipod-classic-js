@@ -1,10 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
-  compiler: {
-    styledComponents: true,
-  },
+  reactStrictMode: false,
+  basePath: "/ipod",
 };
 
 module.exports = nextConfig;
