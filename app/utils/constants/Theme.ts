@@ -1,3 +1,5 @@
+import { APP_URL } from "utils/constants/api";
+
 export type DeviceTheme = {
   body: {
     background: string;
@@ -81,7 +83,7 @@ const Mnelia: DeviceTheme = {
     background:
       "linear-gradient(193.42deg, #8676d6 49.48%, rgba(238, 65, 122, 0.74) 100%);",
     sticker1: {
-      background: "url(palm.svg) no-repeat bottom left",
+      background: `url('${APP_URL}/palm.svg') no-repeat bottom left`,
       styles: {
         bottom: 0,
         left: 0,
@@ -93,7 +95,7 @@ const Mnelia: DeviceTheme = {
       },
     },
     sticker2: {
-      background: "url(palm.svg) no-repeat",
+      background: `url('${APP_URL}/palm.svg') no-repeat`,
       styles: {
         position: "absolute",
         bottom: 0,
@@ -106,7 +108,7 @@ const Mnelia: DeviceTheme = {
       },
     },
     sticker3: {
-      background: 'url("mnelia_signature.png") no-repeat',
+      background: `url("${APP_URL}/mnelia_signature.png") no-repeat`,
       styles: {
         position: "absolute",
         bottom: "42%",

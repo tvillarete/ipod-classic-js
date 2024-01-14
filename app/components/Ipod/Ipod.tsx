@@ -4,9 +4,9 @@ import { ScrollWheel } from "components";
 import * as SpotifyUtils from "utils/spotify";
 import {
   AudioPlayerProvider,
+  SettingsContext,
   SettingsProvider,
   useEffectOnce,
-  useSettings,
 } from "hooks";
 import { ViewManager } from "components";
 import {
@@ -34,8 +34,6 @@ type Props = {
 };
 
 const Ipod = ({ appleAccessToken, spotifyCallbackCode }: Props) => {
-  const { deviceTheme } = useSettings();
-
   const router = useRouter();
   const queryClient = new QueryClient();
   const [isLoading, setIsLoading] = useState(true);
@@ -71,15 +69,19 @@ const Ipod = ({ appleAccessToken, spotifyCallbackCode }: Props) => {
           <SpotifySDKProvider>
             <MusicKitProvider token={appleAccessToken}>
               <AudioPlayerProvider>
-                <Shell $deviceTheme={deviceTheme}>
-                  <Sticker $deviceTheme={deviceTheme} />
-                  <Sticker2 $deviceTheme={deviceTheme} />
-                  <Sticker3 $deviceTheme={deviceTheme} />
-                  <ScreenContainer>
-                    <ViewManager />
-                  </ScreenContainer>
-                  <ScrollWheel />
-                </Shell>
+                <SettingsContext.Consumer>
+                  {([{ deviceTheme }]) => (
+                    <Shell $deviceTheme={deviceTheme}>
+                      <Sticker $deviceTheme={deviceTheme} />
+                      <Sticker2 $deviceTheme={deviceTheme} />
+                      <Sticker3 $deviceTheme={deviceTheme} />
+                      <ScreenContainer>
+                        <ViewManager />
+                      </ScreenContainer>
+                      <ScrollWheel />
+                    </Shell>
+                  )}
+                </SettingsContext.Consumer>
               </AudioPlayerProvider>
             </MusicKitProvider>
           </SpotifySDKProvider>

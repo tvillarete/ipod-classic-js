@@ -11,7 +11,6 @@ import {
 } from "components";
 import { SongsView, viewConfigMap } from "components/views";
 import {
-  useFetchSearchResults,
   useEffectOnce,
   useKeyboardInput,
   useMenuHideView,
@@ -19,6 +18,7 @@ import {
   useSettings,
 } from "hooks";
 import pluralize from "pluralize";
+import { useFetchSearchResults } from "hooks/utils/useDataFetcher";
 
 const SearchView = () => {
   useMenuHideView(viewConfigMap.search.id);

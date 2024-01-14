@@ -45,6 +45,16 @@ export interface ViewContextHook {
 export const useViewContext = (): ViewContextHook => {
   const [viewContextState, setViewContextState] = useContext(ViewContext);
 
+  const setHeaderTitle = useCallback(
+    (title?: string) => {
+      setViewContextState((prevState) => ({
+        ...prevState,
+        headerTitle: title,
+      }));
+    },
+    [setViewContextState]
+  );
+
   const showView = useCallback(
     (view: ViewOptions) => {
       setViewContextState((prevViewState) => ({
@@ -122,16 +132,6 @@ export const useViewContext = (): ViewContextHook => {
           viewStack: newViewStack,
         };
       });
-    },
-    [setViewContextState]
-  );
-
-  const setHeaderTitle = useCallback(
-    (title?: string) => {
-      setViewContextState((prevState) => ({
-        ...prevState,
-        headerTitle: title,
-      }));
     },
     [setViewContextState]
   );

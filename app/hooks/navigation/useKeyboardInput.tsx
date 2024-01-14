@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-import { viewConfigMap, WINDOW_TYPE } from "components";
+import { viewConfigMap } from "components";
 import { useViewContext } from "hooks";
 import { useEventListener } from "hooks/utils";
 
@@ -85,7 +85,7 @@ const useKeyboardInput = ({
   const showKeyboard = useCallback(() => {
     showView({
       id: viewConfigMap.keyboard.id,
-      type: WINDOW_TYPE.KEYBOARD,
+      type: "keyboard",
     });
   }, [showView]);
 

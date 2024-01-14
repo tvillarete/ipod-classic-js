@@ -1,15 +1,11 @@
 import { useMemo } from "react";
 
 import { AuthPrompt, SelectableList, SelectableListOption } from "components";
-import {
-  useFetchArtists,
-  useMenuHideView,
-  useScrollHandler,
-  useSettings,
-} from "hooks";
+import { useMenuHideView, useScrollHandler, useSettings } from "hooks";
 import * as Utils from "utils";
 
 import viewConfigMap, { ArtistView } from "..";
+import { useFetchArtists } from "hooks/utils/useDataFetcher";
 
 interface Props {
   artists?: MediaApi.Artist[];
@@ -28,9 +24,12 @@ const ArtistsView = ({
     lazy: !!artists,
   });
 
-  const options: SelectableListOption[] = useMemo(
-    () =>
-      (artists ?? fetchedArtists)?.map(
+  const options: SelectableListOption[] = useMemo(() => {
+    const data =
+      artists ?? fetchedArtists?.pages.flatMap((page) => page?.data ?? []);
+
+    return (
+      data?.map(
         (artist): SelectableListOption => ({
           type: "view",
           headerTitle: artist.name,
@@ -41,9 +40,9 @@ const ArtistsView = ({
             : "",
           component: () => <ArtistView id={artist.id} inLibrary={inLibrary} />,
         })
-      ) ?? [],
-    [artists, fetchedArtists, inLibrary, showImages]
-  );
+      ) ?? []
+    );
+  }, [artists, fetchedArtists, inLibrary, showImages]);
 
   // If accessing ArtistsView from the SearchView, and there is no data cached,
   // 'isQueryLoading' will be true. To prevent an infinite loading screen in these
