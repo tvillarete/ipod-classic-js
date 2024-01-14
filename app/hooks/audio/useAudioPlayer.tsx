@@ -6,10 +6,11 @@ import {
   useState,
 } from "react";
 
-import { useMKEventListener } from "hooks";
+import { useEventListener, useMKEventListener } from "hooks";
 import * as ConversionUtils from "utils/conversion";
 
 import { useMusicKit, useSettings, useSpotifySDK, VOLUME_KEY } from "..";
+import { IpodEvent } from "utils/events";
 
 const defaultPlatbackInfoState = {
   isPlaying: false,
@@ -59,6 +60,8 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   const [volume, setVolume] = useState(0.5);
   const [nowPlayingItem, setNowPlayingItem] = useState<MediaApi.MediaItem>();
   const [playbackInfo, setPlaybackInfo] = useState(defaultPlatbackInfoState);
+
+  const hasNowPlayingItem = !!nowPlayingItem;
 
   const playAppleMusic = useCallback(
     async (queueOptions: MediaApi.QueueOptions) => {
@@ -164,6 +167,10 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   }, [music, service, spotifyPlayer]);
 
   const togglePlayPause = useCallback(async () => {
+    if (!hasNowPlayingItem) {
+      return;
+    }
+
     switch (service) {
       case "apple":
         // TODO: Update types for MusicKit V3
@@ -180,7 +187,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       default:
         throw new Error("Unable to play: service not specified");
     }
-  }, [music, service, spotifyPlayer]);
+  }, [hasNowPlayingItem, music, service, spotifyPlayer]);
 
   const skipNext = useCallback(async () => {
     if (!nowPlayingItem) {
@@ -381,6 +388,8 @@ export const AudioPlayerProvider = ({ children }: Props) => {
     },
     [isAppleAuthorized, isSpotifyAuthorized, music, spotifyPlayer]
   );
+
+  useEventListener<IpodEvent>("playpauseclick", togglePlayPause);
 
   // Apple playback event listeners
   useMKEventListener("playbackStateDidChange", handleApplePlaybackStateChange);

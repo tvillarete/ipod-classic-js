@@ -6,6 +6,7 @@ import { useSettings } from "hooks";
 import styled from "styled-components";
 import { useFetchAlbums } from "hooks/utils/useDataFetcher";
 import { previewSlideRight } from "animation";
+import { getArtwork } from "utils";
 
 const Container = styled(motion.div)`
   z-index: 1;
@@ -30,7 +31,10 @@ const MusicPreview = () => {
   const artworkUrls = useMemo(() => {
     if (albums && !error) {
       return albums.pages.flatMap(
-        (page) => page?.data.map((album) => album.artwork?.url ?? "") ?? []
+        (page) =>
+          page?.data
+            .map((album) => getArtwork(300, album.artwork?.url))
+            .filter((url): url is string => !!url) ?? []
       );
     }
 

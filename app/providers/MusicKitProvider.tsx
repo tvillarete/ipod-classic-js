@@ -62,6 +62,7 @@ export const MusicKitProvider = ({
   });
 
   useMKEventListener("userTokenDidChange", (e) => {
+    console.log("userTokenDidChange", e);
     if (e.userToken) {
       setIsAppleAuthorized(true);
       setStreamingService("apple");

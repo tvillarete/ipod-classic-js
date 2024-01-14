@@ -19,6 +19,7 @@ import {
 } from "hooks";
 import pluralize from "pluralize";
 import { useFetchSearchResults } from "hooks/utils/useDataFetcher";
+import { APP_URL } from "utils/constants/api";
 
 const SearchView = () => {
   useMenuHideView(viewConfigMap.search.id);
@@ -58,7 +59,7 @@ const SearchView = () => {
         sublabel: searchTerm
           ? `Results for: ${searchTerm}`
           : "Enter text to search",
-        imageUrl: "search_icon.svg",
+        imageUrl: `${APP_URL}/search_icon.svg`,
         onSelect: showKeyboard,
       },
       ...getConditionalOption(!!artists?.length, {
@@ -68,7 +69,7 @@ const SearchView = () => {
         component: () => (
           <ArtistsView artists={artists} inLibrary={false} showImages />
         ),
-        imageUrl: "artists_icon.svg",
+        imageUrl: `${APP_URL}/artists_icon.svg`,
         sublabel: `${artists?.length} ${pluralize("artist", artists?.length)}`,
       }),
       ...getConditionalOption(!!albums?.length, {
@@ -76,7 +77,7 @@ const SearchView = () => {
         label: "Albums",
         viewId: viewConfigMap.albums.id,
         component: () => <AlbumsView albums={albums} inLibrary={false} />,
-        imageUrl: "albums_icon.svg",
+        imageUrl: `${APP_URL}/albums_icon.svg`,
         sublabel: `${albums?.length} ${pluralize("album", albums?.length)}`,
       }),
       ...getConditionalOption(!!songs?.length, {
@@ -84,7 +85,7 @@ const SearchView = () => {
         label: "Songs",
         viewId: viewConfigMap.songs.id,
         component: () => <SongsView songs={songs!} />,
-        imageUrl: "song_icon.svg",
+        imageUrl: `${APP_URL}/song_icon.svg`,
         sublabel: `${songs?.length} ${pluralize("song", songs?.length)}`,
       }),
       ...getConditionalOption(!!playlists?.length, {
@@ -94,7 +95,7 @@ const SearchView = () => {
         component: () => (
           <PlaylistsView playlists={playlists!} inLibrary={false} />
         ),
-        imageUrl: "playlist_icon.svg",
+        imageUrl: `${APP_URL}/playlist_icon.svg`,
         sublabel: `${playlists?.length} ${pluralize(
           "playlist",
           playlists?.length

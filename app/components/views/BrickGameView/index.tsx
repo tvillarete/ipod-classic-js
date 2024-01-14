@@ -15,6 +15,7 @@ const RootContainer = styled.div`
     rgba(107, 173, 255, 1) 0%,
     rgba(0, 212, 255, 1) 100%
   );
+  overflow: clip;
 `;
 
 const Canvas = styled.canvas`

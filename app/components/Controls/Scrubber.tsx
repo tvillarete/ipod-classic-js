@@ -9,9 +9,11 @@ import ProgressBar from "./ProgressBar";
 import { IpodEvent } from "utils/events";
 import * as Utils from "utils";
 
-const Container = styled.div`
+const RootContainer = styled.div`
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: 30px 1fr 30px;
+  gap: 8px;
   flex: 1;
   height: 1em;
   padding: 0 ${Unit.SM};
@@ -25,7 +27,6 @@ interface LabelProps {
 const Label = styled.h3<LabelProps>`
   font-size: 12px;
   margin: auto 0;
-  width: 30px;
   text-align: ${(props) => props.textAlign};
   white-space: nowrap;
 `;
@@ -110,11 +111,11 @@ const Scrubber = ({ isScrubbing }: Props) => {
   useInterval(refresh, 1000);
 
   return (
-    <Container>
+    <RootContainer>
       <Label textAlign="left">{currentTimeLabel}</Label>
       <ProgressBar percent={scrubberPercent} isScrubber />
       <Label textAlign="right">{timeRemainingLabel}</Label>
-    </Container>
+    </RootContainer>
   );
 };
 

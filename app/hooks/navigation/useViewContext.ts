@@ -75,9 +75,13 @@ export const useViewContext = (): ViewContextHook => {
               (view: ViewOptions) => view.id !== id
             )
           : prevViewState.viewStack.slice(0, -1);
+        const newTopView = newViewStack[newViewStack.length - 1];
+        const headerTitle =
+          newTopView.headerTitle ?? views[newTopView.id]?.title;
 
         return {
           ...prevViewState,
+          headerTitle,
           viewStack: newViewStack,
         };
       });

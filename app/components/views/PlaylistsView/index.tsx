@@ -20,25 +20,25 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
       lazy: !!playlists,
     });
 
-  const data =
-    playlists ?? fetchedPlaylists?.pages.flatMap((page) => page?.data ?? []);
+  const options: SelectableListOption[] = useMemo(() => {
+    const data =
+      playlists ?? fetchedPlaylists?.pages.flatMap((page) => page?.data ?? []);
 
-  const options: SelectableListOption[] = useMemo(
-    () =>
+    return (
       data?.map((playlist) => ({
         type: "view",
         label: playlist.name,
         sublabel: playlist.description || `By ${playlist.curatorName}`,
-        imageUrl: playlist.artwork?.url,
+        imageUrl: Utils.getArtwork(100, playlist.artwork?.url),
         viewId: viewConfigMap.playlist.id,
         headerTitle: playlist.name,
         component: () => (
           <PlaylistView id={playlist.id} inLibrary={inLibrary} />
         ),
         longPressOptions: Utils.getMediaOptions("playlist", playlist.id),
-      })) ?? [],
-    [data, inLibrary]
-  );
+      })) ?? []
+    );
+  }, [fetchedPlaylists?.pages, inLibrary, playlists]);
 
   // If accessing PlaylistsView from the SearchView, and there is no data cached,
   // 'isQueryLoading' will be true. To prevent an infinite loading screen in these

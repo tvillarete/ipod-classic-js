@@ -25,7 +25,7 @@ const PlaylistView = ({ id, inLibrary = false }: Props) => {
         type: "song",
         label: song.name,
         sublabel: song.artistName ?? "Unknown artist",
-        imageUrl: song.artwork?.url,
+        imageUrl: Utils.getArtwork(100, song.artwork?.url),
         queueOptions: {
           playlist,
           startPosition: index,

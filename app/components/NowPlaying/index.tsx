@@ -4,6 +4,7 @@ import { Controls } from "components";
 import { useAudioPlayer, useEffectOnce, useMKEventListener } from "hooks";
 import styled from "styled-components";
 import { Unit } from "utils/constants";
+import * as Utils from "utils";
 
 const Container = styled.div`
   height: 100%;
@@ -84,11 +85,13 @@ const NowPlaying = ({ hideArtwork, onHide }: Props) => {
 
   useMKEventListener("playbackStateDidChange", handlePlaybackChange);
 
+  const artworkUrl = Utils.getArtwork(300, nowPlayingItem?.artwork?.url);
+
   return (
     <Container>
       <MetadataContainer>
         <ArtworkContainer isHidden={hideArtwork}>
-          <Artwork src={nowPlayingItem?.artwork?.url} />
+          <Artwork src={artworkUrl} />
         </ArtworkContainer>
         <InfoContainer>
           <Text>{nowPlayingItem?.name}</Text>
