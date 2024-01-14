@@ -390,6 +390,8 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   );
 
   useEventListener<IpodEvent>("playpauseclick", togglePlayPause);
+  useEventListener<IpodEvent>("forwardclick", skipNext);
+  useEventListener<IpodEvent>("backwardclick", skipPrevious);
 
   // Apple playback event listeners
   useMKEventListener("playbackStateDidChange", handleApplePlaybackStateChange);
