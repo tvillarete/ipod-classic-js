@@ -34,10 +34,12 @@ const Canvas = styled.canvas<{ $deviceTheme: DeviceThemeName }>`
   background: ${({ $deviceTheme }) => getTheme($deviceTheme).knob.background};
 `;
 
-const CenterButton = styled.div<{
+type CenterButtonProps = {
   size: number;
   $deviceTheme: DeviceThemeName;
-}>`
+};
+
+const CenterButton = styled.div<CenterButtonProps>`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -54,10 +56,6 @@ const CenterButton = styled.div<{
     getTheme($deviceTheme).knob.centerButton.background};
   border: ${({ $deviceTheme }) =>
     `1px solid ${getTheme($deviceTheme).knob.centerButton.outline}}`};
-
-  /* &:active {
-    filter: brightness(0.9);
-  } */
 `;
 
 /** Custom Event from https://github.com/john-doherty/long-press-event  */
@@ -392,7 +390,7 @@ const Knob = ({
     <Container className={className}>
       <CanvasContainer width={width} height={height}>
         <Canvas
-          ref={(ref) => {
+          ref={(ref: any) => {
             canvasRef.current = ref ?? undefined;
           }}
           className={canvasClassName}
@@ -401,7 +399,7 @@ const Knob = ({
         />
 
         <CenterButton
-          ref={(ref) => {
+          ref={(ref: any) => {
             centerButtonRef.current = ref ?? undefined;
           }}
           onClick={onClick}

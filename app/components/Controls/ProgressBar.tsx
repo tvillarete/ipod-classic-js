@@ -28,7 +28,7 @@ interface ProgressProps {
   transparent?: boolean;
 }
 
-const Progress = styled.div.attrs((props: ProgressProps) => ({
+const Progress = styled.div.attrs<ProgressProps>((props) => ({
   // This is the recommended syntax for when things change often.
   style: {
     width: `${props.percent}%`,
