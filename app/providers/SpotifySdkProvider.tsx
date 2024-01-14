@@ -137,10 +137,10 @@ export const SpotifySDKProvider = ({ children }: Props) => {
     }
   }, [handleConnectToSpotify, isSdkReady, accessToken, isPlayerConnected]);
 
-  const handleMount = useCallback(() => {
+  const handleMount = useCallback(async () => {
     const timestamp = Number(tokenLastRefreshedTimestamp);
     if (SpotifyUtils.checkShouldRefreshSpotifyTokens(timestamp)) {
-      handleRefreshTokens();
+      await handleRefreshTokens();
     }
 
     setIsSdkReady(true);
