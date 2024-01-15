@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { LoadingScreen } from "components";
+import { LoadingIndicator, LoadingScreen } from "components";
 import ErrorScreen from "components/ErrorScreen";
 import { SplitScreenPreview } from "components/previews";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useTimeout } from "hooks";
 import styled from "styled-components";
 
@@ -24,7 +24,7 @@ export type SelectableListOptionType =
 
 type SharedOptionProps = {
   type?: SelectableListOptionType;
-  label: string;
+  label: React.ReactNode;
   isSelected?: boolean;
   sublabel?: string;
   preview?: SplitScreenPreview;
@@ -95,10 +95,18 @@ const Container = styled.div`
   -webkit-overflow-scrolling: touch;
 `;
 
+const LoadingContainer = styled(motion.div)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2rem;
+`;
+
 interface Props {
   options: SelectableListOption[];
   activeIndex: number;
   loading?: boolean;
+  loadingNextItems?: boolean;
   emptyMessage?: string;
 }
 
@@ -106,6 +114,7 @@ const SelectableList = ({
   options,
   activeIndex,
   loading,
+  loadingNextItems,
   emptyMessage = "Nothing to see here",
 }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -113,18 +122,43 @@ const SelectableList = ({
 
   useTimeout(() => setIsMounted(true), 350);
 
+  const fullOptions = useMemo(
+    () => [
+      ...options,
+      // Show a loading indicator when loading more items.
+      ...getConditionalOption(loadingNextItems, {
+        type: "action",
+        label: (
+          <LoadingContainer>
+            <LoadingIndicator size={16} />
+          </LoadingContainer>
+        ),
+        onSelect: () => {},
+      }),
+    ],
+    [options, loadingNextItems]
+  );
+
   /** Always make sure the selected item is within the screen's view. */
   useEffect(() => {
     // Delay "isMounted" so that the enter animation doesn't get interrupted.
     // I was stuck on this for like 12 hours and was wondering why
     // the animation wasn't finishing...
-    if (isMounted && containerRef.current && options.length) {
+    if (isMounted && containerRef.current && fullOptions.length) {
       const { children } = containerRef.current;
-      children[activeIndex]?.scrollIntoView({
-        block: "nearest",
-      });
+
+      // Make sure the pagination loading indicator is in view.
+      if (loadingNextItems) {
+        children[activeIndex + 1]?.scrollIntoView({
+          block: "nearest",
+        });
+      } else {
+        children[activeIndex]?.scrollIntoView({
+          block: "nearest",
+        });
+      }
     }
-  }, [activeIndex, isMounted, options.length]);
+  }, [activeIndex, isMounted, fullOptions.length, loadingNextItems]);
 
   return (
     <AnimatePresence>
@@ -132,7 +166,7 @@ const SelectableList = ({
         <LoadingScreen backgroundColor="white" />
       ) : options.length > 0 ? (
         <Container ref={containerRef}>
-          {options.map((option, index) => (
+          {fullOptions.map((option, index) => (
             <SelectableListItem
               key={`option-${option.label}-${index}`}
               option={option}

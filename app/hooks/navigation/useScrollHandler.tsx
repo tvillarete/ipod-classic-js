@@ -43,7 +43,12 @@ const useScrollHandler = (
   id: string,
   /** A list of all scrollable items. Used to cap the scrolling to the last element. */
   options: SelectableListOption[] = [],
-  selectedOption?: SelectableListOption
+  selectedOption?: SelectableListOption,
+  /**
+   * This function is called when the user has scrolled close to the end of the list of options.
+   * Useful for fetching the next page of data before the user reaches the end of the list.
+   */
+  onNearEndOfList?: (...args: any) => any
 ): [number] => {
   const { triggerHaptics } = useHapticFeedback();
   const { showView, viewStack, setPreview } = useViewContext();
@@ -77,20 +82,40 @@ const useScrollHandler = (
   );
 
   const handleForwardScroll = useCallback(() => {
-    if (index < options.length - 1 && isActive) {
-      triggerHaptics(10);
-      setIndex(index + 1);
-      handleCheckForPreview(index + 1);
-    }
-  }, [handleCheckForPreview, index, isActive, options.length, triggerHaptics]);
+    setIndex((prevIndex) => {
+      if (prevIndex < options.length - 1 && isActive) {
+        triggerHaptics(10);
+        handleCheckForPreview(prevIndex + 1);
+
+        // Trigger near-end-of-list callback when we're halfway through the current list.
+        if (prevIndex === Math.round(options.length / 2)) {
+          onNearEndOfList?.(options.length);
+        }
+
+        return prevIndex + 1;
+      }
+
+      return prevIndex;
+    });
+  }, [
+    handleCheckForPreview,
+    isActive,
+    onNearEndOfList,
+    options.length,
+    triggerHaptics,
+  ]);
 
   const handleBackwardScroll = useCallback(() => {
-    if (index > 0 && isActive) {
-      triggerHaptics(10);
-      setIndex(index - 1);
-      handleCheckForPreview(index - 1);
-    }
-  }, [handleCheckForPreview, index, isActive, triggerHaptics]);
+    setIndex((prevIndex) => {
+      if (prevIndex > 0 && isActive) {
+        triggerHaptics(10);
+        handleCheckForPreview(prevIndex + 1);
+        return prevIndex - 1;
+      }
+
+      return prevIndex;
+    });
+  }, [handleCheckForPreview, isActive, triggerHaptics]);
 
   const handleShowView = useCallback(
     (

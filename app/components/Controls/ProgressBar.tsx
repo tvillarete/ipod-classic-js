@@ -59,7 +59,7 @@ const ProgressBar = ({ percent, isScrubber = false }: Props) => {
     <Container>
       <ProgressContainer>
         <Gloss />
-        <Progress percent={percent} transparent={isScrubber}>
+        <Progress percent={percent || 0} transparent={!!isScrubber}>
           {isScrubber && <Diamond src={`${APP_URL}/scrubber.svg`} />}
         </Progress>
       </ProgressContainer>

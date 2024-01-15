@@ -103,6 +103,10 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         throw new Error("Unable to play: Not authorized");
       }
 
+      // Safari on iOS requires a user interaction to activate the player.
+      // This function exists in the Spotify SDK, but is not present in the types.
+      await (spotifyPlayer as unknown as any).activateElement();
+
       // Spotify only accepts a list of song URIs, so we'll look through each media type provided for songs.
       const uris = [
         ...(queueOptions.album?.songs?.map((song) => song.url) ?? []),
@@ -136,7 +140,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         isLoading: false,
       }));
     },
-    [accessToken, deviceId, isSpotifyAuthorized]
+    [accessToken, deviceId, isSpotifyAuthorized, spotifyPlayer]
   );
 
   const play = useCallback(

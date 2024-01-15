@@ -21,13 +21,13 @@ const RootContainer = styled.div`
 `;
 
 interface LabelProps {
-  textAlign: "left" | "right";
+  $textAlign: "left" | "right";
 }
 
 const Label = styled.h3<LabelProps>`
   font-size: 12px;
   margin: auto 0;
-  text-align: ${(props) => props.textAlign};
+  text-align: ${(props) => props.$textAlign};
   white-space: nowrap;
 `;
 
@@ -112,9 +112,9 @@ const Scrubber = ({ isScrubbing }: Props) => {
 
   return (
     <RootContainer>
-      <Label textAlign="left">{currentTimeLabel}</Label>
+      <Label $textAlign="left">{currentTimeLabel}</Label>
       <ProgressBar percent={scrubberPercent} isScrubber />
-      <Label textAlign="right">{timeRemainingLabel}</Label>
+      <Label $textAlign="right">{timeRemainingLabel}</Label>
     </RootContainer>
   );
 };

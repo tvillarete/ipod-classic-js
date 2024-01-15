@@ -18,13 +18,13 @@ const Container = styled.div`
 `;
 
 interface LabelProps {
-  textAlign: "left" | "right";
+  $textAlign: "left" | "right";
 }
 
 const Label = styled.h3<LabelProps>`
   font-size: 12px;
   margin: auto 0;
-  text-align: ${(props) => props.textAlign};
+  text-align: ${(props) => props.$textAlign};
 `;
 
 const TrackProgress = () => {
@@ -66,10 +66,10 @@ const TrackProgress = () => {
       {isLoading ? (
         <LoadingIndicator size={14} />
       ) : (
-        <Label textAlign="left">{currentTimeLabel}</Label>
+        <Label $textAlign="left">{currentTimeLabel}</Label>
       )}
       <ProgressBar percent={percent} />
-      <Label textAlign="right">{timeRemainingLabel}</Label>
+      <Label $textAlign="right">{timeRemainingLabel}</Label>
     </Container>
   );
 };

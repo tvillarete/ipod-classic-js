@@ -15,10 +15,14 @@ interface Props {
 const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
   useMenuHideView(viewConfigMap.playlists.id);
   const { isAuthorized } = useSettings();
-  const { data: fetchedPlaylists, isLoading: isQueryLoading } =
-    useFetchPlaylists({
-      lazy: !!playlists,
-    });
+  const {
+    data: fetchedPlaylists,
+    fetchNextPage,
+    isFetchingNextPage,
+    isLoading: isQueryLoading,
+  } = useFetchPlaylists({
+    lazy: !!playlists,
+  });
 
   const options: SelectableListOption[] = useMemo(() => {
     const data =
@@ -49,10 +53,11 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
 
   return isAuthorized ? (
     <SelectableList
-      loading={isLoading}
-      options={options}
       activeIndex={scrollIndex}
       emptyMessage="No saved playlists"
+      loading={isLoading}
+      loadingNextItems={isFetchingNextPage}
+      options={options}
     />
   ) : (
     <AuthPrompt message="Sign in to view your playlists" />
