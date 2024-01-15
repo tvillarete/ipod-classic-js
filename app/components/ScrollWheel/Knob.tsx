@@ -1,7 +1,7 @@
 import React, { SyntheticEvent, useEffect, useRef } from "react";
 
 import { useEffectOnce, useSettings } from "hooks";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { DeviceThemeName, getTheme } from "../../utils/themes";
 import FastForwardIcon from "./icons/FastForwardIcon";
@@ -46,16 +46,21 @@ const CenterButton = styled.div<CenterButtonProps>`
   left: 0;
   right: 0;
   margin: auto;
+  user-select: none;
   width: ${(props) => props.size / 2.5}px;
   height: ${(props) => props.size / 2.5}px;
   border-radius: 50%;
-  box-shadow: ${({ $deviceTheme }) =>
-      getTheme($deviceTheme).knob.centerButton.boxShadow}
-    0px 1em 3em inset;
-  background: ${({ $deviceTheme }) =>
-    getTheme($deviceTheme).knob.centerButton.background};
-  border: ${({ $deviceTheme }) =>
-    `1px solid ${getTheme($deviceTheme).knob.centerButton.outline}}`};
+
+  ${({ $deviceTheme }) => css`
+    border: 1px solid ${getTheme($deviceTheme).knob.centerButton.outline};
+    background: ${getTheme($deviceTheme).knob.centerButton.background};
+    box-shadow: ${getTheme($deviceTheme).knob.centerButton.boxShadow} 0px 1em
+      3em inset;
+  `}
+
+  &:active {
+    opacity: 0.8;
+  }
 `;
 
 /** Custom Event from https://github.com/john-doherty/long-press-event  */

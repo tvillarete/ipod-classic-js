@@ -54,7 +54,7 @@ interface Props {
   isScrubber?: boolean;
 }
 
-const ProgressBar = ({ percent, isScrubber }: Props) => {
+const ProgressBar = ({ percent, isScrubber = false }: Props) => {
   return (
     <Container>
       <ProgressContainer>
