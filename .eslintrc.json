@@ -1,0 +1,39 @@
+{
+  "extends": "next/core-web-vitals",
+  "ignorePatterns": ["**/build/**"],
+  "plugins": ["unused-imports"],
+  "rules": {
+    "unused-imports/no-unused-imports": "error",
+    "import/first": "error",
+    "import/no-mutable-exports": "error",
+    "import/no-self-import": "error",
+    "import/no-unresolved": "error",
+    "import/no-useless-path-segments": "error",
+    "import/prefer-default-export": ["off"],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "react/jsx-fragments": ["error", "syntax"],
+    "react/jsx-pascal-case": ["off"],
+    "react/jsx-props-no-spreading": ["off"],
+    "react/jsx-uses-react": "off",
+    "react/jsx-curly-brace-presence": [
+      "error",
+      { "props": "never", "children": "never" }
+    ],
+    "react/no-access-state-in-setstate": "off",
+    "react/no-did-update-set-state": "off",
+    "react/prefer-stateless-function": "error",
+    "react/react-in-jsx-scope": "off",
+    "react/require-default-props": ["off"],
+    "react/state-in-constructor": ["off"],
+    "react/static-property-placement": ["off"],
+    "quotes": [
+      "error",
+      "double",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
+    ]
+  }
+}

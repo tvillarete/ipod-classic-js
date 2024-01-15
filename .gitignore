@@ -23,3 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 .vercel
+.node_repl_history
+.next

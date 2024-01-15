@@ -8,26 +8,51 @@ I built this thing to be very extensible – to the point where it can even run 
 
 ![ipod](https://user-images.githubusercontent.com/21055469/71572818-c877a780-2a95-11ea-9e4e-6b0476ff172b.gif)
 
-## Details
+## ✨ Features
 
-Here's a breakdown of the Full Stack:
-#### Frontend: 
-- JS: TypeScript, React (Hooks, Context)
-- CSS: Styled Components, Framer Motion (for some of the animations)
-- Textures/Icons: All SVGs created by me in Figma
-- API: Spotify Web Playback SDK / Apple MusicKit JS
+- [x] Configured for Vercel
+- [x] Next.js 14
+- [x] React 18
+- [x] Styled Components 6
+- [x] Framer Motion 10
+- [x] Spotify Web Playback SDK
+- [x] Apple MusicKit JS
 
-## Running Locally
+All SVGs were created from scratch by myself in Figma.
 
-#### NOTE
-If you want to develop locally with this project, you'll need to supply an Apple Developer Token using the `token` query parameter. See https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
+## 🔨 Installing and running locally
 
-In the project directory, you can run:
+### Environment variables
 
-### `yarn start`
+This project utilizes the following environment variables. If you are using Vercel, you can set these in the Vercel dashboard.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+#### Spotify Web Playback SDK
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+Learn more about the Spotify Web Playback SDK [here](https://developer.spotify.com/documentation/web-playback-sdk/quick-start/).
+
+- `SPOTIFY_CLIENT_ID` - The unique identifier of your Spotify app
+- `SPOTIFY_CLIENT_SECRET` - The key you will use to authorize Web API or SDK calls
+
+#### Apple MusicKit JS
+
+Learn more about Apple MusicKit JS [here](https://developer.apple.com/documentation/musickitjs). You will need to create a MusicKit identifier and private key in the Apple Developer Portal.
+
+Follow the instructions [here](https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens) to generate a private key.
+
+- `APPLE_DEVELOPER_TOKEN` - A signed token used to authenticate a developer in Apple Music requests
+
+To install this project, you will need to have Node, Yarn, and Vercel on your machine.
+Then, run the following commands:
+
+```bash
+# Use the recommended Node version specified in the .nvmrc file
+nvm use
+
+# Install dependencies
+yarn
+
+# Run the app in dev mode using Vercel
+yarn start
+```
+
+Visit [http://localhost:3000/ipod](http://localhost:3000/ipod) to view the app.

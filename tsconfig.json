@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
+    "baseUrl": "./app",
     "target": "es5",
     "lib": [
       "dom",
@@ -9,22 +9,34 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "noFallthroughCasesInSwitch": true
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./app/*"
+      ]
+    },
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "src"
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
-    "*.jsx"
+    "node_modules"
   ]
 }
