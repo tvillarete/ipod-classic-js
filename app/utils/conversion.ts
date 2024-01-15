@@ -1,5 +1,3 @@
-import { decode } from "he";
-
 // Artwork Conversion
 
 /** Accepts a url with '{w}' and '{h}' and replaces them with the specified size */
@@ -62,17 +60,24 @@ export const convertApplePlaylist = (
   songs: data.relationships?.tracks?.data.map(convertAppleSong) ?? [],
 });
 
-export const convertSpotifyPlaylistSimplified = (
+export const convertSpotifyPlaylistSimplified = async (
   data: SpotifyApi.PlaylistObjectSimplified
-): MediaApi.Playlist => ({
-  id: data.id,
-  name: data.name,
-  curatorName: data.owner.display_name ?? "",
-  url: data.uri,
-  artwork: { url: data.images[0]?.url ?? "" },
-  description: data.description ? decode(data.description) : "",
-  songs: [],
-});
+): Promise<MediaApi.Playlist> => {
+  let decodedDescription = "";
+  if (data.description) {
+    const { decode } = await import("he");
+    decodedDescription = decode(data.description);
+  }
+  return {
+    id: data.id,
+    name: data.name,
+    curatorName: data.owner.display_name ?? "",
+    url: data.uri,
+    artwork: { url: data.images[0]?.url ?? "" },
+    description: decodedDescription,
+    songs: [],
+  };
+};
 
 export const convertSpotifyPlaylistFull = (
   data: SpotifyApi.PlaylistObjectFull
@@ -186,15 +191,17 @@ export const convertSpotifyMediaItem = (
   };
 };
 
-export const convertSpotifySearchResults = (
+export const convertSpotifySearchResults = async (
   results: SpotifyApi.SearchResponse
-): MediaApi.SearchResults => {
+): Promise<MediaApi.SearchResults> => {
+  const playlists = await Promise.all(
+    results.playlists?.items.map(convertSpotifyPlaylistSimplified) ?? []
+  );
   return {
     artists: results.artists?.items.map(convertSpotifyArtistFull) ?? [],
     albums: results.albums?.items.map(convertSpotifyAlbumSimplified) ?? [],
     songs: results.tracks?.items.map(convertSpotifySongFull) ?? [],
-    playlists:
-      results.playlists?.items.map(convertSpotifyPlaylistSimplified) ?? [],
+    playlists,
   };
 };
 

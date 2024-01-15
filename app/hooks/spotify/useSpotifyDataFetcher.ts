@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 
 import { useSpotifySDK } from "hooks";
-import uniqBy from "lodash.uniqby";
 import * as ConversionUtils from "utils/conversion";
 import querystring from "query-string";
 
@@ -128,6 +127,8 @@ const useSpotifyDataFetcher = () => {
         },
       });
 
+      const { default: uniqBy } = await import("lodash.uniqby");
+
       if (response) {
         return uniqBy(
           response.items.map(ConversionUtils.convertSpotifyAlbumSimplified),
@@ -155,11 +156,14 @@ const useSpotifyDataFetcher = () => {
           },
         });
 
+      const resultData = await Promise.all(
+        response?.items?.map(
+          ConversionUtils.convertSpotifyPlaylistSimplified
+        ) ?? []
+      );
+
       const result: MediaApi.PaginatedResponse<MediaApi.Playlist[]> = {
-        data:
-          response?.items?.map(
-            ConversionUtils.convertSpotifyPlaylistSimplified
-          ) ?? [],
+        data: resultData,
         nextPageParam: response?.next ? pageParam + 1 : undefined,
       };
 
