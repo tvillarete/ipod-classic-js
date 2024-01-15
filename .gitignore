@@ -11,6 +11,9 @@
 # production
 /build
 
+# TypeScript
+tsconfig.tsbuildinfo
+
 # misc
 .DS_Store
 .env.local
