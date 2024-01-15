@@ -17,7 +17,6 @@ import {
   useScrollHandler,
   useSettings,
 } from "hooks";
-import pluralize from "pluralize";
 import { useFetchSearchResults } from "hooks/utils/useDataFetcher";
 import { APP_URL } from "utils/constants/api";
 
@@ -70,7 +69,9 @@ const SearchView = () => {
           <ArtistsView artists={artists} inLibrary={false} showImages />
         ),
         imageUrl: `${APP_URL}/artists_icon.svg`,
-        sublabel: `${artists?.length} ${pluralize("artist", artists?.length)}`,
+        sublabel: `${artists?.length} ${
+          artists?.length === 1 ? "artist" : "artists"
+        }`,
       }),
       ...getConditionalOption(!!albums?.length, {
         type: "view",
@@ -78,7 +79,9 @@ const SearchView = () => {
         viewId: viewConfigMap.albums.id,
         component: () => <AlbumsView albums={albums} inLibrary={false} />,
         imageUrl: `${APP_URL}/albums_icon.svg`,
-        sublabel: `${albums?.length} ${pluralize("album", albums?.length)}`,
+        sublabel: `${albums?.length} ${
+          albums?.length === 1 ? "album" : "albums"
+        }`,
       }),
       ...getConditionalOption(!!songs?.length, {
         type: "view",
@@ -86,7 +89,7 @@ const SearchView = () => {
         viewId: viewConfigMap.songs.id,
         component: () => <SongsView songs={songs!} />,
         imageUrl: `${APP_URL}/song_icon.svg`,
-        sublabel: `${songs?.length} ${pluralize("song", songs?.length)}`,
+        sublabel: `${songs?.length} ${songs?.length === 1 ? "song" : "songs"}`,
       }),
       ...getConditionalOption(!!playlists?.length, {
         type: "view",
@@ -96,10 +99,9 @@ const SearchView = () => {
           <PlaylistsView playlists={playlists!} inLibrary={false} />
         ),
         imageUrl: `${APP_URL}/playlist_icon.svg`,
-        sublabel: `${playlists?.length} ${pluralize(
-          "playlist",
-          playlists?.length
-        )}`,
+        sublabel: `${playlists?.length} ${
+          playlists?.length === 1 ? "playlist" : "playlists"
+        }`,
       }),
     ];
 
