@@ -57,17 +57,17 @@ export const useFetchAlbum = (
   const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
     useDataFetchers();
 
-  return useQuery(
-    ["album", { id: options.id }],
-    async () => {
+  return useQuery({
+    queryKey: ["album", { id: options.id }],
+    queryFn: async () => {
       if (service === "apple") {
         return appleDataFetcher.fetchAlbum(options.id, options.inLibrary);
       } else if (service === "spotify") {
         return spotifyDataFetcher.fetchAlbum({ id: options.id });
       }
     },
-    { enabled: enabled && !options.lazy }
-  );
+    enabled: enabled && !options.lazy,
+  });
 };
 
 export const useFetchAlbums = (
@@ -76,9 +76,9 @@ export const useFetchAlbums = (
   const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
     useDataFetchers();
 
-  return useInfiniteQuery(
-    ["albums"],
-    async ({ pageParam = 0 }) => {
+  return useInfiniteQuery({
+    queryKey: ["albums"],
+    queryFn: async ({ pageParam }) => {
       const params = {
         pageParam,
         limit: 50,
@@ -90,24 +90,23 @@ export const useFetchAlbums = (
         return spotifyDataFetcher.fetchAlbums(params);
       }
     },
-    {
-      enabled: enabled && !options.lazy,
-      getNextPageParam: (lastPage) => lastPage?.nextPageParam,
-    }
-  );
+    enabled: enabled && !options.lazy,
+    getNextPageParam: (lastPage) => lastPage?.nextPageParam,
+    initialPageParam: 0,
+  });
 };
 
 export const useFetchArtists = (options: CommonFetcherProps) => {
   const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
     useDataFetchers();
 
-  return useInfiniteQuery(
-    ["artists"],
-    async ({ pageParam = 0 }) => {
+  return useInfiniteQuery({
+    queryKey: ["artists"],
+    queryFn: async ({ pageParam }) => {
       const params = {
         pageParam,
         limit: 20,
-        after: pageParam,
+        after: `${pageParam}`,
       };
 
       if (service === "apple") {
@@ -116,13 +115,14 @@ export const useFetchArtists = (options: CommonFetcherProps) => {
         return spotifyDataFetcher.fetchArtists(params);
       }
     },
-    {
-      enabled: enabled && !options.lazy,
-      // TODO: Figure out a better way to deal with `after` param
-      getNextPageParam: (lastPage) =>
-        service === "spotify" ? lastPage?.after : lastPage?.nextPageParam,
-    }
-  );
+    enabled: enabled && !options.lazy,
+    // TODO: Figure out a better way to deal with `after` param
+    getNextPageParam: (lastPage) =>
+      service === "spotify"
+        ? (lastPage?.after as any)
+        : lastPage?.nextPageParam,
+    initialPageParam: 0,
+  });
 };
 
 export const useFetchArtistAlbums = (
@@ -131,9 +131,9 @@ export const useFetchArtistAlbums = (
   const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
     useDataFetchers();
 
-  return useQuery(
-    ["artistAlbums", { id: options.id }],
-    async () => {
+  return useQuery({
+    queryKey: ["artistAlbums", { id: options.id }],
+    queryFn: async () => {
       if (service === "apple") {
         return appleDataFetcher.fetchArtistAlbums(
           options.id,
@@ -143,17 +143,17 @@ export const useFetchArtistAlbums = (
         return spotifyDataFetcher.fetchArtist(options.id);
       }
     },
-    { enabled: enabled && !options.lazy }
-  );
+    enabled: enabled && !options.lazy,
+  });
 };
 
 export const useFetchPlaylists = (options: CommonFetcherProps) => {
   const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
     useDataFetchers();
 
-  return useInfiniteQuery(
-    ["playlists"],
-    async ({ pageParam = 0 }) => {
+  return useInfiniteQuery({
+    queryKey: ["playlists"],
+    queryFn: async ({ pageParam }) => {
       const params = {
         limit: 20,
         pageParam,
@@ -165,11 +165,10 @@ export const useFetchPlaylists = (options: CommonFetcherProps) => {
         return spotifyDataFetcher.fetchPlaylists(params);
       }
     },
-    {
-      enabled: enabled && !options.lazy,
-      getNextPageParam: (lastPage) => lastPage?.nextPageParam,
-    }
-  );
+    enabled: enabled && !options.lazy,
+    getNextPageParam: (lastPage) => lastPage?.nextPageParam,
+    initialPageParam: 0,
+  });
 };
 
 export const useFetchPlaylist = (
@@ -178,17 +177,17 @@ export const useFetchPlaylist = (
   const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
     useDataFetchers();
 
-  return useQuery(
-    ["playlists", { id: options.id }],
-    async () => {
+  return useQuery({
+    queryKey: ["playlists", { id: options.id }],
+    queryFn: async () => {
       if (service === "apple") {
         return appleDataFetcher.fetchPlaylist(options.id, options.inLibrary);
       } else if (service === "spotify") {
         return spotifyDataFetcher.fetchPlaylist(options.id);
       }
     },
-    { enabled: enabled && !options.lazy }
-  );
+    enabled: enabled && !options.lazy,
+  });
 };
 
 export const useFetchSearchResults = (
@@ -197,15 +196,15 @@ export const useFetchSearchResults = (
   const { spotifyDataFetcher, appleDataFetcher, service, enabled } =
     useDataFetchers();
 
-  return useQuery(
-    ["search", { query: options.query }],
-    async () => {
+  return useQuery({
+    queryKey: ["search", { query: options.query }],
+    queryFn: async () => {
       if (service === "spotify") {
         return spotifyDataFetcher.fetchSearchResults(options.query);
       } else if (service === "apple") {
         return appleDataFetcher.fetchSearchResults(options.query);
       }
     },
-    { enabled: enabled && !options.lazy }
-  );
+    enabled: enabled && !options.lazy,
+  });
 };
