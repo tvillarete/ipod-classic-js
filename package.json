@@ -22,7 +22,6 @@
     "date-fns": "^3.2.0",
     "framer-motion": "^10.16.16",
     "he": "^1.2.0",
-    "lodash.uniqby": "^4.7.0",
     "long-press-event": "^2.4.4",
     "next": "^14.0.4",
     "query-string": "^7.1.1",

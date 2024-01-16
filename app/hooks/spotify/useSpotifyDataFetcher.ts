@@ -127,13 +127,17 @@ const useSpotifyDataFetcher = () => {
         },
       });
 
-      const { default: uniqBy } = await import("lodash.uniqby");
-
       if (response) {
-        return uniqBy(
-          response.items.map(ConversionUtils.convertSpotifyAlbumSimplified),
-          (item) => item.name
-        );
+        const albumSet = new Set();
+        return response.items
+          .map(ConversionUtils.convertSpotifyAlbumSimplified)
+          .filter((album) => {
+            if (albumSet.has(album.name)) {
+              return false;
+            }
+            albumSet.add(album.name);
+            return true;
+          });
       }
     },
     [accessToken]
