@@ -128,16 +128,17 @@ const useSpotifyDataFetcher = () => {
       });
 
       if (response) {
-        const albumSet = new Set();
+        // Keep track of the artist's albums, to avoid showing duplicates
+        const artistAlbums = new Set();
         return response.items
-          .map(ConversionUtils.convertSpotifyAlbumSimplified)
           .filter((album) => {
-            if (albumSet.has(album.name)) {
+            if (artistAlbums.has(album.name)) {
               return false;
             }
-            albumSet.add(album.name);
+            artistAlbums.add(album.name);
             return true;
-          });
+          })
+          .map(ConversionUtils.convertSpotifyAlbumSimplified);
       }
     },
     [accessToken]
