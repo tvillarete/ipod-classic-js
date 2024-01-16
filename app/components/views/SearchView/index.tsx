@@ -17,9 +17,9 @@ import {
   useScrollHandler,
   useSettings,
 } from "hooks";
-import pluralize from "pluralize";
 import { useFetchSearchResults } from "hooks/utils/useDataFetcher";
 import { APP_URL } from "utils/constants/api";
+import { pluralize } from "utils/strings";
 
 const SearchView = () => {
   useMenuHideView(viewConfigMap.search.id);
@@ -70,7 +70,11 @@ const SearchView = () => {
           <ArtistsView artists={artists} inLibrary={false} showImages />
         ),
         imageUrl: `${APP_URL}/artists_icon.svg`,
-        sublabel: `${artists?.length} ${pluralize("artist", artists?.length)}`,
+        sublabel: `${artists?.length} ${pluralize(
+          "artist",
+          "artists",
+          artists?.length
+        )}`,
       }),
       ...getConditionalOption(!!albums?.length, {
         type: "view",
@@ -78,7 +82,11 @@ const SearchView = () => {
         viewId: viewConfigMap.albums.id,
         component: () => <AlbumsView albums={albums} inLibrary={false} />,
         imageUrl: `${APP_URL}/albums_icon.svg`,
-        sublabel: `${albums?.length} ${pluralize("album", albums?.length)}`,
+        sublabel: `${albums?.length} ${pluralize(
+          "album",
+          "albums",
+          albums?.length
+        )}`,
       }),
       ...getConditionalOption(!!songs?.length, {
         type: "view",
@@ -86,7 +94,11 @@ const SearchView = () => {
         viewId: viewConfigMap.songs.id,
         component: () => <SongsView songs={songs!} />,
         imageUrl: `${APP_URL}/song_icon.svg`,
-        sublabel: `${songs?.length} ${pluralize("song", songs?.length)}`,
+        sublabel: `${songs?.length} ${pluralize(
+          "song",
+          "songs",
+          songs?.length
+        )}`,
       }),
       ...getConditionalOption(!!playlists?.length, {
         type: "view",
@@ -98,6 +110,7 @@ const SearchView = () => {
         imageUrl: `${APP_URL}/playlist_icon.svg`,
         sublabel: `${playlists?.length} ${pluralize(
           "playlist",
+          "playlists",
           playlists?.length
         )}`,
       }),
