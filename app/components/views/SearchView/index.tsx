@@ -19,6 +19,7 @@ import {
 } from "hooks";
 import { useFetchSearchResults } from "hooks/utils/useDataFetcher";
 import { APP_URL } from "utils/constants/api";
+import { pluralize } from "utils/strings";
 
 const SearchView = () => {
   useMenuHideView(viewConfigMap.search.id);
@@ -69,9 +70,11 @@ const SearchView = () => {
           <ArtistsView artists={artists} inLibrary={false} showImages />
         ),
         imageUrl: `${APP_URL}/artists_icon.svg`,
-        sublabel: `${artists?.length} ${
-          artists?.length === 1 ? "artist" : "artists"
-        }`,
+        sublabel: `${artists?.length} ${pluralize(
+          "artist",
+          "artists",
+          artists?.length
+        )}`,
       }),
       ...getConditionalOption(!!albums?.length, {
         type: "view",
@@ -79,9 +82,11 @@ const SearchView = () => {
         viewId: viewConfigMap.albums.id,
         component: () => <AlbumsView albums={albums} inLibrary={false} />,
         imageUrl: `${APP_URL}/albums_icon.svg`,
-        sublabel: `${albums?.length} ${
-          albums?.length === 1 ? "album" : "albums"
-        }`,
+        sublabel: `${albums?.length} ${pluralize(
+          "album",
+          "albums",
+          albums?.length
+        )}`,
       }),
       ...getConditionalOption(!!songs?.length, {
         type: "view",
@@ -89,7 +94,11 @@ const SearchView = () => {
         viewId: viewConfigMap.songs.id,
         component: () => <SongsView songs={songs!} />,
         imageUrl: `${APP_URL}/song_icon.svg`,
-        sublabel: `${songs?.length} ${songs?.length === 1 ? "song" : "songs"}`,
+        sublabel: `${songs?.length} ${pluralize(
+          "song",
+          "songs",
+          songs?.length
+        )}`,
       }),
       ...getConditionalOption(!!playlists?.length, {
         type: "view",
@@ -99,9 +108,11 @@ const SearchView = () => {
           <PlaylistsView playlists={playlists!} inLibrary={false} />
         ),
         imageUrl: `${APP_URL}/playlist_icon.svg`,
-        sublabel: `${playlists?.length} ${
-          playlists?.length === 1 ? "playlist" : "playlists"
-        }`,
+        sublabel: `${playlists?.length} ${pluralize(
+          "playlist",
+          "playlists",
+          playlists?.length
+        )}`,
       }),
     ];
 
