@@ -1,5 +1,4 @@
 import { SelectableListOption } from "components/SelectableList";
-import { format, set } from "date-fns";
 import { DEFAULT_ARTWORK_URL } from "utils/constants/api";
 
 /** Accepts a url with '{w}' and '{h}' and replaces them with the specified size */
@@ -45,15 +44,14 @@ export const getMediaOptions = (
   ];
 };
 
-export const formatPlaybackTime = (seconds: number) =>
-  format(
-    set(new Date(), {
-      hours: 0,
-      minutes: 0,
-      seconds,
-    }),
-    "mm:ss"
-  );
+export const formatPlaybackTime = (seconds: number) => {
+  const dateObject = new Date();
+  dateObject.setMinutes(0);
+  dateObject.setSeconds(seconds);
+  const formattedMinutes = dateObject.getMinutes().toString().padStart(2, "0");
+  const formattedSeconds = dateObject.getSeconds().toString().padStart(2, "0");
+  return `${formattedMinutes}:${formattedSeconds}`;
+};
 
 /**
  *

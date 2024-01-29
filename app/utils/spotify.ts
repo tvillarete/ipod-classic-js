@@ -1,4 +1,3 @@
-import { differenceInMinutes } from "date-fns";
 import { getRootAppUrl } from "utils";
 import { API_URL } from "utils/constants/api";
 import { SELECTED_SERVICE_KEY } from "utils/service";
@@ -28,10 +27,12 @@ export const checkShouldRefreshSpotifyTokens = (
     return true;
   }
 
-  const lastRefreshDate = new Date(lastRefreshedTimestamp);
+  const lastRefreshDate = new Date(lastRefreshedTimestamp).valueOf();
   const now = Date.now();
 
-  const minuteDiff = differenceInMinutes(now, lastRefreshDate);
+  const millisecondDiff = now - lastRefreshDate;
+  const millisecondsInMinute = 60 * 1000;
+  const minuteDiff = Math.trunc(millisecondDiff / millisecondsInMinute);
   console.log(`Last token refresh: ${minuteDiff} minutes ago`);
 
   return minuteDiff > 30;
