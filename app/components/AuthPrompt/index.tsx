@@ -3,7 +3,8 @@ import { useState } from "react";
 import { useInterval, useMusicKit } from "hooks";
 import styled, { css } from "styled-components";
 import { Unit } from "utils/constants";
-import { APP_URL } from "utils/constants/api";
+import appleMusicIcon from "@public/apple_music_icon.svg";
+import spotifyIcon from "@public/spotify_icon.svg";
 
 const RootContainer = styled.div`
   display: grid;
@@ -87,13 +88,13 @@ const AuthPrompt = ({ message }: Props) => {
           <StyledImg
             $isHidden={icon === "spotify"}
             alt="app_icon"
-            src={`${APP_URL}/apple_music_icon.svg`}
+            src={appleMusicIcon}
           />
         )}
         <StyledImg
           $isHidden={icon === "apple"}
           alt="app_icon"
-          src={`${APP_URL}/spotify_icon.svg`}
+          src={spotifyIcon}
         />
       </ImageContainer>
       <Title>{strings.title[icon]}</Title>

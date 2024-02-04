@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import { Unit } from "utils/constants";
 
 import { SelectableListOption } from ".";
-import { APP_URL } from "utils/constants/api";
+import arrowRight from "@public/arrow_right.svg";
 
 const LabelContainer = styled.div`
   flex: 1;
@@ -71,7 +71,7 @@ const SelectableListItem = ({ option, isActive }: Props) => {
         <Label>{option.label}</Label>
         {option.sublabel && <Sublabel>{option.sublabel}</Sublabel>}
       </LabelContainer>
-      {isActive && <Icon src={`${APP_URL}/arrow_right.svg`} />}
+      {isActive && <Icon src={arrowRight} />}
     </Container>
   );
 };
