@@ -88,13 +88,17 @@ const AuthPrompt = ({ message }: Props) => {
           <StyledImg
             $isHidden={icon === "spotify"}
             alt="app_icon"
-            src={appleMusicIcon}
+            src={appleMusicIcon.src}
+            height={appleMusicIcon.height}
+            width={appleMusicIcon.width}
           />
         )}
         <StyledImg
           $isHidden={icon === "apple"}
           alt="app_icon"
-          src={spotifyIcon}
+          src={spotifyIcon.src}
+          height={spotifyIcon.height}
+          width={spotifyIcon.width}
         />
       </ImageContainer>
       <Title>{strings.title[icon]}</Title>

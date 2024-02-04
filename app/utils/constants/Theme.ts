@@ -84,7 +84,7 @@ const Mnelia: DeviceTheme = {
     background:
       "linear-gradient(193.42deg, #8676d6 49.48%, rgba(238, 65, 122, 0.74) 100%);",
     sticker1: {
-      background: `url(${palmSvg}) no-repeat bottom left`,
+      background: `url(${palmSvg.src}) no-repeat bottom left`,
       styles: {
         bottom: 0,
         left: 0,
@@ -96,7 +96,7 @@ const Mnelia: DeviceTheme = {
       },
     },
     sticker2: {
-      background: `url(${palmSvg}) no-repeat`,
+      background: `url(${palmSvg.src}) no-repeat`,
       styles: {
         position: "absolute",
         bottom: 0,

@@ -42,13 +42,18 @@ const strings = {
 const ServicePreview = () => {
   const { service } = useSettings();
 
-  const imgUrl = service === "spotify" ? spotifyIcon : appleMusicIcon;
+  const imgProps = service === "spotify" ? spotifyIcon : appleMusicIcon;
 
   const text = strings[service ?? "none"];
 
   return (
     <Container>
-      <Image alt="Service" src={imgUrl} />
+      <Image
+        alt="Service"
+        src={imgProps.src}
+        height={imgProps.height}
+        width={imgProps.width}
+      />
       <Text>{text}</Text>
       <Subtext>{strings.selected}</Subtext>
     </Container>

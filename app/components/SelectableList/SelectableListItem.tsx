@@ -71,7 +71,13 @@ const SelectableListItem = ({ option, isActive }: Props) => {
         <Label>{option.label}</Label>
         {option.sublabel && <Sublabel>{option.sublabel}</Sublabel>}
       </LabelContainer>
-      {isActive && <Icon src={arrowRight} />}
+      {isActive && (
+        <Icon
+          src={arrowRight.src}
+          height={arrowRight.height}
+          width={arrowRight.width}
+        />
+      )}
     </Container>
   );
 };
