@@ -105,7 +105,7 @@ export const useFetchArtists = (options: CommonFetcherProps) => {
     queryFn: async ({ pageParam }) => {
       const params = {
         pageParam,
-        limit: 20,
+        limit: 50,
         after: `${pageParam}`,
       };
 
@@ -155,7 +155,7 @@ export const useFetchPlaylists = (options: CommonFetcherProps) => {
     queryKey: ["playlists"],
     queryFn: async ({ pageParam }) => {
       const params = {
-        limit: 20,
+        limit: 50,
         pageParam,
       };
 
