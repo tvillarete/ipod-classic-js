@@ -26,7 +26,13 @@ const ArtistsView = ({
 
   const options: SelectableListOption[] = useMemo(() => {
     const data =
-      artists ?? fetchedArtists?.pages.flatMap((page) => page?.data ?? []);
+      (artists ??
+        fetchedArtists?.pages.flatMap((page) => page?.data ??
+          [])?.sort(function (a, b) {
+            var artistNameA = a.name.toUpperCase();
+            var artistNameB = b.name.toUpperCase();
+            return (artistNameA < artistNameB) ? -1 : (artistNameA > artistNameB) ? 1 : 0;
+          }));
 
     return (
       data?.map(

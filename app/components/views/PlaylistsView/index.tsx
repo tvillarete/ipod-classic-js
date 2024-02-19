@@ -40,7 +40,11 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
           <PlaylistView id={playlist.id} inLibrary={inLibrary} />
         ),
         longPressOptions: Utils.getMediaOptions("playlist", playlist.id),
-      })) ?? []
+      }))?.sort(function (a, b) {
+        var playlistNameA = a.label.toUpperCase();
+        var playlistNameB = b.label.toUpperCase();
+        return (playlistNameA < playlistNameB) ? -1 : (playlistNameA > playlistNameB) ? 1 : 0;
+      }) ?? []
     );
   }, [fetchedPlaylists?.pages, inLibrary, playlists]);
 
