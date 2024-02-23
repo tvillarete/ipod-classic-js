@@ -24,6 +24,7 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
     lazy: !!playlists,
   });
 
+  // @ts-ignore
   const options: SelectableListOption[] = useMemo(() => {
     const data =
       playlists ?? fetchedPlaylists?.pages.flatMap((page) => page?.data ?? []);
