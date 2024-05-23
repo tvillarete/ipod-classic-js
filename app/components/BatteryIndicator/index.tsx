@@ -1,5 +1,7 @@
 import { useBattery } from "hooks/battery";
 import styled, { css } from "styled-components";
+import { Bolt } from "./icons/bolt";
+import { Plug } from "./icons/plug";
 
 const batteryHealthyColor = "#A5E07F";
 const batteryWarningColor = "#D17F6B";
@@ -70,15 +72,13 @@ const IconContainer = styled.div`
   z-index: 1;
 `;
 
-const StatusIcon = styled.img`
+const BoltIcon = styled(Bolt)`
   opacity: 0.8;
-`;
-
-const BoltIcon = styled(StatusIcon)`
   height: 8px;
 `;
 
-const PlugIcon = styled(StatusIcon)`
+const PlugIcon = styled(Plug)`
+  opacity: 0.8;
   height: 6px;
 `;
 
@@ -98,8 +98,8 @@ const BatteryIndicator = ({ className }: Props) => {
     <Container className={className}>
       <ChargeLevelContainer>
         <IconContainer>
-          {shouldShowPlugIcon && <PlugIcon src="plug.svg" />}
-          {shouldShowBoltIcon && <BoltIcon src="bolt.svg" />}
+          {shouldShowPlugIcon && <PlugIcon />}
+          {shouldShowBoltIcon && <BoltIcon />}
         </IconContainer>
         <ChargeLevel percent={clampedChargePercent} $isCharging={isCharging} />
       </ChargeLevelContainer>
