@@ -16,6 +16,9 @@ import {
   useViewContext,
 } from "hooks";
 
+import useSound from "use-sound";
+import { APP_URL } from "../../utils/constants/api";
+
 /** Gets the initial index for the scroll position. If there is a selected option,
  * this will initialize our initial scroll position at the selectedOption  */
 const getInitIndex = (
@@ -78,7 +81,7 @@ const useScrollHandler = (
         }
       };
     },
-    [isActive, options, setPreview]
+    [options, setPreview]
   );
 
   const handleForwardScroll = useCallback(() => {
@@ -97,13 +100,7 @@ const useScrollHandler = (
 
       return prevIndex;
     });
-  }, [
-    handleCheckForPreview,
-    isActive,
-    onNearEndOfList,
-    options.length,
-    triggerHaptics,
-  ]);
+  }, [handleCheckForPreview, onNearEndOfList, options.length, triggerHaptics]);
 
   const handleBackwardScroll = useCallback(() => {
     setIndex((prevIndex) => {
@@ -115,7 +112,7 @@ const useScrollHandler = (
 
       return prevIndex;
     });
-  }, [handleCheckForPreview, isActive, triggerHaptics]);
+  }, [handleCheckForPreview, triggerHaptics]);
 
   const handleShowView = useCallback(
     (
@@ -196,7 +193,6 @@ const useScrollHandler = (
     handleShowPopup,
     handleShowView,
     index,
-    isActive,
     options,
     play,
     triggerHaptics,
@@ -214,7 +210,7 @@ const useScrollHandler = (
         listOptions: option.longPressOptions,
       });
     }
-  }, [index, isActive, options, showView]);
+  }, [index, options, showView]);
 
   /** If the list length changes and the index is larger, reset the index to 0. */
   useEffect(() => {
@@ -237,6 +233,13 @@ const useScrollHandler = (
   useEventListener<IpodEvent>("forwardscroll", handleForwardScroll);
   useEventListener<IpodEvent>("backwardscroll", handleBackwardScroll);
 
+  const [playClick] = useSound(`${APP_URL}/click_wheel_click.mp3`);
+
+  useEffect(() => {
+    playClick({});
+  }, [index]);
+
+  console.log("index", index);
   return [index];
 };
 
