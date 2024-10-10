@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.17.12",
-    "cookie": "^0.5.0",
+    "cookie": "^0.7.0",
     "cookies-next": "^4.1.0",
     "framer-motion": "^10.16.16",
     "he": "^1.2.0",
