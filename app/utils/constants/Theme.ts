@@ -16,7 +16,7 @@ export type DeviceTheme = {
       styles?: Record<string, string | number>;
     };
   };
-  knob: {
+  clickwheel: {
     background: string;
     outline: string;
     button: string;
@@ -32,7 +32,7 @@ const Silver: DeviceTheme = {
   body: {
     background: "linear-gradient(180deg, #e3e3e3 0%, #d6d6d6 100%)",
   },
-  knob: {
+  clickwheel: {
     background: "#FFFFFF",
     outline: "#b9b9b9",
     button: "#AFAFAF",
@@ -48,7 +48,7 @@ const Black: DeviceTheme = {
   body: {
     background: "linear-gradient(180deg, #7d7c7d 0%, #1e1e1e 100%)",
   },
-  knob: {
+  clickwheel: {
     background: "#2a2a2a",
     outline: "#1a1a1a",
     button: "#FFFFFF",
@@ -64,7 +64,7 @@ const U2: DeviceTheme = {
   body: {
     background: "linear-gradient(180deg, #7d7c7d 0%, #1e1e1e 100%)",
   },
-  knob: {
+  clickwheel: {
     background: "#de2029",
     outline: "#1a1a1a",
     button: "#ffffff",
@@ -120,7 +120,7 @@ const Mnelia: DeviceTheme = {
       },
     },
   },
-  knob: {
+  clickwheel: {
     background: "#2a2a2acf",
     outline: "#62315e",
     button: "#ffffff",

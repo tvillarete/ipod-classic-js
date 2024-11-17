@@ -63,6 +63,10 @@ export const ScreenContainer = styled.div`
   }
 `;
 
+export const ClickWheelContainer = styled.div`
+  margin: auto;
+`;
+
 export const Sticker = styled.div<{ $deviceTheme: DeviceThemeName }>`
   position: absolute;
   background: ${({ $deviceTheme }) =>

@@ -1664,11 +1664,6 @@ lodash@^4.17.20:
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
-long-press-event@^2.4.4:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/long-press-event/-/long-press-event-2.4.4.tgz#0d517df8915b4c849ff0f99a28013960a7df6413"
-  integrity sha512-6ZtRiZJCLgxr6UdbyEtrBZgOdwqbFdhm6mDo4TtwC8lFuODe9tvUNNIhzpht1m9jHrDyzMfpVyKIzJAFnEUXtQ==
-
 loose-envify@^1.1.0, loose-envify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"

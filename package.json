@@ -20,7 +20,6 @@
     "cookies-next": "^4.1.0",
     "framer-motion": "^10.16.16",
     "he": "^1.2.0",
-    "long-press-event": "^2.4.4",
     "next": "^14.0.4",
     "query-string": "^7.1.1",
     "react": "^18.2.0",
