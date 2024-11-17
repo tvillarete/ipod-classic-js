@@ -38,47 +38,45 @@ const ANGLE_OFFSET_THRESHOLD = 10;
  */
 const PAN_THRESHOLD = 5;
 
-type DeviceThemeProps = {
-  $deviceTheme: DeviceThemeName;
-};
-
 type RootContainerProps = {
-  size: number;
-} & DeviceThemeProps;
+  $deviceTheme: DeviceThemeName;
+  size?: number;
+};
 
 const RootContainer = styled(motion.div)<RootContainerProps>`
   display: grid;
   position: relative;
-  background-color: white;
   border-radius: 50%;
   touch-action: none;
 
-  ${({ size = 250, $deviceTheme }) => css`
+  ${({ size = 220, $deviceTheme }) => css`
     width: ${size}px;
     height: ${size}px;
+    background-color: ${getTheme($deviceTheme).clickwheel.background};
     border: 1px solid ${getTheme($deviceTheme).clickwheel.centerButton.outline};
   `}
 `;
 
 const ButtonContainer = styled.div<{
-  placement: string;
+  $placement: string;
 }>`
   position: absolute;
-  place-self: ${(props) => props.placement};
+  place-self: ${(props) => props.$placement};
   padding: 12px;
 `;
 
-type CenterButtonProps = DeviceThemeProps & {
+type CenterButtonProps = {
+  $deviceTheme: DeviceThemeName;
   size: number;
 };
 
 const CenterButton = styled.div<CenterButtonProps>`
-  width: ${(props) => props.size}px;
-  height: ${(props) => props.size}px;
   user-select: none;
   border-radius: 50%;
 
-  ${({ $deviceTheme }) => css`
+  ${({ $deviceTheme, size }) => css`
+    width: ${size}px;
+    height: ${size}px;
     border: 1px solid ${getTheme($deviceTheme).clickwheel.centerButton.outline};
     background: ${getTheme($deviceTheme).clickwheel.centerButton.background};
     box-shadow: ${getTheme($deviceTheme).clickwheel.centerButton.boxShadow} 0px
@@ -218,29 +216,30 @@ export const ClickWheel = () => {
 
   return (
     <RootContainer
+      $deviceTheme={deviceTheme}
       onClick={handlePress}
       onPanStart={handlePanStart}
       onPan={handlePan}
       onPanEnd={handlePanEnd}
       ref={rootContainerRef}
     >
-      <ButtonContainer ref={menuButtonRef} placement="start center">
+      <ButtonContainer ref={menuButtonRef} $placement="start center">
         <MenuIcon color={iconColor} />
       </ButtonContainer>
-      <ButtonContainer ref={rewindButtonRef} placement="center start">
+      <ButtonContainer ref={rewindButtonRef} $placement="center start">
         <RewindIcon color={iconColor} />
       </ButtonContainer>
-      <ButtonContainer placement="center">
+      <ButtonContainer $placement="center">
         <CenterButton
           size={90}
           $deviceTheme={deviceTheme}
           {...longPressHandlerProps}
         />
       </ButtonContainer>
-      <ButtonContainer ref={fastForwardButtonRef} placement="center end">
+      <ButtonContainer ref={fastForwardButtonRef} $placement="center end">
         <FastForwardIcon color={iconColor} />
       </ButtonContainer>
-      <ButtonContainer ref={playPauseButtonRef} placement="end center">
+      <ButtonContainer ref={playPauseButtonRef} $placement="end center">
         <PlayPauseIcon color={iconColor} />
       </ButtonContainer>
     </RootContainer>
