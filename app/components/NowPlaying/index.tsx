@@ -18,7 +18,7 @@ const MetadataContainer = styled.div`
 `;
 
 interface ArtworkContainerProps {
-  isHidden?: boolean;
+  $isHidden?: boolean;
 }
 
 const ArtworkContainer = styled.div<ArtworkContainerProps>`
@@ -28,7 +28,7 @@ const ArtworkContainer = styled.div<ArtworkContainerProps>`
   -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(70%, transparent), to(rgba(250, 250, 250, 0.1)));
   transform-style: preserve-3d;
   perspective: 500px;
-  opacity: ${(props) => props.isHidden && 0};
+  opacity: ${(props) => props.$isHidden && 0};
 `;
 
 const Artwork = styled.img`
@@ -90,7 +90,7 @@ const NowPlaying = ({ hideArtwork, onHide }: Props) => {
   return (
     <Container>
       <MetadataContainer>
-        <ArtworkContainer isHidden={hideArtwork}>
+        <ArtworkContainer $isHidden={hideArtwork}>
           <Artwork src={artworkUrl} />
         </ArtworkContainer>
         <InfoContainer>

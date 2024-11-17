@@ -4,7 +4,7 @@ interface Props {
 
 const RewindIcon = (props: Props) => (
   <svg
-    width="30"
+    width="25"
     height="16"
     viewBox="0 0 33 16"
     fill="none"

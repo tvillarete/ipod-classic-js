@@ -1,5 +1,5 @@
 import { fade } from "animation";
-import { CoverFlowView } from "components";
+import { CoverFlowView, Header } from "components";
 import { AnimatePresence, motion } from "framer-motion";
 import { ViewOptions } from "providers/ViewContextProvider";
 import styled from "styled-components";
@@ -22,6 +22,7 @@ const CoverFlowViewManager = ({ view }: Props) => {
     <AnimatePresence>
       {!!ViewComponent && (
         <Container {...fade} data-stack-type="coverflow">
+          <Header />
           <ViewComponent />
         </Container>
       )}

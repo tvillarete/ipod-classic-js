@@ -25,7 +25,7 @@ const AlbumsContainer = styled.div`
   display: flex;
   flex-wrap: nowrap;
   flex: 1;
-  padding-top: 8%;
+  padding-top: 20px;
   -webkit-overflow-scrolling: touch; /* [3] */
   -ms-overflow-style: -ms-autohiding-scrollbar;
   perspective: 500px;
@@ -37,8 +37,12 @@ const InfoContainer = styled(motion.div)`
   bottom: 0;
   left: 0;
   right: 0;
-  height: 30%;
+  height: 24%;
   text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
 `;
 
 const NowPlayingContainer = styled(motion.div)`
@@ -55,10 +59,6 @@ const Text = styled.h3`
   font-size: 16px;
   text-align: center;
   padding: 0 16px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 
   :first-of-type {
     margin-top: 24px;
@@ -75,7 +75,7 @@ const CoverFlow = ({ albums }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedAlbum, setSelectedAlbum] = useState<MediaApi.Album>();
   const [playingAlbum, setPlayingAlbum] = useState(false);
-  const { hideView } = useViewContext();
+  const { hideView, setHeaderTitle } = useViewContext();
 
   const selectAlbum = useCallback(() => {
     if (!selectedAlbum) {
@@ -87,12 +87,14 @@ const CoverFlow = ({ albums }: Props) => {
   const handleMenuClick = useCallback(() => {
     if (selectedAlbum && playingAlbum) {
       setPlayingAlbum(false);
+      setHeaderTitle("Cover Flow");
     } else if (selectedAlbum) {
       setSelectedAlbum(undefined);
+      setHeaderTitle("Cover Flow");
     } else {
       hideView();
     }
-  }, [hideView, playingAlbum, selectedAlbum]);
+  }, [hideView, playingAlbum, selectedAlbum, setHeaderTitle]);
 
   const forwardScroll = useCallback(() => {
     if (activeIndex < albums.length - 1 && !selectedAlbum && !playingAlbum) {

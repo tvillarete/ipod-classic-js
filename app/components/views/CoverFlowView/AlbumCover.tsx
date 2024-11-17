@@ -58,7 +58,7 @@ const Container = styled.div.attrs({
 
       ${props.$isPlaying &&
       css`
-        transform: translate(${props.$midpoint.x / 6}px, 0) rotateY(18deg);
+        transform: translate(${props.$midpoint.x / 9}px, 8px) rotateY(35deg);
 
         ${Artwork} {
           opacity: 1;

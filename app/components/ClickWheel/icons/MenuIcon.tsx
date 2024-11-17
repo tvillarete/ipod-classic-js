@@ -4,7 +4,7 @@ interface Props {
 
 const MenuIcon = (props: Props) => (
   <svg
-    width="50"
+    width="45"
     height="17"
     viewBox="0 0 61 17"
     fill="none"

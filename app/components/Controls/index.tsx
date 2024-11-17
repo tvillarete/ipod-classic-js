@@ -16,7 +16,7 @@ const Container = styled.div`
 `;
 
 interface ContainerProps {
-  isHidden: boolean;
+  $isHidden: boolean;
 }
 
 const MainContainer = styled.div<ContainerProps>`
@@ -27,7 +27,7 @@ const MainContainer = styled.div<ContainerProps>`
   right: ${Unit.XS};
   transition: transform 0.3s;
 
-  transform: ${(props) => props.isHidden && "translateX(-110%)"};
+  transform: ${(props) => props.$isHidden && "translateX(-110%)"};
 `;
 
 const ScrubberContainer = styled.div<ContainerProps>`
@@ -38,7 +38,7 @@ const ScrubberContainer = styled.div<ContainerProps>`
   right: ${Unit.XS};
   transition: transform 0.3s;
 
-  transform: ${(props) => props.isHidden && "translateX(110%)"};
+  transform: ${(props) => props.$isHidden && "translateX(110%)"};
 `;
 
 const Controls = () => {
@@ -61,13 +61,13 @@ const Controls = () => {
 
   return (
     <Container>
-      <MainContainer isHidden={isScrubbing}>
+      <MainContainer $isHidden={isScrubbing}>
         {active && !isScrubbing && <VolumeBar percent={volume * 100} />}
       </MainContainer>
-      <MainContainer hidden={active && !isScrubbing} isHidden={isScrubbing}>
+      <MainContainer $isHidden={isScrubbing}>
         <TrackProgress />
       </MainContainer>
-      <ScrubberContainer isHidden={!isScrubbing}>
+      <ScrubberContainer $isHidden={!isScrubbing}>
         <Scrubber isScrubbing={isScrubbing} />
       </ScrubberContainer>
     </Container>

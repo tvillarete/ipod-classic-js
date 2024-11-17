@@ -4,8 +4,8 @@ interface Props {
 
 const PlayPauseIcon = (props: Props) => (
   <svg
-    width="32"
-    height="18"
+    width="27"
+    height="15"
     viewBox="0 0 39 18"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

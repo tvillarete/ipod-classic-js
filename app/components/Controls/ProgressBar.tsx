@@ -24,20 +24,20 @@ const Gloss = styled.div`
 `;
 
 interface ProgressProps {
-  percent: number;
-  transparent?: boolean;
+  $percent: number;
+  $isTransparent?: boolean;
 }
 
 const Progress = styled.div.attrs<ProgressProps>((props) => ({
   // This is the recommended syntax for when things change often.
   style: {
-    width: `${props.percent}%`,
+    width: `${props.$percent}%`,
   },
 }))<ProgressProps>`
   position: relative;
   height: 100%;
-  background: ${(props) =>
-    !props.transparent && `url("${APP_URL}/gloss-blue.svg") repeat-x`};
+  background: ${({ $isTransparent }) =>
+    !$isTransparent && `url("${APP_URL}/gloss-blue.svg") repeat-x`};
   transition: width 0.1s;
 `;
 
@@ -59,7 +59,7 @@ const ProgressBar = ({ percent, isScrubber = false }: Props) => {
     <Container>
       <ProgressContainer>
         <Gloss />
-        <Progress percent={percent || 0} transparent={!!isScrubber}>
+        <Progress $percent={percent || 0} $isTransparent={!!isScrubber}>
           {isScrubber && <Diamond src={`${APP_URL}/scrubber.svg`} />}
         </Progress>
       </ProgressContainer>

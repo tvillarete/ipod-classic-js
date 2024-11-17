@@ -25,16 +25,16 @@ const ChargeLevelContainer = styled.div`
 
 const ChargeLevel = styled.div<{
   $isCharging?: boolean;
-  percent?: number;
+  $percent?: number;
 }>`
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
 
-  ${({ percent = 100, $isCharging = false }) => css`
-    width: ${percent}%;
-    background: ${percent > 20 || $isCharging
+  ${({ $percent = 100, $isCharging = false }) => css`
+    width: ${$percent}%;
+    background: ${$percent > 20 || $isCharging
         ? batteryHealthyColor
         : batteryWarningColor}
       linear-gradient(
@@ -101,7 +101,7 @@ const BatteryIndicator = ({ className }: Props) => {
           {shouldShowPlugIcon && <PlugIcon />}
           {shouldShowBoltIcon && <BoltIcon />}
         </IconContainer>
-        <ChargeLevel percent={clampedChargePercent} $isCharging={isCharging} />
+        <ChargeLevel $percent={clampedChargePercent} $isCharging={isCharging} />
       </ChargeLevelContainer>
 
       {/* decorative cap for an authentic battery experience */}

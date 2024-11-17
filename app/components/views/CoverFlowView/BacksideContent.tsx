@@ -1,11 +1,11 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import {
   LoadingScreen,
   SelectableList,
   SelectableListOption,
 } from "components";
-import { useEventListener, useScrollHandler } from "hooks";
+import { useEventListener, useScrollHandler, useViewContext } from "hooks";
 import styled from "styled-components";
 
 import viewConfigMap from "..";
@@ -53,6 +53,8 @@ interface Props {
 }
 
 const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
+  const { setHeaderTitle } = useViewContext();
+
   const { data: album, isLoading } = useFetchAlbum({
     id: albumId,
     inLibrary: true,
@@ -70,9 +72,15 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
       })) ?? [],
     [album]
   );
+
   const [scrollIndex] = useScrollHandler(viewConfigMap.coverFlow.id, options);
 
-  useEventListener<IpodEvent>("centerclick", () => setPlayingAlbum(true));
+  const handleSelect = useCallback(() => {
+    setPlayingAlbum(true);
+    setHeaderTitle("Now Playing");
+  }, [setHeaderTitle, setPlayingAlbum]);
+
+  useEventListener<IpodEvent>("centerclick", handleSelect);
 
   return (
     <Container>
