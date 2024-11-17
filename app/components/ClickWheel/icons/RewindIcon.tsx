@@ -1,12 +1,10 @@
-import { WheelButton, WheelButtonProps } from "../Styled";
-
-interface Props extends WheelButtonProps {
+interface Props {
   color?: string;
 }
 
 const RewindIcon = (props: Props) => (
-  <WheelButton
-    width="33"
+  <svg
+    width="30"
     height="16"
     viewBox="0 0 33 16"
     fill="none"
@@ -23,7 +21,7 @@ const RewindIcon = (props: Props) => (
       transform="rotate(-180 4 16)"
       fill={props.color}
     />
-  </WheelButton>
+  </svg>
 );
 
 export default RewindIcon;

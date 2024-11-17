@@ -1,6 +1,5 @@
 "use client";
 import { memo, useCallback, useState } from "react";
-import { ScrollWheel } from "components";
 import * as SpotifyUtils from "utils/spotify";
 import {
   AudioPlayerProvider,
@@ -8,9 +7,10 @@ import {
   SettingsProvider,
   useEffectOnce,
 } from "hooks";
-import { ViewManager } from "components";
+import { ClickWheel, ViewManager } from "components";
 import {
   ScreenContainer,
+  ClickWheelContainer,
   Shell,
   Sticker,
   Sticker2,
@@ -78,7 +78,9 @@ const Ipod = ({ appleAccessToken, spotifyCallbackCode }: Props) => {
                       <ScreenContainer>
                         <ViewManager />
                       </ScreenContainer>
-                      <ScrollWheel />
+                      <ClickWheelContainer>
+                        <ClickWheel />
+                      </ClickWheelContainer>
                     </Shell>
                   )}
                 </SettingsContext.Consumer>
