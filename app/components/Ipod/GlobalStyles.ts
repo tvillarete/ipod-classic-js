@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import { Screen } from "utils/constants";
 
 export const GlobalStyles = createGlobalStyle`
   body {
@@ -10,6 +11,10 @@ export const GlobalStyles = createGlobalStyle`
     color: black;
     min-height: 550px;
     overflow: auto;
+
+    ${Screen.XS.MediaQuery} {
+      min-height: 480px;
+    }
   }
 
   a {

@@ -1,6 +1,7 @@
 import { SplitScreenPreview, Previews } from "components/previews";
 import { AnimatePresence } from "framer-motion";
 import { useViewContext } from "hooks";
+import { Screen } from "utils/constants";
 import styled, { css } from "styled-components";
 
 interface ContainerProps {
@@ -21,6 +22,10 @@ const Container = styled.div<ContainerProps>`
       opacity: 0;
       overflow: hidden;
     `};
+
+  ${Screen.XS.MediaQuery} {
+    display: none;
+  }
 `;
 
 interface Props {

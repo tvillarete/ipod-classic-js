@@ -1,3 +1,6 @@
+import { ANGLE_OFFSET_THRESHOLD } from "./constants";
+import { ScrollDirection } from "./sharedTypes";
+
 /**
  * Converts a regular bounding rect into a circular bounding rect.
  * This is useful for calculating the angle between the center of the circle and a point.
@@ -46,4 +49,14 @@ export const checkIsPointWithinElement = (
     point.y >= rect.top &&
     point.y <= rect.bottom
   );
+};
+
+export const getScrollDirection = (angleDelta: number): ScrollDirection => {
+  // Upon making a full 360 degree rotation, the delta between the two angles will be very high.
+  // We reverse the check for this single scroll tick.
+  if (Math.abs(angleDelta) > ANGLE_OFFSET_THRESHOLD * 2) {
+    return angleDelta > 0 ? "counter-clockwise" : "clockwise";
+  }
+
+  return angleDelta > 0 ? "clockwise" : "counter-clockwise";
 };

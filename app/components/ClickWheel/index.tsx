@@ -11,32 +11,23 @@ import {
   checkIsPointWithinElement,
   getAngleBetweenPoints,
   getCircularBoundingInfo,
+  getScrollDirection,
 } from "./helpers";
 import { DeviceThemeName, getTheme } from "utils/themes";
 import { useEventListener, useSettings } from "hooks";
 import {
   dispatchBackClickEvent,
-  dispatchBackwardScrollEvent,
   dispatchCenterClickEvent,
   dispatchCenterLongClickEvent,
   dispatchForwardClickEvent,
-  dispatchForwardScrollEvent,
   dispatchKeyboardEvent,
   dispatchMenuClickEvent,
   dispatchPlayPauseClickEvent,
+  dispatchScrollEvent,
 } from "utils/events";
 import { useLongPressHandler } from "hooks/navigation/useLongPressHandler";
-
-/**
- * The threshold in degrees that the user must scroll before the knob
- * registers a change in value.
- */
-const ANGLE_OFFSET_THRESHOLD = 10;
-
-/**
- * The threshold in pixels that the user must pan before we consider the input a pan.
- */
-const PAN_THRESHOLD = 5;
+import { Screen } from "utils/constants";
+import { ANGLE_OFFSET_THRESHOLD, PAN_THRESHOLD } from "./constants";
 
 type RootContainerProps = {
   $deviceTheme: DeviceThemeName;
@@ -54,6 +45,11 @@ const RootContainer = styled(motion.div)<RootContainerProps>`
     height: ${size}px;
     background-color: ${getTheme($deviceTheme).clickwheel.background};
     border: 1px solid ${getTheme($deviceTheme).clickwheel.centerButton.outline};
+
+    ${Screen.XS.MediaQuery} {
+      width: ${size * 0.8}px;
+      height: ${size * 0.8}px;
+    }
   `}
 `;
 
@@ -138,7 +134,7 @@ export const ClickWheel = () => {
       const startAngleDeg = getAngleBetweenPoints(startPoint, centerPoint);
       const currentAngleDeg = getAngleBetweenPoints(currentPoint, centerPoint);
       const angleDelta = currentAngleDeg - startAngleDeg;
-      const direction = angleDelta > 0 ? "clockwise" : "counter-clockwise";
+      const direction = getScrollDirection(angleDelta);
 
       // If the user has panned more than the angle offset threshold, we trigger a scroll event
       const hasScrolled = Math.abs(angleDelta) > ANGLE_OFFSET_THRESHOLD;
@@ -147,9 +143,7 @@ export const ClickWheel = () => {
         // Reset the start point to the current point to begin tracking the next scroll
         startPointMotionValue.set(currentPoint);
 
-        direction === "clockwise"
-          ? dispatchForwardScrollEvent()
-          : dispatchBackwardScrollEvent();
+        dispatchScrollEvent(direction);
       }
     },
     [startPointMotionValue]

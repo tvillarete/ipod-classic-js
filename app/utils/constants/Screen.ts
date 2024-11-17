@@ -1,5 +1,5 @@
 const XS = {
-  MediaQuery: "@media (min-width: 0)",
+  MediaQuery: "@media (max-width: 300px)",
   Size: {
     Min: 0,
     Max: 575,

@@ -1,3 +1,5 @@
+import { ScrollDirection } from "components/ClickWheel/sharedTypes";
+
 /** The click-wheel control associated with the particular event */
 type BaseEventContext =
   | "wheel"
@@ -52,6 +54,11 @@ export const dispatchForwardScrollEvent = () =>
 
 export const dispatchBackwardScrollEvent = () =>
   window.dispatchEvent(backwardScrollEvent);
+
+export const dispatchScrollEvent = (direction: ScrollDirection) =>
+  direction === "clockwise"
+    ? dispatchForwardScrollEvent()
+    : dispatchBackwardScrollEvent();
 
 export const dispatchWheelClickEvent = () =>
   window.dispatchEvent(wheelClickEvent);

@@ -4,6 +4,7 @@ import View from "components/ViewManager/components/View";
 import { AnimatePresence } from "framer-motion";
 import { ViewOptions } from "providers/ViewContextProvider";
 import styled, { css } from "styled-components";
+import { Screen } from "utils/constants";
 
 const Container = styled.div`
   z-index: 2;
@@ -11,6 +12,10 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+
+  ${Screen.XS.MediaQuery} {
+    flex-direction: column;
+  }
 `;
 
 interface PanelProps {
@@ -34,6 +39,10 @@ const LeftPanel = styled.div<PanelProps>`
       transform: translateX(-100%);
       box-shadow: none;
     `};
+
+  ${Screen.XS.MediaQuery} {
+    flex: 1;
+  }
 `;
 
 const ContentContainer = styled.div`
