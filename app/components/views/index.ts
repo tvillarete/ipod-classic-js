@@ -171,6 +171,11 @@ export const viewConfigMap: Record<string, ViewConfig> = {
     title: "Premium",
     type: "popup",
   },
+  musicProviderErrorPopup: {
+    id: "musicProviderErrorPopup",
+    title: "Error",
+    type: "popup",
+  },
 
   // Keyboard
   keyboard: {

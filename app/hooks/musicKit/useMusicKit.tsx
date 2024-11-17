@@ -1,11 +1,13 @@
 import { createContext, useCallback, useContext } from "react";
 
-import { useSettings } from "hooks";
+import { useSettings, useViewContext } from "hooks";
+import views from "components/views";
 
 export interface MusicKitState {
   musicKit?: typeof MusicKit;
   isConfigured: boolean;
   hasDevToken: boolean;
+  hasError: boolean;
 }
 
 export const MusicKitContext = createContext<MusicKitState>({} as any);
@@ -19,17 +21,40 @@ export type MusicKitHook = MusicKitState & {
 export const useMusicKit = (): MusicKitHook => {
   const { setIsAppleAuthorized, isSpotifyAuthorized, setService } =
     useSettings();
-  const { isConfigured, hasDevToken } = useContext(MusicKitContext);
+  const { isConfigured, hasDevToken, hasError } = useContext(MusicKitContext);
+  const { showView } = useViewContext();
 
   const signIn = useCallback(async () => {
     const music = window.MusicKit?.getInstance();
+
+    if (hasError) {
+      showView({
+        type: "popup",
+        id: views.musicProviderErrorPopup.id,
+        title: views.musicProviderErrorPopup.title,
+        description:
+          "Apple Music was unable to mount. Try reloading or feel free to file bug report 🐞",
+        listOptions: [
+          {
+            type: "action",
+            label: "Reload",
+            onSelect: () => window.location.reload(),
+          },
+          {
+            type: "action",
+            label: "Done",
+            onSelect: () => {},
+          },
+        ],
+      });
+    }
 
     if (music?.isAuthorized === false) {
       await music?.authorize();
     }
 
     setService("apple");
-  }, [setService]);
+  }, [hasError, setService, showView]);
 
   const signOut = useCallback(() => {
     const music = window.MusicKit?.getInstance();
@@ -43,6 +68,7 @@ export const useMusicKit = (): MusicKitHook => {
   return {
     isConfigured,
     hasDevToken,
+    hasError,
     musicKit: window.MusicKit,
     music: window.MusicKit?.getInstance(),
     signIn,

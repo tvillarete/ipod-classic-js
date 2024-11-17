@@ -4,6 +4,13 @@ import { useSpotifySDK } from "hooks";
 import * as ConversionUtils from "utils/conversion";
 import querystring from "query-string";
 
+/**
+ * Spotify errors out if you pass it a value of 0 for the `after` query param.
+ * This function safely parses the `after` query param and returns `undefined` if it's 0.
+ */
+const safeParseAfter = (after: string | undefined) =>
+  !after || after === "0" ? undefined : after;
+
 type FetchSpotifyApiArgs = {
   endpoint: string;
   accessToken?: string;
@@ -94,7 +101,7 @@ const useSpotifyDataFetcher = () => {
           params: {
             type: "artist",
             limit,
-            after,
+            after: safeParseAfter(after),
           },
           accessToken,
           onError: (error) => {

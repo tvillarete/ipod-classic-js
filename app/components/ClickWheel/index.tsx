@@ -160,9 +160,12 @@ export const ClickWheel = () => {
       const deltaX = info.offset.x;
       const deltaY = info.offset.y;
 
-      // If the user has scrolled less than the pan threshold, we consider it a press event
       const isPressEvent =
-        Math.abs(deltaX) < PAN_THRESHOLD && Math.abs(deltaY) < PAN_THRESHOLD;
+        // If the user has panned but returned their cursor to near the starting position, don't trigger a press event.
+        !isPanningMotionValue.get() &&
+        // If the user has scrolled less than the pan threshold, we consider it a press event
+        Math.abs(deltaX) < PAN_THRESHOLD &&
+        Math.abs(deltaY) < PAN_THRESHOLD;
 
       if (isPressEvent) {
         handleWheelPress({

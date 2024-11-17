@@ -73,11 +73,11 @@ const HomeView = () => {
         id: viewConfigMap.signinPopup.id,
         label: "Sign in",
         listOptions: [
-          ...getConditionalOption(isMkConfigured, {
+          {
             type: "action",
             label: "Apple Music",
             onSelect: signInWithApple,
-          }),
+          },
           {
             type: "action",
             label: "Spotify",
@@ -94,13 +94,7 @@ const HomeView = () => {
         preview: SplitScreenPreview.NowPlaying,
       }),
     ],
-    [
-      isAuthorized,
-      isMkConfigured,
-      nowPlayingItem,
-      signInWithApple,
-      signInWithSpotify,
-    ]
+    [isAuthorized, nowPlayingItem, signInWithApple, signInWithSpotify]
   );
 
   const [scrollIndex] = useScrollHandler(viewConfigMap.home.id, options);

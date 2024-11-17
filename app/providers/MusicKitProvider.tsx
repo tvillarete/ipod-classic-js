@@ -19,6 +19,7 @@ export const MusicKitProvider = ({
   const musicKitRef = useRef<typeof MusicKit>();
   const [hasDevToken, setHasDevToken] = useState(false);
   const [isConfigured, setIsConfigured] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const {
     isSpotifyAuthorized,
     setIsAppleAuthorized,
@@ -26,6 +27,7 @@ export const MusicKitProvider = ({
   } = useSettings();
 
   const handleConfigure = useCallback(async () => {
+    setHasError(false);
     try {
       if (!window.MusicKit) {
         throw new Error("MusicKit was unable to mount");
@@ -48,6 +50,7 @@ export const MusicKitProvider = ({
       }
     } catch (e) {
       console.error(`MusicKit configuration error:`, e);
+      setHasError(true);
       setHasDevToken(false);
     }
   }, [setIsAppleAuthorized, token]);
@@ -72,7 +75,12 @@ export const MusicKitProvider = ({
 
   return (
     <MusicKitContext.Provider
-      value={{ musicKit: musicKitRef.current, isConfigured, hasDevToken }}
+      value={{
+        musicKit: musicKitRef.current,
+        isConfigured,
+        hasDevToken,
+        hasError,
+      }}
     >
       {children}
     </MusicKitContext.Provider>
