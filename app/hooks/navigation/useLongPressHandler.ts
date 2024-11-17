@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 
 const LONG_PRESS_THRESHOLD = 500;
 
@@ -29,7 +29,7 @@ export const useLongPressHandler = ({
       wasLongPressActivated.current = true;
       onLongPress();
     }, longPressThreshold);
-  }, []);
+  }, [longPressThreshold, onLongPress]);
 
   const handlePointerUp = useCallback(() => {
     if (wasLongPressActivated.current) {
@@ -38,11 +38,11 @@ export const useLongPressHandler = ({
       onPress();
     }
     handleClearTimeout();
-  }, []);
+  }, [handleClearTimeout, onPress]);
 
   const handlePointerCancel = useCallback(() => {
     handleClearTimeout();
-  }, []);
+  }, [handleClearTimeout]);
 
   return {
     onPointerDown: handlePointerDown,
