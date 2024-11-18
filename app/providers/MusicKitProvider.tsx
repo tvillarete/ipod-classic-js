@@ -3,9 +3,8 @@ import {
   useEventListener,
   useMKEventListener,
   MusicKitContext,
-  useEffectOnce,
 } from "hooks";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 
 export interface MusicKitProviderProps {
   children: React.ReactNode;
@@ -55,9 +54,17 @@ export const MusicKitProvider = ({
     }
   }, [setIsAppleAuthorized, token]);
 
-  useEffectOnce(() => {
-    handleConfigure();
-  });
+  useEffect(() => {
+    if (window.MusicKit) {
+      handleConfigure();
+    } else {
+      document.addEventListener("musickitloaded", handleConfigure);
+    }
+
+    return () => {
+      document.removeEventListener("musickitloaded", handleConfigure);
+    };
+  }, [handleConfigure]);
 
   useEventListener("musickitconfigured", () => {
     console.log("MusicKit configured");
