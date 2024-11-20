@@ -38,6 +38,7 @@ export const MusicKitProvider = ({
           name: "Apple Music.js",
           build: "1.0",
         },
+        bitrate: MusicKit.PlaybackBitrate.HIGH,
       });
 
       if (music) {
