@@ -2,7 +2,7 @@
 
 ![ipod_og](https://user-images.githubusercontent.com/21055469/71636084-6081a800-2be0-11ea-98ee-9599a3396c84.png)
 
-# 🎵 iPod Classic JS
+# 🎵 iPod.js
 
 **A nostalgic music player that bridges the gap between classic iPod design and modern streaming**
 
@@ -145,7 +145,7 @@ APPLE_DEVELOPER_TOKEN=your_apple_developer_token
 3. Generate a **private key** for MusicKit
 4. Create a **developer token** (JWT)
 
-> 💡 **Need help generating Apple Music JWTs?** Check out the [**Apple Music JWT Generator**](https://github.com/tvillarete/apple-music-jwt-generator) — a helpful tool I created to simplify the JWT creation process!
+> 💡 **Need help generating Apple Music JWTs?** Check out the [**Apple Music JWT Generator**](https://github.com/tvillarete/apple-music-jwt-generator) — a helpful tool I created to simplify the JWT creation process
 
 📚 [Apple MusicKit JS Documentation](https://developer.apple.com/documentation/musickitjs)  
 📚 [Getting Keys and Creating Tokens Guide](https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens)
@@ -184,21 +184,6 @@ Contributions are welcome! This project is built to be highly extensible.
 - 🔧 Performance improvements
 - 🐛 Bug fixes
 - 📱 Mobile optimizations
-
-### Development
-```bash
-# Fork the repository
-git clone https://github.com/yourusername/ipod-classic-js.git
-
-# Create a feature branch
-git checkout -b feature/amazing-feature
-
-# Make your changes and commit
-git commit -m "Add amazing feature"
-
-# Push and create a Pull Request
-git push origin feature/amazing-feature
-```
 
 ---
 
