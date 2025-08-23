@@ -25,7 +25,7 @@ at our disposal. This project is an homage to the good 'ol days. A mix of the ol
 iPod Classic you used to own that now connects to Spotify and Apple Music — the two most popular music 
 streaming platforms in the world.
 
-**iPod Classic JS** recreates the iconic iPod Classic experience in your browser, complete with the signature click wheel navigation and that satisfying tactile feel (Android only) — but now powered by **Spotify** and **Apple Music**, giving you access to millions of songs.
+**iPod.js** recreates the iconic iPod Classic experience in your browser, complete with the signature click wheel navigation and that satisfying tactile feel (Android only) — but now powered by **Spotify** and **Apple Music**, giving you access to millions of songs.
 
 Built with extensibility in mind, this isn't just a music player. It can run games (like the classic Brick game!), and there's room for many more apps and easter eggs in the future.
 
