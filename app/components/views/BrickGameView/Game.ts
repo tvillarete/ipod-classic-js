@@ -26,7 +26,7 @@ class App {
 
   init = () => {
     if (!this.context) {
-      console.log("Error getting application context");
+      console.error("Error getting application context");
       return; //TODO: notify user
     }
 

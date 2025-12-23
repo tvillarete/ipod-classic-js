@@ -68,7 +68,6 @@ export const MusicKitProvider = ({
   }, [handleConfigure]);
 
   useEventListener("musickitconfigured", () => {
-    console.log("MusicKit configured");
     setIsConfigured(true);
   });
 

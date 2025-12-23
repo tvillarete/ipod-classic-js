@@ -94,14 +94,17 @@ Built with extensibility in mind, this isn't just a music player. It can run gam
 
 ### Prerequisites
 
-- **Node.js** (version specified in `.nvmrc`)
+- **Node.js** (version specified in `.tool-versions`)
 - **Yarn** package manager
 - **Vercel CLI** (optional, for deployment)
 
 ### Installation
 
 ```bash
-# Use the recommended Node version
+# Use the recommended Node version (if using asdf)
+asdf install
+
+# Or if using nvm
 nvm use
 
 # Install dependencies
@@ -111,7 +114,9 @@ yarn install
 yarn dev
 ```
 
-Visit **[http://localhost:3000/ipod](http://localhost:3000/ipod)** to experience the magic! ✨
+Visit **[http://127.0.0.1:3000/ipod](http://127.0.0.1:3000/ipod)** to experience the magic! ✨
+
+> ⚠️ **Important**: You must use `127.0.0.1` instead of `localhost` due to Spotify's redirect URI requirements.
 
 ---
 
@@ -133,7 +138,8 @@ APPLE_DEVELOPER_TOKEN=your_apple_developer_token
 ### 🎵 Spotify Setup
 
 1. Create a Spotify app in the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
-2. Add `http://localhost:3000` to your app's redirect URIs
+2. Add `http://127.0.0.1:3000/ipod` to your app's redirect URIs
+   - ⚠️ **Important**: Use `127.0.0.1` (not `localhost`) — Spotify no longer accepts `localhost` in redirect URIs
 3. Copy your **Client ID** and **Client Secret**
 
 📚 [Spotify Web Playback SDK Documentation](https://developer.spotify.com/documentation/web-playback-sdk/quick-start/)

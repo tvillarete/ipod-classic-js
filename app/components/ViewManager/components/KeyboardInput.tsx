@@ -9,7 +9,7 @@ import styled, { css } from "styled-components";
 import { Unit } from "utils/constants";
 
 interface RootContainerProps {
-  index: number;
+	index: number;
 }
 
 /** Responsible for putting the view at the proper z-index. */
@@ -25,7 +25,7 @@ export const RootContainer = styled(motion.div)<RootContainerProps>`
 `;
 
 interface ContentTransitionContainerProps {
-  $isHidden: boolean;
+	$isHidden: boolean;
 }
 
 /** Slides the view in from the bottom if it is at the top of the stack. */
@@ -68,132 +68,128 @@ const OptionContainer = styled.div<{ $highlighted: boolean }>`
   text-align: center;
 
   ${({ $highlighted }) =>
-    $highlighted &&
-    css`
+		$highlighted &&
+		css`
       background: linear-gradient(180deg, #8aebf7 0%, #258af9 100%);
       border-radius: 4px;
     `};
 `;
 
 const keyboardOptions = [
-  { key: "Enter", label: "✓" },
-  { key: "delete", label: "⌫" },
-  { key: " ", label: "␣" },
-  { key: "a", label: "A" },
-  { key: "b", label: "B" },
-  { key: "c", label: "C" },
-  { key: "d", label: "D" },
-  { key: "e", label: "E" },
-  { key: "f", label: "F" },
-  { key: "g", label: "G" },
-  { key: "h", label: "H" },
-  { key: "i", label: "I" },
-  { key: "j", label: "J" },
-  { key: "k", label: "K" },
-  { key: "l", label: "L" },
-  { key: "m", label: "M" },
-  { key: "n", label: "N" },
-  { key: "o", label: "O" },
-  { key: "p", label: "P" },
-  { key: "q", label: "Q" },
-  { key: "r", label: "R" },
-  { key: "s", label: "S" },
-  { key: "t", label: "T" },
-  { key: "u", label: "U" },
-  { key: "v", label: "V" },
-  { key: "w", label: "W" },
-  { key: "x", label: "X" },
-  { key: "y", label: "Y" },
-  { key: "z", label: "Z" },
-  { key: "1", label: "1" },
-  { key: "2", label: "2" },
-  { key: "3", label: "3" },
-  { key: "4", label: "4" },
-  { key: "5", label: "5" },
-  { key: "6", label: "6" },
-  { key: "7", label: "7" },
-  { key: "8", label: "8" },
-  { key: "9", label: "9" },
-  { key: "0", label: "0" },
+	{ key: "Enter", label: "✓" },
+	{ key: "delete", label: "⌫" },
+	{ key: " ", label: "␣" },
+	{ key: "a", label: "A" },
+	{ key: "b", label: "B" },
+	{ key: "c", label: "C" },
+	{ key: "d", label: "D" },
+	{ key: "e", label: "E" },
+	{ key: "f", label: "F" },
+	{ key: "g", label: "G" },
+	{ key: "h", label: "H" },
+	{ key: "i", label: "I" },
+	{ key: "j", label: "J" },
+	{ key: "k", label: "K" },
+	{ key: "l", label: "L" },
+	{ key: "m", label: "M" },
+	{ key: "n", label: "N" },
+	{ key: "o", label: "O" },
+	{ key: "p", label: "P" },
+	{ key: "q", label: "Q" },
+	{ key: "r", label: "R" },
+	{ key: "s", label: "S" },
+	{ key: "t", label: "T" },
+	{ key: "u", label: "U" },
+	{ key: "v", label: "V" },
+	{ key: "w", label: "W" },
+	{ key: "x", label: "X" },
+	{ key: "y", label: "Y" },
+	{ key: "z", label: "Z" },
+	{ key: "1", label: "1" },
+	{ key: "2", label: "2" },
+	{ key: "3", label: "3" },
+	{ key: "4", label: "4" },
+	{ key: "5", label: "5" },
+	{ key: "6", label: "6" },
+	{ key: "7", label: "7" },
+	{ key: "8", label: "8" },
+	{ key: "9", label: "9" },
+	{ key: "0", label: "0" },
 ];
 
 interface Props {
-  viewStack: ViewOptions[];
-  index: number;
-  isHidden: boolean;
+	viewStack: ViewOptions[];
+	index: number;
+	isHidden: boolean;
 }
 
 const KeyboardInput = ({ viewStack, index, isHidden }: Props) => {
-  const viewOptions = viewStack[index];
-  useMenuHideView(viewOptions.id);
-  const containerRef = useRef<HTMLDivElement>(null);
+	const viewOptions = viewStack[index];
+	useMenuHideView(viewOptions.id);
+	const containerRef = useRef<HTMLDivElement>(null);
 
-  if (viewOptions.type !== "keyboard") {
-    throw new Error("Keyboard option not supplied");
-  }
+	if (viewOptions.type !== "keyboard") {
+		throw new Error("Keyboard option not supplied");
+	}
 
-  useKeyboardInput({
-    initialValue: viewOptions.initialValue,
-    readOnly: false,
-  });
+	useKeyboardInput({
+		initialValue: viewOptions.initialValue,
+		readOnly: false,
+	});
 
-  const handleSelect = useCallback(
-    (key: string) => {
-      switch (key) {
-        default:
-          const inputEvent = new CustomEvent("input", {
-            detail: {
-              id: viewOptions.id,
-              key,
-            },
-          });
-          window.dispatchEvent(inputEvent);
-          break;
-      }
-    },
-    [viewOptions.id]
-  );
+	const handleSelect = useCallback(
+		(key: string) => {
+			const inputEvent = new CustomEvent("input", {
+				detail: {
+					id: viewOptions.id,
+					key,
+				},
+			});
+			window.dispatchEvent(inputEvent);
+		},
+		[viewOptions.id],
+	);
 
-  const listOptions: SelectableListOption[] = useMemo(() => {
-    return keyboardOptions.map((option) => ({
-      type: "action",
-      label: option.label,
-      onSelect: () => handleSelect(option.key),
-    }));
-  }, [handleSelect]);
+	const listOptions: SelectableListOption[] = useMemo(() => {
+		return keyboardOptions.map((option) => ({
+			type: "action",
+			label: option.label,
+			onSelect: () => handleSelect(option.key),
+		}));
+	}, [handleSelect]);
 
-  const [scrollIndex] = useScrollHandler(viewOptions.id, listOptions);
+	const [scrollIndex] = useScrollHandler(viewOptions.id, listOptions);
 
-  /** Always make sure the selected item is within the screen's view. */
-  useEffect(() => {
-    if (containerRef.current) {
-      const { children } = containerRef.current;
-      children[scrollIndex]?.scrollIntoView({
-        block: "nearest",
-      });
-    }
-  }, [scrollIndex]);
+	/** Always make sure the selected item is within the screen's view. */
+	useEffect(() => {
+		if (containerRef.current) {
+			const { children } = containerRef.current;
+			children[scrollIndex]?.scrollIntoView({
+				block: "nearest",
+			});
+		}
+	}, [scrollIndex]);
 
-  return (
-    <RootContainer
-      data-view-id={viewOptions.id}
-      index={index}
-      {...popInAnimation}
-    >
-      <ContentTransitionContainer $isHidden={isHidden}>
-        <OptionsContainer ref={containerRef}>
-          {listOptions.map((option, i) => (
-            <OptionContainer
-              key={`keyboard-option-${option.label}`}
-              $highlighted={scrollIndex === i}
-            >
-              <OptionText>{option.label}</OptionText>
-            </OptionContainer>
-          ))}
-        </OptionsContainer>
-      </ContentTransitionContainer>
-    </RootContainer>
-  );
+	return (
+		<RootContainer
+			data-view-id={viewOptions.id}
+			index={index}
+			{...popInAnimation}
+		>
+			<ContentTransitionContainer $isHidden={isHidden}>
+				<OptionsContainer ref={containerRef}>
+					{listOptions.map((option, i) => (
+						<OptionContainer
+							key={`keyboard-option-${option.label}`}
+							$highlighted={scrollIndex === i}
+						>
+							<OptionText>{option.label}</OptionText>
+						</OptionContainer>
+					))}
+				</OptionsContainer>
+			</ContentTransitionContainer>
+		</RootContainer>
+	);
 };
 
 export default KeyboardInput;

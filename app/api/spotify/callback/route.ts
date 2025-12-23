@@ -45,8 +45,6 @@ export async function GET(req: NextRequest) {
     const { access_token, refresh_token } = data;
 
     if (access_token) {
-      console.log("access_token", access_token);
-
       setSpotifyTokens(access_token, refresh_token);
 
       return new Response(
