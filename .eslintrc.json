@@ -7,7 +7,6 @@
     "import/first": "error",
     "import/no-mutable-exports": "error",
     "import/no-self-import": "error",
-    "import/no-unresolved": "error",
     "import/no-useless-path-segments": "error",
     "import/prefer-default-export": ["off"],
     "react-hooks/rules-of-hooks": "error",
@@ -27,6 +26,7 @@
     "react/require-default-props": ["off"],
     "react/state-in-constructor": ["off"],
     "react/static-property-placement": ["off"],
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
     "quotes": [
       "error",
       "double",
