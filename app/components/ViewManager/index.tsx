@@ -6,6 +6,13 @@ import PopupViewManager from "@/components/ViewManager/PopupViewManager";
 import SplitScreenViewManager from "@/components/ViewManager/SplitScreenViewManager";
 import { VIEW_REGISTRY } from "@/components/views/registry";
 import { useEventListener, useViewContext } from "@/hooks";
+import {
+  ViewInstance,
+  ScreenViewInstance,
+  ActionSheetInstance,
+  PopupInstance,
+  KeyboardInstance,
+} from "@/providers/ViewContextProvider";
 import styled from "styled-components";
 import { IpodEvent } from "@/utils/events";
 
@@ -24,32 +31,35 @@ const hasSplitScreenPreview = (viewId: string) => {
   return config?.isSplitScreen ?? false;
 };
 
+// Type guard functions
+const isScreenView = (view: ViewInstance): view is ScreenViewInstance =>
+  view.type === "screen";
+
+const isActionSheetView = (view: ViewInstance): view is ActionSheetInstance =>
+  view.type === "actionSheet";
+
+const isPopupView = (view: ViewInstance): view is PopupInstance =>
+  view.type === "popup";
+
+const isKeyboardView = (view: ViewInstance): view is KeyboardInstance =>
+  view.type === "keyboard";
+
 const ViewManager = () => {
   const { viewStack, resetViews } = useViewContext();
 
-  const coverFlowView = viewStack.find(
-    (view) => view.type === "screen" && view.id === "coverFlow"
+  const screenViews = viewStack.filter(isScreenView);
+  const coverFlowView = screenViews.find((view) => view.id === "coverFlow");
+
+  const splitScreenViews = screenViews.filter(
+    (view) => view.id !== "coverFlow" && hasSplitScreenPreview(view.id)
+  );
+  const fullScreenViews = screenViews.filter(
+    (view) => view.id !== "coverFlow" && !hasSplitScreenPreview(view.id)
   );
 
-  const splitScreenViews = viewStack.filter(
-    (view) =>
-      view.type === "screen" &&
-      view.id !== "coverFlow" &&
-      hasSplitScreenPreview(view.id)
-  );
-
-  const fullScreenViews = viewStack.filter(
-    (view) =>
-      view.type === "screen" &&
-      view.id !== "coverFlow" &&
-      !hasSplitScreenPreview(view.id)
-  );
-
-  const actionSheetViews = viewStack.filter(
-    (view) => view.type === "actionSheet"
-  );
-  const popupViews = viewStack.filter((view) => view.type === "popup");
-  const keyboardViews = viewStack.filter((view) => view.type === "keyboard");
+  const actionSheetViews = viewStack.filter(isActionSheetView);
+  const popupViews = viewStack.filter(isPopupView);
+  const keyboardViews = viewStack.filter(isKeyboardView);
 
   useEventListener<IpodEvent>("menulongpress", resetViews);
 

@@ -119,7 +119,7 @@ const Popup = ({ viewStack, index, isHidden }: Props) => {
             onSelect: () => {},
           },
         ];
-  }, [viewOptions.listOptions, viewOptions.type]);
+  }, [viewOptions.listOptions]);
 
   const [scrollIndex] = useScrollHandler(viewOptions.id, listOptions);
 

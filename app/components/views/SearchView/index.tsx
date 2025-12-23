@@ -85,7 +85,7 @@ const SearchView = () => {
         type: "view",
         label: "Songs",
         viewId: "songs",
-        props: { songs },
+        props: { songs: songs ?? [] },
         imageUrl: `${APP_URL}/song_icon.svg`,
         sublabel: `${songs?.length} ${pluralize(
           "song",

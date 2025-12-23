@@ -15,7 +15,12 @@ export type PopupId =
 /**
  * Known action sheet IDs used throughout the app.
  */
-export type ActionSheetId = "media-action-sheet";
+export type ActionSheetId =
+  | "media-action-sheet"
+  | "signin-popup"
+  | "device-theme-action-sheet"
+  | "service-type-action-sheet"
+  | "sign-out-popup";
 
 /**
  * Screen view instance - references a view in the registry
