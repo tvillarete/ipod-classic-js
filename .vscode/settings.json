@@ -1,40 +1,24 @@
 {
-  /**
-   * Import sorter
-   *
-   * Rules for sorting the imports. Sort the imports in a standardized manner.
-   * First react, then external imports, then folder imports
-   */
-
-  "importSorter.sortConfiguration.customOrderingRules.rules": [
-    {
-      "type": "importMember",
-      "regex": "^$",
-      "orderLevel": 10,
-      "disableSort": true
-    },
-    {
-      "regex": "^react",
-      "orderLevel": 20
-    },
-    {
-      "regex": "^([@]|[^.~])",
-      "orderLevel": 30
-    },
-    {
-      "regex": "^[~]",
-      "orderLevel": 40
-    },
-    {
-      "regex": "^[.]",
-      "orderLevel": 50
-    }
-  ],
-  "importSorter.generalConfiguration.sortOnBeforeSave": true,
-  "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.type": "newLineEachExpressionAfterCountLimitExceptIfOnlyOne",
-  "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.count": 80,
-  "importSorter.importStringConfiguration.tabSize": 2,
-  "importSorter.importStringConfiguration.trailingComma": "multiLine",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#65c89b",
     "activityBar.background": "#65c89b",
@@ -53,6 +37,5 @@
     "titleBar.activeForeground": "#15202b",
     "titleBar.inactiveBackground": "#42b88399",
     "titleBar.inactiveForeground": "#15202b99"
-  },
-  "peacock.color": "#42b883"
+  }
 }
