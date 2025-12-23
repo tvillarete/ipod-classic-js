@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useMenuHideView } from "@/hooks";
 import styled from "styled-components";
 
-import viewConfigMap from "..";
 import Game from "./Game";
 
 const RootContainer = styled.div`
@@ -24,7 +23,7 @@ const Canvas = styled.canvas`
 `;
 
 const BrickGame = () => {
-  useMenuHideView(viewConfigMap.brickGame.id);
+  useMenuHideView("brickGame");
   useEffect(() => {
     const game = new Game();
     game.init();

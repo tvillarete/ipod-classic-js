@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import { ViewOptions } from "@/providers/ViewContextProvider";
+import { PopupInstance } from "@/providers/ViewContextProvider";
 import styled from "styled-components";
 
 import Popup from "../components/Popup";
@@ -19,7 +19,7 @@ const RootContainer = styled.div<ContainerProps>`
 `;
 
 interface Props {
-  viewStack: ViewOptions[];
+  viewStack: PopupInstance[];
 }
 
 const PopupViewManager = ({ viewStack }: Props) => {

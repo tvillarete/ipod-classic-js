@@ -1,9 +1,8 @@
-import { NowPlaying } from "@/components";
-import viewConfigMap from "@/components/views";
+import NowPlaying from "@/components/NowPlaying";
 import { useMenuHideView, useViewContext } from "@/hooks";
 
 const NowPlayingView = () => {
-  useMenuHideView(viewConfigMap.nowPlaying.id);
+  useMenuHideView("nowPlaying");
   const { hideView } = useViewContext();
 
   return <NowPlaying onHide={hideView} />;

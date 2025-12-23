@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 
-import { viewConfigMap } from "@/components";
 import { useViewContext } from "@/hooks";
 import { useEventListener } from "@/hooks/utils";
 
@@ -24,8 +23,12 @@ const useKeyboardInput = ({
   onEnterPress = () => {},
   onChange = () => {},
 }: Props = {}): KeyboardInputHook => {
-  const { showView, hideView } = useViewContext();
+  const { showKeyboard: showKeyboardView, hideView } = useViewContext();
   const [value, setValue] = useState(initialValue);
+
+  const showKeyboard = useCallback(() => {
+    showKeyboardView({ id: "keyboard" });
+  }, [showKeyboardView]);
 
   useEventListener("input", ({ detail }) => {
     // TODO: Only trigger keyboard input for one screen at a time.
@@ -33,7 +36,7 @@ const useKeyboardInput = ({
 
     if (key === "Enter") {
       onEnterPress();
-      hideView(viewConfigMap.keyboard.id);
+      hideView("keyboard");
       return;
     }
 
@@ -81,13 +84,6 @@ const useKeyboardInput = ({
 
   useEventListener("keypress", handleKeypress);
   useEventListener("keydown", handleKeydown);
-
-  const showKeyboard = useCallback(() => {
-    showView({
-      id: viewConfigMap.keyboard.id,
-      type: "keyboard",
-    });
-  }, [showView]);
 
   return {
     value,

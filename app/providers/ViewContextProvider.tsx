@@ -1,73 +1,100 @@
 import { createContext, useState } from "react";
 
 import { SelectableListOption } from "@/components/SelectableList";
-import views, { HomeView, ViewConfig } from "@/components/views";
 import { SplitScreenPreview } from "@/components/previews";
+import { ViewId, ViewProps, VIEW_REGISTRY } from "@/components/views/registry";
 
-type SharedOptionProps = {
-  id: ViewConfig["id"];
-  type: ViewConfig["type"];
+/**
+ * Known popup IDs used throughout the app.
+ */
+export type PopupId =
+  | "spotifyNotSupported"
+  | "spotifyNonPremium"
+  | "musicProviderError";
+
+/**
+ * Known action sheet IDs used throughout the app.
+ */
+export type ActionSheetId =
+  | "media-action-sheet"
+  | "signin-popup"
+  | "device-theme-action-sheet"
+  | "service-type-action-sheet"
+  | "sign-out-popup";
+
+/**
+ * Screen view instance - references a view in the registry
+ */
+export type ScreenViewInstance<TViewId extends ViewId = ViewId> = {
+  type: "screen";
+  id: TViewId;
+  props?: ViewProps[TViewId];
   headerTitle?: string;
-  /** Fire an event when the view closes. */
   onClose?: (..._args: any[]) => void;
-  /** Any extra styles you want to pass to the view. */
   styles?: Record<string, any>;
 };
 
-export type ScreenViewOptionProps<
-  TComponent extends React.ComponentType<any> = any
-> = {
-  /** These view types allow you to pass in a custom component to render. */
-  type: "screen";
-  /** The React component that will be rendered in the view. */
-  component: TComponent;
-  /** Props that will be passed to the component. */
-  props?: Omit<React.ComponentProps<TComponent>, "id">;
-  /** Fire an event when the view closes. */
-  onClose?: (..._args: any[]) => void;
-  title?: string;
-};
-
-type ActionSheetViewOptionProps = {
+/**
+ * Action sheet instance - dynamic overlay with list options
+ */
+export type ActionSheetInstance = {
   type: "actionSheet";
+  id: ActionSheetId;
   listOptions: SelectableListOption[];
+  headerTitle?: string;
+  onClose?: (..._args: any[]) => void;
 };
 
-type PopupViewOptionProps = {
+/**
+ * Popup instance - dynamic overlay with title, description, and options
+ */
+export type PopupInstance = {
   type: "popup";
+  id: PopupId;
   title: string;
   description?: string;
   listOptions: SelectableListOption[];
+  onClose?: (..._args: any[]) => void;
 };
 
-type KeyboardViewOptionProps = {
+/**
+ * Keyboard instance - text input overlay
+ */
+export type KeyboardInstance = {
   type: "keyboard";
+  id: "keyboard";
   initialValue?: string;
+  onClose?: (..._args: any[]) => void;
 };
 
-type CoverFlowViewOptionProps = {
+/**
+ * CoverFlow instance - special album browsing view
+ */
+export type CoverFlowInstance = {
   type: "coverFlow";
+  id: string;
+  onClose?: (..._args: any[]) => void;
 };
 
-export type ViewOptions<TComponent extends React.ComponentType<any> = any> =
-  SharedOptionProps &
-    (
-      | ScreenViewOptionProps<TComponent>
-      | ActionSheetViewOptionProps
-      | PopupViewOptionProps
-      | KeyboardViewOptionProps
-      | CoverFlowViewOptionProps
-    );
+/**
+ * Union of all possible view instances
+ */
+export type ViewInstance =
+  | ScreenViewInstance
+  | ActionSheetInstance
+  | PopupInstance
+  | KeyboardInstance
+  | CoverFlowInstance;
 
 interface ViewContextState {
-  viewStack: ViewOptions[];
+  viewStack: ViewInstance[];
   headerTitle?: string;
   preview: SplitScreenPreview;
 }
 
 type ViewContextStateType = [
   ViewContextState,
-  React.Dispatch<React.SetStateAction<ViewContextState>>
+  React.Dispatch<React.SetStateAction<ViewContextState>>,
 ];
 
 export const ViewContext = createContext<ViewContextStateType>([
@@ -84,16 +111,15 @@ interface Props {
 }
 
 const ViewContextProvider = ({ children }: Props) => {
-  const baseView: ViewOptions = {
+  const baseView: ScreenViewInstance<"home"> = {
     type: "screen",
     id: "home",
-    component: HomeView,
   };
 
-  const viewStack: ViewOptions[] = [baseView];
+  const viewStack: ViewInstance[] = [baseView];
   const [viewContextState, setViewContextState] = useState<ViewContextState>({
     viewStack,
-    headerTitle: views.home.title,
+    headerTitle: VIEW_REGISTRY.home.title,
     preview: SplitScreenPreview.Music,
   });
 

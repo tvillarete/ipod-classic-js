@@ -1,46 +1,69 @@
 import { useCallback, useContext } from "react";
 
+import { SplitScreenPreview } from "@/components/previews";
+import { ViewId, ViewProps, VIEW_REGISTRY } from "@/components/views/registry";
 import {
-  ScreenViewOptionProps,
   ViewContext,
-  ViewOptions,
+  ViewInstance,
+  ScreenViewInstance,
+  ActionSheetInstance,
+  PopupInstance,
+  KeyboardInstance,
 } from "@/providers/ViewContextProvider";
-import { SplitScreenPreview } from "@/components";
-import views from "@/components/views";
+
+/**
+ * Type-safe parameters for showView function.
+ * - If view requires props: [props, headerTitle?]
+ * - If view has no props: [props?, headerTitle?]
+ */
+type ShowViewArgs<TViewId extends ViewId> = ViewProps[TViewId] extends undefined
+  ? [props?: undefined, headerTitle?: string]
+  : [props: ViewProps[TViewId], headerTitle?: string];
 
 export interface ViewContextHook {
-  /** Push an instance of ViewOptions to the viewStack. */
-  showView: (view: ViewOptions) => void;
+  /** Push a screen view to the viewStack (type-safe with registry). */
+  showView: <TViewId extends ViewId>(
+    viewId: TViewId,
+    ...args: ShowViewArgs<TViewId>
+  ) => void;
+  /** Show an action sheet overlay */
+  showActionSheet: (options: Omit<ActionSheetInstance, "type">) => void;
+  /** Show a popup overlay */
+  showPopup: (options: Omit<PopupInstance, "type">) => void;
+  /** Show keyboard overlay */
+  showKeyboard: (options: Omit<KeyboardInstance, "type">) => void;
   /** Given an id, remove the view from the stack (otherwise, pop the top view). */
   hideView: (id?: string) => void;
   /** Removes all views except the first from the viewStack. */
   resetViews: () => void;
-  /** Returns an array of ViewOptions. */
-  viewStack: ViewOptions[];
-  /** Checks if the current view's id matches the given id.
-   * Useful for enabling/disabling scrolling if a view is hidden.
-   */
+  /** Returns an array of ViewInstance. */
+  viewStack: ViewInstance[];
+  /** Checks if the current view's id matches the given id. */
   isViewActive: (id: string) => boolean;
   headerTitle?: string;
   preview: SplitScreenPreview;
   setScreenViewOptions: (
-    viewId: ViewOptions["id"],
-    options: Partial<Omit<ScreenViewOptionProps, "id">>
+    viewId: ViewInstance["id"],
+    options: Partial<Omit<ScreenViewInstance, "id">>
   ) => void;
   setHeaderTitle: (title?: string) => void;
   setPreview: (preview: SplitScreenPreview) => void;
 }
 
 /**
- * This hook allows any component to access three parameters:
- *   1. showView
- *   2. hideView
- *   3. viewStack
+ * This hook allows any component to access view navigation methods.
+ * Use it whenever you want to navigate between views or show overlays.
  *
- *   Use it whenever you want to open a new view (@type ViewOptions).
+ * @example
+ * ```
+ * const { showView, showActionSheet, hideView } = useViewContext();
  *
- *    @example
- *    `const {showView, hideView, viewStack} = useViewContext();`
+ * // Navigate to a view
+ * showView('album', { id: 'abc123' });
+ *
+ * // Show an action sheet
+ * showActionSheet({ id: 'options', listOptions: [...] });
+ * ```
  */
 export const useViewContext = (): ViewContextHook => {
   const [viewContextState, setViewContextState] = useContext(ViewContext);
@@ -56,11 +79,73 @@ export const useViewContext = (): ViewContextHook => {
   );
 
   const showView = useCallback(
-    (view: ViewOptions) => {
+    <TViewId extends ViewId>(
+      viewId: TViewId,
+      props?: ViewProps[TViewId],
+      headerTitle?: string
+    ) => {
+      const config = VIEW_REGISTRY[viewId];
+      if (!config) {
+        console.error(`View not found in registry: ${viewId}`);
+        return;
+      }
+
+      const viewInstance: ScreenViewInstance<TViewId> = {
+        type: "screen",
+        id: viewId,
+        props,
+        headerTitle,
+      };
+
       setViewContextState((prevViewState) => ({
         ...prevViewState,
-        viewStack: [...prevViewState.viewStack, view],
-        headerTitle: view.headerTitle ?? views[view.id]?.title ?? "view",
+        viewStack: [...prevViewState.viewStack, viewInstance],
+        headerTitle: headerTitle ?? config.title ?? viewId,
+      }));
+    },
+    [setViewContextState]
+  );
+
+  const showActionSheet = useCallback(
+    (options: Omit<ActionSheetInstance, "type">) => {
+      const viewInstance: ActionSheetInstance = {
+        type: "actionSheet",
+        ...options,
+      };
+
+      setViewContextState((prevViewState) => ({
+        ...prevViewState,
+        viewStack: [...prevViewState.viewStack, viewInstance],
+      }));
+    },
+    [setViewContextState]
+  );
+
+  const showPopup = useCallback(
+    (options: Omit<PopupInstance, "type">) => {
+      const viewInstance: PopupInstance = {
+        type: "popup",
+        ...options,
+      };
+
+      setViewContextState((prevViewState) => ({
+        ...prevViewState,
+        viewStack: [...prevViewState.viewStack, viewInstance],
+      }));
+    },
+    [setViewContextState]
+  );
+
+  const showKeyboard = useCallback(
+    (options: Omit<KeyboardInstance, "type">) => {
+      const viewInstance: KeyboardInstance = {
+        type: "keyboard",
+        ...options,
+      };
+
+      setViewContextState((prevViewState) => ({
+        ...prevViewState,
+        viewStack: [...prevViewState.viewStack, viewInstance],
       }));
     },
     [setViewContextState]
@@ -71,13 +156,18 @@ export const useViewContext = (): ViewContextHook => {
       if (viewContextState.viewStack.length === 1) return;
       setViewContextState((prevViewState) => {
         const newViewStack = id
-          ? prevViewState.viewStack.filter(
-              (view: ViewOptions) => view.id !== id
-            )
+          ? prevViewState.viewStack.filter((view) => view.id !== id)
           : prevViewState.viewStack.slice(0, -1);
         const newTopView = newViewStack[newViewStack.length - 1];
-        const headerTitle =
-          newTopView.headerTitle ?? views[newTopView.id]?.title;
+
+        // Get header title from view
+        let headerTitle: string | undefined;
+        if (newTopView.type === "screen") {
+          const config = VIEW_REGISTRY[newTopView.id as ViewId];
+          headerTitle = newTopView.headerTitle ?? config?.title;
+        } else if ("headerTitle" in newTopView) {
+          headerTitle = newTopView.headerTitle;
+        }
 
         return {
           ...prevViewState,
@@ -98,7 +188,7 @@ export const useViewContext = (): ViewContextHook => {
 
   const isViewActive = useCallback(
     (id: string) => {
-      const { viewStack: viewStack } = viewContextState;
+      const { viewStack } = viewContextState;
       const curView = viewStack[viewStack.length - 1];
       return curView.id === id;
     },
@@ -107,8 +197,8 @@ export const useViewContext = (): ViewContextHook => {
 
   const setScreenViewOptions = useCallback(
     (
-      viewId: ViewOptions["id"],
-      options: Partial<Omit<ScreenViewOptionProps, "id">>
+      viewId: ViewInstance["id"],
+      options: Partial<Omit<ScreenViewInstance, "id">>
     ) => {
       setViewContextState((prevState) => {
         const viewIndex = prevState.viewStack.findIndex(
@@ -151,10 +241,13 @@ export const useViewContext = (): ViewContextHook => {
   );
 
   return {
-    showView: showView,
-    hideView: hideView,
-    resetViews: resetViews,
-    isViewActive: isViewActive,
+    showView,
+    showActionSheet,
+    showPopup,
+    showKeyboard,
+    hideView,
+    resetViews,
+    isViewActive,
     preview: viewContextState.preview,
     viewStack: viewContextState.viewStack,
     headerTitle: viewContextState.headerTitle,

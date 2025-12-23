@@ -1,19 +1,10 @@
 import { useCallback, useMemo } from "react";
 
-import {
-  getConditionalOption,
-  SelectableList,
+import { getConditionalOption } from "@/components/SelectableList";
+import SelectableList, {
   SelectableListOption,
-} from "@/components";
+} from "@/components/SelectableList";
 import { SplitScreenPreview } from "@/components/previews";
-import {
-  CoverFlowView,
-  GamesView,
-  MusicView,
-  NowPlayingView,
-  SettingsView,
-  viewConfigMap,
-} from "@/components/views";
 import {
   useAudioPlayer,
   useEventListener,
@@ -42,35 +33,31 @@ const HomeView = () => {
       {
         type: "view",
         label: "Cover Flow",
-        viewId: viewConfigMap.coverFlow.id,
-        component: () => <CoverFlowView />,
+        viewId: "coverFlow",
         preview: SplitScreenPreview.Music,
       },
       {
         type: "view",
         label: "Music",
-        viewId: viewConfigMap.music.id,
-        component: () => <MusicView />,
+        viewId: "music",
         preview: SplitScreenPreview.Music,
       },
       {
         type: "view",
         label: "Games",
-        viewId: viewConfigMap.games.id,
-        component: () => <GamesView />,
+        viewId: "games",
         preview: SplitScreenPreview.Games,
       },
       {
         type: "view",
         label: "Settings",
-        viewId: viewConfigMap.settings.id,
-        component: () => <SettingsView />,
+        viewId: "settings",
         preview: SplitScreenPreview.Settings,
       },
       // Show the sign in buttons if the user is not logged in.
       ...getConditionalOption(!isAuthorized, {
         type: "actionSheet",
-        id: viewConfigMap.signinPopup.id,
+        id: "signin-popup",
         label: "Sign in",
         listOptions: [
           {
@@ -89,32 +76,27 @@ const HomeView = () => {
       ...getConditionalOption(!!nowPlayingItem, {
         type: "view",
         label: strings.nowPlaying,
-        viewId: viewConfigMap.nowPlaying.id,
-        component: () => <NowPlayingView />,
+        viewId: "nowPlaying",
         preview: SplitScreenPreview.NowPlaying,
       }),
     ],
     [isAuthorized, nowPlayingItem, signInWithApple, signInWithSpotify]
   );
 
-  const [scrollIndex] = useScrollHandler(viewConfigMap.home.id, options);
+  const [scrollIndex] = useScrollHandler("home", options);
 
   const handleIdleState = useCallback(() => {
     const activeView = viewStack[viewStack.length - 1];
 
     const shouldShowNowPlaying =
       !!nowPlayingItem &&
-      activeView.id !== viewConfigMap.nowPlaying.id &&
-      activeView.id !== viewConfigMap.coverFlow.id &&
-      activeView.id !== viewConfigMap.keyboard.id;
+      activeView.id !== "nowPlaying" &&
+      activeView.id !== "coverFlow" &&
+      activeView.id !== "keyboard";
 
     // Only show the now playing view if we're playing a song and not already on that view.
     if (shouldShowNowPlaying) {
-      showView({
-        type: "screen",
-        id: viewConfigMap.nowPlaying.id,
-        component: NowPlayingView,
-      });
+      showView("nowPlaying");
     }
   }, [nowPlayingItem, showView, viewStack]);
 

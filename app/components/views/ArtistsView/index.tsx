@@ -1,10 +1,12 @@
 import { useMemo } from "react";
 
-import { AuthPrompt, SelectableList, SelectableListOption } from "@/components";
+import AuthPrompt from "@/components/AuthPrompt";
+import SelectableList, {
+  SelectableListOption,
+} from "@/components/SelectableList";
 import { useMenuHideView, useScrollHandler, useSettings } from "@/hooks";
 import * as Utils from "@/utils";
 
-import viewConfigMap, { ArtistView } from "..";
 import { useFetchArtists } from "@/hooks/utils/useDataFetcher";
 
 interface Props {
@@ -18,7 +20,7 @@ const ArtistsView = ({
   inLibrary = true,
   showImages = false,
 }: Props) => {
-  useMenuHideView(viewConfigMap.artists.id);
+  useMenuHideView("artists");
   const { isAuthorized } = useSettings();
   const { data: fetchedArtists, isLoading: isQueryLoading } = useFetchArtists({
     lazy: !!artists,
@@ -34,11 +36,11 @@ const ArtistsView = ({
           type: "view",
           headerTitle: artist.name,
           label: artist.name,
-          viewId: viewConfigMap.artist.id,
+          viewId: "artist",
           imageUrl: showImages
-            ? Utils.getArtwork(50, artist.artwork?.url) ?? "artists_icon.svg"
+            ? (Utils.getArtwork(50, artist.artwork?.url) ?? "artists_icon.svg")
             : "",
-          component: () => <ArtistView id={artist.id} inLibrary={inLibrary} />,
+          props: { id: artist.id, inLibrary },
         })
       ) ?? []
     );
@@ -49,7 +51,7 @@ const ArtistsView = ({
   // cases, we'll check if we have any 'options'
   const isLoading = !options.length && isQueryLoading;
 
-  const [scrollIndex] = useScrollHandler(viewConfigMap.artists.id, options);
+  const [scrollIndex] = useScrollHandler("artists", options);
 
   return isAuthorized ? (
     <SelectableList

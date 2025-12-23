@@ -5,7 +5,8 @@ import {
   PopupOptionProps,
   SelectableListOption,
 } from "@/components";
-import viewConfigMap, { NowPlayingView } from "@/components/views";
+import { ViewId } from "@/components/views/registry";
+import { PopupId, ActionSheetId } from "@/providers/ViewContextProvider";
 import useHapticFeedback from "@/hooks/useHapticFeedback";
 import { IpodEvent } from "@/utils/events";
 
@@ -39,8 +40,8 @@ const getInitIndex = (
 
 /** Accepts a list of options and will maintain a scroll index capped at the list's length. */
 const useScrollHandler = (
-  /** This should match the view's viewId (to enable/disable events for hidden views). */
-  id: string,
+  /** This should match the view's ID (screen view, popup, action sheet, or keyboard). */
+  id: ViewId | PopupId | ActionSheetId | "keyboard",
   /** A list of all scrollable items. Used to cap the scrolling to the last element. */
   options: SelectableListOption[] = [],
   selectedOption?: SelectableListOption,
@@ -51,7 +52,8 @@ const useScrollHandler = (
   onNearEndOfList?: (...args: any) => any
 ): [number] => {
   const { triggerHaptics } = useHapticFeedback();
-  const { showView, viewStack, setPreview } = useViewContext();
+  const { showView, showPopup, showActionSheet, viewStack, setPreview } =
+    useViewContext();
   const { play } = useAudioPlayer();
   const [index, setIndex] = useState(getInitIndex(options, selectedOption));
   const timeoutIdRef = useRef<NodeJS.Timeout>();
@@ -117,44 +119,26 @@ const useScrollHandler = (
     });
   }, [handleCheckForPreview, isActive, triggerHaptics]);
 
-  const handleShowView = useCallback(
-    (
-      id: string,
-      component: React.ReactNode | ((...args: any) => JSX.Element),
-      headerTitle?: string
-    ) => {
-      showView({
-        id,
-        type: viewConfigMap[id]?.type as any,
-        component,
-        headerTitle,
-      });
-    },
-    [showView]
-  );
-
   const handleShowPopup = useCallback(
     (options: PopupOptionProps) => {
-      showView({
-        type: "popup",
+      showPopup({
         id: options.popupId,
         title: options.title,
         description: options.description,
         listOptions: options.listOptions,
       });
     },
-    [showView]
+    [showPopup]
   );
 
   const handleShowActionSheet = useCallback(
     (options: ActionSheetOptionProps) => {
-      showView({
-        type: "actionSheet",
+      showActionSheet({
         id: options.id,
         listOptions: options.listOptions,
       });
     },
-    [showView]
+    [showActionSheet]
   );
 
   /** Parses the selected option for a new view to show or song to play. */
@@ -172,14 +156,14 @@ const useScrollHandler = (
         await play(option.queueOptions);
 
         if (option.showNowPlayingView) {
-          handleShowView(viewConfigMap.nowPlaying.id, () => <NowPlayingView />);
+          showView("nowPlaying");
         }
         break;
       case "link":
         window.open(option.url, "_blank");
         break;
       case "view":
-        handleShowView(option.viewId, option.component, option.headerTitle);
+        showView(option.viewId, option.props, option.headerTitle);
         break;
       case "action":
         option.onSelect();
@@ -194,7 +178,7 @@ const useScrollHandler = (
   }, [
     handleShowActionSheet,
     handleShowPopup,
-    handleShowView,
+    showView,
     index,
     isActive,
     options,
@@ -208,13 +192,12 @@ const useScrollHandler = (
     if (!isActive || !option) return;
 
     if (option.longPressOptions) {
-      showView({
-        type: "actionSheet",
-        id: viewConfigMap.mediaActionSheet.id,
+      showActionSheet({
+        id: "media-action-sheet",
         listOptions: option.longPressOptions,
       });
     }
-  }, [index, isActive, options, showView]);
+  }, [index, isActive, options, showActionSheet]);
 
   /** If the list length changes and the index is larger, reset the index to 0. */
   useEffect(() => {

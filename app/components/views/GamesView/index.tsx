@@ -1,21 +1,21 @@
-import { SelectableList, SelectableListOption } from "@/components";
+import SelectableList, {
+  SelectableListOption,
+} from "@/components/SelectableList";
 import { SplitScreenPreview } from "@/components/previews";
-import { BrickGameView, viewConfigMap } from "@/components/views";
 import { useMenuHideView, useScrollHandler } from "@/hooks";
 
 const GamesView = () => {
-  useMenuHideView(viewConfigMap.games.id);
+  useMenuHideView("games");
   const options: SelectableListOption[] = [
     {
       type: "view",
       label: "Brick",
-      viewId: viewConfigMap.brickGame.id,
-      component: () => <BrickGameView />,
+      viewId: "brickGame",
       preview: SplitScreenPreview.Games,
     },
   ];
 
-  const [scrollIndex] = useScrollHandler(viewConfigMap.games.id, options);
+  const [scrollIndex] = useScrollHandler("games", options);
 
   return <SelectableList options={options} activeIndex={scrollIndex} />;
 };

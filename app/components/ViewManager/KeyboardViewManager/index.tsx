@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import { ViewOptions } from "@/providers/ViewContextProvider";
+import { KeyboardInstance } from "@/providers/ViewContextProvider";
 import styled from "styled-components";
 
 import KeyboardInput from "../components/KeyboardInput";
@@ -12,7 +12,7 @@ const RootContainer = styled.div`
 `;
 
 interface Props {
-  viewStack: ViewOptions[];
+  viewStack: KeyboardInstance[];
 }
 
 const KeyboardViewManager = ({ viewStack }: Props) => {

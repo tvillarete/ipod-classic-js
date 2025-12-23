@@ -1,10 +1,12 @@
 import { useMemo } from "react";
 
-import { AuthPrompt, SelectableList, SelectableListOption } from "@/components";
+import AuthPrompt from "@/components/AuthPrompt";
+import SelectableList, {
+  SelectableListOption,
+} from "@/components/SelectableList";
 import { useMenuHideView, useScrollHandler, useSettings } from "@/hooks";
 import * as Utils from "@/utils";
 
-import viewConfigMap, { AlbumView } from "..";
 import { useFetchAlbums } from "@/hooks/utils/useDataFetcher";
 
 interface Props {
@@ -14,7 +16,7 @@ interface Props {
 
 const AlbumsView = ({ albums, inLibrary = true }: Props) => {
   const { isAuthorized } = useSettings();
-  useMenuHideView(viewConfigMap.albums.id);
+  useMenuHideView("albums");
 
   const { data: fetchedAlbums, isLoading } = useFetchAlbums({
     // Don't fetch if we're passed an initial array of albums
@@ -33,14 +35,12 @@ const AlbumsView = ({ albums, inLibrary = true }: Props) => {
         subLabel: album.artistName,
         image: { url: Utils.getArtwork(300, album.artwork?.url) ?? "" },
         viewId: "album",
-        component: () => (
-          <AlbumView id={album.id ?? ""} inLibrary={inLibrary} />
-        ),
+        props: { id: album.id ?? "", inLibrary },
       })) ?? []
     );
   }, [albums, fetchedAlbums, inLibrary]);
 
-  const [scrollIndex] = useScrollHandler(viewConfigMap.albums.id, options);
+  const [scrollIndex] = useScrollHandler("albums", options);
 
   return isAuthorized ? (
     <SelectableList

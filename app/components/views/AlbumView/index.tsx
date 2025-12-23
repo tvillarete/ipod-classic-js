@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 
-import { SelectableList, SelectableListOption } from "@/components";
-import { viewConfigMap } from "@/components/views";
+import SelectableList, {
+  SelectableListOption,
+} from "@/components/SelectableList";
 import { useMenuHideView, useScrollHandler } from "@/hooks";
 import * as Utils from "@/utils";
 import { useFetchAlbum } from "@/hooks/utils/useDataFetcher";
@@ -13,7 +14,7 @@ interface Props {
 }
 
 const AlbumView = ({ id, inLibrary = false }: Props) => {
-  useMenuHideView(viewConfigMap.album.id);
+  useMenuHideView("album");
 
   const { data: album, isLoading } = useFetchAlbum({
     id,
@@ -35,7 +36,7 @@ const AlbumView = ({ id, inLibrary = false }: Props) => {
     [album]
   );
 
-  const [scrollIndex] = useScrollHandler(viewConfigMap.album.id, options);
+  const [scrollIndex] = useScrollHandler("album", options);
 
   return (
     <SelectableList

@@ -11,7 +11,7 @@ import {
 import styled, { css } from "styled-components";
 import { Unit } from "@/utils/constants";
 import { IpodEvent } from "@/utils/events";
-import { ViewOptions } from "@/providers/ViewContextProvider";
+import { ActionSheetInstance } from "@/providers/ViewContextProvider";
 import { slideUpAnimation } from "@/animation";
 
 interface RootContainerProps {
@@ -84,7 +84,7 @@ const OptionContainer = styled.div<{ $highlighted: boolean }>`
 `;
 
 interface Props {
-  viewStack: ViewOptions[];
+  viewStack: ActionSheetInstance[];
   index: number;
   isHidden: boolean;
 }
@@ -95,8 +95,7 @@ const ActionSheet = ({ viewStack, index, isHidden }: Props) => {
   useMenuHideView(viewOptions.id);
 
   const options: SelectableListOption[] = useMemo(() => {
-    const listOptions =
-      viewOptions.type === "actionSheet" ? viewOptions.listOptions : [];
+    const listOptions = viewOptions.listOptions ?? [];
 
     return [
       ...listOptions,
