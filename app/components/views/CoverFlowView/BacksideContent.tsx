@@ -1,14 +1,12 @@
 import { useCallback, useMemo } from "react";
 
-import {
-  LoadingScreen,
-  SelectableList,
+import LoadingScreen from "@/components/LoadingScreen";
+import SelectableList, {
   SelectableListOption,
-} from "@/components";
+} from "@/components/SelectableList";
 import { useEventListener, useScrollHandler, useViewContext } from "@/hooks";
 import styled from "styled-components";
 
-import viewConfigMap from "..";
 import { IpodEvent } from "@/utils/events";
 import { useFetchAlbum } from "@/hooks/utils/useDataFetcher";
 
@@ -73,7 +71,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
     [album]
   );
 
-  const [scrollIndex] = useScrollHandler(viewConfigMap.coverFlow.id, options);
+  const [scrollIndex] = useScrollHandler("coverFlow", options);
 
   const handleSelect = useCallback(() => {
     setPlayingAlbum(true);

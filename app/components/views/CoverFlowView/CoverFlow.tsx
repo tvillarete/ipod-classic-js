@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { fade } from "@/animation";
-import { NowPlaying } from "@/components";
+import NowPlaying from "@/components/NowPlaying";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEventListener, useViewContext } from "@/hooks";
 import styled from "styled-components";
@@ -41,7 +41,7 @@ const InfoContainer = styled(motion.div)`
   text-align: center;
   display: -webkit-box;
   -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;  
+  -webkit-box-orient: vertical;
   overflow: hidden;
 `;
 

@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 
-import { AuthPrompt, LoadingScreen } from "@/components";
+import AuthPrompt from "@/components/AuthPrompt";
+import LoadingScreen from "@/components/LoadingScreen";
 import { useEventListener, useSettings, useViewContext } from "@/hooks";
 import styled from "styled-components";
 
