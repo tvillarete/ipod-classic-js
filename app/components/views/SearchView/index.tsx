@@ -1,15 +1,10 @@
 import React, { useCallback, useMemo, useState } from "react";
 
-import {
-  AlbumsView,
-  ArtistsView,
-  AuthPrompt,
-  getConditionalOption,
-  PlaylistsView,
-  SelectableList,
+import AuthPrompt from "@/components/AuthPrompt";
+import { getConditionalOption } from "@/components/SelectableList";
+import SelectableList, {
   SelectableListOption,
-} from "@/components";
-import { SongsView, viewConfigMap } from "@/components/views";
+} from "@/components/SelectableList";
 import {
   useEffectOnce,
   useKeyboardInput,
@@ -22,7 +17,7 @@ import { APP_URL } from "@/utils/constants/api";
 import { pluralize } from "@/utils/strings";
 
 const SearchView = () => {
-  useMenuHideView(viewConfigMap.search.id);
+  useMenuHideView("search");
   const { isAuthorized } = useSettings();
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -65,10 +60,8 @@ const SearchView = () => {
       ...getConditionalOption(!!artists?.length, {
         type: "view",
         label: "Artists",
-        viewId: viewConfigMap.artists.id,
-        component: () => (
-          <ArtistsView artists={artists} inLibrary={false} showImages />
-        ),
+        viewId: "artists",
+        props: { artists, inLibrary: false, showImages: true },
         imageUrl: `${APP_URL}/artists_icon.svg`,
         sublabel: `${artists?.length} ${pluralize(
           "artist",
@@ -79,8 +72,8 @@ const SearchView = () => {
       ...getConditionalOption(!!albums?.length, {
         type: "view",
         label: "Albums",
-        viewId: viewConfigMap.albums.id,
-        component: () => <AlbumsView albums={albums} inLibrary={false} />,
+        viewId: "albums",
+        props: { albums, inLibrary: false },
         imageUrl: `${APP_URL}/albums_icon.svg`,
         sublabel: `${albums?.length} ${pluralize(
           "album",
@@ -91,8 +84,8 @@ const SearchView = () => {
       ...getConditionalOption(!!songs?.length, {
         type: "view",
         label: "Songs",
-        viewId: viewConfigMap.songs.id,
-        component: () => <SongsView songs={songs!} />,
+        viewId: "songs",
+        props: { songs },
         imageUrl: `${APP_URL}/song_icon.svg`,
         sublabel: `${songs?.length} ${pluralize(
           "song",
@@ -103,10 +96,8 @@ const SearchView = () => {
       ...getConditionalOption(!!playlists?.length, {
         type: "view",
         label: "Playlists",
-        viewId: viewConfigMap.playlists.id,
-        component: () => (
-          <PlaylistsView playlists={playlists!} inLibrary={false} />
-        ),
+        viewId: "playlists",
+        props: { playlists, inLibrary: false },
         imageUrl: `${APP_URL}/playlist_icon.svg`,
         sublabel: `${playlists?.length} ${pluralize(
           "playlist",
@@ -132,7 +123,7 @@ const SearchView = () => {
     }
   });
 
-  const [scrollIndex] = useScrollHandler(viewConfigMap.search.id, options);
+  const [scrollIndex] = useScrollHandler("search", options);
 
   return isAuthorized ? (
     <SelectableList

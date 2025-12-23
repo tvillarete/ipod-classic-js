@@ -1,12 +1,10 @@
 import { useMemo } from "react";
 
-import {
-  getConditionalOption,
-  SelectableList,
+import { getConditionalOption } from "@/components/SelectableList";
+import SelectableList, {
   SelectableListOption,
-} from "@/components";
+} from "@/components/SelectableList";
 import { SplitScreenPreview } from "@/components/previews";
-import viewConfigMap, { AboutView } from "@/components/views";
 import {
   useMenuHideView,
   useMusicKit,
@@ -16,7 +14,7 @@ import {
 } from "@/hooks";
 
 const SettingsView = () => {
-  useMenuHideView(viewConfigMap.settings.id);
+  useMenuHideView("settings");
   const {
     isAuthorized,
     isAppleAuthorized,
@@ -38,14 +36,13 @@ const SettingsView = () => {
       {
         type: "view",
         label: "About",
-        viewId: viewConfigMap.about.id,
-        component: () => <AboutView />,
+        viewId: "about",
         preview: SplitScreenPreview.Settings,
       },
       /** Add an option to select between services signed into more than one. */
       ...getConditionalOption(isAuthorized, {
         type: "actionSheet",
-        id: viewConfigMap.serviceTypeActionSheet.id,
+        id: "service-type-action-sheet",
         label: "Choose service",
         listOptions: [
           {
@@ -65,7 +62,7 @@ const SettingsView = () => {
       }),
       {
         type: "actionSheet",
-        id: viewConfigMap.deviceThemeActionSheet.id,
+        id: "device-theme-action-sheet",
         label: "Device theme",
         listOptions: [
           {
@@ -92,7 +89,7 @@ const SettingsView = () => {
       /** Show the sign in option if not signed into any service. */
       ...getConditionalOption(!isAuthorized, {
         type: "actionSheet",
-        id: viewConfigMap.signinPopup.id,
+        id: "signin-popup",
         label: "Sign in",
         listOptions: [
           ...getConditionalOption(isMkConfigured, {
@@ -111,7 +108,7 @@ const SettingsView = () => {
       /** Show the signout option for any services that are authenticated. */
       ...getConditionalOption(isAuthorized, {
         type: "actionSheet",
-        id: viewConfigMap.signOutPopup.id,
+        id: "sign-out-popup",
         label: "Sign out",
         listOptions: [
           ...getConditionalOption(isAppleAuthorized, {
@@ -143,7 +140,7 @@ const SettingsView = () => {
     ]
   );
 
-  const [scrollIndex] = useScrollHandler(viewConfigMap.settings.id, options);
+  const [scrollIndex] = useScrollHandler("settings", options);
 
   return <SelectableList options={options} activeIndex={scrollIndex} />;
 };

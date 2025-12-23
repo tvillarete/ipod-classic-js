@@ -1,5 +1,4 @@
 import { SelectableList, SelectableListOption } from "@/components";
-import { viewConfigMap } from "@/components/views";
 import { useMenuHideView, useScrollHandler } from "@/hooks";
 import styled from "styled-components";
 import { Unit } from "@/utils/constants";
@@ -41,7 +40,7 @@ const ListContainer = styled.div`
 `;
 
 const AboutView = () => {
-  useMenuHideView(viewConfigMap.about.id);
+  useMenuHideView("about");
   const options: SelectableListOption[] = [
     {
       type: "link",
@@ -60,7 +59,7 @@ const AboutView = () => {
     },
   ];
 
-  const [scrollIndex] = useScrollHandler(viewConfigMap.about.id, options);
+  const [scrollIndex] = useScrollHandler("about", options);
 
   return (
     <Container>

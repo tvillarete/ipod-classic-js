@@ -1,10 +1,12 @@
 import { useMemo } from "react";
 
-import { AuthPrompt, SelectableList, SelectableListOption } from "@/components";
+import AuthPrompt from "@/components/AuthPrompt";
+import SelectableList, {
+  SelectableListOption,
+} from "@/components/SelectableList";
 import { useMenuHideView, useScrollHandler, useSettings } from "@/hooks";
 import * as Utils from "@/utils";
 
-import viewConfigMap, { PlaylistView } from "..";
 import { useFetchPlaylists } from "@/hooks/utils/useDataFetcher";
 
 interface Props {
@@ -13,7 +15,7 @@ interface Props {
 }
 
 const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
-  useMenuHideView(viewConfigMap.playlists.id);
+  useMenuHideView("playlists");
   const { isAuthorized } = useSettings();
   const {
     data: fetchedPlaylists,
@@ -34,11 +36,9 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
         label: playlist.name,
         sublabel: playlist.description || `By ${playlist.curatorName}`,
         imageUrl: Utils.getArtwork(100, playlist.artwork?.url),
-        viewId: viewConfigMap.playlist.id,
+        viewId: "playlist",
         headerTitle: playlist.name,
-        component: () => (
-          <PlaylistView id={playlist.id} inLibrary={inLibrary} />
-        ),
+        props: { id: playlist.id, inLibrary },
         longPressOptions: Utils.getMediaOptions("playlist", playlist.id),
       })) ?? []
     );
@@ -49,7 +49,7 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
   // cases, we'll check if we have any 'options'
   const isLoading = !options.length && isQueryLoading;
 
-  const [scrollIndex] = useScrollHandler(viewConfigMap.playlists.id, options);
+  const [scrollIndex] = useScrollHandler("playlists", options);
 
   return isAuthorized ? (
     <SelectableList

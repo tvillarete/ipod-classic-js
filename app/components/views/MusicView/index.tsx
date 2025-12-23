@@ -1,16 +1,9 @@
 import React, { useMemo } from "react";
 
-import { SelectableList, SelectableListOption } from "@/components";
+import SelectableList, {
+  SelectableListOption,
+} from "@/components/SelectableList";
 import { SplitScreenPreview } from "@/components/previews";
-import {
-  AlbumsView,
-  ArtistsView,
-  CoverFlowView,
-  NowPlayingView,
-  PlaylistsView,
-  SearchView,
-  viewConfigMap,
-} from "@/components/views";
 import {
   useAudioPlayer,
   useMenuHideView,
@@ -21,43 +14,38 @@ import {
 const MusicView = () => {
   const { isAppleAuthorized } = useSettings();
   const { nowPlayingItem } = useAudioPlayer();
-  useMenuHideView(viewConfigMap.music.id);
+  useMenuHideView("music");
 
   const options: SelectableListOption[] = useMemo(() => {
     const arr: SelectableListOption[] = [
       {
         type: "view",
         label: "Cover Flow",
-        viewId: viewConfigMap.coverFlow.id,
-        component: () => <CoverFlowView />,
+        viewId: "coverFlow",
         preview: SplitScreenPreview.Music,
       },
       {
         type: "view",
         label: "Playlists",
-        viewId: viewConfigMap.playlists.id,
-        component: () => <PlaylistsView />,
+        viewId: "playlists",
         preview: SplitScreenPreview.Music,
       },
       {
         type: "view",
         label: "Artists",
-        viewId: viewConfigMap.artists.id,
-        component: () => <ArtistsView />,
+        viewId: "artists",
         preview: SplitScreenPreview.Music,
       },
       {
         type: "view",
         label: "Albums",
-        viewId: viewConfigMap.albums.id,
-        component: () => <AlbumsView />,
+        viewId: "albums",
         preview: SplitScreenPreview.Music,
       },
       {
         type: "view",
         label: "Search",
-        viewId: viewConfigMap.search.id,
-        component: () => <SearchView />,
+        viewId: "search",
         preview: SplitScreenPreview.Music,
       },
     ];
@@ -66,8 +54,7 @@ const MusicView = () => {
       arr.push({
         type: "view",
         label: "Now playing",
-        viewId: viewConfigMap.nowPlaying.id,
-        component: () => <NowPlayingView />,
+        viewId: "nowPlaying",
         preview: SplitScreenPreview.NowPlaying,
       });
     }
@@ -75,7 +62,7 @@ const MusicView = () => {
     return arr;
   }, [isAppleAuthorized, nowPlayingItem]);
 
-  const [scrollIndex] = useScrollHandler(viewConfigMap.music.id, options);
+  const [scrollIndex] = useScrollHandler("music", options);
 
   return <SelectableList options={options} activeIndex={scrollIndex} />;
 };
