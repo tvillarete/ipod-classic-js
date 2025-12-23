@@ -4,7 +4,7 @@ import FullScreenViewManager from "@/components/ViewManager/FullScreenViewManage
 import KeyboardViewManager from "@/components/ViewManager/KeyboardViewManager";
 import PopupViewManager from "@/components/ViewManager/PopupViewManager";
 import SplitScreenViewManager from "@/components/ViewManager/SplitScreenViewManager";
-import viewConfigMap, { ViewConfig } from "@/components/views";
+import { VIEW_REGISTRY } from "@/components/views/registry";
 import { useEventListener, useViewContext } from "@/hooks";
 import styled from "styled-components";
 import { IpodEvent } from "@/utils/events";
@@ -19,19 +19,32 @@ const Mask = styled.div`
   right: 0;
 `;
 
-const hasSplitScreenPreview = (viewId: ViewConfig["id"]) => {
-  return !!viewConfigMap[viewId].isSplitScreen;
+const hasSplitScreenPreview = (viewId: string) => {
+  const config = VIEW_REGISTRY[viewId as keyof typeof VIEW_REGISTRY];
+  return config?.isSplitScreen ?? false;
 };
 
 const ViewManager = () => {
   const { viewStack, resetViews } = useViewContext();
+
+  const coverFlowView = viewStack.find(
+    (view) => view.type === "screen" && view.id === "coverFlow"
+  );
+
   const splitScreenViews = viewStack.filter(
-    (view) => view.type === "screen" && hasSplitScreenPreview(view.id)
+    (view) =>
+      view.type === "screen" &&
+      view.id !== "coverFlow" &&
+      hasSplitScreenPreview(view.id)
   );
+
   const fullScreenViews = viewStack.filter(
-    (view) => view.type === "screen" && !hasSplitScreenPreview(view.id)
+    (view) =>
+      view.type === "screen" &&
+      view.id !== "coverFlow" &&
+      !hasSplitScreenPreview(view.id)
   );
-  const coverFlowView = viewStack.find((view) => view.type === "coverFlow");
+
   const actionSheetViews = viewStack.filter(
     (view) => view.type === "actionSheet"
   );
