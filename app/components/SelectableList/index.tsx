@@ -4,6 +4,7 @@ import { LoadingIndicator, LoadingScreen } from "@/components";
 import ErrorScreen from "@/components/ErrorScreen";
 import { SplitScreenPreview } from "@/components/previews";
 import { ViewId, ViewProps } from "@/components/views/registry";
+import { PopupId, ActionSheetId } from "@/providers/ViewContextProvider";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTimeout } from "@/hooks";
 import styled from "styled-components";
@@ -66,7 +67,7 @@ type ActionOptionProps = {
 export type PopupOptionProps = {
   type: "popup";
   /** A unique identifier for the popup. */
-  popupId: string;
+  popupId: PopupId;
   listOptions: SelectableListOption[];
   title: string;
   description?: string;
@@ -75,7 +76,7 @@ export type PopupOptionProps = {
 export type ActionSheetOptionProps = {
   type: "actionSheet";
   /** A unique identifier for the action sheet. */
-  id: string;
+  id: ActionSheetId;
   listOptions: SelectableListOption[];
 };
 

@@ -9,7 +9,7 @@ import {
   useScrollHandler,
   useViewContext,
 } from "@/hooks";
-import { ViewOptions } from "@/providers/ViewContextProvider";
+import { PopupInstance } from "@/providers/ViewContextProvider";
 import styled, { css } from "styled-components";
 import { Unit } from "@/utils/constants";
 import { IpodEvent } from "@/utils/events";
@@ -97,7 +97,7 @@ const OptionContainer = styled.div<{ $highlighted: boolean }>`
 `;
 
 interface Props {
-  viewStack: ViewOptions[];
+  viewStack: PopupInstance[];
   index: number;
   isHidden: boolean;
 }
@@ -107,13 +107,8 @@ const Popup = ({ viewStack, index, isHidden }: Props) => {
   useMenuHideView(viewOptions.id);
   const { hideView } = useViewContext();
 
-  if (viewOptions.type !== "popup") {
-    throw new Error("Popup option not supplied");
-  }
-
   const listOptions: SelectableListOption[] = useMemo(() => {
-    const listOptions =
-      viewOptions.type === "popup" ? viewOptions.listOptions : [];
+    const listOptions = viewOptions.listOptions ?? [];
 
     return listOptions.length
       ? listOptions

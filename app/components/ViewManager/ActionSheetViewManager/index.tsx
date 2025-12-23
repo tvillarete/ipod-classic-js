@@ -2,7 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import styled from "styled-components";
 
 import ActionSheet from "../components/ActionSheet";
-import { ViewOptions } from "@/providers/ViewContextProvider";
+import { ActionSheetInstance } from "@/providers/ViewContextProvider";
 
 interface ContainerProps {
   $isHidden: boolean;
@@ -19,7 +19,7 @@ const RootContainer = styled.div<ContainerProps>`
 `;
 
 interface Props {
-  viewStack: ViewOptions[];
+  viewStack: ActionSheetInstance[];
 }
 
 const ActionSheetViewManager = ({ viewStack }: Props) => {

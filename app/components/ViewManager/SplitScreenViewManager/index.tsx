@@ -2,7 +2,7 @@ import { Header } from "@/components";
 import PreviewPanel from "@/components/ViewManager/SplitScreenViewManager/PreviewPanel";
 import View from "@/components/ViewManager/components/View";
 import { AnimatePresence } from "framer-motion";
-import { ViewOptions } from "@/providers/ViewContextProvider";
+import { ScreenViewInstance } from "@/providers/ViewContextProvider";
 import styled, { css } from "styled-components";
 import { Screen } from "@/utils/constants";
 
@@ -50,7 +50,7 @@ const ContentContainer = styled.div`
 `;
 
 interface Props {
-  viewStack: ViewOptions[];
+  viewStack: ScreenViewInstance[];
   menuHidden: boolean;
   allHidden: boolean;
 }

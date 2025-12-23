@@ -5,6 +5,19 @@ import { SplitScreenPreview } from "@/components/previews";
 import { ViewId, ViewProps, VIEW_REGISTRY } from "@/components/views/registry";
 
 /**
+ * Known popup IDs used throughout the app.
+ */
+export type PopupId =
+  | "spotifyNotSupported"
+  | "spotifyNonPremium"
+  | "musicProviderError";
+
+/**
+ * Known action sheet IDs used throughout the app.
+ */
+export type ActionSheetId = "media-action-sheet";
+
+/**
  * Screen view instance - references a view in the registry
  */
 export type ScreenViewInstance<TViewId extends ViewId = ViewId> = {
@@ -21,7 +34,7 @@ export type ScreenViewInstance<TViewId extends ViewId = ViewId> = {
  */
 export type ActionSheetInstance = {
   type: "actionSheet";
-  id: string;
+  id: ActionSheetId;
   listOptions: SelectableListOption[];
   headerTitle?: string;
   onClose?: (..._args: any[]) => void;
@@ -32,7 +45,7 @@ export type ActionSheetInstance = {
  */
 export type PopupInstance = {
   type: "popup";
-  id: string;
+  id: PopupId;
   title: string;
   description?: string;
   listOptions: SelectableListOption[];
@@ -44,7 +57,7 @@ export type PopupInstance = {
  */
 export type KeyboardInstance = {
   type: "keyboard";
-  id: string;
+  id: "keyboard";
   initialValue?: string;
   onClose?: (..._args: any[]) => void;
 };

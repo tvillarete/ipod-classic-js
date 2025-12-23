@@ -9,7 +9,6 @@ import {
   SpotifySDKContext,
   SpotifySDKState,
 } from "@/providers/SpotifySdkProvider";
-import views from "@/components/views";
 
 export type SpotifySDKHook = SpotifySDKState & {
   signIn: () => void;
@@ -29,7 +28,7 @@ export const useSpotifySDK = ({
     isAppleAuthorized,
     setService,
   } = useSettings();
-  const { showView } = useViewContext();
+  const { showPopup } = useViewContext();
   const state = useContext(SpotifySDKContext);
 
   const authorizationChangedRef = useRef(onAuthorizationChanged);
@@ -54,10 +53,9 @@ export const useSpotifySDK = ({
 
       window.open(spotifyLoginUrl, "_self");
     } else if (!state.isPlayerConnected) {
-      showView({
-        type: "popup",
-        id: views.spotifyNotSupportedPopup.id,
-        title: views.spotifyNotSupportedPopup.title,
+      showPopup({
+        id: "spotifyNotSupported",
+        title: "Spotify Not Supported",
         description: "Spotify was unable to mount on this browser :(",
         listOptions: [
           {
@@ -70,7 +68,7 @@ export const useSpotifySDK = ({
     } else {
       setService("spotify");
     }
-  }, [isSpotifyAuthorized, setService, showView, state.isPlayerConnected]);
+  }, [isSpotifyAuthorized, setService, showPopup, state.isPlayerConnected]);
 
   const signOut = useCallback(async () => {
     state.spotifyPlayer.disconnect();

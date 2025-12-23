@@ -1,7 +1,6 @@
 import { createContext, useCallback, useContext } from "react";
 
 import { useSettings, useViewContext } from "@/hooks";
-import views from "@/components/views";
 
 export interface MusicKitState {
   musicKit?: typeof MusicKit;
@@ -22,16 +21,15 @@ export const useMusicKit = (): MusicKitHook => {
   const { setIsAppleAuthorized, isSpotifyAuthorized, setService } =
     useSettings();
   const { isConfigured, hasDevToken, hasError } = useContext(MusicKitContext);
-  const { showView } = useViewContext();
+  const { showPopup } = useViewContext();
 
   const signIn = useCallback(async () => {
     const music = window.MusicKit?.getInstance();
 
     if (hasError) {
-      showView({
-        type: "popup",
-        id: views.musicProviderErrorPopup.id,
-        title: views.musicProviderErrorPopup.title,
+      showPopup({
+        id: "musicProviderError",
+        title: "Music Provider Error",
         description:
           "Apple Music was unable to mount. Try reloading or feel free to file bug report 🐞",
         listOptions: [
@@ -54,7 +52,7 @@ export const useMusicKit = (): MusicKitHook => {
     }
 
     setService("apple");
-  }, [hasError, setService, showView]);
+  }, [hasError, setService, showPopup]);
 
   const signOut = useCallback(() => {
     const music = window.MusicKit?.getInstance();
