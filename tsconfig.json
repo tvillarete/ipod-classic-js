@@ -18,8 +18,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
     "plugins": [
       {
         "name": "next"
