@@ -39,15 +39,6 @@ export async function GET(req: NextRequest) {
     const refreshToken = data.refresh_token;
     const tokenRefreshTimestamp = Date.now().toString();
 
-    console.log(
-      "Updated accessToken",
-      accessToken,
-      "refreshToken",
-      refreshToken,
-      "tokenRefreshTimestamp",
-      tokenRefreshTimestamp
-    );
-
     if (accessToken) {
       setSpotifyTokens(accessToken, refreshToken);
 

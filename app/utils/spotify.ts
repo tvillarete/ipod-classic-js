@@ -33,7 +33,6 @@ export const checkShouldRefreshSpotifyTokens = (
   const millisecondDiff = now - lastRefreshDate;
   const millisecondsInMinute = 60 * 1000;
   const minuteDiff = Math.trunc(millisecondDiff / millisecondsInMinute);
-  console.log(`Last token refresh: ${minuteDiff} minutes ago`);
 
   return minuteDiff > 30;
 };
