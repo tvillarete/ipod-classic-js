@@ -4,8 +4,8 @@ import {
   getConditionalOption,
   SelectableList,
   SelectableListOption,
-} from "components";
-import { SplitScreenPreview } from "components/previews";
+} from "@/components";
+import { SplitScreenPreview } from "@/components/previews";
 import {
   CoverFlowView,
   GamesView,
@@ -13,7 +13,7 @@ import {
   NowPlayingView,
   SettingsView,
   viewConfigMap,
-} from "components/views";
+} from "@/components/views";
 import {
   useAudioPlayer,
   useEventListener,
@@ -22,8 +22,8 @@ import {
   useSettings,
   useSpotifySDK,
   useViewContext,
-} from "hooks";
-import { IpodEvent } from "utils/events";
+} from "@/hooks";
+import { IpodEvent } from "@/utils/events";
 
 const strings = {
   nowPlaying: "Now Playing",

@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
-import { useSpotifySDK } from "hooks";
-import * as ConversionUtils from "utils/conversion";
+import { useSpotifySDK } from "@/hooks";
+import * as ConversionUtils from "@/utils/conversion";
 import querystring from "query-string";
 
 /**

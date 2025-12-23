@@ -1,9 +1,9 @@
 import { getCookie, setCookie } from "cookies-next";
-import { useViewContext, useSettings, useInterval, useEffectOnce } from "hooks";
+import { useViewContext, useSettings, useInterval, useEffectOnce } from "@/hooks";
 import { useState, useRef, useCallback, useEffect, createContext } from "react";
-import * as SpotifyUtils from "utils/spotify";
-import { SPOTIFY_TOKENS_COOKIE_NAME } from "utils/constants/api";
-import views from "components/views";
+import * as SpotifyUtils from "@/utils/spotify";
+import { SPOTIFY_TOKENS_COOKIE_NAME } from "@/utils/constants/api";
+import views from "@/components/views";
 
 export interface SpotifySDKState {
 	isPlayerConnected: boolean;

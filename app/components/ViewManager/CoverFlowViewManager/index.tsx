@@ -1,7 +1,7 @@
-import { fade } from "animation";
-import { CoverFlowView, Header } from "components";
+import { fade } from "@/animation";
+import { CoverFlowView, Header } from "@/components";
 import { AnimatePresence, motion } from "framer-motion";
-import { ViewOptions } from "providers/ViewContextProvider";
+import { ViewOptions } from "@/providers/ViewContextProvider";
 import styled from "styled-components";
 
 const Container = styled(motion.div)`

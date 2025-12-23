@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
-import { popInAnimation } from "animation";
-import { SelectableListOption } from "components";
+import { popInAnimation } from "@/animation";
+import { SelectableListOption } from "@/components";
 import { motion } from "framer-motion";
-import { useKeyboardInput, useMenuHideView, useScrollHandler } from "hooks";
-import { ViewOptions } from "providers/ViewContextProvider";
+import { useKeyboardInput, useMenuHideView, useScrollHandler } from "@/hooks";
+import { ViewOptions } from "@/providers/ViewContextProvider";
 import styled, { css } from "styled-components";
-import { Unit } from "utils/constants";
+import { Unit } from "@/utils/constants";
 
 interface RootContainerProps {
 	index: number;

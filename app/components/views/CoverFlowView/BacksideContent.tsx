@@ -4,13 +4,13 @@ import {
   LoadingScreen,
   SelectableList,
   SelectableListOption,
-} from "components";
-import { useEventListener, useScrollHandler, useViewContext } from "hooks";
+} from "@/components";
+import { useEventListener, useScrollHandler, useViewContext } from "@/hooks";
 import styled from "styled-components";
 
 import viewConfigMap from "..";
-import { IpodEvent } from "utils/events";
-import { useFetchAlbum } from "hooks/utils/useDataFetcher";
+import { IpodEvent } from "@/utils/events";
+import { useFetchAlbum } from "@/hooks/utils/useDataFetcher";
 
 const Container = styled.div`
   position: absolute;

@@ -1,7 +1,7 @@
-import { SelectableList, SelectableListOption } from "components";
-import { SplitScreenPreview } from "components/previews";
-import { BrickGameView, viewConfigMap } from "components/views";
-import { useMenuHideView, useScrollHandler } from "hooks";
+import { SelectableList, SelectableListOption } from "@/components";
+import { SplitScreenPreview } from "@/components/previews";
+import { BrickGameView, viewConfigMap } from "@/components/views";
+import { useMenuHideView, useScrollHandler } from "@/hooks";
 
 const GamesView = () => {
   useMenuHideView(viewConfigMap.games.id);

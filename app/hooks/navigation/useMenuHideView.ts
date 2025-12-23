@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 
-import { useEventListener, useViewContext } from "hooks";
+import { useEventListener, useViewContext } from "@/hooks";
 
-import { IpodEvent } from "utils/events";
+import { IpodEvent } from "@/utils/events";
 
 /**
  * A quick way to use the menu button as a back button.

@@ -5,7 +5,7 @@ import {
   useMusicKit,
   useSettings,
   useSpotifyDataFetcher,
-} from "hooks";
+} from "@/hooks";
 
 interface UserLibraryProps {
   inLibrary?: boolean;

@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import { ViewOptions } from "providers/ViewContextProvider";
+import { ViewOptions } from "@/providers/ViewContextProvider";
 import styled from "styled-components";
 
 import KeyboardInput from "../components/KeyboardInput";

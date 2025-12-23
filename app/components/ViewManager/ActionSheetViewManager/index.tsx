@@ -2,7 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import styled from "styled-components";
 
 import ActionSheet from "../components/ActionSheet";
-import { ViewOptions } from "providers/ViewContextProvider";
+import { ViewOptions } from "@/providers/ViewContextProvider";
 
 interface ContainerProps {
   $isHidden: boolean;

@@ -1,7 +1,7 @@
-import { SplitScreenPreview, Previews } from "components/previews";
+import { SplitScreenPreview, Previews } from "@/components/previews";
 import { AnimatePresence } from "framer-motion";
-import { useViewContext } from "hooks";
-import { Screen } from "utils/constants";
+import { useViewContext } from "@/hooks";
+import { Screen } from "@/utils/constants";
 import styled, { css } from "styled-components";
 
 interface ContainerProps {

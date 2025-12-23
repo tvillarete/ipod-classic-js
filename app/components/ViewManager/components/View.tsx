@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 
-import { noAnimation, slideRightAnimation } from "animation";
+import { noAnimation, slideRightAnimation } from "@/animation";
 import { motion } from "framer-motion";
-import { ViewOptions } from "providers/ViewContextProvider";
+import { ViewOptions } from "@/providers/ViewContextProvider";
 import styled from "styled-components";
 
 interface ContainerProps {

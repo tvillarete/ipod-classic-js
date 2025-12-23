@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 
-import { useMusicKit } from "hooks";
+import { useMusicKit } from "@/hooks";
 import queryString from "query-string";
-import * as ConversionUtils from "utils/conversion";
+import * as ConversionUtils from "@/utils/conversion";
 
 /**
  *  Accepts information about the current API request  as well as

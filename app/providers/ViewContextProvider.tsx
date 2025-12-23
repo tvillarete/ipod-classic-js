@@ -1,8 +1,8 @@
 import { createContext, useState } from "react";
 
-import { SelectableListOption } from "components/SelectableList";
-import views, { HomeView, ViewConfig } from "components/views";
-import { SplitScreenPreview } from "components/previews";
+import { SelectableListOption } from "@/components/SelectableList";
+import views, { HomeView, ViewConfig } from "@/components/views";
+import { SplitScreenPreview } from "@/components/previews";
 
 type SharedOptionProps = {
   id: ViewConfig["id"];

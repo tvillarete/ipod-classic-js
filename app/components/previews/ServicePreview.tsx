@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import { useSettings } from "hooks";
+import { useSettings } from "@/hooks";
 import styled from "styled-components";
-import { Unit } from "utils/constants";
-import { APP_URL } from "utils/constants/api";
+import { Unit } from "@/utils/constants";
+import { APP_URL } from "@/utils/constants/api";
 
 const Container = styled(motion.div)`
   display: flex;

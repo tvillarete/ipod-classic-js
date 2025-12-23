@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { useMenuHideView } from "hooks";
+import { useMenuHideView } from "@/hooks";
 import styled from "styled-components";
 
 import viewConfigMap from "..";

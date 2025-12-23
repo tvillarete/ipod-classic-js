@@ -1,18 +1,18 @@
 import { useMemo } from "react";
 
-import { popInAnimation } from "animation";
-import { SelectableListOption } from "components";
+import { popInAnimation } from "@/animation";
+import { SelectableListOption } from "@/components";
 import { motion } from "framer-motion";
 import {
   useEventListener,
   useMenuHideView,
   useScrollHandler,
   useViewContext,
-} from "hooks";
-import { ViewOptions } from "providers/ViewContextProvider";
+} from "@/hooks";
+import { ViewOptions } from "@/providers/ViewContextProvider";
 import styled, { css } from "styled-components";
-import { Unit } from "utils/constants";
-import { IpodEvent } from "utils/events";
+import { Unit } from "@/utils/constants";
+import { IpodEvent } from "@/utils/events";
 
 interface RootContainerProps {
   index: number;

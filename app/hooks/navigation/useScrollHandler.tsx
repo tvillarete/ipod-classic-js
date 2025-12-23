@@ -4,17 +4,17 @@ import {
   ActionSheetOptionProps,
   PopupOptionProps,
   SelectableListOption,
-} from "components";
-import viewConfigMap, { NowPlayingView } from "components/views";
-import useHapticFeedback from "hooks/useHapticFeedback";
-import { IpodEvent } from "utils/events";
+} from "@/components";
+import viewConfigMap, { NowPlayingView } from "@/components/views";
+import useHapticFeedback from "@/hooks/useHapticFeedback";
+import { IpodEvent } from "@/utils/events";
 
 import {
   useAudioPlayer,
   useEffectOnce,
   useEventListener,
   useViewContext,
-} from "hooks";
+} from "@/hooks";
 
 /** Gets the initial index for the scroll position. If there is a selected option,
  * this will initialize our initial scroll position at the selectedOption  */

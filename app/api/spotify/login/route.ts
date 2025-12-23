@@ -1,5 +1,5 @@
-import { SPOTIFY_CLIENT_ID } from "utils/constants/api";
-import { getSpotifyRedirectUri } from "api/spotify/utils";
+import { SPOTIFY_CLIENT_ID } from "@/utils/constants/api";
+import { getSpotifyRedirectUri } from "@/api/spotify/utils";
 import { v4 as uuid } from "uuid";
 
 export async function GET() {

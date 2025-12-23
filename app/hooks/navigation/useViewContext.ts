@@ -4,9 +4,9 @@ import {
   ScreenViewOptionProps,
   ViewContext,
   ViewOptions,
-} from "providers/ViewContextProvider";
-import { SplitScreenPreview } from "components";
-import views from "components/views";
+} from "@/providers/ViewContextProvider";
+import { SplitScreenPreview } from "@/components";
+import views from "@/components/views";
 
 export interface ViewContextHook {
   /** Push an instance of ViewOptions to the viewStack. */

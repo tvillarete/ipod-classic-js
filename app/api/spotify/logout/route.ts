@@ -1,4 +1,4 @@
-import { clearSpotifyTokens } from "api/spotify/utils";
+import { clearSpotifyTokens } from "@/api/spotify/utils";
 
 export async function GET() {
   clearSpotifyTokens();

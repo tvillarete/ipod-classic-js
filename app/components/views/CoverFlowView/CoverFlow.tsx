@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { fade } from "animation";
-import { NowPlaying } from "components";
+import { fade } from "@/animation";
+import { NowPlaying } from "@/components";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEventListener, useViewContext } from "hooks";
+import { useEventListener, useViewContext } from "@/hooks";
 import styled from "styled-components";
 
 import AlbumCover from "./AlbumCover";
-import { IpodEvent } from "utils/events";
+import { IpodEvent } from "@/utils/events";
 
 export type Point = {
   x: number;

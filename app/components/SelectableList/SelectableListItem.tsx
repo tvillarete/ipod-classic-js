@@ -1,8 +1,8 @@
 import styled, { css } from "styled-components";
-import { Unit } from "utils/constants";
+import { Unit } from "@/utils/constants";
 
 import { SelectableListOption } from ".";
-import { APP_URL } from "utils/constants/api";
+import { APP_URL } from "@/utils/constants/api";
 
 const LabelContainer = styled.div`
   flex: 1;

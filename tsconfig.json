@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": "./app",
     "target": "ES2020",
     "lib": [
       "dom",

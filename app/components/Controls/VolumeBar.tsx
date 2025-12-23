@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { Unit } from "utils/constants";
+import { Unit } from "@/utils/constants";
 
 import ProgressBar from "./ProgressBar";
-import { APP_URL } from "utils/constants/api";
+import { APP_URL } from "@/utils/constants/api";
 
 const Container = styled.div`
   position: relative;

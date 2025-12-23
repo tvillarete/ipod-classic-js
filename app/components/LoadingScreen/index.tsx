@@ -1,4 +1,4 @@
-import { fade } from "animation";
+import { fade } from "@/animation";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 

@@ -3,7 +3,7 @@ import {
   useEventListener,
   useMKEventListener,
   MusicKitContext,
-} from "hooks";
+} from "@/hooks";
 import { useRef, useState, useCallback, useEffect } from "react";
 
 export interface MusicKitProviderProps {

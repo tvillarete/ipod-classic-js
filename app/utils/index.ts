@@ -1,5 +1,5 @@
-import { SelectableListOption } from "components/SelectableList";
-import { DEFAULT_ARTWORK_URL } from "utils/constants/api";
+import { SelectableListOption } from "@/components/SelectableList";
+import { DEFAULT_ARTWORK_URL } from "@/utils/constants/api";
 
 /** Accepts a url with '{w}' and '{h}' and replaces them with the specified size */
 export const getArtwork = (size: number | string, url?: string) => {

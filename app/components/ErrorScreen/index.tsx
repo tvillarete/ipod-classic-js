@@ -1,6 +1,6 @@
-import { SadMacIcon } from "components/icons";
+import { SadMacIcon } from "@/components/icons";
 import styled from "styled-components";
-import { Unit } from "utils/constants";
+import { Unit } from "@/utils/constants";
 
 const RootContainer = styled.div`
   display: flex;

@@ -1,5 +1,5 @@
-import { getRootAppUrl } from "api/spotify/utils";
-import StyledComponentsRegistry from "lib/registry";
+import { getRootAppUrl } from "@/api/spotify/utils";
+import StyledComponentsRegistry from "@/lib/registry";
 import { Metadata, Viewport } from "next";
 import Script from "next/script";
 

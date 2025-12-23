@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 
-import { AuthPrompt, KenBurns, LoadingScreen } from "components";
+import { AuthPrompt, KenBurns, LoadingScreen } from "@/components";
 import { motion } from "framer-motion";
-import { useSettings } from "hooks";
+import { useSettings } from "@/hooks";
 import styled from "styled-components";
-import { useFetchAlbums } from "hooks/utils/useDataFetcher";
-import { previewSlideRight } from "animation";
-import { getArtwork } from "utils";
+import { useFetchAlbums } from "@/hooks/utils/useDataFetcher";
+import { previewSlideRight } from "@/animation";
+import { getArtwork } from "@/utils";
 
 const Container = styled(motion.div)`
   z-index: 1;

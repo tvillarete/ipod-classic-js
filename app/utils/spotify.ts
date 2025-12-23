@@ -1,6 +1,6 @@
-import { getRootAppUrl } from "utils";
-import { API_URL } from "utils/constants/api";
-import { SELECTED_SERVICE_KEY } from "utils/service";
+import { getRootAppUrl } from "@/utils";
+import { API_URL } from "@/utils/constants/api";
+import { SELECTED_SERVICE_KEY } from "@/utils/service";
 
 export type TokenResponse = {
   accessToken?: string;

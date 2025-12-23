@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 
-import { AuthPrompt, SelectableList, SelectableListOption } from "components";
-import { useMenuHideView, useScrollHandler, useSettings } from "hooks";
-import * as Utils from "utils";
+import { AuthPrompt, SelectableList, SelectableListOption } from "@/components";
+import { useMenuHideView, useScrollHandler, useSettings } from "@/hooks";
+import * as Utils from "@/utils";
 
 import viewConfigMap, { PlaylistView } from "..";
-import { useFetchPlaylists } from "hooks/utils/useDataFetcher";
+import { useFetchPlaylists } from "@/hooks/utils/useDataFetcher";
 
 interface Props {
   playlists?: MediaApi.Playlist[];

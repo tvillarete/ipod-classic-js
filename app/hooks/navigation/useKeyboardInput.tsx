@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
 
-import { viewConfigMap } from "components";
-import { useViewContext } from "hooks";
-import { useEventListener } from "hooks/utils";
+import { viewConfigMap } from "@/components";
+import { useViewContext } from "@/hooks";
+import { useEventListener } from "@/hooks/utils";
 
 interface KeyboardInputHook {
   value: string;

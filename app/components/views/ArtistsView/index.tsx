@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 
-import { AuthPrompt, SelectableList, SelectableListOption } from "components";
-import { useMenuHideView, useScrollHandler, useSettings } from "hooks";
-import * as Utils from "utils";
+import { AuthPrompt, SelectableList, SelectableListOption } from "@/components";
+import { useMenuHideView, useScrollHandler, useSettings } from "@/hooks";
+import * as Utils from "@/utils";
 
 import viewConfigMap, { ArtistView } from "..";
-import { useFetchArtists } from "hooks/utils/useDataFetcher";
+import { useFetchArtists } from "@/hooks/utils/useDataFetcher";
 
 interface Props {
   artists?: MediaApi.Artist[];

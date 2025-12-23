@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 
-import { SelectableList, SelectableListOption } from "components";
-import { viewConfigMap } from "components/views";
-import { useMenuHideView, useScrollHandler } from "hooks";
-import * as Utils from "utils";
+import { SelectableList, SelectableListOption } from "@/components";
+import { viewConfigMap } from "@/components/views";
+import { useMenuHideView, useScrollHandler } from "@/hooks";
+import * as Utils from "@/utils";
 
 interface Props {
   songs: MediaApi.Song[];

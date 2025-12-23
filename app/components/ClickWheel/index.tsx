@@ -13,8 +13,8 @@ import {
   getCircularBoundingInfo,
   getScrollDirection,
 } from "./helpers";
-import { DeviceThemeName, getTheme } from "utils/themes";
-import { useEventListener, useSettings } from "hooks";
+import { DeviceThemeName, getTheme } from "@/utils/themes";
+import { useEventListener, useSettings } from "@/hooks";
 import {
   dispatchBackClickEvent,
   dispatchCenterClickEvent,
@@ -24,9 +24,9 @@ import {
   dispatchMenuClickEvent,
   dispatchPlayPauseClickEvent,
   dispatchScrollEvent,
-} from "utils/events";
-import { useLongPressHandler } from "hooks/navigation/useLongPressHandler";
-import { Screen } from "utils/constants";
+} from "@/utils/events";
+import { useLongPressHandler } from "@/hooks/navigation/useLongPressHandler";
+import { Screen } from "@/utils/constants";
 import { ANGLE_OFFSET_THRESHOLD, PAN_THRESHOLD } from "./constants";
 
 type RootContainerProps = {

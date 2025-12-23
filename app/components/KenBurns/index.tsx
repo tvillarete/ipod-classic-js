@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { useInterval } from "hooks";
+import { useInterval } from "@/hooks";
 import styled from "styled-components";
 
 const Container = styled.div``;

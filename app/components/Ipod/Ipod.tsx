@@ -1,13 +1,13 @@
 "use client";
 import { memo, useCallback, useState } from "react";
-import * as SpotifyUtils from "utils/spotify";
+import * as SpotifyUtils from "@/utils/spotify";
 import {
   AudioPlayerProvider,
   SettingsContext,
   SettingsProvider,
   useEffectOnce,
-} from "hooks";
-import { ClickWheel, ViewManager } from "components";
+} from "@/hooks";
+import { ClickWheel, ViewManager } from "@/components";
 import {
   ScreenContainer,
   ClickWheelContainer,
@@ -15,13 +15,13 @@ import {
   Sticker,
   Sticker2,
   Sticker3,
-} from "components/Ipod/Styled";
+} from "@/components/Ipod/Styled";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { SpotifySDKProvider } from "providers/SpotifySdkProvider";
-import { MusicKitProvider } from "providers/MusicKitProvider";
-import ViewContextProvider from "providers/ViewContextProvider";
+import { SpotifySDKProvider } from "@/providers/SpotifySdkProvider";
+import { MusicKitProvider } from "@/providers/MusicKitProvider";
+import ViewContextProvider from "@/providers/ViewContextProvider";
 import { useRouter } from "next/navigation";
-import { GlobalStyles } from "components/Ipod/GlobalStyles";
+import { GlobalStyles } from "@/components/Ipod/GlobalStyles";
 import Script from "next/script";
 
 type Props = {

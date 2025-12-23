@@ -1,4 +1,4 @@
-import { APP_URL } from "utils/constants/api";
+import { APP_URL } from "@/utils/constants/api";
 
 export type DeviceTheme = {
   body: {

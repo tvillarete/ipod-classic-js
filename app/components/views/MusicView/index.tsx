@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
-import { SelectableList, SelectableListOption } from "components";
-import { SplitScreenPreview } from "components/previews";
+import { SelectableList, SelectableListOption } from "@/components";
+import { SplitScreenPreview } from "@/components/previews";
 import {
   AlbumsView,
   ArtistsView,
@@ -10,13 +10,13 @@ import {
   PlaylistsView,
   SearchView,
   viewConfigMap,
-} from "components/views";
+} from "@/components/views";
 import {
   useAudioPlayer,
   useMenuHideView,
   useScrollHandler,
   useSettings,
-} from "hooks";
+} from "@/hooks";
 
 const MusicView = () => {
   const { isAppleAuthorized } = useSettings();

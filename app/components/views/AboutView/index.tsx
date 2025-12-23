@@ -1,9 +1,9 @@
-import { SelectableList, SelectableListOption } from "components";
-import { viewConfigMap } from "components/views";
-import { useMenuHideView, useScrollHandler } from "hooks";
+import { SelectableList, SelectableListOption } from "@/components";
+import { viewConfigMap } from "@/components/views";
+import { useMenuHideView, useScrollHandler } from "@/hooks";
 import styled from "styled-components";
-import { Unit } from "utils/constants";
-import { APP_URL } from "utils/constants/api";
+import { Unit } from "@/utils/constants";
+import { APP_URL } from "@/utils/constants/api";
 
 const Container = styled.div`
   display: flex;
