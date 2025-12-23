@@ -6,6 +6,9 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 const nextConfig = {
   reactStrictMode: false,
   basePath: "/ipod",
+  compiler: {
+    styledComponents: true,
+  },
 };
 
 module.exports = withBundleAnalyzer(nextConfig);
