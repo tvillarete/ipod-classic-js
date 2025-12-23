@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { LoadingIndicator, LoadingScreen } from "@/components";
 import ErrorScreen from "@/components/ErrorScreen";
 import { SplitScreenPreview } from "@/components/previews";
+import { ViewId, ViewProps } from "@/components/views/registry";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTimeout } from "@/hooks";
 import styled from "styled-components";
@@ -32,12 +33,12 @@ type SharedOptionProps = {
   longPressOptions?: SelectableListOption[];
 };
 
-type ViewOptionProps = {
+type ViewOptionProps<TViewId extends ViewId = ViewId> = {
   type: "view";
   /** A unique identifier for the next screen. */
-  viewId: string;
-  /** The component that will be displayed in the next view. */
-  component: React.ReactNode | ((...args: any) => JSX.Element);
+  viewId: TViewId;
+  /** Props to pass to the view component (type-safe via registry). */
+  props?: ViewProps[TViewId];
   headerTitle?: string;
 };
 
