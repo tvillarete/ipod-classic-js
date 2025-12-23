@@ -1,6 +1,6 @@
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { cookies } from "next/headers";
-import { SPOTIFY_TOKENS_COOKIE_NAME } from "utils/constants/api";
+import { SPOTIFY_TOKENS_COOKIE_NAME } from "@/utils/constants/api";
 
 /**
  * [Server-side only] Returns the root URL of the app, depending on the environment

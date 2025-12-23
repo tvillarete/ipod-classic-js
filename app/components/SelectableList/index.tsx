@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { LoadingIndicator, LoadingScreen } from "components";
-import ErrorScreen from "components/ErrorScreen";
-import { SplitScreenPreview } from "components/previews";
+import { LoadingIndicator, LoadingScreen } from "@/components";
+import ErrorScreen from "@/components/ErrorScreen";
+import { SplitScreenPreview } from "@/components/previews";
 import { AnimatePresence, motion } from "framer-motion";
-import { useTimeout } from "hooks";
+import { useTimeout } from "@/hooks";
 import styled from "styled-components";
 
 import SelectableListItem from "./SelectableListItem";

@@ -5,9 +5,9 @@ import {
   useEffect,
   useState,
 } from "react";
-import { ColorScheme } from "utils/colorScheme";
-import { SELECTED_SERVICE_KEY } from "utils/service";
-import { DeviceThemeName } from "utils/themes";
+import { ColorScheme } from "@/utils/colorScheme";
+import { SELECTED_SERVICE_KEY } from "@/utils/service";
+import { DeviceThemeName } from "@/utils/themes";
 
 type StreamingService = "apple" | "spotify";
 

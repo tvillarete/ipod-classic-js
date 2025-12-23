@@ -1,13 +1,13 @@
 import { useCallback, useState } from "react";
 
-import { useEventListener, useVolumeHandler } from "hooks";
+import { useEventListener, useVolumeHandler } from "@/hooks";
 import styled from "styled-components";
-import { Unit } from "utils/constants";
+import { Unit } from "@/utils/constants";
 
 import Scrubber from "./Scrubber";
 import TrackProgress from "./TrackProgress";
 import VolumeBar from "./VolumeBar";
-import { IpodEvent } from "utils/events";
+import { IpodEvent } from "@/utils/events";
 
 const Container = styled.div`
   position: relative;

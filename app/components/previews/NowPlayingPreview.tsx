@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { useAudioPlayer } from "hooks";
+import { useAudioPlayer } from "@/hooks";
 import styled from "styled-components";
-import * as Utils from "utils";
+import * as Utils from "@/utils";
 
 const Container = styled(motion.div)`
   height: 100%;

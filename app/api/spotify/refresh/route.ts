@@ -1,6 +1,6 @@
-import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "utils/constants/api";
+import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "@/utils/constants/api";
 import { NextRequest } from "next/server";
-import { setSpotifyTokens } from "api/spotify/utils";
+import { setSpotifyTokens } from "@/api/spotify/utils";
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url ?? "");

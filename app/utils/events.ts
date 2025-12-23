@@ -1,4 +1,4 @@
-import { ScrollDirection } from "components/ClickWheel/sharedTypes";
+import { ScrollDirection } from "@/components/ClickWheel/sharedTypes";
 
 /** The click-wheel control associated with the particular event */
 type BaseEventContext =

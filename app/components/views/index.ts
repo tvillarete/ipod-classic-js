@@ -1,4 +1,4 @@
-import { SplitScreenPreview } from "components/previews";
+import { SplitScreenPreview } from "@/components/previews";
 
 export { default as AboutView } from "./AboutView";
 export { default as AlbumView } from "./AlbumView";

@@ -6,11 +6,11 @@ import {
   useState,
 } from "react";
 
-import { useEventListener, useMKEventListener } from "hooks";
-import * as ConversionUtils from "utils/conversion";
+import { useEventListener, useMKEventListener } from "@/hooks";
+import * as ConversionUtils from "@/utils/conversion";
 
 import { useMusicKit, useSettings, useSpotifySDK, VOLUME_KEY } from "..";
-import { IpodEvent } from "utils/events";
+import { IpodEvent } from "@/utils/events";
 
 const defaultPlatbackInfoState = {
   isPlaying: false,

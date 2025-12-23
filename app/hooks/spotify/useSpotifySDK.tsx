@@ -1,15 +1,15 @@
 import { useCallback, useContext, useEffect, useRef } from "react";
 
-import { useViewContext } from "hooks";
-import * as SpotifyUtils from "utils/spotify";
+import { useViewContext } from "@/hooks";
+import * as SpotifyUtils from "@/utils/spotify";
 
 import { useSettings } from "..";
-import { API_URL } from "utils/constants/api";
+import { API_URL } from "@/utils/constants/api";
 import {
   SpotifySDKContext,
   SpotifySDKState,
-} from "providers/SpotifySdkProvider";
-import views from "components/views";
+} from "@/providers/SpotifySdkProvider";
+import views from "@/components/views";
 
 export type SpotifySDKHook = SpotifySDKState & {
   signIn: () => void;

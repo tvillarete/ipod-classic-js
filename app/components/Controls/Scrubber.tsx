@@ -1,13 +1,13 @@
 import { useCallback, useMemo, useState } from "react";
 
-import { useAudioPlayer, useEventListener, useInterval } from "hooks";
+import { useAudioPlayer, useEventListener, useInterval } from "@/hooks";
 import styled from "styled-components";
 import { useDebouncedCallback } from "use-debounce";
-import { Unit } from "utils/constants";
+import { Unit } from "@/utils/constants";
 
 import ProgressBar from "./ProgressBar";
-import { IpodEvent } from "utils/events";
-import * as Utils from "utils";
+import { IpodEvent } from "@/utils/events";
+import * as Utils from "@/utils";
 
 const RootContainer = styled.div`
   position: relative;

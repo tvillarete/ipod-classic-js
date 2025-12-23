@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
-import { APP_URL } from "utils/constants/api";
+import { APP_URL } from "@/utils/constants/api";
 
 const Container = styled(motion.div)`
   display: flex;

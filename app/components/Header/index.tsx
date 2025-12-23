@@ -1,8 +1,8 @@
-import BatteryIndicator from "components/BatteryIndicator";
-import LoadingIndicator from "components/LoadingIndicator";
-import { useAudioPlayer, useViewContext } from "hooks";
+import BatteryIndicator from "@/components/BatteryIndicator";
+import LoadingIndicator from "@/components/LoadingIndicator";
+import { useAudioPlayer, useViewContext } from "@/hooks";
 import styled from "styled-components";
-import { APP_URL } from "utils/constants/api";
+import { APP_URL } from "@/utils/constants/api";
 
 const Container = styled.div`
   width: 100%;

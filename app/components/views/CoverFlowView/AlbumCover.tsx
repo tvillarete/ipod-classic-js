@@ -1,7 +1,7 @@
-import { fadeScale } from "animation";
+import { fadeScale } from "@/animation";
 import { AnimatePresence, motion } from "framer-motion";
 import styled, { css } from "styled-components";
-import * as Utils from "utils";
+import * as Utils from "@/utils";
 
 import BacksideContent from "./BacksideContent";
 import { Point } from "./CoverFlow";

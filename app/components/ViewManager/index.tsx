@@ -1,13 +1,13 @@
-import ActionSheetViewManager from "components/ViewManager/ActionSheetViewManager";
-import CoverFlowViewManager from "components/ViewManager/CoverFlowViewManager";
-import FullScreenViewManager from "components/ViewManager/FullScreenViewManager";
-import KeyboardViewManager from "components/ViewManager/KeyboardViewManager";
-import PopupViewManager from "components/ViewManager/PopupViewManager";
-import SplitScreenViewManager from "components/ViewManager/SplitScreenViewManager";
-import viewConfigMap, { ViewConfig } from "components/views";
-import { useEventListener, useViewContext } from "hooks";
+import ActionSheetViewManager from "@/components/ViewManager/ActionSheetViewManager";
+import CoverFlowViewManager from "@/components/ViewManager/CoverFlowViewManager";
+import FullScreenViewManager from "@/components/ViewManager/FullScreenViewManager";
+import KeyboardViewManager from "@/components/ViewManager/KeyboardViewManager";
+import PopupViewManager from "@/components/ViewManager/PopupViewManager";
+import SplitScreenViewManager from "@/components/ViewManager/SplitScreenViewManager";
+import viewConfigMap, { ViewConfig } from "@/components/views";
+import { useEventListener, useViewContext } from "@/hooks";
 import styled from "styled-components";
-import { IpodEvent } from "utils/events";
+import { IpodEvent } from "@/utils/events";
 
 /** Prevents the user from scrolling the display with a mouse. */
 const Mask = styled.div`

@@ -1,5 +1,5 @@
-import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "utils/constants/api";
-import { getSpotifyRedirectUri, setSpotifyTokens } from "api/spotify/utils";
+import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "@/utils/constants/api";
+import { getSpotifyRedirectUri, setSpotifyTokens } from "@/api/spotify/utils";
 import { NextRequest } from "next/server";
 
 type SpotifyAuthApiResponse = {

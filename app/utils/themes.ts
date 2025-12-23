@@ -1,6 +1,6 @@
-import { DEVICE_COLOR_KEY } from "hooks";
+import { DEVICE_COLOR_KEY } from "@/hooks";
 
-import * as Theme from "utils/constants/Theme";
+import * as Theme from "@/utils/constants/Theme";
 
 const supportedThemes = {
   silver: "silver",

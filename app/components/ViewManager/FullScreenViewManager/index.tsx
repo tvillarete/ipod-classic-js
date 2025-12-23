@@ -1,7 +1,7 @@
-import { Header } from "components";
-import View from "components/ViewManager/components/View";
+import { Header } from "@/components";
+import View from "@/components/ViewManager/components/View";
 import { AnimatePresence } from "framer-motion";
-import { ViewOptions } from "providers/ViewContextProvider";
+import { ViewOptions } from "@/providers/ViewContextProvider";
 import styled from "styled-components";
 
 interface ContainerProps {

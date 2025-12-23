@@ -4,16 +4,16 @@ import {
   getConditionalOption,
   SelectableList,
   SelectableListOption,
-} from "components";
-import { SplitScreenPreview } from "components/previews";
-import viewConfigMap, { AboutView } from "components/views";
+} from "@/components";
+import { SplitScreenPreview } from "@/components/previews";
+import viewConfigMap, { AboutView } from "@/components/views";
 import {
   useMenuHideView,
   useMusicKit,
   useScrollHandler,
   useSettings,
   useSpotifySDK,
-} from "hooks";
+} from "@/hooks";
 
 const SettingsView = () => {
   useMenuHideView(viewConfigMap.settings.id);

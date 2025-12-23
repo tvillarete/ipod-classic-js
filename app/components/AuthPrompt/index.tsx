@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import { useInterval, useMusicKit } from "hooks";
+import { useInterval, useMusicKit } from "@/hooks";
 import styled, { css } from "styled-components";
-import { Unit } from "utils/constants";
-import { APP_URL } from "utils/constants/api";
+import { Unit } from "@/utils/constants";
+import { APP_URL } from "@/utils/constants/api";
 
 const RootContainer = styled.div`
   display: grid;

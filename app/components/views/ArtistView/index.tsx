@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 
-import { SelectableList, SelectableListOption } from "components";
-import { AlbumView, viewConfigMap } from "components/views";
-import { useMenuHideView, useScrollHandler } from "hooks";
-import * as Utils from "utils";
-import { useFetchArtistAlbums } from "hooks/utils/useDataFetcher";
+import { SelectableList, SelectableListOption } from "@/components";
+import { AlbumView, viewConfigMap } from "@/components/views";
+import { useMenuHideView, useScrollHandler } from "@/hooks";
+import * as Utils from "@/utils";
+import { useFetchArtistAlbums } from "@/hooks/utils/useDataFetcher";
 
 interface Props {
   id: string;

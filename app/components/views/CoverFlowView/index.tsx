@@ -1,12 +1,12 @@
 import React, { useCallback } from "react";
 
-import { AuthPrompt, LoadingScreen } from "components";
-import { useEventListener, useSettings, useViewContext } from "hooks";
+import { AuthPrompt, LoadingScreen } from "@/components";
+import { useEventListener, useSettings, useViewContext } from "@/hooks";
 import styled from "styled-components";
 
 import CoverFlow from "./CoverFlow";
-import { IpodEvent } from "utils/events";
-import { useFetchAlbums } from "hooks/utils/useDataFetcher";
+import { IpodEvent } from "@/utils/events";
+import { useFetchAlbums } from "@/hooks/utils/useDataFetcher";
 
 const Container = styled.div`
   height: 100%;

@@ -8,18 +8,18 @@ import {
   PlaylistsView,
   SelectableList,
   SelectableListOption,
-} from "components";
-import { SongsView, viewConfigMap } from "components/views";
+} from "@/components";
+import { SongsView, viewConfigMap } from "@/components/views";
 import {
   useEffectOnce,
   useKeyboardInput,
   useMenuHideView,
   useScrollHandler,
   useSettings,
-} from "hooks";
-import { useFetchSearchResults } from "hooks/utils/useDataFetcher";
-import { APP_URL } from "utils/constants/api";
-import { pluralize } from "utils/strings";
+} from "@/hooks";
+import { useFetchSearchResults } from "@/hooks/utils/useDataFetcher";
+import { APP_URL } from "@/utils/constants/api";
+import { pluralize } from "@/utils/strings";
 
 const SearchView = () => {
   useMenuHideView(viewConfigMap.search.id);

@@ -1,8 +1,8 @@
-import LoadingIndicator from "components/LoadingIndicator";
-import { useAudioPlayer, useInterval } from "hooks";
+import LoadingIndicator from "@/components/LoadingIndicator";
+import { useAudioPlayer, useInterval } from "@/hooks";
 import styled from "styled-components";
-import * as Utils from "utils";
-import { Unit } from "utils/constants";
+import * as Utils from "@/utils";
+import { Unit } from "@/utils/constants";
 
 import ProgressBar from "./ProgressBar";
 import { useMemo } from "react";

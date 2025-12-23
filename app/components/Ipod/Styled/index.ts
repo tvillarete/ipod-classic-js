@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { Screen, Unit } from "utils/constants";
-import { DeviceThemeName, getTheme } from "utils/themes";
+import { Screen, Unit } from "@/utils/constants";
+import { DeviceThemeName, getTheme } from "@/utils/themes";
 
 export const Shell = styled.div<{ $deviceTheme: DeviceThemeName }>`
   position: relative;

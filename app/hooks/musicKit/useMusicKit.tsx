@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext } from "react";
 
-import { useSettings, useViewContext } from "hooks";
-import views from "components/views";
+import { useSettings, useViewContext } from "@/hooks";
+import views from "@/components/views";
 
 export interface MusicKitState {
   musicKit?: typeof MusicKit;
