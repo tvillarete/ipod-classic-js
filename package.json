@@ -28,7 +28,7 @@
     "@next/bundle-analyzer": "^14.0.4",
     "@types/cookie": "^0.5.1",
     "@types/he": "^1.1.2",
-    "@types/musickit-js": "^1.0.8",
+    "@types/musickit-js": "^1.0.10",
     "@types/node": "^20.18.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
