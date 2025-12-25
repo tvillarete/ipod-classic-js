@@ -12,13 +12,16 @@ import { SPOTIFY_TOKENS_COOKIE_NAME } from "@/utils/constants/api";
 export interface SpotifySDKState {
   isPlayerConnected: boolean;
   isSdkReady: boolean;
-  spotifyPlayer: Spotify.Player;
+  spotifyPlayer?: Spotify.Player;
   accessToken?: string;
   refreshToken?: string;
   deviceId?: string;
+  hasError: boolean;
 }
 
-export const SpotifySDKContext = createContext<SpotifySDKState>({} as any);
+export const SpotifySDKContext = createContext<SpotifySDKState | undefined>(
+  undefined
+);
 interface Props {
   children: React.ReactNode;
 }
@@ -30,6 +33,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   const spotifyPlayerRef = useRef<Spotify.Player | undefined>();
   const [isPlayerConnected, setIsPlayerConnected] = useState(false);
   const [isSdkReady, setIsSdkReady] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const [storedAccessToken, storedRefreshToken, tokenLastRefreshedTimestamp] =
     getCookie(SPOTIFY_TOKENS_COOKIE_NAME)?.split(",") ?? [
@@ -60,48 +64,56 @@ export const SpotifySDKProvider = ({ children }: Props) => {
 
   /** Fetch access tokens and, if successful, then set up the playback sdk. */
   const handleConnectToSpotify = useCallback(async () => {
-    setIsPlayerConnected(true);
+    setHasError(false);
 
     if (accessToken) {
-      const player = new window.Spotify.Player({
-        name: "iPod.js",
-        getOAuthToken: async (cb) => {
-          if (!accessToken) {
-            console.error(
-              "handleConnectToSpotify: Access token was not provided"
-            );
-            return;
-          }
+      try {
+        const player = new window.Spotify.Player({
+          name: "iPod.js",
+          getOAuthToken: async (cb) => {
+            if (!accessToken) {
+              console.error(
+                "handleConnectToSpotify: Access token was not provided"
+              );
+              return;
+            }
 
-          cb(accessToken);
-        },
-      });
+            cb(accessToken);
+          },
+        });
 
-      player.addListener("ready", ({ device_id }: any) => {
-        setDeviceId(device_id);
-        setIsSpotifyAuthorized(true);
-      });
+        player.addListener("ready", ({ device_id }: any) => {
+          setDeviceId(device_id);
+          setIsSpotifyAuthorized(true);
+          setIsPlayerConnected(true);
+        });
 
-      player.addListener("authentication_error", ({ message }) => {
-        console.error(`Spotify authentication error: ${message}`);
-        setIsSpotifyAuthorized(false);
-      });
+        player.addListener("authentication_error", ({ message }) => {
+          console.error(`Spotify authentication error: ${message}`);
+          setIsSpotifyAuthorized(false);
+          setHasError(true);
+        });
 
-      /** This indicates that the user is using an unsupported account tier. */
-      player.addListener("account_error", () => {
-        handleUnsupportedAccountError();
-        setIsSpotifyAuthorized(false);
+        /** This indicates that the user is using an unsupported account tier. */
+        player.addListener("account_error", () => {
+          handleUnsupportedAccountError();
+          setIsSpotifyAuthorized(false);
+          setHasError(true);
 
-        SpotifyUtils.logOutSpotify();
-      });
+          SpotifyUtils.logOutSpotify();
+        });
 
-      player.addListener("playback_error", ({ message }) => {
-        console.error(message);
-      });
+        player.addListener("playback_error", ({ message }) => {
+          console.error(message);
+        });
 
-      player.connect();
+        player.connect();
 
-      spotifyPlayerRef.current = player;
+        spotifyPlayerRef.current = player;
+      } catch (e) {
+        console.error("Spotify player initialization error:", e);
+        setHasError(true);
+      }
     }
   }, [handleUnsupportedAccountError, setIsSpotifyAuthorized, accessToken]);
 
@@ -155,11 +167,12 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   return (
     <SpotifySDKContext.Provider
       value={{
-        spotifyPlayer: spotifyPlayerRef.current ?? ({} as Spotify.Player),
+        spotifyPlayer: spotifyPlayerRef.current,
         accessToken,
         deviceId,
         isPlayerConnected,
         isSdkReady,
+        hasError,
       }}
     >
       {children}
