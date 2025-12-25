@@ -432,6 +432,16 @@ export const AudioPlayerProvider = ({ children }: Props) => {
     setPlaybackInfo(defaultPlaybackInfoState);
   }, [music, service, spotifyPlayer]);
 
+  const updateSpotifyPlayerState = useCallback(
+    async (endpoint: string) => {
+      await fetch(`https://api.spotify.com/v1/me/player/${endpoint}`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+    },
+    [accessToken]
+  );
+
   const handleSetShuffleMode = useCallback(
     async (mode: ShuffleMode) => {
       updateShuffleModeSetting(mode);
@@ -443,18 +453,18 @@ export const AudioPlayerProvider = ({ children }: Props) => {
             : MusicKit.PlayerShuffleMode.songs;
       } else if (service === "spotify") {
         const enabled = mode !== "off";
-        await fetch(
-          `https://api.spotify.com/v1/me/player/shuffle?state=${enabled}&device_id=${deviceId}`,
-          {
-            method: "PUT",
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+        await updateSpotifyPlayerState(
+          `shuffle?state=${enabled}&device_id=${deviceId}`
         );
       }
     },
-    [service, music, accessToken, deviceId, updateShuffleModeSetting]
+    [
+      service,
+      music,
+      deviceId,
+      updateShuffleModeSetting,
+      updateSpotifyPlayerState,
+    ]
   );
 
   const handleSetRepeatMode = useCallback(
@@ -470,25 +480,19 @@ export const AudioPlayerProvider = ({ children }: Props) => {
           music.repeatMode = MusicKit.PlayerRepeatMode.all;
         }
       } else if (service === "spotify") {
-        let state: "off" | "track" | "context" = "off";
-        if (mode === "one") {
-          state = "track";
-        } else if (mode === "all") {
-          state = "context";
-        }
-
-        await fetch(
-          `https://api.spotify.com/v1/me/player/repeat?state=${state}&device_id=${deviceId}`,
-          {
-            method: "PUT",
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+        const stateMap = { off: "off", one: "track", all: "context" } as const;
+        await updateSpotifyPlayerState(
+          `repeat?state=${stateMap[mode]}&device_id=${deviceId}`
         );
       }
     },
-    [service, music, accessToken, deviceId, updateRepeatModeSetting]
+    [
+      service,
+      music,
+      deviceId,
+      updateRepeatModeSetting,
+      updateSpotifyPlayerState,
+    ]
   );
 
   useEventListener<IpodEvent>("playpauseclick", togglePlayPause);
