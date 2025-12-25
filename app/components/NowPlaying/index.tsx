@@ -11,6 +11,22 @@ const Container = styled.div`
   overflow: hidden;
 `;
 
+const StatusBar = styled.div`
+  position: absolute;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: ${Unit.XS};
+  padding: ${Unit.XS} ${Unit.SM} 0;
+  height: 1.5em;
+`;
+
+const StatusEmoji = styled.span`
+  font-size: 14px;
+  opacity: 0.8;
+`;
+
 const MetadataContainer = styled.div`
   display: flex;
   height: 70%;
@@ -25,7 +41,15 @@ const ArtworkContainer = styled.div<ArtworkContainerProps>`
   height: 8em;
   width: 8em;
   margin: auto ${Unit.SM};
-  -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(70%, transparent), to(rgba(250, 250, 250, 0.1)));
+  -webkit-box-reflect: below
+    0px -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      from(transparent),
+      color-stop(70%, transparent),
+      to(rgba(250, 250, 250, 0.1))
+    );
   transform-style: preserve-3d;
   perspective: 500px;
   opacity: ${(props) => props.$isHidden && 0};
@@ -65,8 +89,13 @@ interface Props {
 }
 
 const NowPlaying = ({ hideArtwork, onHide }: Props) => {
-  const { nowPlayingItem, updateNowPlayingItem, updatePlaybackInfo } =
-    useAudioPlayer();
+  const {
+    nowPlayingItem,
+    updateNowPlayingItem,
+    updatePlaybackInfo,
+    shuffleMode,
+    repeatMode,
+  } = useAudioPlayer();
 
   const handlePlaybackChange = useCallback(
     ({ state }: { state: MusicKit.PlaybackStates }) => {
@@ -89,6 +118,11 @@ const NowPlaying = ({ hideArtwork, onHide }: Props) => {
 
   return (
     <Container>
+      <StatusBar>
+        {shuffleMode !== "off" && <StatusEmoji>🔀</StatusEmoji>}
+        {repeatMode === "one" && <StatusEmoji>🔂</StatusEmoji>}
+        {repeatMode === "all" && <StatusEmoji>🔁</StatusEmoji>}
+      </StatusBar>
       <MetadataContainer>
         <ArtworkContainer $isHidden={hideArtwork}>
           <Artwork src={artworkUrl} />

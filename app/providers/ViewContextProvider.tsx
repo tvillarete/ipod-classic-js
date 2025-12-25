@@ -20,7 +20,9 @@ export type ActionSheetId =
   | "signin-popup"
   | "device-theme-action-sheet"
   | "service-type-action-sheet"
-  | "sign-out-popup";
+  | "sign-out-popup"
+  | "shuffle-mode-action-sheet"
+  | "repeat-mode-action-sheet";
 
 /**
  * Screen view instance - references a view in the registry

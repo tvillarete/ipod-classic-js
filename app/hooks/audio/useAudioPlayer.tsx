@@ -9,7 +9,14 @@ import {
 import { useEventListener, useMKEventListener } from "@/hooks";
 import * as ConversionUtils from "@/utils/conversion";
 
-import { useMusicKit, useSettings, useSpotifySDK, VOLUME_KEY } from "..";
+import {
+  useMusicKit,
+  useSettings,
+  useSpotifySDK,
+  VOLUME_KEY,
+  ShuffleMode,
+  RepeatMode,
+} from "..";
 import { IpodEvent } from "@/utils/events";
 
 const defaultPlaybackInfoState = {
@@ -26,10 +33,14 @@ interface AudioPlayerState {
   playbackInfo: typeof defaultPlaybackInfoState;
   nowPlayingItem?: MediaApi.MediaItem;
   volume: number;
+  shuffleMode: ShuffleMode;
+  repeatMode: RepeatMode;
   play: (queueOptions: MediaApi.QueueOptions) => Promise<void>;
   pause: () => Promise<void>;
   seekToTime: (time: number) => Promise<void>;
   setVolume: (volume: number) => void;
+  setShuffleMode: (mode: ShuffleMode) => Promise<void>;
+  setRepeatMode: (mode: RepeatMode) => Promise<void>;
   skipNext: () => Promise<void>;
   skipPrevious: () => Promise<void>;
   togglePlayPause: () => Promise<void>;
@@ -57,7 +68,15 @@ interface Props {
 }
 
 export const AudioPlayerProvider = ({ children }: Props) => {
-  const { service, isSpotifyAuthorized, isAppleAuthorized } = useSettings();
+  const {
+    service,
+    isSpotifyAuthorized,
+    isAppleAuthorized,
+    shuffleMode,
+    repeatMode,
+    setShuffleMode: updateShuffleModeSetting,
+    setRepeatMode: updateRepeatModeSetting,
+  } = useSettings();
   const { spotifyPlayer, accessToken, deviceId } = useSpotifySDK();
   const { music } = useMusicKit();
   const [volume, setVolume] = useState(0.5);
@@ -413,6 +432,65 @@ export const AudioPlayerProvider = ({ children }: Props) => {
     setPlaybackInfo(defaultPlaybackInfoState);
   }, [music, service, spotifyPlayer]);
 
+  const handleSetShuffleMode = useCallback(
+    async (mode: ShuffleMode) => {
+      updateShuffleModeSetting(mode);
+
+      if (service === "apple") {
+        music.shuffleMode =
+          mode === "off"
+            ? MusicKit.PlayerShuffleMode.off
+            : MusicKit.PlayerShuffleMode.songs;
+      } else if (service === "spotify") {
+        const enabled = mode !== "off";
+        await fetch(
+          `https://api.spotify.com/v1/me/player/shuffle?state=${enabled}&device_id=${deviceId}`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+      }
+    },
+    [service, music, accessToken, deviceId, updateShuffleModeSetting]
+  );
+
+  const handleSetRepeatMode = useCallback(
+    async (mode: RepeatMode) => {
+      updateRepeatModeSetting(mode);
+
+      if (service === "apple") {
+        if (mode === "off") {
+          music.repeatMode = MusicKit.PlayerRepeatMode.none;
+        } else if (mode === "one") {
+          music.repeatMode = MusicKit.PlayerRepeatMode.one;
+        } else {
+          music.repeatMode = MusicKit.PlayerRepeatMode.all;
+        }
+      } else if (service === "spotify") {
+        let state: "off" | "track" | "context" = "off";
+        if (mode === "one") {
+          state = "track";
+        } else if (mode === "all") {
+          state = "context";
+        }
+
+        await fetch(
+          `https://api.spotify.com/v1/me/player/repeat?state=${state}&device_id=${deviceId}`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+      }
+    },
+    [service, music, accessToken, deviceId, updateRepeatModeSetting]
+  );
+
   useEventListener<IpodEvent>("playpauseclick", togglePlayPause);
   useEventListener<IpodEvent>("forwardclick", skipNext);
   useEventListener<IpodEvent>("backwardclick", skipPrevious);
@@ -450,10 +528,14 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         playbackInfo,
         nowPlayingItem,
         volume,
+        shuffleMode,
+        repeatMode,
         play,
         pause,
         seekToTime,
         setVolume: handleChangeVolume,
+        setShuffleMode: handleSetShuffleMode,
+        setRepeatMode: handleSetRepeatMode,
         togglePlayPause,
         updateNowPlayingItem,
         updatePlaybackInfo,
