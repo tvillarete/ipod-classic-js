@@ -42,7 +42,8 @@ const ScrubberContainer = styled.div<ContainerProps>`
 `;
 
 const Controls = () => {
-  const { volume, active, setEnabled } = useVolumeHandler();
+  const { volume, active, setEnabled, increaseVolume, decreaseVolume } =
+    useVolumeHandler();
   const [isScrubbing, setIsScrubbing] = useState(false);
 
   const handleCenterClick = useCallback(() => {
@@ -57,14 +58,28 @@ const Controls = () => {
     }
   }, [isScrubbing, setEnabled]);
 
+  const handleForwardScroll = useCallback(() => {
+    if (!isScrubbing) {
+      increaseVolume();
+    }
+  }, [isScrubbing, increaseVolume]);
+
+  const handleBackwardScroll = useCallback(() => {
+    if (!isScrubbing) {
+      decreaseVolume();
+    }
+  }, [isScrubbing, decreaseVolume]);
+
   useEventListener<IpodEvent>("centerclick", handleCenterClick);
+  useEventListener<IpodEvent>("forwardscroll", handleForwardScroll);
+  useEventListener<IpodEvent>("backwardscroll", handleBackwardScroll);
 
   return (
     <Container>
-      <MainContainer $isHidden={isScrubbing}>
-        {active && !isScrubbing && <VolumeBar percent={volume * 100} />}
-      </MainContainer>
-      <MainContainer $isHidden={isScrubbing}>
+      <ScrubberContainer $isHidden={isScrubbing || !active}>
+        <VolumeBar percent={volume * 100} />
+      </ScrubberContainer>
+      <MainContainer $isHidden={isScrubbing || active}>
         <TrackProgress />
       </MainContainer>
       <ScrubberContainer $isHidden={!isScrubbing}>

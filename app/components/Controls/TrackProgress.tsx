@@ -12,7 +12,15 @@ const Container = styled.div`
   flex: 1;
   height: 1em;
   padding: 0 ${Unit.SM};
-  -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(60%, transparent), to(rgba(250, 250, 250, 0.1)));
+  -webkit-box-reflect: below
+    0px -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      from(transparent),
+      color-stop(60%, transparent),
+      to(rgba(250, 250, 250, 0.1))
+    );
   display: grid;
   grid-template-columns: 40px 1fr 40px;
 `;
@@ -39,12 +47,12 @@ const TrackProgress = () => {
     timeRemaining,
   } = playbackInfo;
 
-  /** Update the progress bar every second. */
-  useInterval(() => {
-    if (isPlaying && !isPaused) {
-      updatePlaybackInfo();
-    }
-  }, 1000);
+  /** Update the progress bar every second when playing. */
+  useInterval(
+    updatePlaybackInfo,
+    1000,
+    !(isPlaying && !isPaused) // Skip when not playing or paused
+  );
 
   const hasNowPlayingItem = !!nowPlayingItem;
 
