@@ -9,7 +9,9 @@ export interface MusicKitState {
   hasError: boolean;
 }
 
-export const MusicKitContext = createContext<MusicKitState>({} as any);
+export const MusicKitContext = createContext<MusicKitState | undefined>(
+  undefined
+);
 
 export type MusicKitHook = MusicKitState & {
   music: MusicKit.MusicKitInstance;
@@ -20,8 +22,14 @@ export type MusicKitHook = MusicKitState & {
 export const useMusicKit = (): MusicKitHook => {
   const { setIsAppleAuthorized, isSpotifyAuthorized, setService } =
     useSettings();
-  const { isConfigured, hasDevToken, hasError } = useContext(MusicKitContext);
+  const context = useContext(MusicKitContext);
   const { showPopup } = useViewContext();
+
+  if (!context) {
+    throw new Error("useMusicKit must be used within MusicKitProvider");
+  }
+
+  const { isConfigured, hasDevToken, hasError } = context;
 
   const signIn = useCallback(async () => {
     const music = window.MusicKit?.getInstance();
@@ -45,13 +53,18 @@ export const useMusicKit = (): MusicKitHook => {
           },
         ],
       });
+      return;
     }
 
-    if (music?.isAuthorized === false) {
-      await music?.authorize();
-    }
+    if (music) {
+      if (!music.isAuthorized) {
+        await music.authorize();
+      }
 
-    setService("apple");
+      if (music.isAuthorized) {
+        setService("apple");
+      }
+    }
   }, [hasError, setService, showPopup]);
 
   const signOut = useCallback(() => {

@@ -31,6 +31,10 @@ export const useSpotifySDK = ({
   const { showPopup } = useViewContext();
   const state = useContext(SpotifySDKContext);
 
+  if (!state) {
+    throw new Error("useSpotifySDK must be used within SpotifySDKProvider");
+  }
+
   const authorizationChangedRef = useRef(onAuthorizationChanged);
 
   useEffect(() => {
@@ -71,7 +75,7 @@ export const useSpotifySDK = ({
   }, [isSpotifyAuthorized, setService, showPopup, state.isPlayerConnected]);
 
   const signOut = useCallback(async () => {
-    state.spotifyPlayer.disconnect();
+    state.spotifyPlayer?.disconnect();
     setIsSpotifyAuthorized(false);
 
     await SpotifyUtils.logOutSpotify();

@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useAudioPlayer, useEventListener, useInterval } from "@/hooks";
+import { useAudioPlayer, useEventListener } from "@/hooks";
 import styled from "styled-components";
 import { useDebouncedCallback } from "use-debounce";
 import { Unit } from "@/utils/constants";
@@ -17,7 +17,15 @@ const RootContainer = styled.div`
   flex: 1;
   height: 1em;
   padding: 0 ${Unit.SM};
-  -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(60%, transparent), to(rgba(250, 250, 250, 0.1)));
+  -webkit-box-reflect: below
+    0px -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      from(transparent),
+      color-stop(60%, transparent),
+      to(rgba(250, 250, 250, 0.1))
+    );
 `;
 
 interface LabelProps {
@@ -37,10 +45,10 @@ interface Props {
 
 const Scrubber = ({ isScrubbing }: Props) => {
   const { playbackInfo, seekToTime, nowPlayingItem } = useAudioPlayer();
-  const { currentTime, duration, isPlaying } = playbackInfo;
+  const { currentTime, duration } = playbackInfo;
   const [scrubberTime, setScrubberTime] = useState(currentTime);
   const scrubberPercent = useMemo(
-    () => Math.round((scrubberTime / duration) * 100),
+    () => (duration > 0 ? Math.round((scrubberTime / duration) * 100) : 0),
     [duration, scrubberTime]
   );
   const scrubberTimeRemaining = useMemo(
@@ -52,41 +60,39 @@ const Scrubber = ({ isScrubbing }: Props) => {
   const [isActive, setIsActive] = useState(false);
 
   /** Wait until the user is finished scrubbing before seeking. */
-  const handleSeek = useDebouncedCallback((newTime: number) => {
-    seekToTime(newTime);
-    setIsActive(false);
-  }, 300);
+  const handleSeek = useDebouncedCallback(
+    async (newTime: number) => {
+      await seekToTime(newTime);
+      setIsActive(false);
+    },
+    300,
+    { leading: false, trailing: true }
+  );
 
   const scrubForward = useCallback(() => {
-    if (scrubberTime === duration || !isScrubbing) return;
-    const newTime = scrubberTime + 1;
+    if (!isScrubbing || scrubberTime >= duration) return;
+    const newTime = Math.min(scrubberTime + 1, duration);
 
-    if (newTime < duration) {
-      setIsActive(true);
-      handleSeek(newTime);
-      setScrubberTime(newTime);
-    }
+    setIsActive(true);
+    handleSeek(newTime);
+    setScrubberTime(newTime);
   }, [scrubberTime, duration, isScrubbing, handleSeek]);
 
   const scrubBackward = useCallback(() => {
-    if (scrubberTime === 0 || !isScrubbing) return;
-    const newTime = scrubberTime - 1;
+    if (!isScrubbing || scrubberTime <= 0) return;
+    const newTime = Math.max(scrubberTime - 1, 0);
 
-    if (newTime >= 0) {
-      setIsActive(true);
-      handleSeek(newTime);
-      setScrubberTime(newTime);
-    }
+    setIsActive(true);
+    handleSeek(newTime);
+    setScrubberTime(newTime);
   }, [scrubberTime, handleSeek, isScrubbing]);
 
-  const refresh = useCallback(
-    (force = false) => {
-      if ((!isActive && isPlaying) || force) {
-        setScrubberTime(currentTime);
-      }
-    },
-    [currentTime, isActive, isPlaying]
-  );
+  // Sync scrubber time with actual playback time when not actively scrubbing
+  useEffect(() => {
+    if (!isActive) {
+      setScrubberTime(currentTime);
+    }
+  }, [currentTime, isActive]);
 
   const hasNowPlayingItem = !!nowPlayingItem;
 
@@ -106,9 +112,6 @@ const Scrubber = ({ isScrubbing }: Props) => {
 
   useEventListener<IpodEvent>("forwardscroll", scrubForward);
   useEventListener<IpodEvent>("backwardscroll", scrubBackward);
-
-  /** Update the progress bar every second. */
-  useInterval(refresh, 1000);
 
   return (
     <RootContainer>
