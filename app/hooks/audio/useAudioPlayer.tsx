@@ -35,6 +35,7 @@ interface AudioPlayerState {
   togglePlayPause: () => Promise<void>;
   updateNowPlayingItem: () => void;
   updatePlaybackInfo: () => void;
+  reset: () => void;
 }
 
 export const AudioPlayerContext = createContext<AudioPlayerState>({} as any);
@@ -162,11 +163,11 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   const pause = useCallback(async () => {
     switch (service) {
       case "apple":
-        return spotifyPlayer.pause();
-      case "spotify":
         return music.pause();
+      case "spotify":
+        return spotifyPlayer?.pause();
       default:
-        throw new Error("Unable to play: service not specified");
+        throw new Error("Unable to pause: service not specified");
     }
   }, [music, service, spotifyPlayer]);
 
@@ -186,7 +187,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         }
         break;
       case "spotify":
-        spotifyPlayer.togglePlay?.();
+        spotifyPlayer?.togglePlay();
         break;
       default:
         throw new Error("Unable to play: service not specified");
@@ -211,7 +212,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         }
         break;
       case "spotify":
-        await spotifyPlayer.nextTrack();
+        await spotifyPlayer?.nextTrack();
         break;
       default:
         throw new Error("Unable to play: service not specified");
@@ -241,7 +242,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         }
         break;
       case "spotify":
-        await spotifyPlayer.previousTrack();
+        await spotifyPlayer?.previousTrack();
         break;
       default:
         throw new Error("Unable to play: service not specified");
@@ -263,7 +264,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         (music as any).nowPlayingItem
       );
     } else if (service === "spotify") {
-      const state = await spotifyPlayer.getCurrentState();
+      const state = await spotifyPlayer?.getCurrentState();
 
       if (state) {
         mediaItem = ConversionUtils.convertSpotifyMediaItem(state);
@@ -344,7 +345,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       }));
     } else if (service === "spotify") {
       const { position, duration } =
-        (await spotifyPlayer.getCurrentState()) ?? {};
+        (await spotifyPlayer?.getCurrentState()) ?? {};
       const currentTime = (position ?? 0) / 1000;
       const maxTime = (duration ?? 0) / 1000;
       const timeRemaining = maxTime - currentTime;
@@ -367,7 +368,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         await (music as any).player.seekToTime(time);
       } else if (service === "spotify") {
         // Seek to time (in ms)
-        await spotifyPlayer.seek(time * 1000);
+        await spotifyPlayer?.seek(time * 1000);
       }
 
       updatePlaybackInfo();
@@ -378,7 +379,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   const handleChangeVolume = useCallback(
     (newVolume: number) => {
       if (isSpotifyAuthorized) {
-        spotifyPlayer.setVolume(newVolume);
+        spotifyPlayer?.setVolume(newVolume);
       }
 
       if (isAppleAuthorized) {
@@ -393,6 +394,19 @@ export const AudioPlayerProvider = ({ children }: Props) => {
     [isAppleAuthorized, isSpotifyAuthorized, music, spotifyPlayer]
   );
 
+  const reset = useCallback(() => {
+    // Stop any current playback
+    if (service === "apple") {
+      music.stop();
+    } else if (service === "spotify") {
+      spotifyPlayer?.pause();
+    }
+
+    // Reset all state
+    setNowPlayingItem(undefined);
+    setPlaybackInfo(defaultPlatbackInfoState);
+  }, [music, service, spotifyPlayer]);
+
   useEventListener<IpodEvent>("playpauseclick", togglePlayPause);
   useEventListener<IpodEvent>("forwardclick", skipNext);
   useEventListener<IpodEvent>("backwardclick", skipPrevious);
@@ -402,7 +416,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   useMKEventListener("queuePositionDidChange", updateNowPlayingItem);
 
   useEffect(() => {
-    if (isSpotifyAuthorized) {
+    if (isSpotifyAuthorized && spotifyPlayer) {
       spotifyPlayer.addListener(
         "player_state_changed",
         handleSpotifyPlaybackStateChange
@@ -447,6 +461,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         updatePlaybackInfo,
         skipNext,
         skipPrevious,
+        reset,
       }}
     >
       {children}
