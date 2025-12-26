@@ -19,49 +19,41 @@ const Container = styled.div`
 `;
 
 const AlbumsContainer = styled.div`
-  height: 100%;
-  z-index: 2;
   position: relative;
+  z-index: 2;
   display: flex;
   flex-wrap: nowrap;
-  flex: 1;
+  height: 100%;
   padding-top: 20px;
-  -webkit-overflow-scrolling: touch; /* [3] */
-  -ms-overflow-style: -ms-autohiding-scrollbar;
   perspective: 500px;
 `;
 
 const InfoContainer = styled(motion.div)`
-  z-index: 0;
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  inset: auto 0 0;
+  z-index: 0;
+  display: -webkit-box;
   height: 24%;
   text-align: center;
-  display: -webkit-box;
+  overflow: hidden;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  overflow: hidden;
 `;
 
 const NowPlayingContainer = styled(motion.div)`
-  z-index: 1;
   position: absolute;
-  top: 20px;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  inset: 20px 0 0;
+  z-index: 1;
 `;
 
 const Text = styled.h3`
   margin: 0;
+  padding: 0 16px;
   font-size: 16px;
   text-align: center;
-  padding: 0 16px;
 
-  :first-of-type {
-    margin-top: 24px;
+  &:first-of-type {
+    margin-top: 8px;
   }
 `;
 

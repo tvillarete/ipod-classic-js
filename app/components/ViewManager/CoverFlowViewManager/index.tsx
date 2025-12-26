@@ -6,6 +6,8 @@ import styled from "styled-components";
 
 const Container = styled(motion.div)`
   z-index: 0;
+  display: grid;
+  grid-template-rows: 20px 1fr;
   position: absolute;
   width: 100%;
   height: 100%;

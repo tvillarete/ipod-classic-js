@@ -14,24 +14,22 @@ const Container = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
-  top: -28%;
-  bottom: -50%;
-  left: -50%;
-  right: -50%;
-  border: 1px solid lightgray;
+  inset: -28% -50% -38%;
+  border: 1px solid #d3d3d3;
   background: white;
   transform: rotateY(180deg);
 `;
 
 const InfoContainer = styled.div`
+  flex-shrink: 0;
   padding: 4px 8px;
-  background: linear-gradient(180deg, #6585ad 0%, #789ab3 100%);
+  background: linear-gradient(to bottom, #6585ad, #789ab3);
   border-bottom: 1px solid #6d87a3;
 `;
 
 const Text = styled.h3`
-  font-size: 16px;
   margin: 0;
+  font-size: 16px;
   color: white;
 `;
 
@@ -40,7 +38,6 @@ const Subtext = styled(Text)`
 `;
 
 const ListContainer = styled.div`
-  position: relative;
   flex: 1;
   overflow: auto;
 `;
