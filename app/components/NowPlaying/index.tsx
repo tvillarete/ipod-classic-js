@@ -49,10 +49,10 @@ const ArtworkContainer = styled.div<ArtworkContainerProps>`
       left bottom,
       from(transparent),
       color-stop(70%, transparent),
-      to(rgba(250, 250, 250, 0.1))
+      to(rgba(240, 240, 240, 0.2))
     );
   transform-style: preserve-3d;
-  transform: rotateY(18deg);
+  transform: rotateY(35deg);
   opacity: ${(props) => (props.$isHidden ? 0 : 1)};
 `;
 
