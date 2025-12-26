@@ -5,6 +5,7 @@ import { SelectableListOption } from ".";
 import { APP_URL } from "@/utils/constants/api";
 import { useAudioPlayer } from "@/hooks";
 import { useMemo } from "react";
+import * as Utils from "@/utils";
 
 const LabelContainer = styled.div`
   flex: 1;
@@ -76,15 +77,10 @@ const SelectableListItem = ({ option, isActive }: Props) => {
       return false;
     }
 
-    // Get the specific song for this list item
-    const { queueOptions } = option;
-    const startPosition = queueOptions.startPosition ?? 0;
-
-    const songId =
-      queueOptions.song?.id ??
-      queueOptions.songs?.[startPosition]?.id ??
-      queueOptions.album?.songs[startPosition]?.id ??
-      queueOptions.playlist?.songs[startPosition]?.id;
+    const songId = Utils.getSongIdFromQueueOptions(
+      option.queueOptions,
+      option.queueOptions.startPosition
+    );
 
     return songId === nowPlayingItem.id;
   }, [option, nowPlayingItem]);

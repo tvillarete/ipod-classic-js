@@ -9,6 +9,7 @@ import { ViewId } from "@/components/views/registry";
 import { PopupId, ActionSheetId } from "@/providers/ViewContextProvider";
 import useHapticFeedback from "@/hooks/useHapticFeedback";
 import { IpodEvent } from "@/utils/events";
+import * as Utils from "@/utils";
 
 import {
   useAudioPlayer,
@@ -54,7 +55,7 @@ const useScrollHandler = (
   const { triggerHaptics } = useHapticFeedback();
   const { showView, showPopup, showActionSheet, viewStack, setPreview } =
     useViewContext();
-  const { play } = useAudioPlayer();
+  const { play, nowPlayingItem } = useAudioPlayer();
   const [index, setIndex] = useState(getInitIndex(options, selectedOption));
   const timeoutIdRef = useRef<NodeJS.Timeout>();
   /** Only fire events on the top-most view. */
@@ -153,10 +154,24 @@ const useScrollHandler = (
 
     switch (option.type) {
       case "song":
-        await play(option.queueOptions);
+        // Check if the selected song is already the currently playing song
+        const songId = Utils.getSongIdFromQueueOptions(
+          option.queueOptions,
+          option.queueOptions.startPosition
+        );
 
-        if (option.showNowPlayingView) {
+        const isSameSong = nowPlayingItem && songId === nowPlayingItem.id;
+
+        // If it's the same song, just navigate to Now Playing view
+        // Otherwise, play the song
+        if (isSameSong) {
           showView("nowPlaying");
+        } else {
+          await play(option.queueOptions);
+
+          if (option.showNowPlayingView) {
+            showView("nowPlaying");
+          }
         }
         break;
       case "link":
@@ -183,6 +198,7 @@ const useScrollHandler = (
     isActive,
     options,
     play,
+    nowPlayingItem,
     triggerHaptics,
   ]);
 
