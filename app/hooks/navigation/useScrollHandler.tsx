@@ -120,10 +120,11 @@ const useScrollHandler = (
         const isSameSong = nowPlayingItem && songId === nowPlayingItem.id;
 
         // If it's the same song, just navigate to Now Playing view
+        // (unless we're in CoverFlow, which handles its own now playing view)
         // Otherwise, play the song
-        if (isSameSong) {
+        if (isSameSong && id !== "coverFlow") {
           showView("nowPlaying");
-        } else {
+        } else if (!isSameSong) {
           await play(option.queueOptions);
 
           if (option.showNowPlayingView) {
@@ -156,15 +157,16 @@ const useScrollHandler = (
         break;
     }
   }, [
-    showActionSheet,
-    showPopup,
-    showView,
+    options,
     index,
     isActive,
-    options,
-    play,
-    nowPlayingItem,
     triggerHaptics,
+    nowPlayingItem,
+    id,
+    showView,
+    showPopup,
+    showActionSheet,
+    play,
   ]);
 
   const handleCenterLongClick = useCallback(async () => {
