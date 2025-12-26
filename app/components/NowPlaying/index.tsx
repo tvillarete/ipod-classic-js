@@ -31,6 +31,7 @@ const MetadataContainer = styled.div`
   display: flex;
   height: 70%;
   padding: 0 ${Unit.XS};
+  perspective: 1000px;
 `;
 
 interface ArtworkContainerProps {
@@ -51,30 +52,36 @@ const ArtworkContainer = styled.div<ArtworkContainerProps>`
       to(rgba(250, 250, 250, 0.1))
     );
   transform-style: preserve-3d;
-  perspective: 500px;
-  opacity: ${(props) => props.$isHidden && 0};
+  transform: rotateY(18deg);
+  opacity: ${(props) => (props.$isHidden ? 0 : 1)};
 `;
 
 const Artwork = styled.img`
   height: 100%;
   width: 100%;
-  transform: rotateY(18deg);
   border: 1px solid #f3f3f3;
 `;
 
 const InfoContainer = styled.div`
   flex: 1;
   margin: auto 0 auto clamp(0.5rem, 5vw, 0.5rem);
+  min-width: 0;
 `;
 
-const Text = styled.h3`
+const Text = styled.div`
   margin: 0;
   font-size: 0.92rem;
+  font-weight: 600;
 `;
 
 const Subtext = styled(Text)`
   color: rgb(99, 101, 103);
   font-size: 0.75rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const ControlsContainer = styled.div`
@@ -125,7 +132,14 @@ const NowPlaying = ({ hideArtwork, onHide }: Props) => {
       </StatusBar>
       <MetadataContainer>
         <ArtworkContainer $isHidden={hideArtwork}>
-          <Artwork src={artworkUrl} />
+          <Artwork
+            src={artworkUrl}
+            alt={
+              nowPlayingItem?.name
+                ? `${nowPlayingItem.name} album artwork`
+                : "Album artwork"
+            }
+          />
         </ArtworkContainer>
         <InfoContainer>
           <Text>{nowPlayingItem?.name}</Text>
