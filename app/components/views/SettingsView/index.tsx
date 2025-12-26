@@ -6,12 +6,12 @@ import SelectableList, {
 } from "@/components/SelectableList";
 import { SplitScreenPreview } from "@/components/previews";
 import {
+  useAudioPlayer,
   useMenuHideView,
   useMusicKit,
   useScrollHandler,
   useSettings,
   useSpotifySDK,
-  useAudioPlayer,
 } from "@/hooks";
 
 const THEMES = ["silver", "black", "u2"] as const;
@@ -38,7 +38,10 @@ const SettingsView = () => {
     service,
     deviceTheme,
     setDeviceTheme,
+    shuffleMode,
+    repeatMode,
   } = useSettings();
+  const { setShuffleMode, setRepeatMode } = useAudioPlayer();
   const {
     signIn: signInWithApple,
     signOut: signOutApple,
@@ -142,6 +145,60 @@ const SettingsView = () => {
         listOptions: serviceOptions,
         preview: SplitScreenPreview.Service,
       }),
+      /** Add shuffle mode options */
+      ...getConditionalOption(isAuthorized, {
+        type: "actionSheet",
+        id: "shuffle-mode-action-sheet",
+        label: "Shuffle",
+        listOptions: [
+          {
+            type: "action",
+            isSelected: shuffleMode === "off",
+            label: `Off ${shuffleMode === "off" ? "(Current)" : ""}`,
+            onSelect: () => setShuffleMode("off"),
+          },
+          {
+            type: "action",
+            isSelected: shuffleMode === "songs",
+            label: `Songs ${shuffleMode === "songs" ? "(Current)" : ""}`,
+            onSelect: () => setShuffleMode("songs"),
+          },
+          {
+            type: "action",
+            isSelected: shuffleMode === "albums",
+            label: `Albums ${shuffleMode === "albums" ? "(Current)" : ""}`,
+            onSelect: () => setShuffleMode("albums"),
+          },
+        ],
+        preview: SplitScreenPreview.Settings,
+      }),
+      /** Add repeat mode options */
+      ...getConditionalOption(isAuthorized, {
+        type: "actionSheet",
+        id: "repeat-mode-action-sheet",
+        label: "Repeat",
+        listOptions: [
+          {
+            type: "action",
+            isSelected: repeatMode === "off",
+            label: `Off ${repeatMode === "off" ? "(Current)" : ""}`,
+            onSelect: () => setRepeatMode("off"),
+          },
+          {
+            type: "action",
+            isSelected: repeatMode === "one",
+            label: `One ${repeatMode === "one" ? "(Current)" : ""}`,
+            onSelect: () => setRepeatMode("one"),
+          },
+          {
+            type: "action",
+            isSelected: repeatMode === "all",
+            label: `All ${repeatMode === "all" ? "(Current)" : ""}`,
+            onSelect: () => setRepeatMode("all"),
+          },
+        ],
+        preview: SplitScreenPreview.Settings,
+      }),
       {
         type: "actionSheet",
         id: "device-theme-action-sheet",
@@ -166,7 +223,17 @@ const SettingsView = () => {
         preview: SplitScreenPreview.Service,
       }),
     ],
-    [isAuthorized, serviceOptions, themeOptions, signInOptions, signOutOptions]
+    [
+      isAuthorized,
+      serviceOptions,
+      themeOptions,
+      signInOptions,
+      signOutOptions,
+      shuffleMode,
+      setShuffleMode,
+      repeatMode,
+      setRepeatMode,
+    ]
   );
 
   const [scrollIndex] = useScrollHandler("settings", options);

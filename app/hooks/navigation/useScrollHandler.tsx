@@ -1,21 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
-import {
-  ActionSheetOptionProps,
-  PopupOptionProps,
-  SelectableListOption,
-} from "@/components";
+import { SelectableListOption } from "@/components";
 import { ViewId } from "@/components/views/registry";
 import { PopupId, ActionSheetId } from "@/providers/ViewContextProvider";
 import useHapticFeedback from "@/hooks/useHapticFeedback";
 import { IpodEvent } from "@/utils/events";
+import * as Utils from "@/utils";
 
-import {
-  useAudioPlayer,
-  useEffectOnce,
-  useEventListener,
-  useViewContext,
-} from "@/hooks";
+import { useAudioPlayer, useEventListener, useViewContext } from "@/hooks";
 
 /** Gets the initial index for the scroll position. If there is a selected option,
  * this will initialize our initial scroll position at the selectedOption  */
@@ -49,58 +42,49 @@ const useScrollHandler = (
    * This function is called when the user has scrolled close to the end of the list of options.
    * Useful for fetching the next page of data before the user reaches the end of the list.
    */
-  onNearEndOfList?: (...args: any) => any
+  onNearEndOfList?: (currentLength: number) => void
 ): [number] => {
   const { triggerHaptics } = useHapticFeedback();
   const { showView, showPopup, showActionSheet, viewStack, setPreview } =
     useViewContext();
-  const { play } = useAudioPlayer();
+  const { play, nowPlayingItem } = useAudioPlayer();
   const [index, setIndex] = useState(getInitIndex(options, selectedOption));
-  const timeoutIdRef = useRef<NodeJS.Timeout>();
   /** Only fire events on the top-most view. */
   const isActive = viewStack[viewStack.length - 1].id === id;
 
   /** Wait until the user stops scrolling to check for a new preview to display. */
-  const handleCheckForPreview = useCallback(
+  const updatePreview = useCallback(
     (i: number) => {
-      if (timeoutIdRef.current) {
-        clearTimeout(timeoutIdRef.current);
-      }
       if (!isActive || !options[i]) return;
-      timeoutIdRef.current = setTimeout(() => {
-        const preview = options[i].preview;
-        if (preview) {
-          setPreview(preview);
-        }
-      }, 750);
-
-      return () => {
-        if (timeoutIdRef.current) {
-          clearTimeout(timeoutIdRef.current);
-        }
-      };
+      const preview = options[i].preview;
+      if (preview) {
+        setPreview(preview);
+      }
     },
     [isActive, options, setPreview]
   );
+
+  const debouncedUpdatePreview = useDebouncedCallback(updatePreview, 750);
 
   const handleForwardScroll = useCallback(() => {
     setIndex((prevIndex) => {
       if (prevIndex < options.length - 1 && isActive) {
         triggerHaptics(10);
-        handleCheckForPreview(prevIndex + 1);
+        debouncedUpdatePreview(prevIndex + 1);
 
         // Trigger near-end-of-list callback when we're halfway through the current list.
-        if (prevIndex === Math.round(options.length / 2)) {
+        const nextIndex = prevIndex + 1;
+        if (nextIndex === Math.round(options.length / 2)) {
           onNearEndOfList?.(options.length);
         }
 
-        return prevIndex + 1;
+        return nextIndex;
       }
 
       return prevIndex;
     });
   }, [
-    handleCheckForPreview,
+    debouncedUpdatePreview,
     isActive,
     onNearEndOfList,
     options.length,
@@ -111,35 +95,13 @@ const useScrollHandler = (
     setIndex((prevIndex) => {
       if (prevIndex > 0 && isActive) {
         triggerHaptics(10);
-        handleCheckForPreview(prevIndex + 1);
+        debouncedUpdatePreview(prevIndex - 1);
         return prevIndex - 1;
       }
 
       return prevIndex;
     });
-  }, [handleCheckForPreview, isActive, triggerHaptics]);
-
-  const handleShowPopup = useCallback(
-    (options: PopupOptionProps) => {
-      showPopup({
-        id: options.popupId,
-        title: options.title,
-        description: options.description,
-        listOptions: options.listOptions,
-      });
-    },
-    [showPopup]
-  );
-
-  const handleShowActionSheet = useCallback(
-    (options: ActionSheetOptionProps) => {
-      showActionSheet({
-        id: options.id,
-        listOptions: options.listOptions,
-      });
-    },
-    [showActionSheet]
-  );
+  }, [debouncedUpdatePreview, isActive, triggerHaptics]);
 
   /** Parses the selected option for a new view to show or song to play. */
   const handleCenterClick = useCallback(async () => {
@@ -147,16 +109,27 @@ const useScrollHandler = (
     if (!isActive || !option) return;
     triggerHaptics(10);
 
-    if (timeoutIdRef.current) {
-      clearTimeout(timeoutIdRef.current);
-    }
-
     switch (option.type) {
       case "song":
-        await play(option.queueOptions);
+        // Check if the selected song is already the currently playing song
+        const songId = Utils.getSongIdFromQueueOptions(
+          option.queueOptions,
+          option.queueOptions.startPosition
+        );
 
-        if (option.showNowPlayingView) {
+        const isSameSong = nowPlayingItem && songId === nowPlayingItem.id;
+
+        // If it's the same song, just navigate to Now Playing view
+        // (unless we're in CoverFlow, which handles its own now playing view)
+        // Otherwise, play the song
+        if (isSameSong && id !== "coverFlow") {
           showView("nowPlaying");
+        } else if (!isSameSong) {
+          await play(option.queueOptions);
+
+          if (option.showNowPlayingView) {
+            showView("nowPlaying");
+          }
         }
         break;
       case "link":
@@ -169,21 +142,31 @@ const useScrollHandler = (
         option.onSelect();
         break;
       case "popup":
-        handleShowPopup(option);
+        showPopup({
+          id: option.popupId,
+          title: option.title,
+          description: option.description,
+          listOptions: option.listOptions,
+        });
         break;
       case "actionSheet":
-        handleShowActionSheet(option);
+        showActionSheet({
+          id: option.id,
+          listOptions: option.listOptions,
+        });
         break;
     }
   }, [
-    handleShowActionSheet,
-    handleShowPopup,
-    showView,
+    options,
     index,
     isActive,
-    options,
-    play,
     triggerHaptics,
+    nowPlayingItem,
+    id,
+    showView,
+    showPopup,
+    showActionSheet,
+    play,
   ]);
 
   const handleCenterLongClick = useCallback(async () => {
@@ -206,14 +189,10 @@ const useScrollHandler = (
     }
   }, [index, options.length]);
 
-  useEffectOnce(() => {
-    if (!options || !options[0]) return;
-
-    const preview = options[0].preview;
-    if (preview) {
-      setPreview(preview);
-    }
-  });
+  /** Set the initial preview when options load or index changes */
+  useEffect(() => {
+    debouncedUpdatePreview(index);
+  }, [index, debouncedUpdatePreview]);
 
   useEventListener<IpodEvent>("centerclick", handleCenterClick);
   useEventListener<IpodEvent>("centerlongclick", handleCenterLongClick);

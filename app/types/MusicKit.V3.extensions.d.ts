@@ -22,5 +22,20 @@ declare namespace MusicKit {
 
     // Volume control
     volume: number;
+
+    // Shuffle and repeat modes
+    shuffleMode: PlayerShuffleMode;
+    repeatMode: PlayerRepeatMode;
+  }
+
+  enum PlayerShuffleMode {
+    off = 0,
+    songs = 1,
+  }
+
+  enum PlayerRepeatMode {
+    none = 0,
+    one = 1,
+    all = 2,
   }
 }

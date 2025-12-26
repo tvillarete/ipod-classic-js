@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { APP_URL } from "@/utils/constants/api";
 
 const Container = styled.div`
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -13,7 +12,7 @@ const Container = styled.div`
   height: 20px;
   background: linear-gradient(180deg, #feffff 0%, #b1b6b9 100%);
   border-bottom: 1px solid #7995a3;
-  box-sizing: border-box;
+  min-width: 0;
 `;
 
 const Text = styled.h3`
@@ -22,6 +21,8 @@ const Text = styled.h3`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
 `;
 
 const IconContainer = styled.div`

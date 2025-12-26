@@ -65,3 +65,19 @@ export const getRootAppUrl = () => {
 
   return `${protocol}://${rootUrl}`;
 };
+
+/**
+ * Extracts the song ID from queue options.
+ * Handles various queue option formats (song, songs array, album, playlist).
+ */
+export const getSongIdFromQueueOptions = (
+  queueOptions: MediaApi.QueueOptions,
+  startPosition = 0
+): string | undefined => {
+  return (
+    queueOptions.song?.id ??
+    queueOptions.songs?.[startPosition]?.id ??
+    queueOptions.album?.songs[startPosition]?.id ??
+    queueOptions.playlist?.songs[startPosition]?.id
+  );
+};

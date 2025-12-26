@@ -3,6 +3,9 @@ import { Unit } from "@/utils/constants";
 
 import { SelectableListOption } from ".";
 import { APP_URL } from "@/utils/constants/api";
+import { useAudioPlayer } from "@/hooks";
+import { useMemo } from "react";
+import * as Utils from "@/utils";
 
 const LabelContainer = styled.div`
   flex: 1;
@@ -54,8 +57,10 @@ const Image = styled.img`
   margin-right: ${Unit.XXS};
 `;
 
-const Icon = styled.img`
+const Icon = styled.img<{ $size?: number }>`
   margin-left: auto;
+  width: ${({ $size }) => ($size ? `${$size}px` : "auto")};
+  height: ${({ $size }) => ($size ? `${$size}px` : "auto")};
 `;
 
 interface Props {
@@ -64,6 +69,25 @@ interface Props {
 }
 
 const SelectableListItem = ({ option, isActive }: Props) => {
+  const { nowPlayingItem, playbackInfo } = useAudioPlayer();
+
+  // Check if this specific song is currently playing
+  const isPlayingSong = useMemo(() => {
+    if (option.type !== "song" || !nowPlayingItem) {
+      return false;
+    }
+
+    const songId = Utils.getSongIdFromQueueOptions(
+      option.queueOptions,
+      option.queueOptions.startPosition
+    );
+
+    return songId === nowPlayingItem.id;
+  }, [option, nowPlayingItem]);
+
+  const isPlaying =
+    isPlayingSong && playbackInfo.isPlaying && !playbackInfo.isPaused;
+
   return (
     <Container $isActive={isActive}>
       {option.imageUrl && <Image alt="List item" src={option.imageUrl} />}
@@ -72,6 +96,13 @@ const SelectableListItem = ({ option, isActive }: Props) => {
         {option.sublabel && <Sublabel>{option.sublabel}</Sublabel>}
       </LabelContainer>
       {isActive && <Icon src={`${APP_URL}/arrow_right.svg`} />}
+      {isPlaying && !isActive && (
+        <Icon
+          src={`${APP_URL}/volume_full.svg`}
+          $size={16}
+          style={{ marginRight: 8 }}
+        />
+      )}
     </Container>
   );
 };

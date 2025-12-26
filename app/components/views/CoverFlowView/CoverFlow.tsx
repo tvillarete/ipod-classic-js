@@ -19,49 +19,49 @@ const Container = styled.div`
 `;
 
 const AlbumsContainer = styled.div`
-  height: 100%;
-  z-index: 2;
   position: relative;
+  z-index: 2;
   display: flex;
   flex-wrap: nowrap;
-  flex: 1;
+  height: 100%;
   padding-top: 20px;
-  -webkit-overflow-scrolling: touch; /* [3] */
-  -ms-overflow-style: -ms-autohiding-scrollbar;
   perspective: 500px;
 `;
 
 const InfoContainer = styled(motion.div)`
-  z-index: 0;
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 24%;
+  inset: auto 0 0;
+  z-index: 0;
+  padding-bottom: 16px;
   text-align: center;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
   overflow: hidden;
+  min-width: 0;
 `;
 
 const NowPlayingContainer = styled(motion.div)`
-  z-index: 1;
   position: absolute;
-  top: 20px;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  inset: 20px 0 0;
+  z-index: 1;
 `;
 
-const Text = styled.h3`
+interface TextProps {
+  $clamp?: number;
+}
+
+const Text = styled.h3<TextProps>`
   margin: 0;
+  padding: 0 16px;
   font-size: 16px;
   text-align: center;
-  padding: 0 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: ${(props) => props.$clamp ?? 1};
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 
-  :first-of-type {
-    margin-top: 24px;
+  &:first-of-type {
+    margin-top: 8px;
   }
 `;
 
@@ -142,8 +142,8 @@ const CoverFlow = ({ albums }: Props) => {
       <AnimatePresence>
         {albums.length && !playingAlbum && (
           <InfoContainer {...fade}>
-            <Text>{albums[activeIndex]?.name}</Text>
-            <Text>{albums[activeIndex]?.artistName}</Text>
+            <Text $clamp={1}>{albums[activeIndex]?.name}</Text>
+            <Text $clamp={1}>{albums[activeIndex]?.artistName}</Text>
           </InfoContainer>
         )}
         {playingAlbum && (

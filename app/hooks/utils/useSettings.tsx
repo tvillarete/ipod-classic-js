@@ -10,10 +10,14 @@ import { SELECTED_SERVICE_KEY } from "@/utils/service";
 import { DeviceThemeName } from "@/utils/themes";
 
 type StreamingService = "apple" | "spotify";
+export type ShuffleMode = "off" | "songs" | "albums";
+export type RepeatMode = "off" | "one" | "all";
 
 export const VOLUME_KEY = "ipodVolume";
 export const COLOR_SCHEME_KEY = "ipodColorScheme";
 export const DEVICE_COLOR_KEY = "ipodSelectedDeviceTheme";
+export const SHUFFLE_MODE_KEY = "ipodShuffleMode";
+export const REPEAT_MODE_KEY = "ipodRepeatMode";
 
 export interface SettingsState {
   service?: StreamingService;
@@ -21,6 +25,8 @@ export interface SettingsState {
   isAppleAuthorized: boolean;
   colorScheme: ColorScheme;
   deviceTheme: DeviceThemeName;
+  shuffleMode: ShuffleMode;
+  repeatMode: RepeatMode;
 }
 
 type SettingsContextType = [
@@ -40,6 +46,8 @@ export type SettingsHook = SettingsState & {
   setService: (service?: StreamingService) => void;
   setColorScheme: (colorScheme?: ColorScheme) => void;
   setDeviceTheme: (deviceTheme: DeviceThemeName) => void;
+  setShuffleMode: (mode: ShuffleMode) => void;
+  setRepeatMode: (mode: RepeatMode) => void;
 };
 
 export const useSettings = (): SettingsHook => {
@@ -108,6 +116,22 @@ export const useSettings = (): SettingsHook => {
     [setState]
   );
 
+  const setShuffleMode = useCallback(
+    (mode: ShuffleMode) => {
+      setState((prevState) => ({ ...prevState, shuffleMode: mode }));
+      localStorage.setItem(SHUFFLE_MODE_KEY, mode);
+    },
+    [setState]
+  );
+
+  const setRepeatMode = useCallback(
+    (mode: RepeatMode) => {
+      setState((prevState) => ({ ...prevState, repeatMode: mode }));
+      localStorage.setItem(REPEAT_MODE_KEY, mode);
+    },
+    [setState]
+  );
+
   return {
     ...state,
     isAuthorized: state.isAppleAuthorized || state.isSpotifyAuthorized,
@@ -116,6 +140,8 @@ export const useSettings = (): SettingsHook => {
     setService,
     setColorScheme,
     setDeviceTheme,
+    setShuffleMode,
+    setRepeatMode,
   };
 };
 
@@ -130,6 +156,8 @@ export const SettingsProvider = ({ children }: Props) => {
     service: undefined,
     colorScheme: "default",
     deviceTheme: "silver",
+    shuffleMode: "off",
+    repeatMode: "off",
   });
 
   const handleMount = useCallback(() => {
@@ -142,6 +170,10 @@ export const SettingsProvider = ({ children }: Props) => {
         (localStorage.getItem(COLOR_SCHEME_KEY) as ColorScheme) ?? "default",
       deviceTheme:
         (localStorage.getItem(DEVICE_COLOR_KEY) as DeviceThemeName) ?? "silver",
+      shuffleMode:
+        (localStorage.getItem(SHUFFLE_MODE_KEY) as ShuffleMode) ?? "off",
+      repeatMode:
+        (localStorage.getItem(REPEAT_MODE_KEY) as RepeatMode) ?? "off",
     }));
   }, []);
 
