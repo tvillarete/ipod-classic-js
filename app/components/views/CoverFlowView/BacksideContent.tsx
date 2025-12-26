@@ -25,16 +25,24 @@ const InfoContainer = styled.div`
   padding: 4px 8px;
   background: linear-gradient(to bottom, #6585ad, #789ab3);
   border-bottom: 1px solid #6d87a3;
+  min-width: 0;
 `;
 
 const Text = styled.h3`
   margin: 0;
   font-size: 16px;
   color: white;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 `;
 
 const Subtext = styled(Text)`
   font-size: 14px;
+  -webkit-line-clamp: 1;
 `;
 
 const ListContainer = styled.div`

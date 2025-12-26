@@ -32,12 +32,10 @@ const InfoContainer = styled(motion.div)`
   position: absolute;
   inset: auto 0 0;
   z-index: 0;
-  display: -webkit-box;
-  height: 24%;
+  padding-bottom: 16px;
   text-align: center;
   overflow: hidden;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
+  min-width: 0;
 `;
 
 const NowPlayingContainer = styled(motion.div)`
@@ -46,11 +44,21 @@ const NowPlayingContainer = styled(motion.div)`
   z-index: 1;
 `;
 
-const Text = styled.h3`
+interface TextProps {
+  $clamp?: number;
+}
+
+const Text = styled.h3<TextProps>`
   margin: 0;
   padding: 0 16px;
   font-size: 16px;
   text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: ${(props) => props.$clamp ?? 1};
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 
   &:first-of-type {
     margin-top: 8px;
@@ -134,8 +142,8 @@ const CoverFlow = ({ albums }: Props) => {
       <AnimatePresence>
         {albums.length && !playingAlbum && (
           <InfoContainer {...fade}>
-            <Text>{albums[activeIndex]?.name}</Text>
-            <Text>{albums[activeIndex]?.artistName}</Text>
+            <Text $clamp={1}>{albums[activeIndex]?.name}</Text>
+            <Text $clamp={1}>{albums[activeIndex]?.artistName}</Text>
           </InfoContainer>
         )}
         {playingAlbum && (
