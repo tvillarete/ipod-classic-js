@@ -49,6 +49,7 @@ interface AudioPlayerState {
   reset: () => void;
 }
 
+// Context initialized with empty object - actual value provided by AudioPlayerProvider
 export const AudioPlayerContext = createContext<AudioPlayerState>(
   {} as AudioPlayerState
 );
@@ -58,9 +59,7 @@ type AudioPlayerHook = AudioPlayerState;
 export const useAudioPlayer = (): AudioPlayerHook => {
   const state = useContext(AudioPlayerContext);
 
-  return {
-    ...state,
-  };
+  return state;
 };
 
 interface Props {
@@ -91,30 +90,40 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         throw new Error("Unable to play: Not authorized");
       }
 
-      /**
-       * MusicKit JS V3 doesn't seem to support passing in a single playlist id to the queue.
-       * A workaround is to just grab the song ids instead.
-       * */
+      // MusicKit JS V3 doesn't support passing a single playlist id to the queue.
+      // Workaround: extract the song ids instead.
       const playlistSongs = queueOptions.playlist?.songs?.map(({ id }) => id);
 
-      /**
-       * MusicKit JS V3 expects only a single media type with no empty keys.
-       * We're filtering out any keys that are undefined.
-       *
-       * @example { album: 'a.12345', startPosition: 0 }
-       */
-      const queue = Object.fromEntries(
-        Object.entries({
-          album: queueOptions.album?.id,
-          songs: playlistSongs ?? queueOptions.songs?.map((song) => song.url),
-          song: queueOptions.song?.id,
-          startPosition: queueOptions.startPosition,
-        }).filter(([_, value]) => value !== undefined)
-      );
+      // When startPosition is provided with an album, MusicKit ignores it.
+      // Workaround: pass the album's songs as individual song IDs.
+      const albumSongs = queueOptions.album?.songs?.map((song) => song.id);
 
-      await music.setQueue({ ...queue });
+      // MusicKit JS V3 expects only a single media type with no empty keys.
+      const queue: Partial<MusicKit.SetQueueOptions> = {};
 
-      await music.play();
+      if (albumSongs) {
+        queue.songs = albumSongs;
+      } else if (queueOptions.album?.id) {
+        queue.album = queueOptions.album.id;
+      } else if (playlistSongs) {
+        queue.songs = playlistSongs;
+      } else if (queueOptions.songs) {
+        queue.songs = queueOptions.songs.map((song) => song.url);
+      } else if (queueOptions.song?.id) {
+        queue.song = queueOptions.song.id;
+      }
+
+      await music.setQueue(queue);
+
+      // Jump to the selected track if needed (MusicKit defaults to index 0)
+      if (queueOptions.startPosition) {
+        await music.changeToMediaAtIndex(queueOptions.startPosition);
+      }
+
+      // Only call play() if not already playing (changeToMediaAtIndex may auto-start playback)
+      if (!music.isPlaying) {
+        await music.play();
+      }
     },
     [isAppleAuthorized, music]
   );
@@ -128,7 +137,11 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       // Safari on iOS requires a user interaction to activate the player.
       // This function exists in the Spotify SDK, but is not present in the types.
       if (spotifyPlayer && "activateElement" in spotifyPlayer) {
-        await (spotifyPlayer as any).activateElement();
+        await (
+          spotifyPlayer as Spotify.Player & {
+            activateElement: () => Promise<void>;
+          }
+        ).activateElement();
       }
 
       // Spotify only accepts a list of song URIs, so we'll look through each media type provided for songs.
@@ -137,7 +150,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         ...(queueOptions.playlist?.songs?.map((song) => song.url) ?? []),
         ...(queueOptions.songs?.map((song) => song.url) ?? []),
         queueOptions.song?.url,
-      ].filter((item) => !!item);
+      ].filter((uri): uri is string => !!uri);
 
       setPlaybackInfo((prevState) => ({
         ...prevState,
@@ -145,14 +158,20 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       }));
 
       try {
+        const body: { uris: string[]; offset?: { position: number } } = {
+          uris,
+        };
+
+        // Only include offset if startPosition is defined
+        if (queueOptions.startPosition !== undefined) {
+          body.offset = { position: queueOptions.startPosition };
+        }
+
         const response = await fetch(
           `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
           {
             method: "PUT",
-            body: JSON.stringify({
-              uris,
-              offset: { position: queueOptions.startPosition },
-            }),
+            body: JSON.stringify(body),
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${accessToken}`,
@@ -161,19 +180,16 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         );
 
         if (!response.ok) {
-          throw new Error(`Spotify API error: ${response.status}`);
+          const errorData = await response.json().catch(() => ({}));
+          const errorMessage =
+            errorData.error?.message || `HTTP ${response.status}`;
+          throw new Error(`Spotify API error: ${errorMessage}`);
         }
-
+      } finally {
         setPlaybackInfo((prevState) => ({
           ...prevState,
           isLoading: false,
         }));
-      } catch (error) {
-        setPlaybackInfo((prevState) => ({
-          ...prevState,
-          isLoading: false,
-        }));
-        throw error;
       }
     },
     [accessToken, deviceId, isSpotifyAuthorized, spotifyPlayer]
@@ -202,7 +218,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       case "spotify":
         return spotifyPlayer?.pause();
       default:
-        throw new Error("Unable to pause: service not specified");
+        throw new Error("Unable to pause: no service specified");
     }
   }, [music, service, spotifyPlayer]);
 
@@ -223,7 +239,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         spotifyPlayer?.togglePlay();
         break;
       default:
-        throw new Error("Unable to play: service not specified");
+        throw new Error("Unable to toggle play/pause: no service specified");
     }
   }, [hasNowPlayingItem, music, service, spotifyPlayer]);
 
@@ -247,7 +263,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         await spotifyPlayer?.nextTrack();
         break;
       default:
-        throw new Error("Unable to play: service not specified");
+        throw new Error("Unable to skip next: no service specified");
     }
 
     setPlaybackInfo((prevState) => ({
@@ -276,7 +292,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         await spotifyPlayer?.previousTrack();
         break;
       default:
-        throw new Error("Unable to play: service not specified");
+        throw new Error("Unable to skip previous: no service specified");
     }
 
     setPlaybackInfo((prevState) => ({
@@ -339,21 +355,12 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         return;
       }
 
-      if (!state.paused) {
-        setPlaybackInfo((prevState) => ({
-          ...prevState,
-          isPlaying: true,
-          isPaused: false,
-          isLoading: false,
-        }));
-      } else {
-        setPlaybackInfo((prevState) => ({
-          ...prevState,
-          isPlaying: false,
-          isPaused: true,
-          isLoading: false,
-        }));
-      }
+      setPlaybackInfo((prevState) => ({
+        ...prevState,
+        isPlaying: !state.paused,
+        isPaused: state.paused,
+        isLoading: false,
+      }));
 
       updateNowPlayingItem();
     },
@@ -434,10 +441,20 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
   const updateSpotifyPlayerState = useCallback(
     async (endpoint: string) => {
-      await fetch(`https://api.spotify.com/v1/me/player/${endpoint}`, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      const response = await fetch(
+        `https://api.spotify.com/v1/me/player/${endpoint}`,
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage =
+          errorData.error?.message || `HTTP ${response.status}`;
+        throw new Error(`Spotify API error: ${errorMessage}`);
+      }
     },
     [accessToken]
   );
@@ -472,13 +489,12 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       updateRepeatModeSetting(mode);
 
       if (service === "apple") {
-        if (mode === "off") {
-          music.repeatMode = MusicKit.PlayerRepeatMode.none;
-        } else if (mode === "one") {
-          music.repeatMode = MusicKit.PlayerRepeatMode.one;
-        } else {
-          music.repeatMode = MusicKit.PlayerRepeatMode.all;
-        }
+        const modeMap = {
+          off: MusicKit.PlayerRepeatMode.none,
+          one: MusicKit.PlayerRepeatMode.one,
+          all: MusicKit.PlayerRepeatMode.all,
+        } as const;
+        music.repeatMode = modeMap[mode];
       } else if (service === "spotify") {
         const stateMap = { off: "off", one: "track", all: "context" } as const;
         await updateSpotifyPlayerState(
