@@ -84,6 +84,26 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
   const hasNowPlayingItem = !!nowPlayingItem;
 
+  const updateSpotifyPlayerState = useCallback(
+    async (endpoint: string) => {
+      const response = await fetch(
+        `https://api.spotify.com/v1/me/player/${endpoint}`,
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage =
+          errorData.error?.message || `HTTP ${response.status}`;
+        throw new Error(`Spotify API error: ${errorMessage}`);
+      }
+    },
+    [accessToken]
+  );
+
   const playAppleMusic = useCallback(
     async (queueOptions: MediaApi.QueueOptions) => {
       if (!isAppleAuthorized) {
@@ -158,6 +178,12 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       }));
 
       try {
+        // Set the shuffle mode before starting playback
+        const shouldShuffle = shuffleMode !== "off";
+        await updateSpotifyPlayerState(
+          `shuffle?state=${shouldShuffle}&device_id=${deviceId}`
+        );
+
         const body: { uris: string[]; offset?: { position: number } } = {
           uris,
         };
@@ -192,7 +218,14 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         }));
       }
     },
-    [accessToken, deviceId, isSpotifyAuthorized, spotifyPlayer]
+    [
+      accessToken,
+      deviceId,
+      isSpotifyAuthorized,
+      shuffleMode,
+      spotifyPlayer,
+      updateSpotifyPlayerState,
+    ]
   );
 
   const play = useCallback(
@@ -438,26 +471,6 @@ export const AudioPlayerProvider = ({ children }: Props) => {
     setNowPlayingItem(undefined);
     setPlaybackInfo(defaultPlaybackInfoState);
   }, [music, service, spotifyPlayer]);
-
-  const updateSpotifyPlayerState = useCallback(
-    async (endpoint: string) => {
-      const response = await fetch(
-        `https://api.spotify.com/v1/me/player/${endpoint}`,
-        {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage =
-          errorData.error?.message || `HTTP ${response.status}`;
-        throw new Error(`Spotify API error: ${errorMessage}`);
-      }
-    },
-    [accessToken]
-  );
 
   const handleSetShuffleMode = useCallback(
     async (mode: ShuffleMode) => {
