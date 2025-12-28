@@ -54,7 +54,7 @@ const useSpotifyDataFetcher = () => {
         await fetchSpotifyApi<SpotifyApi.UsersSavedAlbumsResponse>({
           endpoint: `me/albums`,
           params: {
-            limit,
+            limit: 50,
             offset,
           },
           accessToken,
@@ -81,6 +81,9 @@ const useSpotifyDataFetcher = () => {
       const response = await fetchSpotifyApi<SpotifyApi.SingleAlbumResponse>({
         endpoint: `albums/${id}`,
         accessToken,
+        params: {
+          limit: 50
+        },
         onError: (error) => {
           throw new Error(error);
         },
@@ -95,7 +98,10 @@ const useSpotifyDataFetcher = () => {
 
   const fetchArtists = useCallback(
     async ({ limit, after }: MediaApi.PaginationParams) => {
-      const response =
+
+      const data: MediaApi.Artist[] = []
+
+      let previousResponse =
         await fetchSpotifyApi<SpotifyApi.UsersFollowedArtistsResponse>({
           endpoint: `me/following`,
           params: {
@@ -109,14 +115,35 @@ const useSpotifyDataFetcher = () => {
           },
         });
 
-      const data =
-        response?.artists?.items.map(
+      data.push.apply(data, previousResponse?.artists?.items.map(
+        ConversionUtils.convertSpotifyArtistFull
+      ) ?? []);
+
+      while (previousResponse?.artists.next != null) {
+        let nextResponse =
+          await fetchSpotifyApi<SpotifyApi.UsersFollowedArtistsResponse>({
+            endpoint: `me/following`,
+            params: {
+              type: "artist",
+              limit,
+              after: previousResponse?.artists.next ? data[data.length - 1]?.id : undefined,
+            },
+            accessToken,
+            onError: (error) => {
+              throw new Error(error);
+            },
+          });
+
+        data.push.apply(data, nextResponse?.artists?.items.map(
           ConversionUtils.convertSpotifyArtistFull
-        ) ?? [];
+        ) ?? []);
+
+        previousResponse = nextResponse;
+      }
 
       const result: MediaApi.PaginatedResponse<MediaApi.Artist[]> = {
         data,
-        after: response?.artists.next ? data[data.length - 1]?.id : undefined,
+        after: previousResponse?.artists.next ? data[data.length - 1]?.id : undefined,
       };
 
       return result;
@@ -129,6 +156,9 @@ const useSpotifyDataFetcher = () => {
       const response = await fetchSpotifyApi<SpotifyApi.ArtistsAlbumsResponse>({
         endpoint: `artists/${id}/albums`,
         accessToken,
+        params: {
+          limit: 50,
+        },
         onError: (error) => {
           throw new Error(error);
         },
@@ -153,14 +183,17 @@ const useSpotifyDataFetcher = () => {
 
   const fetchPlaylists = useCallback(
     async ({ pageParam, limit }: MediaApi.PaginationParams) => {
-      const offset = pageParam * limit;
+      let playlistLimit = 20;
+      let offset = 0;
 
-      const response =
+      const data: MediaApi.Playlist[] = []
+
+      let previousResponse =
         await fetchSpotifyApi<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>({
           endpoint: "me/playlists",
           params: {
-            limit,
-            offset,
+            limit: playlistLimit,
+            offset
           },
           accessToken,
           onError: (error) => {
@@ -168,15 +201,38 @@ const useSpotifyDataFetcher = () => {
           },
         });
 
-      const resultData = await Promise.all(
-        response?.items?.map(
+      data.push.apply(data, await Promise.all(
+        previousResponse?.items?.map(
           ConversionUtils.convertSpotifyPlaylistSimplified
-        ) ?? []
-      );
+        ) ?? []));
+
+      if (previousResponse?.next != null) {
+        offset += playlistLimit;
+
+        let nextResponse =
+          await fetchSpotifyApi<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>({
+            endpoint: "me/playlists",
+            params: {
+              limit: playlistLimit,
+              offset
+            },
+            accessToken,
+            onError: (error) => {
+              throw new Error(error);
+            },
+          });
+
+        data.push.apply(data, await Promise.all(
+          nextResponse?.items?.map(
+            ConversionUtils.convertSpotifyPlaylistSimplified
+          ) ?? []));
+
+        previousResponse = nextResponse;
+      }
 
       const result: MediaApi.PaginatedResponse<MediaApi.Playlist[]> = {
-        data: resultData,
-        nextPageParam: response?.next ? pageParam + 1 : undefined,
+        data,
+        nextPageParam: previousResponse?.next ? pageParam + 1 : undefined,
       };
 
       return result;
