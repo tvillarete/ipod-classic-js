@@ -61,7 +61,19 @@ const ViewManager = () => {
   const popupViews = viewStack.filter(isPopupView);
   const keyboardViews = viewStack.filter(isKeyboardView);
 
-  useEventListener<IpodEvent>("menulongpress", resetViews);
+  // Check if the current view has long press disabled
+  const currentView = viewStack[viewStack.length - 1];
+  const shouldDisableLongPress =
+    currentView?.type === "screen" &&
+    VIEW_REGISTRY[currentView.id as keyof typeof VIEW_REGISTRY]?.disableLongPress;
+
+  const handleMenuLongPress = () => {
+    if (!shouldDisableLongPress) {
+      resetViews();
+    }
+  };
+
+  useEventListener<IpodEvent>("menulongpress", handleMenuLongPress);
 
   return (
     <div>
