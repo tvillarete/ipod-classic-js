@@ -59,6 +59,7 @@ export type ViewConfig<TViewId extends ViewId = ViewId> = {
   title: string;
   isSplitScreen?: boolean;
   preview?: SplitScreenPreview;
+  disableLongPress?: boolean;
 };
 
 /**
@@ -174,6 +175,7 @@ export const VIEW_REGISTRY = {
     type: "full",
     title: "Brick",
     preview: SplitScreenPreview.Games,
+    disableLongPress: true,
   } as ViewConfig<"brickGame">,
 
   // CoverFlow View
