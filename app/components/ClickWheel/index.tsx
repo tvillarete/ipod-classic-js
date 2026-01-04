@@ -41,6 +41,11 @@ const RootContainer = styled(motion.div)<RootContainerProps>`
   border-radius: 50%;
   touch-action: none;
 
+  /* Prevent text selection and context menus on touch devices */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+
   ${({ size = 220, $deviceTheme }) => css`
     width: ${size}px;
     height: ${size}px;
@@ -60,6 +65,11 @@ const ButtonContainer = styled.div<{
   position: absolute;
   place-self: ${(props) => props.$placement};
   padding: 12px;
+
+  /* Prevent text selection and touch callouts on long press */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 `;
 
 type CenterButtonProps = {
