@@ -22,6 +22,7 @@ import {
   dispatchForwardClickEvent,
   dispatchKeyboardEvent,
   dispatchMenuClickEvent,
+  dispatchMenuLongPressEvent,
   dispatchPlayPauseClickEvent,
   dispatchScrollEvent,
 } from "@/utils/events";
@@ -217,11 +218,34 @@ export const ClickWheel = () => {
     dispatchCenterLongClickEvent();
   }, []);
 
+  const handleMenuButtonPress = useCallback(() => {
+    // If the user scrolled during a pan gesture, don't trigger a press event
+    if (hasScrolledRef.current) {
+      return;
+    }
+
+    dispatchMenuClickEvent();
+  }, []);
+
+  const handleMenuButtonLongPress = useCallback(() => {
+    // If the user scrolled, don't trigger the long press event
+    if (hasScrolledRef.current) {
+      return;
+    }
+
+    dispatchMenuLongPressEvent();
+  }, []);
+
   useEventListener("keydown", handleKeyPress);
 
   const longPressHandlerProps = useLongPressHandler({
     onPress: handleCenterButtonPress,
     onLongPress: handleCenterButtonLongPress,
+  });
+
+  const menuLongPressHandlerProps = useLongPressHandler({
+    onPress: handleMenuButtonPress,
+    onLongPress: handleMenuButtonLongPress,
   });
 
   return (
@@ -233,7 +257,11 @@ export const ClickWheel = () => {
       onPanEnd={handlePanEnd}
       ref={rootContainerRef}
     >
-      <ButtonContainer ref={menuButtonRef} $placement="start center">
+      <ButtonContainer
+        ref={menuButtonRef}
+        $placement="start center"
+        {...menuLongPressHandlerProps}
+      >
         <MenuIcon color={iconColor} />
       </ButtonContainer>
       <ButtonContainer ref={rewindButtonRef} $placement="center start">
