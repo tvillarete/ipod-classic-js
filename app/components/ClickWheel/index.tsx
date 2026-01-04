@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 
 import styled, { css } from "styled-components";
 
@@ -6,7 +6,7 @@ import FastForwardIcon from "./icons/FastForwardIcon";
 import MenuIcon from "./icons/MenuIcon";
 import PlayPauseIcon from "./icons/PlayPauseIcon";
 import RewindIcon from "./icons/RewindIcon";
-import { motion, PanInfo, useMotionValue } from "framer-motion";
+import { motion, PanInfo } from "framer-motion";
 import {
   checkIsPointWithinElement,
   getAngleBetweenPoints,
@@ -22,6 +22,7 @@ import {
   dispatchForwardClickEvent,
   dispatchKeyboardEvent,
   dispatchMenuClickEvent,
+  dispatchMenuLongPressEvent,
   dispatchPlayPauseClickEvent,
   dispatchScrollEvent,
 } from "@/utils/events";
@@ -39,6 +40,11 @@ const RootContainer = styled(motion.div)<RootContainerProps>`
   position: relative;
   border-radius: 50%;
   touch-action: none;
+
+  /* Prevent text selection and context menus on touch devices */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 
   ${({ size = 220, $deviceTheme }) => css`
     width: ${size}px;
@@ -59,6 +65,11 @@ const ButtonContainer = styled.div<{
   position: absolute;
   place-self: ${(props) => props.$placement};
   padding: 12px;
+
+  /* Prevent text selection and touch callouts on long press */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 `;
 
 type CenterButtonProps = {
@@ -84,6 +95,9 @@ const CenterButton = styled.div<CenterButtonProps>`
   }
 `;
 
+// Extract constant for center button size
+const CENTER_BUTTON_SIZE = 90;
+
 /**
  * The ClickWheel component is a circular input that allows the user to interact with the iPod.
  * It contains four buttons: Menu, Rewind, Fast Forward, and Play/Pause.
@@ -93,7 +107,11 @@ const CenterButton = styled.div<CenterButtonProps>`
  */
 export const ClickWheel = () => {
   const { deviceTheme } = useSettings();
-  const iconColor = getTheme(deviceTheme).clickwheel.button;
+
+  const iconColor = useMemo(
+    () => getTheme(deviceTheme).clickwheel.button,
+    [deviceTheme]
+  );
 
   const rootContainerRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLDivElement>(null);
@@ -101,16 +119,13 @@ export const ClickWheel = () => {
   const fastForwardButtonRef = useRef<HTMLDivElement>(null);
   const playPauseButtonRef = useRef<HTMLDivElement>(null);
 
-  const isPanningMotionValue = useMotionValue(false);
-  const startPointMotionValue = useMotionValue({
-    x: 0,
-    y: 0,
-  });
+  const hasScrolledRef = useRef(false);
+  const startPointRef = useRef({ x: 0, y: 0 });
 
   const handleWheelPress = useCallback((point: { x: number; y: number }) => {
-    if (checkIsPointWithinElement(point, menuButtonRef.current)) {
-      dispatchMenuClickEvent();
-    } else if (checkIsPointWithinElement(point, rewindButtonRef.current)) {
+    // Menu button is handled by its own pointer event handlers (long press support)
+    // so we exclude it from the pan gesture system
+    if (checkIsPointWithinElement(point, rewindButtonRef.current)) {
       dispatchBackClickEvent();
     } else if (checkIsPointWithinElement(point, fastForwardButtonRef.current)) {
       dispatchForwardClickEvent();
@@ -119,47 +134,43 @@ export const ClickWheel = () => {
     }
   }, []);
 
-  const handlePan = useCallback(
-    (_: PointerEvent, info: PanInfo) => {
-      if (!rootContainerRef.current) {
-        return;
-      }
+  const handlePan = useCallback((_: PointerEvent, info: PanInfo) => {
+    if (!rootContainerRef.current) {
+      return;
+    }
 
-      const { centerPoint } = getCircularBoundingInfo(
-        rootContainerRef.current.getBoundingClientRect()
-      );
-      const startPoint = startPointMotionValue.get();
-      const currentPoint = info.point;
+    const { centerPoint } = getCircularBoundingInfo(
+      rootContainerRef.current.getBoundingClientRect()
+    );
+    const startPoint = startPointRef.current;
+    const currentPoint = info.point;
 
-      const startAngleDeg = getAngleBetweenPoints(startPoint, centerPoint);
-      const currentAngleDeg = getAngleBetweenPoints(currentPoint, centerPoint);
-      const angleDelta = currentAngleDeg - startAngleDeg;
-      const direction = getScrollDirection(angleDelta);
+    const startAngleDeg = getAngleBetweenPoints(startPoint, centerPoint);
+    const currentAngleDeg = getAngleBetweenPoints(currentPoint, centerPoint);
+    const angleDelta = currentAngleDeg - startAngleDeg;
+    const direction = getScrollDirection(angleDelta);
 
-      // If the user has panned more than the angle offset threshold, we trigger a scroll event
-      const hasScrolled = Math.abs(angleDelta) > ANGLE_OFFSET_THRESHOLD;
+    // If the user has panned more than the angle offset threshold, we trigger a scroll event
+    const hasScrolled = Math.abs(angleDelta) > ANGLE_OFFSET_THRESHOLD;
 
-      if (hasScrolled) {
-        // Reset the start point to the current point to begin tracking the next scroll
-        startPointMotionValue.set(currentPoint);
+    if (hasScrolled) {
+      // Mark that we actually scrolled during this pan gesture
+      hasScrolledRef.current = true;
 
-        dispatchScrollEvent(direction);
-      }
-    },
-    [startPointMotionValue]
-  );
+      // Reset the start point to the current point to begin tracking the next scroll
+      startPointRef.current = currentPoint;
+
+      dispatchScrollEvent(direction);
+    }
+  }, []);
 
   const handlePanEnd = useCallback(
     (event: PointerEvent, info: PanInfo) => {
       const deltaX = info.offset.x;
       const deltaY = info.offset.y;
+      const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
 
-      const isPressEvent =
-        // If the user has panned but returned their cursor to near the starting position, don't trigger a press event.
-        !isPanningMotionValue.get() &&
-        // If the user has scrolled less than the pan threshold, we consider it a press event
-        Math.abs(deltaX) < PAN_THRESHOLD &&
-        Math.abs(deltaY) < PAN_THRESHOLD;
+      const isPressEvent = !hasScrolledRef.current && distance < PAN_THRESHOLD;
 
       if (isPressEvent) {
         handleWheelPress({
@@ -168,27 +179,26 @@ export const ClickWheel = () => {
         });
       }
 
-      isPanningMotionValue.set(false);
+      // Reset scroll tracking for the next pan gesture
+      // Use a timeout to prevent click events from firing immediately after pan
+      setTimeout(() => {
+        hasScrolledRef.current = false;
+      }, 50);
     },
-    [handleWheelPress, isPanningMotionValue]
+    [handleWheelPress]
   );
 
-  const handlePanStart = useCallback(
-    (event: PointerEvent) => {
-      isPanningMotionValue.set(true);
-
-      startPointMotionValue.set({
-        x: event.clientX,
-        y: event.clientY,
-      });
-    },
-    [isPanningMotionValue, startPointMotionValue]
-  );
+  const handlePanStart = useCallback((event: PointerEvent) => {
+    startPointRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+    };
+  }, []);
 
   const handlePress = useCallback(
     (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      // If the user is panning, we ignore the press event
-      if (isPanningMotionValue.get()) {
+      // If the user just scrolled, ignore the click event that might follow
+      if (hasScrolledRef.current) {
         return;
       }
 
@@ -197,33 +207,55 @@ export const ClickWheel = () => {
         y: event.clientY,
       });
     },
-    [handleWheelPress, isPanningMotionValue]
+    [handleWheelPress]
   );
 
   const handleKeyPress = useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) =>
-      dispatchKeyboardEvent(event.key),
+    (event: KeyboardEvent) => dispatchKeyboardEvent(event.key),
     []
   );
 
   const handleCenterButtonPress = useCallback(() => {
-    // If the user is panning and ends on the center button, we ignore the press event.
-    if (isPanningMotionValue.get()) {
+    // If the user scrolled during a pan gesture, don't trigger a press event
+    if (hasScrolledRef.current) {
       return;
     }
 
     dispatchCenterClickEvent();
-  }, [isPanningMotionValue]);
+  }, []);
 
   const handleCenterButtonLongPress = useCallback(() => {
     dispatchCenterLongClickEvent();
   }, []);
 
+  const handleMenuButtonPress = useCallback(() => {
+    // If the user scrolled during a pan gesture, don't trigger a press event
+    if (hasScrolledRef.current) {
+      return;
+    }
+
+    dispatchMenuClickEvent();
+  }, []);
+
+  const handleMenuButtonLongPress = useCallback(() => {
+    // If the user scrolled, don't trigger the long press event
+    if (hasScrolledRef.current) {
+      return;
+    }
+
+    dispatchMenuLongPressEvent();
+  }, []);
+
   useEventListener("keydown", handleKeyPress);
 
-  const { ...longPressHandlerProps } = useLongPressHandler({
+  const longPressHandlerProps = useLongPressHandler({
     onPress: handleCenterButtonPress,
     onLongPress: handleCenterButtonLongPress,
+  });
+
+  const menuLongPressHandlerProps = useLongPressHandler({
+    onPress: handleMenuButtonPress,
+    onLongPress: handleMenuButtonLongPress,
   });
 
   return (
@@ -235,7 +267,11 @@ export const ClickWheel = () => {
       onPanEnd={handlePanEnd}
       ref={rootContainerRef}
     >
-      <ButtonContainer ref={menuButtonRef} $placement="start center">
+      <ButtonContainer
+        ref={menuButtonRef}
+        $placement="start center"
+        {...menuLongPressHandlerProps}
+      >
         <MenuIcon color={iconColor} />
       </ButtonContainer>
       <ButtonContainer ref={rewindButtonRef} $placement="center start">
@@ -243,7 +279,7 @@ export const ClickWheel = () => {
       </ButtonContainer>
       <ButtonContainer $placement="center">
         <CenterButton
-          size={90}
+          size={CENTER_BUTTON_SIZE}
           $deviceTheme={deviceTheme}
           {...longPressHandlerProps}
         />
