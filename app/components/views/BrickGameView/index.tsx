@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { useMenuHideView } from "@/hooks";
 import styled from "styled-components";
@@ -24,9 +24,17 @@ const Canvas = styled.canvas`
 
 const BrickGame = () => {
   useMenuHideView("brickGame");
+  const gameRef = useRef<Game | null>(null);
+
   useEffect(() => {
     const game = new Game();
     game.init();
+    gameRef.current = game;
+
+    return () => {
+      game.cleanup();
+      gameRef.current = null;
+    };
   }, []);
 
   return (
