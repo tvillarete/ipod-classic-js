@@ -123,9 +123,9 @@ export const ClickWheel = () => {
   const startPointRef = useRef({ x: 0, y: 0 });
 
   const handleWheelPress = useCallback((point: { x: number; y: number }) => {
-    if (checkIsPointWithinElement(point, menuButtonRef.current)) {
-      dispatchMenuClickEvent();
-    } else if (checkIsPointWithinElement(point, rewindButtonRef.current)) {
+    // Menu button is handled by its own pointer event handlers (long press support)
+    // so we exclude it from the pan gesture system
+    if (checkIsPointWithinElement(point, rewindButtonRef.current)) {
       dispatchBackClickEvent();
     } else if (checkIsPointWithinElement(point, fastForwardButtonRef.current)) {
       dispatchForwardClickEvent();
