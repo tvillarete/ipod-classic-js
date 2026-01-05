@@ -1863,6 +1863,11 @@ internal-slot@^1.1.0:
     hasown "^2.0.2"
     side-channel "^1.1.0"
 
+ios-haptics@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/ios-haptics/-/ios-haptics-0.1.4.tgz#6221b3b365eb42a8db3c9804fae9f7d20fe370c7"
+  integrity sha512-94FJcSuvmhe4mHTX4Uauj+/2yhs56m4BLkRScy1vNvkv7H1cSjsvfT+olc1sYOUqWlPhtVttAFBHex0cY9CE7Q==
+
 is-array-buffer@^3.0.1, is-array-buffer@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/is-array-buffer/-/is-array-buffer-3.0.2.tgz#f2653ced8412081638ecb0ebbd0c41c6e0aecbbe"

@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 
-import { useEventListener, useMKEventListener } from "@/hooks";
+import { useEventListener, useMKEventListener, useHapticFeedback } from "@/hooks";
 import * as ConversionUtils from "@/utils/conversion";
 
 import {
@@ -524,9 +524,26 @@ export const AudioPlayerProvider = ({ children }: Props) => {
     ]
   );
 
-  useEventListener<IpodEvent>("playpauseclick", togglePlayPause);
-  useEventListener<IpodEvent>("forwardclick", skipNext);
-  useEventListener<IpodEvent>("backwardclick", skipPrevious);
+  const { triggerHaptics } = useHapticFeedback();
+
+  const handlePlayPauseClick = useCallback(() => {
+    triggerHaptics();
+    togglePlayPause();
+  }, [togglePlayPause, triggerHaptics]);
+
+  const handleSkipNext = useCallback(() => {
+    triggerHaptics();
+    skipNext();
+  }, [skipNext, triggerHaptics]);
+
+  const handleSkipPrevious = useCallback(() => {
+    triggerHaptics();
+    skipPrevious();
+  }, [skipPrevious, triggerHaptics]);
+
+  useEventListener<IpodEvent>("playpauseclick", handlePlayPauseClick);
+  useEventListener<IpodEvent>("forwardclick", handleSkipNext);
+  useEventListener<IpodEvent>("backwardclick", handleSkipPrevious);
 
   // Apple playback event listeners
   useMKEventListener("playbackStateDidChange", handleApplePlaybackStateChange);
