@@ -67,9 +67,12 @@ const useScrollHandler = (
   const debouncedUpdatePreview = useDebouncedCallback(updatePreview, 750);
 
   const handleForwardScroll = useCallback(() => {
+    if (isActive) {
+      triggerHaptics(true);
+    }
+
     setIndex((prevIndex) => {
       if (prevIndex < options.length - 1 && isActive) {
-        triggerHaptics(10);
         debouncedUpdatePreview(prevIndex + 1);
 
         // Trigger near-end-of-list callback when we're halfway through the current list.
@@ -92,9 +95,12 @@ const useScrollHandler = (
   ]);
 
   const handleBackwardScroll = useCallback(() => {
+    if (isActive) {
+      triggerHaptics(true);
+    }
+
     setIndex((prevIndex) => {
       if (prevIndex > 0 && isActive) {
-        triggerHaptics(10);
         debouncedUpdatePreview(prevIndex - 1);
         return prevIndex - 1;
       }
@@ -107,7 +113,7 @@ const useScrollHandler = (
   const handleCenterClick = useCallback(async () => {
     const option = options[index];
     if (!isActive || !option) return;
-    triggerHaptics(10);
+    triggerHaptics();
 
     switch (option.type) {
       case "song":

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { useEventListener, useViewContext } from "@/hooks";
+import { useEventListener, useViewContext, useHapticFeedback } from "@/hooks";
 
 import { IpodEvent } from "@/utils/events";
 
@@ -10,12 +10,14 @@ import { IpodEvent } from "@/utils/events";
  */
 const useMenuHideView = (id: string) => {
   const { hideView, viewStack } = useViewContext();
+  const { triggerHaptics } = useHapticFeedback();
 
   const handleClick = useCallback(() => {
     if (viewStack[viewStack.length - 1].id === id) {
+      triggerHaptics();
       hideView();
     }
-  }, [hideView, id, viewStack]);
+  }, [hideView, id, viewStack, triggerHaptics]);
 
   useEventListener<IpodEvent>("menuclick", handleClick);
 };
