@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import { haptic } from "ios-haptics";
 import { useSettings } from "@/hooks";
 
@@ -16,8 +16,6 @@ const canUseVibrate =
  */
 const useHapticFeedback = () => {
   const { hapticsEnabled } = useSettings();
-  const lastTriggerTime = useRef(0);
-  const minInterval = 50; // Minimum 50ms between haptics to prevent rapid-fire calls
 
   const triggerHaptics = useCallback(
     (forceVibrate = false) => {
@@ -25,15 +23,6 @@ const useHapticFeedback = () => {
       if (!hapticsEnabled) {
         return;
       }
-
-      const now = Date.now();
-
-      // Throttle haptic calls to prevent overlapping vibrations
-      if (now - lastTriggerTime.current < minInterval) {
-        return;
-      }
-
-      lastTriggerTime.current = now;
 
       if (forceVibrate) {
         // Use vibrate API directly for scroll events (pan gestures)
