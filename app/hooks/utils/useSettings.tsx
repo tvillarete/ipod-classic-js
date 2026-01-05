@@ -18,6 +18,7 @@ export const COLOR_SCHEME_KEY = "ipodColorScheme";
 export const DEVICE_COLOR_KEY = "ipodSelectedDeviceTheme";
 export const SHUFFLE_MODE_KEY = "ipodShuffleMode";
 export const REPEAT_MODE_KEY = "ipodRepeatMode";
+export const HAPTICS_ENABLED_KEY = "ipodHapticsEnabled";
 
 export interface SettingsState {
   service?: StreamingService;
@@ -27,11 +28,12 @@ export interface SettingsState {
   deviceTheme: DeviceThemeName;
   shuffleMode: ShuffleMode;
   repeatMode: RepeatMode;
+  hapticsEnabled: boolean;
 }
 
 type SettingsContextType = [
   SettingsState,
-  React.Dispatch<React.SetStateAction<SettingsState>>
+  React.Dispatch<React.SetStateAction<SettingsState>>,
 ];
 
 export const SettingsContext = createContext<SettingsContextType>([
@@ -48,6 +50,7 @@ export type SettingsHook = SettingsState & {
   setDeviceTheme: (deviceTheme: DeviceThemeName) => void;
   setShuffleMode: (mode: ShuffleMode) => void;
   setRepeatMode: (mode: RepeatMode) => void;
+  setHapticsEnabled: (enabled: boolean) => void;
 };
 
 export const useSettings = (): SettingsHook => {
@@ -103,7 +106,9 @@ export const useSettings = (): SettingsHook => {
     (colorScheme?: ColorScheme) => {
       setState((prevState) => {
         const updatedColorScheme =
-          colorScheme ?? prevState.colorScheme === "dark" ? "default" : "dark";
+          (colorScheme ?? prevState.colorScheme === "dark")
+            ? "default"
+            : "dark";
 
         localStorage.setItem(COLOR_SCHEME_KEY, `${updatedColorScheme}`);
 
@@ -132,6 +137,14 @@ export const useSettings = (): SettingsHook => {
     [setState]
   );
 
+  const setHapticsEnabled = useCallback(
+    (enabled: boolean) => {
+      setState((prevState) => ({ ...prevState, hapticsEnabled: enabled }));
+      localStorage.setItem(HAPTICS_ENABLED_KEY, enabled ? "true" : "false");
+    },
+    [setState]
+  );
+
   return {
     ...state,
     isAuthorized: state.isAppleAuthorized || state.isSpotifyAuthorized,
@@ -142,6 +155,7 @@ export const useSettings = (): SettingsHook => {
     setDeviceTheme,
     setShuffleMode,
     setRepeatMode,
+    setHapticsEnabled,
   };
 };
 
@@ -158,6 +172,7 @@ export const SettingsProvider = ({ children }: Props) => {
     deviceTheme: "silver",
     shuffleMode: "off",
     repeatMode: "off",
+    hapticsEnabled: true,
   });
 
   const handleMount = useCallback(() => {
@@ -174,6 +189,7 @@ export const SettingsProvider = ({ children }: Props) => {
         (localStorage.getItem(SHUFFLE_MODE_KEY) as ShuffleMode) ?? "off",
       repeatMode:
         (localStorage.getItem(REPEAT_MODE_KEY) as RepeatMode) ?? "off",
+      hapticsEnabled: localStorage.getItem(HAPTICS_ENABLED_KEY) !== "false", // Default to true
     }));
   }, []);
 

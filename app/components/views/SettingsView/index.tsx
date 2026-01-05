@@ -40,6 +40,8 @@ const SettingsView = () => {
     setDeviceTheme,
     shuffleMode,
     repeatMode,
+    hapticsEnabled,
+    setHapticsEnabled,
   } = useSettings();
   const { setShuffleMode, setRepeatMode } = useAudioPlayer();
   const {
@@ -206,6 +208,26 @@ const SettingsView = () => {
         listOptions: themeOptions,
         preview: SplitScreenPreview.Theme,
       },
+      {
+        type: "actionSheet",
+        id: "haptics-action-sheet",
+        label: "Haptic feedback",
+        listOptions: [
+          {
+            type: "action",
+            isSelected: hapticsEnabled,
+            label: `On ${hapticsEnabled ? "(Current)" : ""}`,
+            onSelect: () => setHapticsEnabled(true),
+          },
+          {
+            type: "action",
+            isSelected: !hapticsEnabled,
+            label: `Off ${!hapticsEnabled ? "(Current)" : ""}`,
+            onSelect: () => setHapticsEnabled(false),
+          },
+        ],
+        preview: SplitScreenPreview.Settings,
+      },
       /** Show the sign in option if not signed into any service. */
       ...getConditionalOption(!isAuthorized, {
         type: "actionSheet",
@@ -233,6 +255,8 @@ const SettingsView = () => {
       setShuffleMode,
       repeatMode,
       setRepeatMode,
+      hapticsEnabled,
+      setHapticsEnabled,
     ]
   );
 
