@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import AuthPrompt from "@/components/AuthPrompt";
 import SelectableList, {
@@ -18,7 +18,12 @@ const AlbumsView = ({ albums, inLibrary = true }: Props) => {
   const { isAuthorized } = useSettings();
   useMenuHideView("albums");
 
-  const { data: fetchedAlbums, isLoading } = useFetchAlbums({
+  const {
+    data: fetchedAlbums,
+    fetchNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useFetchAlbums({
     // Don't fetch if we're passed an initial array of albums
     lazy: !!albums,
   });
@@ -40,11 +45,23 @@ const AlbumsView = ({ albums, inLibrary = true }: Props) => {
     );
   }, [albums, fetchedAlbums, inLibrary]);
 
-  const [scrollIndex] = useScrollHandler("albums", options);
+  const handleNearEndOfList = useCallback(() => {
+    if (!isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, isFetchingNextPage]);
+
+  const [scrollIndex] = useScrollHandler(
+    "albums",
+    options,
+    undefined,
+    handleNearEndOfList
+  );
 
   return isAuthorized ? (
     <SelectableList
       loading={isLoading}
+      loadingNextItems={isFetchingNextPage}
       options={options}
       activeIndex={scrollIndex}
       emptyMessage="No albums"

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import AuthPrompt from "@/components/AuthPrompt";
 import SelectableList, {
@@ -22,7 +22,12 @@ const ArtistsView = ({
 }: Props) => {
   useMenuHideView("artists");
   const { isAuthorized } = useSettings();
-  const { data: fetchedArtists, isLoading: isQueryLoading } = useFetchArtists({
+  const {
+    data: fetchedArtists,
+    fetchNextPage,
+    isFetchingNextPage,
+    isLoading: isQueryLoading,
+  } = useFetchArtists({
     lazy: !!artists,
   });
 
@@ -51,11 +56,23 @@ const ArtistsView = ({
   // cases, we'll check if we have any 'options'
   const isLoading = !options.length && isQueryLoading;
 
-  const [scrollIndex] = useScrollHandler("artists", options);
+  const handleNearEndOfList = useCallback(() => {
+    if (!isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, isFetchingNextPage]);
+
+  const [scrollIndex] = useScrollHandler(
+    "artists",
+    options,
+    undefined,
+    handleNearEndOfList
+  );
 
   return isAuthorized ? (
     <SelectableList
       loading={isLoading}
+      loadingNextItems={isFetchingNextPage}
       options={options}
       activeIndex={scrollIndex}
       emptyMessage="No saved artists"

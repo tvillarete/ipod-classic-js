@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import AuthPrompt from "@/components/AuthPrompt";
 import SelectableList, {
@@ -49,7 +49,18 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
   // cases, we'll check if we have any 'options'
   const isLoading = !options.length && isQueryLoading;
 
-  const [scrollIndex] = useScrollHandler("playlists", options);
+  const handleNearEndOfList = useCallback(() => {
+    if (!isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, isFetchingNextPage]);
+
+  const [scrollIndex] = useScrollHandler(
+    "playlists",
+    options,
+    undefined,
+    handleNearEndOfList
+  );
 
   return isAuthorized ? (
     <SelectableList
