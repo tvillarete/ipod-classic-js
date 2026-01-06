@@ -2,10 +2,11 @@ import styled, { css } from "styled-components";
 import { Unit } from "@/utils/constants";
 
 import { SelectableListOption } from ".";
-import { APP_URL } from "@/utils/constants/api";
 import { useAudioPlayer } from "@/hooks";
 import { useMemo } from "react";
 import * as Utils from "@/utils";
+import arrowRight from "@public/arrow_right.svg";
+import volumeFull from "@public/volume_full.svg";
 
 const LabelContainer = styled.div`
   flex: 1;
@@ -95,10 +96,10 @@ const SelectableListItem = ({ option, isActive }: Props) => {
         <Label>{option.label}</Label>
         {option.sublabel && <Sublabel>{option.sublabel}</Sublabel>}
       </LabelContainer>
-      {isActive && <Icon src={`${APP_URL}/arrow_right.svg`} />}
+      {isActive && <Icon src={arrowRight.src} />}
       {isPlaying && !isActive && (
         <Icon
-          src={`${APP_URL}/volume_full.svg`}
+          src={volumeFull.src}
           $size={16}
           style={{ marginRight: 8 }}
         />

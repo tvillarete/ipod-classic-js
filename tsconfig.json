@@ -25,6 +25,9 @@
     "paths": {
       "@/*": [
         "./app/*"
+      ],
+      "@public/*": [
+        "./public/*"
       ]
     },
     "forceConsistentCasingInFileNames": true
