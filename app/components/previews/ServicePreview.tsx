@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 import { useSettings } from "@/hooks";
 import styled from "styled-components";
 import { Unit } from "@/utils/constants";
-import { APP_URL } from "@/utils/constants/api";
+import appleMusicIcon from "@public/apple_music_icon.svg";
+import spotifyIcon from "@public/spotify_icon.svg";
 
 const Container = styled(motion.div)`
   display: flex;
@@ -41,14 +42,13 @@ const strings = {
 const ServicePreview = () => {
   const { service } = useSettings();
 
-  const imgUrl =
-    service === "spotify" ? "spotify_icon.svg" : "apple_music_icon.svg";
+  const imgUrl = service === "spotify" ? spotifyIcon : appleMusicIcon;
 
   const text = strings[service ?? "none"];
 
   return (
     <Container>
-      <Image alt="Service" src={`${APP_URL}/${imgUrl}`} />
+      <Image alt="Service" src={imgUrl.src} />
       <Text>{text}</Text>
       <Subtext>{strings.selected}</Subtext>
     </Container>
