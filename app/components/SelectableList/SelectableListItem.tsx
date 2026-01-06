@@ -98,11 +98,7 @@ const SelectableListItem = ({ option, isActive }: Props) => {
       </LabelContainer>
       {isActive && <Icon src={arrowRight.src} />}
       {isPlaying && !isActive && (
-        <Icon
-          src={volumeFull.src}
-          $size={16}
-          style={{ marginRight: 8 }}
-        />
+        <Icon src={volumeFull.src} $size={16} style={{ marginRight: 8 }} />
       )}
     </Container>
   );
