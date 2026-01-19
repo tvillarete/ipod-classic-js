@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import SelectableList, {
   SelectableListOption,
 } from "@/components/SelectableList";
-import { useMenuHideView, useScrollHandler } from "@/hooks";
+import { useMenuHideView, useScrollHandler, useMediaOptions } from "@/hooks";
 import * as Utils from "@/utils";
 import { useFetchArtistAlbums } from "@/hooks/utils/useDataFetcher";
 
@@ -15,6 +15,7 @@ interface Props {
 
 const ArtistView = ({ id, inLibrary = false }: Props) => {
   useMenuHideView("artist");
+  const { getMediaOptions } = useMediaOptions();
 
   const { data: albums, isLoading } = useFetchArtistAlbums({
     id,
@@ -31,10 +32,10 @@ const ArtistView = ({ id, inLibrary = false }: Props) => {
           imageUrl: Utils.getArtwork(100, album.artwork?.url),
           viewId: "album",
           props: { id: album.id ?? "", inLibrary },
-          longPressOptions: Utils.getMediaOptions("album", album.id),
+          longPressOptions: getMediaOptions("album", album),
         })
       ) ?? [],
-    [albums, inLibrary]
+    [albums, getMediaOptions, inLibrary]
   );
 
   const [scrollIndex] = useScrollHandler("artist", options);

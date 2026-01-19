@@ -4,7 +4,12 @@ import AuthPrompt from "@/components/AuthPrompt";
 import SelectableList, {
   SelectableListOption,
 } from "@/components/SelectableList";
-import { useMenuHideView, useScrollHandler, useSettings } from "@/hooks";
+import {
+  useMenuHideView,
+  useScrollHandler,
+  useSettings,
+  useMediaOptions,
+} from "@/hooks";
 import * as Utils from "@/utils";
 
 import { useFetchPlaylists } from "@/hooks/utils/useDataFetcher";
@@ -17,6 +22,7 @@ interface Props {
 const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
   useMenuHideView("playlists");
   const { isAuthorized } = useSettings();
+  const { getMediaOptions } = useMediaOptions();
   const {
     data: fetchedPlaylists,
     fetchNextPage,
@@ -39,10 +45,10 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
         viewId: "playlist",
         headerTitle: playlist.name,
         props: { id: playlist.id, inLibrary },
-        longPressOptions: Utils.getMediaOptions("playlist", playlist.id),
+        longPressOptions: getMediaOptions("playlist", playlist),
       })) ?? []
     );
-  }, [fetchedPlaylists?.pages, inLibrary, playlists]);
+  }, [fetchedPlaylists?.pages, getMediaOptions, inLibrary, playlists]);
 
   // If accessing PlaylistsView from the SearchView, and there is no data cached,
   // 'isQueryLoading' will be true. To prevent an infinite loading screen in these

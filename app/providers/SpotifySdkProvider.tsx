@@ -8,6 +8,7 @@ import {
 import { useState, useRef, useCallback, useEffect, createContext } from "react";
 import * as SpotifyUtils from "@/utils/spotify";
 import { SPOTIFY_TOKENS_COOKIE_NAME } from "@/utils/constants/api";
+import { dispatchSpotifyReadyEvent } from "@/utils/events";
 
 export interface SpotifySDKState {
   isPlayerConnected: boolean;
@@ -34,6 +35,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   const [isPlayerConnected, setIsPlayerConnected] = useState(false);
   const [isSdkReady, setIsSdkReady] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const hasDispatchedReadyRef = useRef(false);
 
   const [storedAccessToken, storedRefreshToken, tokenLastRefreshedTimestamp] =
     getCookie(SPOTIFY_TOKENS_COOKIE_NAME)?.split(",") ?? [
@@ -146,6 +148,19 @@ export const SpotifySDKProvider = ({ children }: Props) => {
       handleConnectToSpotify();
     }
   }, [handleConnectToSpotify, isSdkReady, accessToken, isPlayerConnected]);
+
+  // Dispatch ready event when deviceId is available (only once)
+  useEffect(() => {
+    if (
+      deviceId &&
+      isPlayerConnected &&
+      accessToken &&
+      !hasDispatchedReadyRef.current
+    ) {
+      dispatchSpotifyReadyEvent();
+      hasDispatchedReadyRef.current = true;
+    }
+  }, [deviceId, isPlayerConnected, accessToken]);
 
   const handleMount = useCallback(async () => {
     const timestamp = Number(tokenLastRefreshedTimestamp);

@@ -1,5 +1,6 @@
 import { useSettings, useMKEventListener, MusicKitContext } from "@/hooks";
 import { useRef, useState, useCallback, useEffect } from "react";
+import { dispatchAppleMusicReadyEvent } from "@/utils/events";
 
 export interface MusicKitProviderProps {
   children: React.ReactNode;
@@ -47,8 +48,10 @@ export const MusicKitProvider = ({
         setIsConfigured(true);
       }
 
+      // If already authorized, listen for queueIsReady event before dispatching
       if (music.isAuthorized) {
         setIsAppleAuthorized(true);
+        dispatchAppleMusicReadyEvent();
       }
     } catch (e) {
       console.error(`MusicKit configuration error:`, e);
@@ -72,6 +75,8 @@ export const MusicKitProvider = ({
   useMKEventListener("userTokenDidChange", (e) => {
     if (e.userToken) {
       setIsAppleAuthorized(true);
+      // When user authorizes (not on mount), dispatch ready event immediately
+      dispatchAppleMusicReadyEvent();
     } else {
       setIsAppleAuthorized(false);
       setStreamingService(isSpotifyAuthorized ? "spotify" : undefined);

@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import SelectableList, {
   SelectableListOption,
 } from "@/components/SelectableList";
-import { useMenuHideView, useScrollHandler } from "@/hooks";
+import { useMenuHideView, useScrollHandler, useMediaOptions } from "@/hooks";
 import * as Utils from "@/utils";
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
 
 const SongsView = ({ songs }: Props) => {
   useMenuHideView("songs");
+  const { getMediaOptions } = useMediaOptions();
 
   const options: SelectableListOption[] = useMemo(
     () =>
@@ -25,9 +26,9 @@ const SongsView = ({ songs }: Props) => {
         },
         imageUrl: Utils.getArtwork(50, song.artwork?.url),
         showNowPlayingView: true,
-        longPressOptions: Utils.getMediaOptions("song", song.id),
+        longPressOptions: getMediaOptions("song", song),
       })) ?? [],
-    [songs]
+    [getMediaOptions, songs]
   );
 
   const [scrollIndex] = useScrollHandler("songs", options);

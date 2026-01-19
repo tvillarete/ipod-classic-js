@@ -23,7 +23,11 @@ export type SupportedKeyCode =
 type BaseEventAction = "click" | "longclick" | "scroll" | "longpress";
 
 /** The custom events that are supported for the iPod */
-export type IpodEvent = `${BaseEventContext}${BaseEventAction}` | `idle`;
+export type IpodEvent =
+  | `${BaseEventContext}${BaseEventAction}`
+  | `idle`
+  | "spotify-ready"
+  | "apple-music-ready";
 
 /** Create a type-safe custom event for the iPod */
 export const createIpodEvent = (eventName: IpodEvent) => new Event(eventName);
@@ -76,6 +80,12 @@ export const dispatchPlayPauseClickEvent = () =>
   window.dispatchEvent(playPauseClickEvent);
 
 export const dispatchIdleEvent = () => window.dispatchEvent(idleEvent);
+
+export const dispatchSpotifyReadyEvent = () =>
+  window.dispatchEvent(createIpodEvent("spotify-ready"));
+
+export const dispatchAppleMusicReadyEvent = () =>
+  window.dispatchEvent(createIpodEvent("apple-music-ready"));
 
 export const dispatchKeyboardEvent = (key: string) => {
   switch (key) {

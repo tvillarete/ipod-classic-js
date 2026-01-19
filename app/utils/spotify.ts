@@ -1,5 +1,5 @@
 import { getRootAppUrl } from "@/utils";
-import { API_URL } from "@/utils/constants/api";
+import { API_URL, SPOTIFY_API_BASE_URL } from "@/utils/constants/api";
 import { SELECTED_SERVICE_KEY } from "@/utils/service";
 
 export type TokenResponse = {
@@ -83,4 +83,38 @@ export const logOutSpotify = async (): Promise<void> => {
   } catch (error) {
     console.error("Error logging out:", { error });
   }
+};
+
+/**
+ * Extracts Spotify track URIs from queue options.
+ * Supports albums, playlists, arrays of songs, or individual songs.
+ */
+export const extractSpotifyUris = (
+  queueOptions: MediaApi.QueueOptions
+): string[] => {
+  return [
+    ...(queueOptions.album?.songs?.map((song) => song.url) ?? []),
+    ...(queueOptions.playlist?.songs?.map((song) => song.url) ?? []),
+    ...(queueOptions.songs?.map((song) => song.url) ?? []),
+    queueOptions.song?.url,
+  ].filter((uri): uri is string => !!uri);
+};
+
+/**
+ * Builds Spotify Player API URL with query parameters.
+ */
+export const buildSpotifyPlayerUrl = (
+  endpoint: string,
+  params?: Record<string, string>
+): string => {
+  const url = `${SPOTIFY_API_BASE_URL}/me/player/${endpoint}`;
+  if (!params || Object.keys(params).length === 0) {
+    return url;
+  }
+
+  const queryString = Object.entries(params)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+    .join("&");
+
+  return `${url}?${queryString}`;
 };

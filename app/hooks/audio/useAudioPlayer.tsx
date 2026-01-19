@@ -3,10 +3,16 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
+  useRef,
 } from "react";
 
-import { useEventListener, useMKEventListener, useHapticFeedback } from "@/hooks";
+import {
+  useEventListener,
+  useMKEventListener,
+  useHapticFeedback,
+} from "@/hooks";
 import * as ConversionUtils from "@/utils/conversion";
 
 import {
@@ -18,6 +24,21 @@ import {
   RepeatMode,
 } from "..";
 import { IpodEvent } from "@/utils/events";
+import { useSpotifyPlayer } from "./useSpotifyPlayer";
+import { useAppleMusicPlayer } from "./useAppleMusicPlayer";
+
+const PLAYBACK_STATE_KEY = "playback_state";
+const SAVED_STATE_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
+const RESTORATION_SETTLE_DELAY_MS = 1000; // Delay before re-enabling event listeners after restoration
+const SKIP_PREVIOUS_RESTART_THRESHOLD_SECONDS = 3; // Restart track if more than 3 seconds in
+
+interface SavedPlaybackState {
+  service: "spotify" | "apple";
+  nowPlayingItem: MediaApi.MediaItem;
+  currentTime: number;
+  isPlaying: boolean;
+  timestamp: number; // When this was saved
+}
 
 const defaultPlaybackInfoState = {
   isPlaying: false,
@@ -36,6 +57,8 @@ interface AudioPlayerState {
   shuffleMode: ShuffleMode;
   repeatMode: RepeatMode;
   play: (queueOptions: MediaApi.QueueOptions) => Promise<void>;
+  playNext: (queueOptions: MediaApi.QueueOptions) => Promise<void>;
+  playLater: (queueOptions: MediaApi.QueueOptions) => Promise<void>;
   pause: () => Promise<void>;
   seekToTime: (time: number) => Promise<void>;
   setVolume: (volume: number) => void;
@@ -46,7 +69,7 @@ interface AudioPlayerState {
   togglePlayPause: () => Promise<void>;
   updateNowPlayingItem: () => Promise<void>;
   updatePlaybackInfo: () => Promise<void>;
-  reset: () => void;
+  reset: () => Promise<void>;
 }
 
 // Context initialized with empty object - actual value provided by AudioPlayerProvider
@@ -81,136 +104,29 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   const [volume, setVolume] = useState(0.5);
   const [nowPlayingItem, setNowPlayingItem] = useState<MediaApi.MediaItem>();
   const [playbackInfo, setPlaybackInfo] = useState(defaultPlaybackInfoState);
+  const hasRestoredSpotifyStateRef = useRef(false);
+  const hasRestoredAppleMusicStateRef = useRef(false);
+  const isRestoringStateRef = useRef(false); // Flag to prevent event listeners from updating during restoration
 
   const hasNowPlayingItem = !!nowPlayingItem;
 
-  const updateSpotifyPlayerState = useCallback(
-    async (endpoint: string) => {
-      const response = await fetch(
-        `https://api.spotify.com/v1/me/player/${endpoint}`,
-        {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
+  const spotifyPlayerHook = useSpotifyPlayer();
+  const applePlayerHook = useAppleMusicPlayer();
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage =
-          errorData.error?.message || `HTTP ${response.status}`;
-        throw new Error(`Spotify API error: ${errorMessage}`);
-      }
-    },
-    [accessToken]
-  );
+  // Select the active player based on current service
+  const activePlayer = useMemo(() => {
+    return service === "spotify" ? spotifyPlayerHook : applePlayerHook;
+  }, [service, spotifyPlayerHook, applePlayerHook]);
 
-  const playAppleMusic = useCallback(
+  const play = useCallback(
     async (queueOptions: MediaApi.QueueOptions) => {
-      if (!isAppleAuthorized) {
-        throw new Error("Unable to play: Not authorized");
-      }
-
-      // MusicKit JS V3 doesn't support passing a single playlist id to the queue.
-      // Workaround: extract the song ids instead.
-      const playlistSongs = queueOptions.playlist?.songs?.map(({ id }) => id);
-
-      // When startPosition is provided with an album, MusicKit ignores it.
-      // Workaround: pass the album's songs as individual song IDs.
-      const albumSongs = queueOptions.album?.songs?.map((song) => song.id);
-
-      // MusicKit JS V3 expects only a single media type with no empty keys.
-      const queue: Partial<MusicKit.SetQueueOptions> = {};
-
-      if (albumSongs) {
-        queue.songs = albumSongs;
-      } else if (queueOptions.album?.id) {
-        queue.album = queueOptions.album.id;
-      } else if (playlistSongs) {
-        queue.songs = playlistSongs;
-      } else if (queueOptions.songs) {
-        queue.songs = queueOptions.songs.map((song) => song.url);
-      } else if (queueOptions.song?.id) {
-        queue.song = queueOptions.song.id;
-      }
-
-      await music.setQueue(queue);
-
-      // Jump to the selected track if needed (MusicKit defaults to index 0)
-      if (queueOptions.startPosition) {
-        await music.changeToMediaAtIndex(queueOptions.startPosition);
-      }
-
-      // Only call play() if not already playing (changeToMediaAtIndex may auto-start playback)
-      if (!music.isPlaying) {
-        await music.play();
-      }
-    },
-    [isAppleAuthorized, music]
-  );
-
-  const playSpotify = useCallback(
-    async (queueOptions: MediaApi.QueueOptions) => {
-      if (!isSpotifyAuthorized) {
-        throw new Error("Unable to play: Not authorized");
-      }
-
-      // Safari on iOS requires a user interaction to activate the player.
-      // This function exists in the Spotify SDK, but is not present in the types.
-      if (spotifyPlayer && "activateElement" in spotifyPlayer) {
-        await (
-          spotifyPlayer as Spotify.Player & {
-            activateElement: () => Promise<void>;
-          }
-        ).activateElement();
-      }
-
-      // Spotify only accepts a list of song URIs, so we'll look through each media type provided for songs.
-      const uris = [
-        ...(queueOptions.album?.songs?.map((song) => song.url) ?? []),
-        ...(queueOptions.playlist?.songs?.map((song) => song.url) ?? []),
-        ...(queueOptions.songs?.map((song) => song.url) ?? []),
-        queueOptions.song?.url,
-      ].filter((uri): uri is string => !!uri);
-
       setPlaybackInfo((prevState) => ({
         ...prevState,
         isLoading: true,
       }));
 
       try {
-        // Set the shuffle mode before starting playback
-        const shouldShuffle = shuffleMode !== "off";
-        await updateSpotifyPlayerState(
-          `shuffle?state=${shouldShuffle}&device_id=${deviceId}`
-        );
-
-        const body: { uris: string[]; offset?: { position: number } } = {
-          uris,
-        };
-
-        // Only include offset if startPosition is defined
-        if (queueOptions.startPosition !== undefined) {
-          body.offset = { position: queueOptions.startPosition };
-        }
-
-        const response = await fetch(
-          `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-          {
-            method: "PUT",
-            body: JSON.stringify(body),
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          const errorMessage =
-            errorData.error?.message || `HTTP ${response.status}`;
-          throw new Error(`Spotify API error: ${errorMessage}`);
-        }
+        await activePlayer.play(queueOptions);
       } finally {
         setPlaybackInfo((prevState) => ({
           ...prevState,
@@ -218,63 +134,33 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         }));
       }
     },
-    [
-      accessToken,
-      deviceId,
-      isSpotifyAuthorized,
-      shuffleMode,
-      spotifyPlayer,
-      updateSpotifyPlayerState,
-    ]
+    [activePlayer]
   );
 
-  const play = useCallback(
+  const playNext = useCallback(
     async (queueOptions: MediaApi.QueueOptions) => {
-      switch (service) {
-        case "apple":
-          await playAppleMusic(queueOptions);
-          break;
-        case "spotify":
-          await playSpotify(queueOptions);
-          break;
-        default:
-          throw new Error("Unable to play: service not specified");
-      }
+      await activePlayer.playNext(queueOptions);
     },
-    [playAppleMusic, playSpotify, service]
+    [activePlayer]
+  );
+
+  const playLater = useCallback(
+    async (queueOptions: MediaApi.QueueOptions) => {
+      await activePlayer.playLater(queueOptions);
+    },
+    [activePlayer]
   );
 
   const pause = useCallback(async () => {
-    switch (service) {
-      case "apple":
-        return music.pause();
-      case "spotify":
-        return spotifyPlayer?.pause();
-      default:
-        throw new Error("Unable to pause: no service specified");
-    }
-  }, [music, service, spotifyPlayer]);
+    await activePlayer.pause();
+  }, [activePlayer]);
 
   const togglePlayPause = useCallback(async () => {
     if (!hasNowPlayingItem) {
       return;
     }
-
-    switch (service) {
-      case "apple":
-        if (music.isPlaying) {
-          music.pause();
-        } else {
-          music.play();
-        }
-        break;
-      case "spotify":
-        spotifyPlayer?.togglePlay();
-        break;
-      default:
-        throw new Error("Unable to toggle play/pause: no service specified");
-    }
-  }, [hasNowPlayingItem, music, service, spotifyPlayer]);
+    await activePlayer.togglePlayPause();
+  }, [activePlayer, hasNowPlayingItem]);
 
   const skipNext = useCallback(async () => {
     if (!nowPlayingItem) {
@@ -286,24 +172,13 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       isLoading: true,
     }));
 
-    switch (service) {
-      case "apple":
-        if (music.nowPlayingItem) {
-          await music.skipToNextItem();
-        }
-        break;
-      case "spotify":
-        await spotifyPlayer?.nextTrack();
-        break;
-      default:
-        throw new Error("Unable to skip next: no service specified");
-    }
+    await activePlayer.skipNext();
 
     setPlaybackInfo((prevState) => ({
       ...prevState,
       isLoading: false,
     }));
-  }, [music, nowPlayingItem, service, spotifyPlayer]);
+  }, [activePlayer, nowPlayingItem]);
 
   const skipPrevious = useCallback(async () => {
     if (!nowPlayingItem) {
@@ -315,24 +190,24 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       isLoading: true,
     }));
 
-    switch (service) {
-      case "apple":
-        if (music.nowPlayingItem) {
-          await music.skipToPreviousItem();
-        }
-        break;
-      case "spotify":
-        await spotifyPlayer?.previousTrack();
-        break;
-      default:
-        throw new Error("Unable to skip previous: no service specified");
+    // Check if there's a previous track available
+    const hasPrevious = await activePlayer.hasPreviousTrack();
+
+    // If we're on the first song OR more than 3 seconds into any song, restart it
+    if (
+      !hasPrevious ||
+      playbackInfo.currentTime > SKIP_PREVIOUS_RESTART_THRESHOLD_SECONDS
+    ) {
+      await activePlayer.seekToTime(0);
+    } else {
+      await activePlayer.skipPrevious();
     }
 
     setPlaybackInfo((prevState) => ({
       ...prevState,
       isLoading: false,
     }));
-  }, [music, nowPlayingItem, service, spotifyPlayer]);
+  }, [activePlayer, nowPlayingItem, playbackInfo.currentTime]);
 
   const updateNowPlayingItem = useCallback(async () => {
     let mediaItem: MediaApi.MediaItem | undefined;
@@ -352,6 +227,10 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
   const handleApplePlaybackStateChange = useCallback(
     ({ state }: { state: MusicKit.PlaybackStates }) => {
+      if (isRestoringStateRef.current) {
+        return;
+      }
+
       let isLoading = false;
       let isPlaying = false;
       let isPaused = false;
@@ -384,7 +263,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
   const handleSpotifyPlaybackStateChange = useCallback(
     (state?: Spotify.PlaybackState) => {
-      if (!state) {
+      if (!state || isRestoringStateRef.current) {
         return;
       }
 
@@ -401,45 +280,111 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   );
 
   const updatePlaybackInfo = useCallback(async () => {
-    if (service === "apple") {
-      setPlaybackInfo((prevState) => ({
-        ...prevState,
-        currentTime: music.currentPlaybackTime,
-        timeRemaining: music.currentPlaybackTimeRemaining,
-        percent: music.currentPlaybackProgress * 100,
-        duration: music.currentPlaybackDuration,
-      }));
-    } else if (service === "spotify") {
-      const { position, duration } =
-        (await spotifyPlayer?.getCurrentState()) ?? {};
-      const currentTime = (position ?? 0) / 1000;
-      const maxTime = (duration ?? 0) / 1000;
-      const timeRemaining = maxTime - currentTime;
-      const percent =
-        maxTime > 0 ? Math.round((currentTime / maxTime) * 100) : 0;
+    const info = await activePlayer.updatePlaybackInfo();
 
-      setPlaybackInfo((prevState) => ({
-        ...prevState,
-        currentTime,
-        timeRemaining,
-        percent,
-        duration: maxTime,
-      }));
+    setPlaybackInfo((prevState) => ({
+      ...prevState,
+      currentTime: info.currentTime,
+      timeRemaining: info.timeRemaining,
+      percent: info.percent,
+      duration: info.duration,
+    }));
+  }, [activePlayer]);
+
+  // Save playback state to localStorage
+  const savePlaybackState = useCallback(() => {
+    if (!nowPlayingItem || !service) {
+      return;
     }
-  }, [music, service, spotifyPlayer]);
+
+    const state: SavedPlaybackState = {
+      service: service as "spotify" | "apple",
+      nowPlayingItem,
+      currentTime: playbackInfo.currentTime,
+      isPlaying: false, // Always save as paused to prevent auto-play on reload
+      timestamp: Date.now(),
+    };
+
+    localStorage.setItem(PLAYBACK_STATE_KEY, JSON.stringify(state));
+  }, [nowPlayingItem, service, playbackInfo.currentTime]);
+
+  // Restore playback state from localStorage
+  const restoreFromLocalStorage = useCallback(async () => {
+    const savedState = localStorage.getItem(PLAYBACK_STATE_KEY);
+    if (!savedState) {
+      return;
+    }
+
+    try {
+      const state: SavedPlaybackState = JSON.parse(savedState);
+
+      // Only restore if it's for the current service and less than 1 hour old
+      if (
+        state.service !== service ||
+        Date.now() - state.timestamp > SAVED_STATE_EXPIRY_MS
+      ) {
+        return;
+      }
+
+      // Set flag to ignore event updates during restoration
+      isRestoringStateRef.current = true;
+
+      // Check that player is ready before attempting to load
+      if (
+        service === "spotify" &&
+        (!spotifyPlayer || !accessToken || !deviceId)
+      ) {
+        isRestoringStateRef.current = false;
+        return;
+      }
+
+      if (service === "apple" && !music) {
+        isRestoringStateRef.current = false;
+        return;
+      }
+
+      // Load the track in a paused state using the service-specific hook
+      // For Spotify: pass URI string and position in MS
+      // For Apple Music: pass full MediaItem and position in seconds
+      if (service === "spotify") {
+        await activePlayer.loadTrackPaused(
+          state.nowPlayingItem.url,
+          Math.floor(state.currentTime * 1000)
+        );
+      } else {
+        await activePlayer.loadTrackPaused(
+          state.nowPlayingItem,
+          state.currentTime
+        );
+      }
+
+      // Set the UI state
+      setNowPlayingItem(state.nowPlayingItem);
+      setPlaybackInfo((prev) => ({
+        ...prev,
+        currentTime: state.currentTime,
+        duration: state.nowPlayingItem.duration ?? 0,
+        isPlaying: false,
+        isPaused: true,
+        isLoading: false,
+      }));
+
+      // Re-enable event updates after a short delay
+      setTimeout(() => {
+        isRestoringStateRef.current = false;
+      }, RESTORATION_SETTLE_DELAY_MS);
+    } catch (error) {
+      console.error("[AudioPlayer] Error restoring from localStorage:", error);
+      isRestoringStateRef.current = false;
+    }
+  }, [service, spotifyPlayer, music, accessToken, deviceId, activePlayer]);
 
   const seekToTime = useCallback(
     async (time: number) => {
-      if (service === "apple") {
-        await music.seekToTime(time);
-      } else if (service === "spotify") {
-        // Seek to time (in ms)
-        await spotifyPlayer?.seek(time * 1000);
-      }
-
-      updatePlaybackInfo();
+      await activePlayer.seekToTime(time);
+      await updatePlaybackInfo();
     },
-    [music, service, spotifyPlayer, updatePlaybackInfo]
+    [activePlayer, updatePlaybackInfo]
   );
 
   const handleChangeVolume = useCallback(
@@ -459,69 +404,61 @@ export const AudioPlayerProvider = ({ children }: Props) => {
     [isAppleAuthorized, isSpotifyAuthorized, music, spotifyPlayer]
   );
 
-  const reset = useCallback(() => {
+  /**
+   * Handles state restoration for a specific service.
+   * Both services use localStorage since MusicKit JS doesn't persist across browser reloads.
+   * Mutes volume during restoration to prevent audio blips.
+   */
+  const handleServiceReady = useCallback(
+    async (
+      serviceName: "spotify" | "apple",
+      hasRestoredRef: React.MutableRefObject<boolean>
+    ) => {
+      if (hasRestoredRef.current || service !== serviceName) {
+        return;
+      }
+
+      // Save current volume and mute during restoration
+      const previousVolume = volume;
+      handleChangeVolume(0);
+
+      try {
+        await restoreFromLocalStorage();
+      } catch (error) {
+        console.error("[AudioPlayer] Error during service restoration:", error);
+      } finally {
+        console.log("HERE");
+        // Always restore volume, even if restoration fails
+        handleChangeVolume(previousVolume);
+        hasRestoredRef.current = true;
+      }
+    },
+    [service, volume, handleChangeVolume, restoreFromLocalStorage]
+  );
+
+  const reset = useCallback(async () => {
     // Stop any current playback
-    if (service === "apple") {
-      music.stop();
-    } else if (service === "spotify") {
-      spotifyPlayer?.pause();
-    }
+    await activePlayer.stop();
 
     // Reset all state
     setNowPlayingItem(undefined);
     setPlaybackInfo(defaultPlaybackInfoState);
-  }, [music, service, spotifyPlayer]);
+  }, [activePlayer]);
 
   const handleSetShuffleMode = useCallback(
     async (mode: ShuffleMode) => {
       updateShuffleModeSetting(mode);
-
-      if (service === "apple") {
-        music.shuffleMode =
-          mode === "off"
-            ? MusicKit.PlayerShuffleMode.off
-            : MusicKit.PlayerShuffleMode.songs;
-      } else if (service === "spotify") {
-        const enabled = mode !== "off";
-        await updateSpotifyPlayerState(
-          `shuffle?state=${enabled}&device_id=${deviceId}`
-        );
-      }
+      await activePlayer.setShuffleMode(mode);
     },
-    [
-      service,
-      music,
-      deviceId,
-      updateShuffleModeSetting,
-      updateSpotifyPlayerState,
-    ]
+    [activePlayer, updateShuffleModeSetting]
   );
 
   const handleSetRepeatMode = useCallback(
     async (mode: RepeatMode) => {
       updateRepeatModeSetting(mode);
-
-      if (service === "apple") {
-        const modeMap = {
-          off: MusicKit.PlayerRepeatMode.none,
-          one: MusicKit.PlayerRepeatMode.one,
-          all: MusicKit.PlayerRepeatMode.all,
-        } as const;
-        music.repeatMode = modeMap[mode];
-      } else if (service === "spotify") {
-        const stateMap = { off: "off", one: "track", all: "context" } as const;
-        await updateSpotifyPlayerState(
-          `repeat?state=${stateMap[mode]}&device_id=${deviceId}`
-        );
-      }
+      await activePlayer.setRepeatMode(mode);
     },
-    [
-      service,
-      music,
-      deviceId,
-      updateRepeatModeSetting,
-      updateSpotifyPlayerState,
-    ]
+    [activePlayer, updateRepeatModeSetting]
   );
 
   const { triggerHaptics } = useHapticFeedback();
@@ -545,24 +482,63 @@ export const AudioPlayerProvider = ({ children }: Props) => {
   useEventListener<IpodEvent>("forwardclick", handleSkipNext);
   useEventListener<IpodEvent>("backwardclick", handleSkipPrevious);
 
+  // Handle state restoration when services are ready
+  const handleSpotifyReady = useCallback(() => {
+    handleServiceReady("spotify", hasRestoredSpotifyStateRef);
+  }, [handleServiceReady]);
+
+  const handleAppleMusicReady = useCallback(() => {
+    handleServiceReady("apple", hasRestoredAppleMusicStateRef);
+  }, [handleServiceReady]);
+
+  useEventListener<IpodEvent>("spotify-ready", handleSpotifyReady);
+  useEventListener<IpodEvent>("apple-music-ready", handleAppleMusicReady);
+
   // Apple playback event listeners
   useMKEventListener("playbackStateDidChange", handleApplePlaybackStateChange);
   useMKEventListener("queuePositionDidChange", updateNowPlayingItem);
 
+  // Set up Spotify event listeners for ongoing playback updates
   useEffect(() => {
-    if (isSpotifyAuthorized && spotifyPlayer) {
-      spotifyPlayer.addListener(
+    if (!isSpotifyAuthorized || !spotifyPlayer) {
+      return;
+    }
+
+    spotifyPlayer.addListener(
+      "player_state_changed",
+      handleSpotifyPlaybackStateChange
+    );
+
+    return () => {
+      spotifyPlayer.removeListener(
         "player_state_changed",
         handleSpotifyPlaybackStateChange
       );
-
-      return () =>
-        spotifyPlayer.removeListener(
-          "player_state_changed",
-          handleSpotifyPlaybackStateChange
-        );
-    }
+    };
   }, [handleSpotifyPlaybackStateChange, isSpotifyAuthorized, spotifyPlayer]);
+
+  // Save playback state periodically and on unmount
+  useEffect(() => {
+    // Save every 5 seconds while playing
+    const interval = setInterval(() => {
+      if (playbackInfo.isPlaying) {
+        savePlaybackState();
+      }
+    }, 5000);
+
+    // Save on unmount (page close/reload)
+    const handleBeforeUnload = () => {
+      savePlaybackState();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      savePlaybackState(); // Save one last time
+    };
+  }, [savePlaybackState, playbackInfo.isPlaying]);
 
   // Initialize volume when either service is authorized
   useEffect(() => {
@@ -581,6 +557,8 @@ export const AudioPlayerProvider = ({ children }: Props) => {
         shuffleMode,
         repeatMode,
         play,
+        playNext,
+        playLater,
         pause,
         seekToTime,
         setVolume: handleChangeVolume,
