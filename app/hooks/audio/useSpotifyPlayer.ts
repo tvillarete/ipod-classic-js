@@ -84,13 +84,21 @@ export const useSpotifyPlayer = (): MediaPlayerHook => {
         device_id: deviceId,
       });
 
+      // Build the request body with optional offset parameter
+      const requestBody: { uris: string[]; offset?: { position: number } } = { uris };
+      
+      // Add offset if startPosition is provided (allows starting from any track in the queue)
+      if (queueOptions.startPosition !== undefined) {
+        requestBody.offset = { position: queueOptions.startPosition };
+      }
+
       const response = await fetch(url, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ uris }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {

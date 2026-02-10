@@ -427,7 +427,6 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       } catch (error) {
         console.error("[AudioPlayer] Error during service restoration:", error);
       } finally {
-        console.log("HERE");
         // Always restore volume, even if restoration fails
         handleChangeVolume(previousVolume);
         hasRestoredRef.current = true;
