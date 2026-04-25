@@ -5,7 +5,7 @@ import ErrorScreen from "@/components/ErrorScreen";
 import { SplitScreenPreview } from "@/components/previews";
 import { ViewId, ViewProps } from "@/components/views/registry";
 import { PopupId, ActionSheetId } from "@/providers/ViewContextProvider";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { useTimeout } from "@/hooks";
 import styled from "styled-components";
 

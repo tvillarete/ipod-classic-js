@@ -1,5 +1,5 @@
 import { noAnimation, slideRightAnimation } from "@/animation";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { ViewInstance } from "@/providers/ViewContextProvider";
 import { VIEW_REGISTRY, ViewId } from "@/components/views/registry";
 import styled from "styled-components";

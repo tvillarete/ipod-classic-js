@@ -6,7 +6,7 @@ import FastForwardIcon from "./icons/FastForwardIcon";
 import MenuIcon from "./icons/MenuIcon";
 import PlayPauseIcon from "./icons/PlayPauseIcon";
 import RewindIcon from "./icons/RewindIcon";
-import { motion, PanInfo } from "framer-motion";
+import { motion, PanInfo } from "motion/react";
 import {
   checkIsPointWithinElement,
   getAngleBetweenPoints,

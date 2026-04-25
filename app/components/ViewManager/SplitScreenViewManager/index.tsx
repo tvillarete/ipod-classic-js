@@ -1,7 +1,7 @@
 import { Header } from "@/components";
 import PreviewPanel from "@/components/ViewManager/SplitScreenViewManager/PreviewPanel";
 import View from "@/components/ViewManager/components/View";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import { ScreenViewInstance } from "@/providers/ViewContextProvider";
 import styled, { css } from "styled-components";
 import { Screen } from "@/utils/constants";

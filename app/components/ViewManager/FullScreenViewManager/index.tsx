@@ -1,6 +1,6 @@
 import { Header } from "@/components";
 import View from "@/components/ViewManager/components/View";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import { ScreenViewInstance } from "@/providers/ViewContextProvider";
 import styled from "styled-components";
 

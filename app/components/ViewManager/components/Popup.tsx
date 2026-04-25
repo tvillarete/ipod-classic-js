@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { popInAnimation } from "@/animation";
 import { SelectableListOption } from "@/components";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import {
   useEventListener,
   useMenuHideView,
