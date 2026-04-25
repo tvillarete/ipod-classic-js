@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import styled from "styled-components";
 import { Unit } from "@/utils/constants";
 import { APP_URL } from "@/utils/constants/api";

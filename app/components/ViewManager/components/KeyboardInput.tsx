@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { popInAnimation } from "@/animation";
 import { SelectableListOption } from "@/components";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useKeyboardInput, useMenuHideView, useScrollHandler } from "@/hooks";
 import { KeyboardInstance } from "@/providers/ViewContextProvider";
 import styled, { css } from "styled-components";

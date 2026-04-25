@@ -1,6 +1,6 @@
 import { fade } from "@/animation";
 import { CoverFlowView, Header } from "@/components";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { ViewInstance } from "@/providers/ViewContextProvider";
 import styled from "styled-components";
 

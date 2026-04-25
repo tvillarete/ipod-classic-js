@@ -1,4 +1,4 @@
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import { KeyboardInstance } from "@/providers/ViewContextProvider";
 import styled from "styled-components";
 

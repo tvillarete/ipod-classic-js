@@ -1,4 +1,4 @@
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import styled from "styled-components";
 
 import ActionSheet from "../components/ActionSheet";

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useAudioPlayer } from "@/hooks";
 import styled from "styled-components";
 import * as Utils from "@/utils";

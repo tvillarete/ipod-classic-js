@@ -1,5 +1,5 @@
 import { fadeScale } from "@/animation";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import styled, { css } from "styled-components";
 import * as Utils from "@/utils";
 

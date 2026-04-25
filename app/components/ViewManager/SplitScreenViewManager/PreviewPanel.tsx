@@ -1,5 +1,5 @@
 import { SplitScreenPreview, Previews } from "@/components/previews";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import { useViewContext } from "@/hooks";
 import { Screen } from "@/utils/constants";
 import styled, { css } from "styled-components";

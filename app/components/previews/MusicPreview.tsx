@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { AuthPrompt, KenBurns, LoadingScreen } from "@/components";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useSettings } from "@/hooks";
 import styled from "styled-components";
 import { useFetchAlbums } from "@/hooks/utils/useDataFetcher";
