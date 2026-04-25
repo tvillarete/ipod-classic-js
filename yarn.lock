@@ -2914,10 +2914,10 @@ use-debounce@^10.1.1:
   resolved "https://registry.yarnpkg.com/use-debounce/-/use-debounce-10.1.1.tgz#b08b596b60a55fd4c18b44b37fdc02f058baf30a"
   integrity sha512-kvds8BHR2k28cFsxW8k3nc/tRga2rs1RHYCqmmGqb90MEeE++oALwzh2COiuBLO1/QXiOuShXoSN2ZpWnMmvuQ==
 
-uuid@^9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
-  integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
+uuid@^14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-14.0.0.tgz#0af883220163d264ffe0c084f6b8a89b9666966d"
+  integrity sha512-Qo+uWgilfSmAhXCMav1uYFynlQO7fMFiMVZsQqZRMIXp0O7rR7qjkj+cPvBHLgBqi960QCoo/PH2/6ZtVqKvrg==
 
 webpack-bundle-analyzer@4.10.1:
   version "4.10.1"
