@@ -17,6 +17,16 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "types": [
+      "node",
+      "he",
+      "musickit-js",
+      "react",
+      "react-dom",
+      "spotify-api",
+      "spotify-web-playback-sdk",
+      "styled-components"
+    ],
     "plugins": [
       {
         "name": "next"
