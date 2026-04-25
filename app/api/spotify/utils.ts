@@ -42,7 +42,6 @@ export const setSpotifyTokens = (accessToken: string, refreshToken: string) => {
     `${accessToken},${refreshToken},${tokenRefreshTimestamp}`,
     {
       cookies,
-      sameSite: false,
     }
   );
 };
