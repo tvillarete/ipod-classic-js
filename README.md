@@ -95,7 +95,7 @@ Built with extensibility in mind, this isn't just a music player. It can run gam
 ### Prerequisites
 
 - **Node.js** (version specified in `.tool-versions`)
-- **Yarn** package manager
+- **pnpm** package manager
 - **Vercel CLI** (optional, for deployment)
 
 ### Installation
@@ -108,10 +108,10 @@ asdf install
 nvm use
 
 # Install dependencies
-yarn install
+pnpm install
 
 # Start development server
-yarn dev
+pnpm dev
 ```
 
 Visit **[http://127.0.0.1:3000/ipod](http://127.0.0.1:3000/ipod)** to experience the magic! ✨
