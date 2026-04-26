@@ -2,10 +2,11 @@
   "name": "ipod-classic",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.30.3",
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
-    "bundle-report": "ANALYZE=true yarn build",
+    "bundle-report": "ANALYZE=true pnpm build",
     "start": "vercel dev",
     "lint": "eslint .",
     "type-check": "tsgo"
@@ -44,5 +45,8 @@
     "eslint-plugin-unused-imports": "^4.4.1",
     "prettier": "^3.8.3",
     "typescript": "npm:@typescript/typescript6"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["sharp", "unrs-resolver"]
   }
 }
