@@ -8,7 +8,7 @@ const useTimeout = (
   // if you create a new callback each render, then previous callback will be cancelled on render.
   timeout: number = 0 // delay, ms (default: immediately put into JS Event Queue)
 ): (() => void) => {
-  const timeoutIdRef = useRef<any>();
+  const timeoutIdRef = useRef<any>(null);
 
   const cancel = useCallback(() => {
     const timeoutId = timeoutIdRef.current;

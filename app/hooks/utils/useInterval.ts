@@ -6,7 +6,7 @@ const useInterval = (
   /** If true, will not run the callback. */
   skip?: boolean
 ) => {
-  const intervalRef = useRef<number>();
+  const intervalRef = useRef<number | undefined>(undefined);
   const savedCallback = useRef(callback);
   const skipRef = useRef<boolean>(skip ?? false);
 
