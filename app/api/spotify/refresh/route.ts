@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
     const tokenRefreshTimestamp = Date.now().toString();
 
     if (accessToken) {
-      setSpotifyTokens(accessToken, refreshToken);
+      await setSpotifyTokens(accessToken, refreshToken);
 
       return new Response(
         JSON.stringify({

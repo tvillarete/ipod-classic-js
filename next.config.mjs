@@ -1,4 +1,6 @@
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
+import withBundleAnalyzer from "@next/bundle-analyzer";
+
+const analyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
 
@@ -6,9 +8,11 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 const nextConfig = {
   reactStrictMode: false,
   basePath: "/ipod",
+  turbopack: {},
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   compiler: {
     styledComponents: true,
   },
 };
 
-module.exports = withBundleAnalyzer(nextConfig);
+export default analyzer(nextConfig);

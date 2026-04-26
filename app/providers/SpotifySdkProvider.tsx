@@ -1,4 +1,4 @@
-import { getCookie, setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next/client";
 import {
   useViewContext,
   useSettings,
@@ -119,7 +119,6 @@ export const SpotifySDKProvider = ({ children }: Props) => {
 
   const handleRefreshTokens = useCallback(async () => {
     if (!storedRefreshToken) {
-      console.error("No refresh token found");
       return;
     }
 

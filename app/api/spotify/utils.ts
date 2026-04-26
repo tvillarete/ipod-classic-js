@@ -1,4 +1,4 @@
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next/server";
 import { cookies } from "next/headers";
 import { SPOTIFY_TOKENS_COOKIE_NAME } from "@/utils/constants/api";
 
@@ -34,20 +34,18 @@ export const getSpotifyAuthorizationHeader = (
   );
 };
 
-export const setSpotifyTokens = (accessToken: string, refreshToken: string) => {
+export const setSpotifyTokens = async (accessToken: string, refreshToken: string) => {
   const tokenRefreshTimestamp = Date.now().toString();
 
-  setCookie(
+  await setCookie(
     SPOTIFY_TOKENS_COOKIE_NAME,
     `${accessToken},${refreshToken},${tokenRefreshTimestamp}`,
-    {
-      cookies,
-    }
+    { cookies }
   );
 };
 
-export const getSpotifyTokens = () => {
-  const spotifyTokens = getCookie(SPOTIFY_TOKENS_COOKIE_NAME, {
+export const getSpotifyTokens = async () => {
+  const spotifyTokens = await getCookie(SPOTIFY_TOKENS_COOKIE_NAME, {
     cookies,
   });
   const [storedAccessToken, storedRefreshToken, lastRefreshedTimestamp] =
@@ -60,8 +58,8 @@ export const getSpotifyTokens = () => {
   };
 };
 
-export const clearSpotifyTokens = () => {
-  deleteCookie(SPOTIFY_TOKENS_COOKIE_NAME, {
+export const clearSpotifyTokens = async () => {
+  await deleteCookie(SPOTIFY_TOKENS_COOKIE_NAME, {
     cookies,
   });
 };

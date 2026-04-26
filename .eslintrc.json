@@ -1,6 +1,6 @@
 {
   "extends": "next/core-web-vitals",
-  "ignorePatterns": ["**/build/**"],
+  "ignorePatterns": ["**/build/**", "next.config.mjs"],
   "plugins": ["unused-imports"],
   "rules": {
     "unused-imports/no-unused-imports": "error",
