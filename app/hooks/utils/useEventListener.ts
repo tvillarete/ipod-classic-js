@@ -7,7 +7,7 @@ const useEventListener = <TEvent extends string>(
   element = typeof window === "undefined" ? undefined : window
 ) => {
   // Create a ref that stores handler
-  const savedHandler = useRef<any>();
+  const savedHandler = useRef<any>(null);
 
   // Update ref.current value if handler changes.
   // This allows our effect below to always get latest handler ...

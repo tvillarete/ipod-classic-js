@@ -14,7 +14,7 @@ const useVolumeHandler = (): VolumeHandlerHook => {
   const { volume, setVolume } = useAudioPlayer();
   const [active, setActive] = useState(false);
   const [enabled, setIsEnabled] = useState(true);
-  const timeoutIdRef = useRef<any>();
+  const timeoutIdRef = useRef<any>(null);
 
   useEffectOnce(() => {
     /** clear the timeout to prevent memory leaks. */

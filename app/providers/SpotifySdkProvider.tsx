@@ -1,4 +1,4 @@
-import { getCookie, setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next/client";
 import {
   useViewContext,
   useSettings,
@@ -30,7 +30,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   const { showPopup, hideView } = useViewContext();
   const { setIsSpotifyAuthorized } = useSettings();
   const [deviceId, setDeviceId] = useState<string>();
-  const spotifyPlayerRef = useRef<Spotify.Player | undefined>();
+  const spotifyPlayerRef = useRef<Spotify.Player | undefined>(undefined);
   const [isPlayerConnected, setIsPlayerConnected] = useState(false);
   const [isSdkReady, setIsSdkReady] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -119,7 +119,6 @@ export const SpotifySDKProvider = ({ children }: Props) => {
 
   const handleRefreshTokens = useCallback(async () => {
     if (!storedRefreshToken) {
-      console.error("No refresh token found");
       return;
     }
 

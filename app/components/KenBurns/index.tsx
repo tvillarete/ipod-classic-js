@@ -38,7 +38,7 @@ interface Props {
 const KenBurns = ({ urls }: Props) => {
   const [stack, setStack] = useState<string[]>([]);
   const [transitioning, setTransitioning] = useState(false);
-  const timeoutIdRef = useRef<any>();
+  const timeoutIdRef = useRef<any>(null);
 
   useEffect(() => {
     setStack(urls);
