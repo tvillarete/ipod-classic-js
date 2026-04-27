@@ -26,6 +26,12 @@ export const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
 
+  @media (display-mode: standalone) {
+    body {
+      height: 100vh;
+    }
+  }
+
   @media (prefers-color-scheme: dark) {
     html {
       color-scheme: dark;
