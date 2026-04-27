@@ -59,7 +59,7 @@ export const ScreenContainer = styled.div`
   }
 
   ${Screen.SM.MediaQuery} {
-    margin: ${Unit.MD} ${Unit.MD} 0;
+    margin: calc(${Unit.MD} + env(safe-area-inset-top)) ${Unit.MD} 0;
   }
 `;
 
