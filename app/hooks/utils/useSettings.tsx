@@ -24,6 +24,7 @@ export interface SettingsState {
   service?: StreamingService;
   isSpotifyAuthorized: boolean;
   isAppleAuthorized: boolean;
+  isOffline: boolean;
   colorScheme: ColorScheme;
   deviceTheme: DeviceThemeName;
   shuffleMode: ShuffleMode;
@@ -167,6 +168,7 @@ export const SettingsProvider = ({ children }: Props) => {
   const [settingsState, setSettingsState] = useState<SettingsState>({
     isAppleAuthorized: false,
     isSpotifyAuthorized: false,
+    isOffline: false,
     service: undefined,
     colorScheme: "default",
     deviceTheme: "silver",
@@ -178,6 +180,7 @@ export const SettingsProvider = ({ children }: Props) => {
   const handleMount = useCallback(() => {
     setSettingsState((prevState) => ({
       ...prevState,
+      isOffline: !navigator.onLine,
       service:
         (localStorage.getItem(SELECTED_SERVICE_KEY) as StreamingService) ??
         undefined,
@@ -196,6 +199,23 @@ export const SettingsProvider = ({ children }: Props) => {
   useEffect(() => {
     handleMount();
   }, [handleMount]);
+
+  useEffect(() => {
+    const syncOnlineStatus = () =>
+      setSettingsState((prev) => {
+        const offline = !navigator.onLine;
+        if (prev.isOffline === offline) return prev;
+        return { ...prev, isOffline: offline };
+      });
+
+    window.addEventListener("offline", syncOnlineStatus);
+    window.addEventListener("online", syncOnlineStatus);
+
+    return () => {
+      window.removeEventListener("offline", syncOnlineStatus);
+      window.removeEventListener("online", syncOnlineStatus);
+    };
+  }, []);
 
   return (
     <SettingsContext.Provider value={[settingsState, setSettingsState]}>

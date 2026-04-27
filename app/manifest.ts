@@ -7,18 +7,31 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "An iPod Classic built for the web.",
     start_url: "/ipod",
     display: "standalone",
-    theme_color: "#ffffff",
-    background_color: "#ffffff",
+    orientation: "portrait",
+    theme_color: "#000000",
+    background_color: "#000000",
     icons: [
       {
-        src: "/android-chrome-192x192.png",
+        src: "/ipod/android-chrome-192x192.png",
         sizes: "192x192",
         type: "image/png",
       },
       {
-        src: "/android-chrome-512x512.png",
+        src: "/ipod/android-chrome-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "maskable",
+      },
+      {
+        src: "/ipod/android-chrome-512x512.png",
         sizes: "512x512",
         type: "image/png",
+      },
+      {
+        src: "/ipod/android-chrome-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
       },
     ],
   };

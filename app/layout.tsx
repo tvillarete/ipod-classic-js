@@ -1,5 +1,6 @@
 import { getRootAppUrl } from "@/api/spotify/utils";
 import StyledComponentsRegistry from "@/lib/registry";
+import { SerwistProvider } from "@/lib/serwist-provider";
 import { Metadata, Viewport } from "next";
 import Script from "next/script";
 
@@ -11,6 +12,11 @@ export const metadata: Metadata = {
   title: "iPod.js",
   description: "An iPod Classic built for the web.",
   metadataBase: new URL(getRootAppUrl()),
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "iPod.js",
+  },
   openGraph: {
     url: "http://tannerv.com/ipod",
     title: "iPod.js",
@@ -49,6 +55,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -59,7 +66,9 @@ export default function RootLayout({
   return (
     <html>
       <body>
-        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        <SerwistProvider swUrl="/ipod/serwist/sw.js" options={{ scope: "/ipod" }}>
+          <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        </SerwistProvider>
       </body>
       <Script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" />
     </html>

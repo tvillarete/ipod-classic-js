@@ -15,7 +15,7 @@ interface Props {
 }
 
 const AlbumsView = ({ albums, inLibrary = true }: Props) => {
-  const { isAuthorized } = useSettings();
+  const { isAuthorized, isOffline } = useSettings();
   useMenuHideView("albums");
 
   const {
@@ -58,7 +58,7 @@ const AlbumsView = ({ albums, inLibrary = true }: Props) => {
     handleNearEndOfList
   );
 
-  return isAuthorized ? (
+  return isAuthorized && !isOffline ? (
     <SelectableList
       loading={isLoading}
       loadingNextItems={isFetchingNextPage}
