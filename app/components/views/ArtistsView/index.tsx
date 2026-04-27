@@ -21,7 +21,7 @@ const ArtistsView = ({
   showImages = false,
 }: Props) => {
   useMenuHideView("artists");
-  const { isAuthorized } = useSettings();
+  const { isAuthorized, isOffline } = useSettings();
   const {
     data: fetchedArtists,
     fetchNextPage,
@@ -69,7 +69,7 @@ const ArtistsView = ({
     handleNearEndOfList
   );
 
-  return isAuthorized ? (
+  return isAuthorized && !isOffline ? (
     <SelectableList
       loading={isLoading}
       loadingNextItems={isFetchingNextPage}

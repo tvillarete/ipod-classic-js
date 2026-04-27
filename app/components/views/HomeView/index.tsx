@@ -21,7 +21,7 @@ const strings = {
 };
 
 const HomeView = () => {
-  const { isAuthorized } = useSettings();
+  const { isAuthorized, isOffline } = useSettings();
   const { signIn: signInWithApple, isConfigured: isMkConfigured } =
     useMusicKit();
   const { nowPlayingItem } = useAudioPlayer();
@@ -54,8 +54,8 @@ const HomeView = () => {
         viewId: "settings",
         preview: SplitScreenPreview.Settings,
       },
-      // Show the sign in buttons if the user is not logged in.
-      ...getConditionalOption(!isAuthorized, {
+      // Show the sign in buttons if the user is not logged in and online.
+      ...getConditionalOption(!isAuthorized && !isOffline, {
         type: "actionSheet",
         id: "signin-popup",
         label: "Sign in",
@@ -80,7 +80,7 @@ const HomeView = () => {
         preview: SplitScreenPreview.NowPlaying,
       }),
     ],
-    [isAuthorized, nowPlayingItem, signInWithApple, signInWithSpotify]
+    [isAuthorized, isOffline, nowPlayingItem, signInWithApple, signInWithSpotify]
   );
 
   const [scrollIndex] = useScrollHandler("home", options);

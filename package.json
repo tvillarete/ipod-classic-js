@@ -8,6 +8,7 @@
     "build": "next build",
     "bundle-report": "ANALYZE=true pnpm build",
     "start": "vercel dev",
+    "start:prod": "vercel env pull && next start",
     "lint": "eslint .",
     "type-check": "tsgo"
   },
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.4",
+    "@serwist/turbopack": "^9.5.7",
     "@types/he": "^1.2.3",
     "@types/musickit-js": "^1.0.11",
     "@types/node": "^20.19.39",
@@ -37,16 +39,24 @@
     "@types/spotify-web-playback-sdk": "^0.1.19",
     "@types/styled-components": "^5.1.36",
     "@typescript/native-preview": "^7.0.0-dev.20260421.2",
+    "esbuild": "^0.28.0",
     "eslint": "9",
     "eslint-config-next": "^16.2.4",
+    "eslint-import-resolver-node": "^0.3.10",
+    "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-unused-imports": "^4.4.1",
     "prettier": "^3.8.3",
+    "serwist": "^9.5.7",
     "typescript": "npm:@typescript/typescript6"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["sharp", "unrs-resolver"]
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
   }
 }

@@ -16,7 +16,7 @@ interface Props {
 
 const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
   useMenuHideView("playlists");
-  const { isAuthorized } = useSettings();
+  const { isAuthorized, isOffline } = useSettings();
   const {
     data: fetchedPlaylists,
     fetchNextPage,
@@ -62,7 +62,7 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
     handleNearEndOfList
   );
 
-  return isAuthorized ? (
+  return isAuthorized && !isOffline ? (
     <SelectableList
       activeIndex={scrollIndex}
       emptyMessage="No saved playlists"

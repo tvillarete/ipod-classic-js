@@ -1,10 +1,11 @@
 import { useState } from "react";
 
-import { useInterval, useMusicKit } from "@/hooks";
+import { useInterval, useMusicKit, useSettings } from "@/hooks";
 import styled, { css } from "styled-components";
 import { Unit } from "@/utils/constants";
 import appleMusicIcon from "@public/apple_music_icon.svg";
 import spotifyIcon from "@public/spotify_icon.svg";
+import sadMacIcon from "@public/sad_mac.svg";
 
 const RootContainer = styled.div`
   display: grid;
@@ -21,7 +22,7 @@ const ImageContainer = styled.div`
   margin: auto;
 `;
 
-const StyledImg = styled.img<{ $isHidden: boolean }>`
+const StyledImg = styled.img<{ $isHidden?: boolean }>`
   position: absolute;
   top: 0%;
   left: 0;
@@ -59,6 +60,8 @@ const strings = {
     spotify: "Spotify",
   },
   defaultMessage: "Sign into view this content",
+  offlineTitle: "Offline",
+  offlineMessage: "Connect to the internet to view this content",
 };
 
 interface Props {
@@ -66,6 +69,7 @@ interface Props {
 }
 
 const AuthPrompt = ({ message }: Props) => {
+  const { isOffline } = useSettings();
   const { isConfigured: isMkConfigured } = useMusicKit();
   const [icon, setIcon] = useState<"apple" | "spotify">(
     isMkConfigured ? "apple" : "spotify"
@@ -80,6 +84,18 @@ const AuthPrompt = ({ message }: Props) => {
       return "apple";
     });
   }, 4000);
+
+  if (isOffline) {
+    return (
+      <RootContainer>
+        <ImageContainer>
+          <StyledImg alt="offline" src={sadMacIcon.src} />
+        </ImageContainer>
+        <Title>{strings.offlineTitle}</Title>
+        <Text>{strings.offlineMessage}</Text>
+      </RootContainer>
+    );
+  }
 
   return (
     <RootContainer>

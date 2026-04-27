@@ -35,6 +35,7 @@ const SettingsView = () => {
     isAuthorized,
     isAppleAuthorized,
     isSpotifyAuthorized,
+    isOffline,
     service,
     deviceTheme,
     setDeviceTheme,
@@ -140,7 +141,7 @@ const SettingsView = () => {
         preview: SplitScreenPreview.Settings,
       },
       /** Add an option to select between services signed into more than one. */
-      ...getConditionalOption(isAuthorized, {
+      ...getConditionalOption(isAuthorized && !isOffline, {
         type: "actionSheet",
         id: "service-type-action-sheet",
         label: "Choose service",
@@ -229,7 +230,7 @@ const SettingsView = () => {
         preview: SplitScreenPreview.Settings,
       },
       /** Show the sign in option if not signed into any service. */
-      ...getConditionalOption(!isAuthorized, {
+      ...getConditionalOption(!isAuthorized && !isOffline, {
         type: "actionSheet",
         id: "signin-popup",
         label: "Sign in",
@@ -237,7 +238,7 @@ const SettingsView = () => {
         preview: SplitScreenPreview.Music,
       }),
       /** Show the signout option for any services that are authenticated. */
-      ...getConditionalOption(isAuthorized, {
+      ...getConditionalOption(isAuthorized && !isOffline, {
         type: "actionSheet",
         id: "sign-out-popup",
         label: "Sign out",
@@ -247,6 +248,7 @@ const SettingsView = () => {
     ],
     [
       isAuthorized,
+      isOffline,
       serviceOptions,
       themeOptions,
       signInOptions,
