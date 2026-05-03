@@ -67,8 +67,8 @@ const useMKDataFetcher = () => {
   );
 
   const fetchAlbums = useCallback(
-    async ({ pageParam, limit }: { pageParam: number; limit: number }) => {
-      const offset = pageParam * limit;
+    async ({ pageParam, limit }: MediaApi.PaginationParams) => {
+      const offset = Number(pageParam) * limit;
 
       const response = await fetchAppleMusicApi<AppleMusicApi.AlbumResponse>({
         endpoint: `/albums`,
@@ -78,18 +78,20 @@ const useMKDataFetcher = () => {
           offset,
         },
       });
+
+      if (!response) return { data: [], nextPageParam: undefined };
+
       const nextPageParam = getNextPageParam({
         limit,
         offset,
-        prevPageParam: pageParam,
-        totalResults: response?.meta.total,
+        prevPageParam: Number(pageParam),
+        totalResults: response.meta.total,
       });
 
       return {
-        data:
-          response?.data.map((item: AppleMusicApi.Album) =>
-            ConversionUtils.convertAppleAlbum(item)
-          ) ?? [],
+        data: response.data.map((item: AppleMusicApi.Album) =>
+          ConversionUtils.convertAppleAlbum(item)
+        ),
         nextPageParam,
       };
     },
@@ -112,7 +114,7 @@ const useMKDataFetcher = () => {
 
   const fetchArtists = useCallback(
     async ({ limit, pageParam }: MediaApi.PaginationParams) => {
-      const offset = pageParam * limit;
+      const offset = Number(pageParam) * limit;
 
       const response = await fetchAppleMusicApi<AppleMusicApi.ArtistResponse>({
         endpoint: `/artists`,
@@ -122,19 +124,20 @@ const useMKDataFetcher = () => {
         },
         inLibrary: true,
       });
+
+      if (!response) return { data: [], nextPageParam: undefined };
+
       const nextPageParam = getNextPageParam({
         limit,
         offset,
-        prevPageParam: pageParam,
-        totalResults: response?.meta.total,
+        prevPageParam: Number(pageParam),
+        totalResults: response.meta.total,
       });
 
-      const result: MediaApi.PaginatedResponse<MediaApi.Artist[]> = {
-        data: response?.data.map(ConversionUtils.convertAppleArtist) ?? [],
+      return {
+        data: response.data.map(ConversionUtils.convertAppleArtist),
         nextPageParam,
       };
-
-      return result;
     },
     [fetchAppleMusicApi]
   );
@@ -155,31 +158,31 @@ const useMKDataFetcher = () => {
 
   const fetchPlaylists = useCallback(
     async ({ limit, pageParam }: MediaApi.PaginationParams) => {
-      const offset = pageParam * limit;
+      const offset = Number(pageParam) * limit;
 
       const response = await fetchAppleMusicApi<AppleMusicApi.PlaylistResponse>(
         {
           endpoint: "/playlists",
           params: {
-            limit: 50,
+            limit,
             offset,
           },
           inLibrary: true,
         }
       );
+      if (!response) return { data: [], nextPageParam: undefined };
+
       const nextPageParam = getNextPageParam({
         limit,
         offset,
-        prevPageParam: pageParam,
-        totalResults: response?.meta.total,
+        prevPageParam: Number(pageParam),
+        totalResults: response.meta.total,
       });
 
-      const result: MediaApi.PaginatedResponse<MediaApi.Playlist[]> = {
-        data: response?.data.map(ConversionUtils.convertApplePlaylist) ?? [],
+      return {
+        data: response.data.map(ConversionUtils.convertApplePlaylist),
         nextPageParam,
       };
-
-      return result;
     },
     [fetchAppleMusicApi]
   );

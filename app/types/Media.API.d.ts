@@ -64,14 +64,12 @@ declare namespace MediaApi {
   }
 
   interface PaginationParams {
-    pageParam: number;
+    pageParam: number | string;
     limit: number;
-    after?: string;
   }
 
   interface PaginatedResponse<TType> {
     data: TType;
-    nextPageParam?: number;
-    after?: string;
+    nextPageParam?: number | string;
   }
 }
