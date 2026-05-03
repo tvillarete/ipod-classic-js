@@ -35,27 +35,43 @@ export const getSpotifyAuthorizationHeader = (
 };
 
 export const setSpotifyTokens = async (accessToken: string, refreshToken: string) => {
-  const tokenRefreshTimestamp = Date.now().toString();
+  const value = JSON.stringify({
+    accessToken,
+    refreshToken,
+    lastRefreshedTimestamp: Date.now(),
+  });
 
-  await setCookie(
-    SPOTIFY_TOKENS_COOKIE_NAME,
-    `${accessToken},${refreshToken},${tokenRefreshTimestamp}`,
-    { cookies }
-  );
+  await setCookie(SPOTIFY_TOKENS_COOKIE_NAME, value, { cookies });
 };
 
 export const getSpotifyTokens = async () => {
-  const spotifyTokens = await getCookie(SPOTIFY_TOKENS_COOKIE_NAME, {
-    cookies,
-  });
-  const [storedAccessToken, storedRefreshToken, lastRefreshedTimestamp] =
-    spotifyTokens?.split(",") ?? [undefined, undefined, undefined];
+  const raw = await getCookie(SPOTIFY_TOKENS_COOKIE_NAME, { cookies });
 
-  return {
-    storedAccessToken,
-    storedRefreshToken,
-    lastRefreshedTimestamp: parseInt(lastRefreshedTimestamp ?? "") || undefined,
-  };
+  if (!raw) {
+    return {
+      storedAccessToken: undefined,
+      storedRefreshToken: undefined,
+      lastRefreshedTimestamp: undefined,
+    };
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    return {
+      storedAccessToken: parsed.accessToken as string | undefined,
+      storedRefreshToken: parsed.refreshToken as string | undefined,
+      lastRefreshedTimestamp: parsed.lastRefreshedTimestamp as number | undefined,
+    };
+  } catch {
+    // Handle legacy comma-delimited format during migration
+    const [storedAccessToken, storedRefreshToken, lastRefreshedTimestamp] =
+      raw.split(",");
+    return {
+      storedAccessToken,
+      storedRefreshToken,
+      lastRefreshedTimestamp: parseInt(lastRefreshedTimestamp ?? "") || undefined,
+    };
+  }
 };
 
 export const clearSpotifyTokens = async () => {

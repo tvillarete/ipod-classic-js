@@ -4,7 +4,6 @@ import { useViewContext } from "@/hooks";
 import * as SpotifyUtils from "@/utils/spotify";
 
 import { useSettings } from "..";
-import { API_URL } from "@/utils/constants/api";
 import {
   SpotifySDKContext,
   SpotifySDKState,
@@ -51,11 +50,7 @@ export const useSpotifySDK = ({
    */
   const signIn = useCallback(async () => {
     if (!isSpotifyAuthorized) {
-      // Generate the Spotify OAuth login URL with the client ID, state, scope, and redirect URI.
-      const res = await fetch(`${API_URL}/spotify/login`);
-      const spotifyLoginUrl = (await res.json()).message;
-
-      window.open(spotifyLoginUrl, "_self");
+      window.location.href = `/ipod/api/spotify/login`;
     } else if (!state.isPlayerConnected) {
       showPopup({
         id: "spotifyNotSupported",
@@ -75,6 +70,7 @@ export const useSpotifySDK = ({
   }, [isSpotifyAuthorized, setService, showPopup, state.isPlayerConnected]);
 
   const signOut = useCallback(async () => {
+    state.spotifyPlayer?.removeListener("playback_error");
     state.spotifyPlayer?.disconnect();
     setIsSpotifyAuthorized(false);
 

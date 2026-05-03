@@ -81,7 +81,7 @@ const useSpotifyDataFetcher = () => {
 
       const result: MediaApi.PaginatedResponse<MediaApi.Artist[]> = {
         data,
-        nextPageParam: response.artists.next
+        nextPageParam: response.artists?.next
           ? data[data.length - 1]?.id
           : undefined,
       };
@@ -129,14 +129,11 @@ const useSpotifyDataFetcher = () => {
           onTokenExpired: refreshAccessToken,
         });
 
-      const resultData = await Promise.all(
-        response.items?.map(
-          ConversionUtils.convertSpotifyPlaylistSimplified
-        ) ?? []
-      );
-
       const result: MediaApi.PaginatedResponse<MediaApi.Playlist[]> = {
-        data: resultData,
+        data:
+          response.items?.map(
+            ConversionUtils.convertSpotifyPlaylistSimplified
+          ) ?? [],
         nextPageParam: response.next ? Number(pageParam) + 1 : undefined,
       };
 

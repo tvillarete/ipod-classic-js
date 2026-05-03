@@ -1,3 +1,5 @@
+import { decode as decodeHtmlEntities } from "he";
+
 // Artwork Conversion
 
 /** Accepts a url with '{w}' and '{h}' and replaces them with the specified size */
@@ -60,37 +62,30 @@ export const convertApplePlaylist = (
   songs: data.relationships?.tracks?.data.map(convertAppleSong) ?? [],
 });
 
-export const convertSpotifyPlaylistSimplified = async (
+export const convertSpotifyPlaylistSimplified = (
   data: SpotifyApi.PlaylistObjectSimplified
-): Promise<MediaApi.Playlist> => {
-  let decodedDescription = "";
-  if (data.description) {
-    const { decode } = await import("he");
-    decodedDescription = decode(data.description);
-  }
-  return {
-    id: data.id,
-    name: data.name,
-    curatorName: data.owner.display_name ?? "",
-    url: data.uri,
-    artwork: { url: data.images[0]?.url ?? "" },
-    description: decodedDescription,
-    songs: [],
-  };
-};
+): MediaApi.Playlist => ({
+  id: data.id,
+  name: data.name,
+  curatorName: data.owner.display_name ?? "",
+  url: data.uri,
+  artwork: { url: data.images[0]?.url ?? "" },
+  description: data.description ? decodeHtmlEntities(data.description) : "",
+  songs: [],
+});
 
 export const convertSpotifyPlaylistFull = (
   data: SpotifyApi.PlaylistObjectFull
 ): MediaApi.Playlist => ({
-  id: data.uri,
+  id: data.id,
   name: data.name,
   curatorName: data.owner.display_name ?? "",
   url: data.uri,
   artwork: { url: data.images[0]?.url ?? "" },
   description: data.description ?? "",
   songs: data.tracks.items
-    .filter((item) => !!item)
-    .map((item) => convertSpotifySongFull(item.track!)),
+    .filter((item): item is SpotifyApi.PlaylistTrackObject & { track: SpotifyApi.TrackObjectFull } => !!item?.track)
+    .map((item) => convertSpotifySongFull(item.track)),
 });
 
 export const convertAppleAlbum = (
@@ -191,19 +186,15 @@ export const convertSpotifyMediaItem = (
   };
 };
 
-export const convertSpotifySearchResults = async (
+export const convertSpotifySearchResults = (
   results: SpotifyApi.SearchResponse
-): Promise<MediaApi.SearchResults> => {
-  const playlists = await Promise.all(
-    results.playlists?.items.map(convertSpotifyPlaylistSimplified) ?? []
-  );
-  return {
-    artists: results.artists?.items.map(convertSpotifyArtistFull) ?? [],
-    albums: results.albums?.items.map(convertSpotifyAlbumSimplified) ?? [],
-    songs: results.tracks?.items.map(convertSpotifySongFull) ?? [],
-    playlists,
-  };
-};
+): MediaApi.SearchResults => ({
+  artists: results.artists?.items.map(convertSpotifyArtistFull) ?? [],
+  albums: results.albums?.items.map(convertSpotifyAlbumSimplified) ?? [],
+  songs: results.tracks?.items.map(convertSpotifySongFull) ?? [],
+  playlists:
+    results.playlists?.items.map(convertSpotifyPlaylistSimplified) ?? [],
+});
 
 export const convertAppleSearchResults = (
   search: AppleMusicApi.SearchResponse
