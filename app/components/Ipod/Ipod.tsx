@@ -35,7 +35,7 @@ type Props = {
 
 const Ipod = ({ appleAccessToken, spotifyCallbackCode }: Props) => {
   const router = useRouter();
-  const queryClient = new QueryClient();
+  const [queryClient] = useState(() => new QueryClient());
   const [isLoading, setIsLoading] = useState(true);
 
   const handleCheckSpotifyCallback = useCallback(
