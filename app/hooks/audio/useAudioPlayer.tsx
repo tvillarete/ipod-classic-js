@@ -172,26 +172,15 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       }));
 
       try {
-        // Best-effort: set shuffle mode before playback, but don't block play if it fails
-        const shouldShuffle = shuffleMode !== "off";
-        try {
-          await updateSpotifyPlayerState(
-            `shuffle?state=${shouldShuffle}&device_id=${deviceId}`
-          );
-        } catch {
-          // Shuffle is best-effort; don't block playback
-        }
-
         const body: { uris: string[]; offset?: { position: number } } = {
           uris,
         };
 
-        // Only include offset if startPosition is defined
         if (queueOptions.startPosition !== undefined) {
           body.offset = { position: queueOptions.startPosition };
         }
 
-        await spotifyApi({
+        const playRequest = spotifyApi({
           endpoint: `me/player/play`,
           method: "PUT",
           params: { device_id: deviceId },
@@ -199,6 +188,20 @@ export const AudioPlayerProvider = ({ children }: Props) => {
           accessToken: accessToken!,
           onTokenExpired: refreshAccessToken,
         });
+
+        // Best-effort shuffle runs in parallel with play to avoid delaying track start
+        const shuffleRequest = (async () => {
+          const shouldShuffle = shuffleMode !== "off";
+          try {
+            await updateSpotifyPlayerState(
+              `shuffle?state=${shouldShuffle}&device_id=${deviceId}`
+            );
+          } catch {
+            // Shuffle is best-effort; don't block playback
+          }
+        })();
+
+        await Promise.all([playRequest, shuffleRequest]);
       } finally {
         setPlaybackInfo((prevState) => ({
           ...prevState,
@@ -275,23 +278,25 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       isLoading: true,
     }));
 
-    switch (service) {
-      case "apple":
-        if (music.nowPlayingItem) {
-          await music.skipToNextItem();
-        }
-        break;
-      case "spotify":
-        await spotifyPlayer?.nextTrack();
-        break;
-      default:
-        throw new Error("Unable to skip next: no service specified");
+    try {
+      switch (service) {
+        case "apple":
+          if (music.nowPlayingItem) {
+            await music.skipToNextItem();
+          }
+          break;
+        case "spotify":
+          await spotifyPlayer?.nextTrack();
+          break;
+        default:
+          throw new Error("Unable to skip next: no service specified");
+      }
+    } finally {
+      setPlaybackInfo((prevState) => ({
+        ...prevState,
+        isLoading: false,
+      }));
     }
-
-    setPlaybackInfo((prevState) => ({
-      ...prevState,
-      isLoading: false,
-    }));
   }, [music, nowPlayingItem, service, spotifyPlayer]);
 
   const skipPrevious = useCallback(async () => {
@@ -304,23 +309,25 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       isLoading: true,
     }));
 
-    switch (service) {
-      case "apple":
-        if (music.nowPlayingItem) {
-          await music.skipToPreviousItem();
-        }
-        break;
-      case "spotify":
-        await spotifyPlayer?.previousTrack();
-        break;
-      default:
-        throw new Error("Unable to skip previous: no service specified");
+    try {
+      switch (service) {
+        case "apple":
+          if (music.nowPlayingItem) {
+            await music.skipToPreviousItem();
+          }
+          break;
+        case "spotify":
+          await spotifyPlayer?.previousTrack();
+          break;
+        default:
+          throw new Error("Unable to skip previous: no service specified");
+      }
+    } finally {
+      setPlaybackInfo((prevState) => ({
+        ...prevState,
+        isLoading: false,
+      }));
     }
-
-    setPlaybackInfo((prevState) => ({
-      ...prevState,
-      isLoading: false,
-    }));
   }, [music, nowPlayingItem, service, spotifyPlayer]);
 
   const updateNowPlayingItem = useCallback(async () => {
