@@ -18,7 +18,7 @@ const useSpotifyDataFetcher = () => {
     async ({ pageParam, limit }: MediaApi.PaginationParams) => {
       if (!accessToken) return;
 
-      const offset = pageParam * limit;
+      const offset = Number(pageParam) * limit;
 
       const response =
         await spotifyApi<SpotifyApi.UsersSavedAlbumsResponse>({
@@ -33,7 +33,7 @@ const useSpotifyDataFetcher = () => {
           response.items.map((item) =>
             ConversionUtils.convertSpotifyAlbumFull(item.album)
           ) ?? [],
-        nextPageParam: response.next ? pageParam + 1 : undefined,
+        nextPageParam: response.next ? Number(pageParam) + 1 : undefined,
       };
 
       return result;
@@ -42,7 +42,7 @@ const useSpotifyDataFetcher = () => {
   );
 
   const fetchAlbum = useCallback(
-    async ({ id }: { id: string }) => {
+    async (id: string, _inLibrary?: boolean) => {
       if (!accessToken) return;
 
       const response = await spotifyApi<SpotifyApi.SingleAlbumResponse>({
@@ -57,8 +57,10 @@ const useSpotifyDataFetcher = () => {
   );
 
   const fetchArtists = useCallback(
-    async ({ limit, after }: MediaApi.PaginationParams) => {
+    async ({ pageParam, limit }: MediaApi.PaginationParams) => {
       if (!accessToken) return;
+
+      const cursor = typeof pageParam === "string" ? pageParam : undefined;
 
       const response =
         await spotifyApi<SpotifyApi.UsersFollowedArtistsResponse>({
@@ -66,7 +68,7 @@ const useSpotifyDataFetcher = () => {
           params: {
             type: "artist",
             limit,
-            after: safeParseAfter(after),
+            after: safeParseAfter(cursor),
           },
           accessToken,
           onTokenExpired: refreshAccessToken,
@@ -79,7 +81,9 @@ const useSpotifyDataFetcher = () => {
 
       const result: MediaApi.PaginatedResponse<MediaApi.Artist[]> = {
         data,
-        after: response.artists.next ? data[data.length - 1]?.id : undefined,
+        nextPageParam: response.artists.next
+          ? data[data.length - 1]?.id
+          : undefined,
       };
 
       return result;
@@ -87,8 +91,8 @@ const useSpotifyDataFetcher = () => {
     [accessToken, refreshAccessToken]
   );
 
-  const fetchArtist = useCallback(
-    async (id: string) => {
+  const fetchArtistAlbums = useCallback(
+    async (id: string, _inLibrary?: boolean) => {
       if (!accessToken) return;
 
       const response = await spotifyApi<SpotifyApi.ArtistsAlbumsResponse>({
@@ -115,7 +119,7 @@ const useSpotifyDataFetcher = () => {
     async ({ pageParam, limit }: MediaApi.PaginationParams) => {
       if (!accessToken) return;
 
-      const offset = pageParam * limit;
+      const offset = Number(pageParam) * limit;
 
       const response =
         await spotifyApi<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>({
@@ -133,7 +137,7 @@ const useSpotifyDataFetcher = () => {
 
       const result: MediaApi.PaginatedResponse<MediaApi.Playlist[]> = {
         data: resultData,
-        nextPageParam: response.next ? pageParam + 1 : undefined,
+        nextPageParam: response.next ? Number(pageParam) + 1 : undefined,
       };
 
       return result;
@@ -142,7 +146,7 @@ const useSpotifyDataFetcher = () => {
   );
 
   const fetchPlaylist = useCallback(
-    async (id: string) => {
+    async (id: string, _inLibrary?: boolean) => {
       if (!accessToken) return;
 
       const response = await spotifyApi<SpotifyApi.PlaylistObjectFull>({
@@ -180,7 +184,7 @@ const useSpotifyDataFetcher = () => {
     fetchAlbums,
     fetchAlbum,
     fetchArtists,
-    fetchArtist,
+    fetchArtistAlbums,
     fetchPlaylists,
     fetchPlaylist,
     fetchSearchResults,
