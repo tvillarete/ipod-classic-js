@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 import { useSpotifySDK } from "@/hooks";
 import * as ConversionUtils from "@/utils/conversion";
-import querystring from "query-string";
+import { spotifyApi } from "@/utils/spotifyApi";
 
 /**
  * Spotify errors out if you pass it a value of 0 for the `after` query param.
@@ -11,92 +11,57 @@ import querystring from "query-string";
 const safeParseAfter = (after: string | undefined) =>
   !after || after === "0" ? undefined : after;
 
-type FetchSpotifyApiArgs = {
-  endpoint: string;
-  accessToken?: string;
-  params?: Record<string, any>;
-  onError: (error: any) => void;
-};
-
-const fetchSpotifyApi = async <TSpotifyApiType extends object>({
-  endpoint,
-  accessToken,
-  params = {},
-  onError,
-}: FetchSpotifyApiArgs) => {
-  try {
-    if (!accessToken) {
-      throw new Error("Provide a Spotify API Access token");
-    }
-
-    const queryParams = querystring.stringify(params);
-
-    const res = await fetch(
-      `https://api.spotify.com/v1/${endpoint}?${queryParams}`,
-      {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      }
-    );
-    return (await res.json()) as TSpotifyApiType;
-  } catch (error) {
-    onError(error);
-  }
-};
-
 const useSpotifyDataFetcher = () => {
-  const { accessToken } = useSpotifySDK();
+  const { accessToken, refreshAccessToken } = useSpotifySDK();
 
   const fetchAlbums = useCallback(
     async ({ pageParam, limit }: MediaApi.PaginationParams) => {
+      if (!accessToken) return;
+
       const offset = pageParam * limit;
 
       const response =
-        await fetchSpotifyApi<SpotifyApi.UsersSavedAlbumsResponse>({
+        await spotifyApi<SpotifyApi.UsersSavedAlbumsResponse>({
           endpoint: `me/albums`,
-          params: {
-            limit,
-            offset,
-          },
+          params: { limit, offset },
           accessToken,
-          onError: (error) => {
-            throw new Error(error);
-          },
+          onTokenExpired: refreshAccessToken,
         });
 
       const result: MediaApi.PaginatedResponse<MediaApi.Album[]> = {
         data:
-          response?.items.map((item) =>
+          response.items.map((item) =>
             ConversionUtils.convertSpotifyAlbumFull(item.album)
           ) ?? [],
-        nextPageParam: response?.next ? pageParam + 1 : undefined,
+        nextPageParam: response.next ? pageParam + 1 : undefined,
       };
 
       return result;
     },
-    [accessToken]
+    [accessToken, refreshAccessToken]
   );
 
   const fetchAlbum = useCallback(
     async ({ id }: { id: string }) => {
-      const response = await fetchSpotifyApi<SpotifyApi.SingleAlbumResponse>({
+      if (!accessToken) return;
+
+      const response = await spotifyApi<SpotifyApi.SingleAlbumResponse>({
         endpoint: `albums/${id}`,
         accessToken,
-        onError: (error) => {
-          throw new Error(error);
-        },
+        onTokenExpired: refreshAccessToken,
       });
 
-      if (response) {
-        return ConversionUtils.convertSpotifyAlbumFull(response);
-      }
+      return ConversionUtils.convertSpotifyAlbumFull(response);
     },
-    [accessToken]
+    [accessToken, refreshAccessToken]
   );
 
   const fetchArtists = useCallback(
     async ({ limit, after }: MediaApi.PaginationParams) => {
+      if (!accessToken) return;
+
       const response =
-        await fetchSpotifyApi<SpotifyApi.UsersFollowedArtistsResponse>({
+        await spotifyApi<SpotifyApi.UsersFollowedArtistsResponse>({
           endpoint: `me/following`,
           params: {
             type: "artist",
@@ -104,106 +69,98 @@ const useSpotifyDataFetcher = () => {
             after: safeParseAfter(after),
           },
           accessToken,
-          onError: (error) => {
-            throw new Error(error);
-          },
+          onTokenExpired: refreshAccessToken,
         });
 
       const data =
-        response?.artists?.items.map(
+        response.artists?.items.map(
           ConversionUtils.convertSpotifyArtistFull
         ) ?? [];
 
       const result: MediaApi.PaginatedResponse<MediaApi.Artist[]> = {
         data,
-        after: response?.artists.next ? data[data.length - 1]?.id : undefined,
+        after: response.artists.next ? data[data.length - 1]?.id : undefined,
       };
 
       return result;
     },
-    [accessToken]
+    [accessToken, refreshAccessToken]
   );
 
   const fetchArtist = useCallback(
     async (id: string) => {
-      const response = await fetchSpotifyApi<SpotifyApi.ArtistsAlbumsResponse>({
+      if (!accessToken) return;
+
+      const response = await spotifyApi<SpotifyApi.ArtistsAlbumsResponse>({
         endpoint: `artists/${id}/albums`,
         accessToken,
-        onError: (error) => {
-          throw new Error(error);
-        },
+        onTokenExpired: refreshAccessToken,
       });
 
-      if (response) {
-        // Keep track of the artist's albums, to avoid showing duplicates
-        const artistAlbums = new Set();
-        return response.items
-          .filter((album) => {
-            if (artistAlbums.has(album.name)) {
-              return false;
-            }
-            artistAlbums.add(album.name);
-            return true;
-          })
-          .map(ConversionUtils.convertSpotifyAlbumSimplified);
-      }
+      const artistAlbums = new Set();
+      return response.items
+        .filter((album) => {
+          if (artistAlbums.has(album.name)) {
+            return false;
+          }
+          artistAlbums.add(album.name);
+          return true;
+        })
+        .map(ConversionUtils.convertSpotifyAlbumSimplified);
     },
-    [accessToken]
+    [accessToken, refreshAccessToken]
   );
 
   const fetchPlaylists = useCallback(
     async ({ pageParam, limit }: MediaApi.PaginationParams) => {
+      if (!accessToken) return;
+
       const offset = pageParam * limit;
 
       const response =
-        await fetchSpotifyApi<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>({
+        await spotifyApi<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>({
           endpoint: "me/playlists",
-          params: {
-            limit,
-            offset,
-          },
+          params: { limit, offset },
           accessToken,
-          onError: (error) => {
-            throw new Error(error);
-          },
+          onTokenExpired: refreshAccessToken,
         });
 
       const resultData = await Promise.all(
-        response?.items?.map(
+        response.items?.map(
           ConversionUtils.convertSpotifyPlaylistSimplified
         ) ?? []
       );
 
       const result: MediaApi.PaginatedResponse<MediaApi.Playlist[]> = {
         data: resultData,
-        nextPageParam: response?.next ? pageParam + 1 : undefined,
+        nextPageParam: response.next ? pageParam + 1 : undefined,
       };
 
       return result;
     },
-    [accessToken]
+    [accessToken, refreshAccessToken]
   );
 
   const fetchPlaylist = useCallback(
     async (id: string) => {
-      const response = await fetchSpotifyApi<SpotifyApi.PlaylistObjectFull>({
+      if (!accessToken) return;
+
+      const response = await spotifyApi<SpotifyApi.PlaylistObjectFull>({
         endpoint: `playlists/${id}`,
         accessToken,
-        onError: (error) => {
-          throw new Error(error);
-        },
+        onTokenExpired: refreshAccessToken,
       });
 
-      if (response) {
-        return ConversionUtils.convertSpotifyPlaylistFull(response);
-      }
+      return ConversionUtils.convertSpotifyPlaylistFull(response);
     },
-    [accessToken]
+    [accessToken, refreshAccessToken]
   );
 
   const fetchSearchResults = useCallback(
     async (query: string) => {
-      const response = await fetchSpotifyApi<SpotifyApi.SearchResponse>({
+      if (!accessToken) return;
+
+      const response = await spotifyApi<SpotifyApi.SearchResponse>({
         endpoint: `search`,
         accessToken,
         params: {
@@ -211,16 +168,12 @@ const useSpotifyDataFetcher = () => {
           type: "track,artist,album,playlist",
           limit: 15,
         },
-        onError: (error) => {
-          throw new Error(error);
-        },
+        onTokenExpired: refreshAccessToken,
       });
 
-      if (response) {
-        return ConversionUtils.convertSpotifySearchResults(response);
-      }
+      return ConversionUtils.convertSpotifySearchResults(response);
     },
-    [accessToken]
+    [accessToken, refreshAccessToken]
   );
 
   return {

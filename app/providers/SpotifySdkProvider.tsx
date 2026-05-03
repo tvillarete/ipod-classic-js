@@ -17,6 +17,7 @@ export interface SpotifySDKState {
   refreshToken?: string;
   deviceId?: string;
   hasError: boolean;
+  refreshAccessToken: () => Promise<string | undefined>;
 }
 
 export const SpotifySDKContext = createContext<SpotifySDKState | undefined>(
@@ -117,9 +118,11 @@ export const SpotifySDKProvider = ({ children }: Props) => {
     }
   }, [handleUnsupportedAccountError, setIsSpotifyAuthorized, accessToken]);
 
-  const handleRefreshTokens = useCallback(async () => {
+  const handleRefreshTokens = useCallback(async (): Promise<
+    string | undefined
+  > => {
     if (!storedRefreshToken) {
-      return;
+      return undefined;
     }
 
     const {
@@ -135,6 +138,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
       );
     }
     setAccessToken(updatedAccessToken);
+    return updatedAccessToken;
   }, [storedRefreshToken]);
 
   // Refresh the access token every 55 minutes.
@@ -172,6 +176,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
         isPlayerConnected,
         isSdkReady,
         hasError,
+        refreshAccessToken: handleRefreshTokens,
       }}
     >
       {children}
