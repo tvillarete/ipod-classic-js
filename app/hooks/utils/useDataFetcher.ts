@@ -38,6 +38,12 @@ interface SearchFetcherProps extends UserLibraryProps {
   query: string;
 }
 
+const STALE_TIME = {
+  library: 5 * 60 * 1000,
+  detail: 10 * 60 * 1000,
+  search: 60 * 1000,
+} as const;
+
 const useDataFetchers = () => {
   const spotifyDataFetcher = useSpotifyDataFetcher();
   const appleDataFetcher = useMKDataFetcher();
@@ -66,6 +72,7 @@ export const useFetchAlbum = (
         return spotifyDataFetcher.fetchAlbum({ id: options.id });
       }
     },
+    staleTime: STALE_TIME.detail,
     enabled: enabled && !options.lazy,
   });
 };
@@ -90,6 +97,7 @@ export const useFetchAlbums = (
         return spotifyDataFetcher.fetchAlbums(params);
       }
     },
+    staleTime: STALE_TIME.library,
     enabled: enabled && !options.lazy,
     getNextPageParam: (lastPage) => lastPage?.nextPageParam,
     initialPageParam: 0,
@@ -115,6 +123,7 @@ export const useFetchArtists = (options: CommonFetcherProps) => {
         return spotifyDataFetcher.fetchArtists(params);
       }
     },
+    staleTime: STALE_TIME.library,
     enabled: enabled && !options.lazy,
     // TODO: Figure out a better way to deal with `after` param
     getNextPageParam: (lastPage) =>
@@ -143,6 +152,7 @@ export const useFetchArtistAlbums = (
         return spotifyDataFetcher.fetchArtist(options.id);
       }
     },
+    staleTime: STALE_TIME.detail,
     enabled: enabled && !options.lazy,
   });
 };
@@ -165,6 +175,7 @@ export const useFetchPlaylists = (options: CommonFetcherProps) => {
         return spotifyDataFetcher.fetchPlaylists(params);
       }
     },
+    staleTime: STALE_TIME.library,
     enabled: enabled && !options.lazy,
     getNextPageParam: (lastPage) => lastPage?.nextPageParam,
     initialPageParam: 0,
@@ -186,6 +197,7 @@ export const useFetchPlaylist = (
         return spotifyDataFetcher.fetchPlaylist(options.id);
       }
     },
+    staleTime: STALE_TIME.detail,
     enabled: enabled && !options.lazy,
   });
 };
@@ -205,6 +217,7 @@ export const useFetchSearchResults = (
         return appleDataFetcher.fetchSearchResults(options.query);
       }
     },
+    staleTime: STALE_TIME.search,
     enabled: enabled && !options.lazy,
   });
 };
