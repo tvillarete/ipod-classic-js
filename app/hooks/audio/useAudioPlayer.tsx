@@ -8,6 +8,7 @@ import {
 
 import { useEventListener, useMKEventListener, useHapticFeedback } from "@/hooks";
 import * as ConversionUtils from "@/utils/conversion";
+import { spotifyApi } from "@/utils/spotifyApi";
 
 import {
   useMusicKit,
@@ -76,7 +77,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
     setShuffleMode: updateShuffleModeSetting,
     setRepeatMode: updateRepeatModeSetting,
   } = useSettings();
-  const { spotifyPlayer, accessToken, deviceId } = useSpotifySDK();
+  const { spotifyPlayer, accessToken, deviceId, refreshAccessToken } = useSpotifySDK();
   const { music } = useMusicKit();
   const [volume, setVolume] = useState(0.5);
   const [nowPlayingItem, setNowPlayingItem] = useState<MediaApi.MediaItem>();
@@ -86,22 +87,15 @@ export const AudioPlayerProvider = ({ children }: Props) => {
 
   const updateSpotifyPlayerState = useCallback(
     async (endpoint: string) => {
-      const response = await fetch(
-        `https://api.spotify.com/v1/me/player/${endpoint}`,
-        {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage =
-          errorData.error?.message || `HTTP ${response.status}`;
-        throw new Error(`Spotify API error: ${errorMessage}`);
-      }
+      if (!accessToken) return;
+      await spotifyApi({
+        endpoint: `me/player/${endpoint}`,
+        method: "PUT",
+        accessToken,
+        onTokenExpired: refreshAccessToken,
+      });
     },
-    [accessToken]
+    [accessToken, refreshAccessToken]
   );
 
   const playAppleMusic = useCallback(
@@ -193,24 +187,14 @@ export const AudioPlayerProvider = ({ children }: Props) => {
           body.offset = { position: queueOptions.startPosition };
         }
 
-        const response = await fetch(
-          `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-          {
-            method: "PUT",
-            body: JSON.stringify(body),
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          const errorMessage =
-            errorData.error?.message || `HTTP ${response.status}`;
-          throw new Error(`Spotify API error: ${errorMessage}`);
-        }
+        await spotifyApi({
+          endpoint: `me/player/play`,
+          method: "PUT",
+          params: { device_id: deviceId },
+          body,
+          accessToken: accessToken!,
+          onTokenExpired: refreshAccessToken,
+        });
       } finally {
         setPlaybackInfo((prevState) => ({
           ...prevState,
@@ -222,6 +206,7 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       accessToken,
       deviceId,
       isSpotifyAuthorized,
+      refreshAccessToken,
       shuffleMode,
       spotifyPlayer,
       updateSpotifyPlayerState,
