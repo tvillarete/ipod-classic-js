@@ -118,7 +118,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
         });
 
         player.addListener("playback_error", ({ message }) => {
-          console.error(message);
+          console.warn("Spotify playback error:", message);
         });
 
         player.connect();

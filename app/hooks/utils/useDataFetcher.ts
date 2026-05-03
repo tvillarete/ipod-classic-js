@@ -84,16 +84,16 @@ const useResolvedFetcher = () => {
   const fetcher: DataFetcher =
     service === "spotify" ? spotifyDataFetcher : appleDataFetcher;
 
-  return { fetcher, enabled };
+  return { fetcher, service, enabled };
 };
 
 export const useFetchAlbum = (
   options: CommonFetcherProps & AlbumFetcherProps
 ) => {
-  const { fetcher, enabled } = useResolvedFetcher();
+  const { fetcher, service, enabled } = useResolvedFetcher();
 
   return useQuery({
-    queryKey: ["album", { id: options.id }],
+    queryKey: [service, "album", { id: options.id }],
     queryFn: () => fetcher.fetchAlbum(options.id, options.inLibrary),
     staleTime: STALE_TIME.detail,
     enabled: enabled && !options.lazy,
@@ -103,10 +103,10 @@ export const useFetchAlbum = (
 export const useFetchAlbums = (
   options: CommonFetcherProps & AlbumsFetcherProps
 ) => {
-  const { fetcher, enabled } = useResolvedFetcher();
+  const { fetcher, service, enabled } = useResolvedFetcher();
 
   return useInfiniteQuery({
-    queryKey: ["albums"],
+    queryKey: [service, "albums"],
     queryFn: ({ pageParam }) =>
       fetcher.fetchAlbums({ pageParam, limit: 50 }),
     staleTime: STALE_TIME.library,
@@ -117,10 +117,10 @@ export const useFetchAlbums = (
 };
 
 export const useFetchArtists = (options: CommonFetcherProps) => {
-  const { fetcher, enabled } = useResolvedFetcher();
+  const { fetcher, service, enabled } = useResolvedFetcher();
 
   return useInfiniteQuery({
-    queryKey: ["artists"],
+    queryKey: [service, "artists"],
     queryFn: ({ pageParam }) =>
       fetcher.fetchArtists({ pageParam, limit: 20 }),
     staleTime: STALE_TIME.library,
@@ -133,10 +133,10 @@ export const useFetchArtists = (options: CommonFetcherProps) => {
 export const useFetchArtistAlbums = (
   options: CommonFetcherProps & ArtistFetcherProps
 ) => {
-  const { fetcher, enabled } = useResolvedFetcher();
+  const { fetcher, service, enabled } = useResolvedFetcher();
 
   return useQuery({
-    queryKey: ["artistAlbums", { id: options.id }],
+    queryKey: [service, "artistAlbums", { id: options.id }],
     queryFn: () => fetcher.fetchArtistAlbums(options.id, options.inLibrary),
     staleTime: STALE_TIME.detail,
     enabled: enabled && !options.lazy,
@@ -144,10 +144,10 @@ export const useFetchArtistAlbums = (
 };
 
 export const useFetchPlaylists = (options: CommonFetcherProps) => {
-  const { fetcher, enabled } = useResolvedFetcher();
+  const { fetcher, service, enabled } = useResolvedFetcher();
 
   return useInfiniteQuery({
-    queryKey: ["playlists"],
+    queryKey: [service, "playlists"],
     queryFn: ({ pageParam }) =>
       fetcher.fetchPlaylists({ pageParam, limit: 20 }),
     staleTime: STALE_TIME.library,
@@ -160,10 +160,10 @@ export const useFetchPlaylists = (options: CommonFetcherProps) => {
 export const useFetchPlaylist = (
   options: CommonFetcherProps & PlaylistFetcherProps
 ) => {
-  const { fetcher, enabled } = useResolvedFetcher();
+  const { fetcher, service, enabled } = useResolvedFetcher();
 
   return useQuery({
-    queryKey: ["playlists", { id: options.id }],
+    queryKey: [service, "playlist", { id: options.id }],
     queryFn: () => fetcher.fetchPlaylist(options.id, options.inLibrary),
     staleTime: STALE_TIME.detail,
     enabled: enabled && !options.lazy,
@@ -173,10 +173,10 @@ export const useFetchPlaylist = (
 export const useFetchSearchResults = (
   options: CommonFetcherProps & SearchFetcherProps
 ) => {
-  const { fetcher, enabled } = useResolvedFetcher();
+  const { fetcher, service, enabled } = useResolvedFetcher();
 
   return useQuery({
-    queryKey: ["search", { query: options.query }],
+    queryKey: [service, "search", { query: options.query }],
     queryFn: () => fetcher.fetchSearchResults(options.query),
     staleTime: STALE_TIME.search,
     enabled: enabled && !options.lazy,
