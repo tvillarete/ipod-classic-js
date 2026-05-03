@@ -1,6 +1,7 @@
 import { SPOTIFY_CLIENT_ID } from "@/utils/constants/api";
 import { getSpotifyRedirectUri } from "@/api/spotify/utils";
 import { v4 as uuid } from "uuid";
+import { redirect } from "next/navigation";
 
 export async function GET() {
   const scope =
@@ -11,12 +12,10 @@ export async function GET() {
   const state: string = uuid();
 
   if (!redirect_uri || !client_id) {
-    const errorMessage =
-      "Missing Spotify redirect URI. Check that the Vercel ENV variables have ben properly initialized.";
-
-    return new Response(errorMessage, {
-      status: 400,
-    });
+    return new Response(
+      "Missing Spotify client ID or redirect URI. Check that the Vercel ENV variables have been properly initialized.",
+      { status: 400 }
+    );
   }
 
   const authParams = new URLSearchParams({
@@ -27,12 +26,5 @@ export async function GET() {
     state,
   }).toString();
 
-  return new Response(
-    JSON.stringify({
-      message: `https://accounts.spotify.com/authorize/?${authParams}`,
-    }),
-    {
-      status: 200,
-    }
-  );
+  redirect(`https://accounts.spotify.com/authorize/?${authParams}`);
 }

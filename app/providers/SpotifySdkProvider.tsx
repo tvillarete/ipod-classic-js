@@ -36,12 +36,25 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   const [isSdkReady, setIsSdkReady] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const [storedAccessToken, storedRefreshToken, tokenLastRefreshedTimestamp] =
-    getCookie(SPOTIFY_TOKENS_COOKIE_NAME)?.split(",") ?? [
-      undefined,
-      undefined,
-      undefined,
-    ];
+  const cookieValue = getCookie(SPOTIFY_TOKENS_COOKIE_NAME);
+  let storedAccessToken: string | undefined;
+  let storedRefreshToken: string | undefined;
+  let tokenLastRefreshedTimestamp: string | undefined;
+
+  if (cookieValue) {
+    try {
+      const parsed = JSON.parse(cookieValue);
+      storedAccessToken = parsed.accessToken;
+      storedRefreshToken = parsed.refreshToken;
+      tokenLastRefreshedTimestamp = parsed.lastRefreshedTimestamp?.toString();
+    } catch {
+      // Handle legacy comma-delimited format during migration
+      const parts = cookieValue.split(",");
+      storedAccessToken = parts[0];
+      storedRefreshToken = parts[1];
+      tokenLastRefreshedTimestamp = parts[2];
+    }
+  }
 
   const [accessToken, setAccessToken] = useState<string | undefined>(
     storedAccessToken
@@ -131,10 +144,13 @@ export const SpotifySDKProvider = ({ children }: Props) => {
     } = await SpotifyUtils.getRefreshedSpotifyTokens(storedRefreshToken);
 
     if (updatedAccessToken && updatedRefreshToken) {
-      const tokenRefreshTimestamp = Date.now().toString();
       setCookie(
         SPOTIFY_TOKENS_COOKIE_NAME,
-        `${updatedAccessToken},${updatedRefreshToken},${tokenRefreshTimestamp}`
+        JSON.stringify({
+          accessToken: updatedAccessToken,
+          refreshToken: updatedRefreshToken,
+          lastRefreshedTimestamp: Date.now(),
+        })
       );
     }
     setAccessToken(updatedAccessToken);
