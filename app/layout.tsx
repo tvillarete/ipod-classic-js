@@ -65,12 +65,19 @@ export default function RootLayout({
 }) {
   return (
     <html>
+      <head>
+        <link rel="preconnect" href="https://sdk.scdn.co" crossOrigin="" />
+        <link rel="preconnect" href="https://js-cdn.music.apple.com" crossOrigin="" />
+      </head>
       <body>
         <SerwistProvider swUrl="/ipod/serwist/sw.js" options={{ scope: "/ipod" }}>
           <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
         </SerwistProvider>
       </body>
-      <Script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" />
+      <Script
+        src="https://js-cdn.music.apple.com/musickit/v3/musickit.js"
+        strategy="lazyOnload"
+      />
     </html>
   );
 }

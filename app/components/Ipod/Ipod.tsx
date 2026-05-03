@@ -89,7 +89,10 @@ const Ipod = ({ appleAccessToken, spotifyCallbackCode }: Props) => {
           </SpotifySDKProvider>
         </ViewContextProvider>
       </SettingsProvider>
-      <Script src="https://sdk.scdn.co/spotify-player.js" />
+      <Script
+        src="https://sdk.scdn.co/spotify-player.js"
+        strategy="lazyOnload"
+      />
     </QueryClientProvider>
   );
 };
