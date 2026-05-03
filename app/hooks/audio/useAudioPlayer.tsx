@@ -172,11 +172,15 @@ export const AudioPlayerProvider = ({ children }: Props) => {
       }));
 
       try {
-        // Set the shuffle mode before starting playback
+        // Best-effort: set shuffle mode before playback, but don't block play if it fails
         const shouldShuffle = shuffleMode !== "off";
-        await updateSpotifyPlayerState(
-          `shuffle?state=${shouldShuffle}&device_id=${deviceId}`
-        );
+        try {
+          await updateSpotifyPlayerState(
+            `shuffle?state=${shouldShuffle}&device_id=${deviceId}`
+          );
+        } catch {
+          // Shuffle is best-effort; don't block playback
+        }
 
         const body: { uris: string[]; offset?: { position: number } } = {
           uris,

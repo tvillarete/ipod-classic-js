@@ -53,8 +53,11 @@ async function executeRequest<T>(
     );
   }
 
-  // Some Spotify endpoints (e.g. PUT /me/player/*) return 204 with no body
-  if (response.status === 204) {
+  const contentType = response.headers.get("content-type");
+  if (
+    response.status === 204 ||
+    !contentType?.includes("application/json")
+  ) {
     return undefined as T;
   }
 
