@@ -3,6 +3,7 @@ import {
   LostMenuItem,
   MenuItem,
   Position,
+  SelectableTarget,
   WinMenuItem,
 } from "./types";
 import * as Engine from "./SolitaireEngine";
@@ -10,12 +11,13 @@ import { SelectionManager } from "./SelectionManager";
 import { Renderer } from "./Renderer";
 import { AnimationManager } from "./AnimationManager";
 
-const MENU_ITEMS: MenuItem[] = ["resume", "redeal", "quit"];
+const MENU_ITEMS: MenuItem[] = ["resume", "undo", "redeal", "quit"];
 const WIN_ITEMS: WinMenuItem[] = ["newGame", "quit"];
 const LOST_ITEMS: LostMenuItem[] = ["redeal", "quit"];
 const MAX_UNDO_STACK = 20;
 
 const ANIM_PLACE_MS = 200;
+const ANIM_FLIP_MS = 200;
 const ANIM_DRAW_MS = 150;
 const ANIM_DEAL_CARD_MS = 120;
 const ANIM_DEAL_STAGGER_MS = 30;
@@ -197,7 +199,27 @@ export default class Game {
       target
     );
 
+    // Compute cursor position before entering holding mode
+    const fromCursorPos = this.renderer
+      ? this.renderer.getCursorCenter(this.gameState, this.selection.getState(), target)
+      : null;
+
     this.selection.enterHoldingMode(heldCards, target, validTargets);
+
+    // Animate cursor to the first drop target
+    if (this.renderer && fromCursorPos) {
+      const firstDropTarget = this.selection.getCurrentTarget();
+      if (firstDropTarget) {
+        const toCursorPos = this.renderer.getCursorCenter(
+          this.gameState,
+          this.selection.getState(),
+          firstDropTarget
+        );
+        if (toCursorPos) {
+          this.renderer.animateCursor(fromCursorPos, toCursorPos, 150);
+        }
+      }
+    }
   }
 
   private handleStockDraw(): void {
@@ -249,6 +271,7 @@ export default class Game {
 
     // Compute the "from" position using old state
     const fromPos = this.renderer.getTargetPosition(this.gameState, selState.heldFrom);
+    const oldState = this.gameState;
 
     this.pushUndo();
     this.gameState = result;
@@ -270,9 +293,19 @@ export default class Game {
       });
     }
 
-    // Enqueue the animation
+    // Enqueue the animation — hide the card at its destination while flying
     if (fromPos && toPos) {
       const baseOverlap = 14 * this.scale;
+      // Build hide target for the placed cards' final position
+      let hideTarget: SelectableTarget | undefined;
+      if (dropTarget.type === "foundation") {
+        hideTarget = dropTarget;
+      } else if (dropTarget.type === "tableau" || dropTarget.type === "tableau-empty") {
+        const col = dropTarget.type === "tableau" ? dropTarget.column : dropTarget.column;
+        const column = this.gameState.tableau[col];
+        hideTarget = { type: "tableau", column: col, cardIndex: column.length - selState.heldCards.length };
+      }
+
       this.animations.enqueue({
         cards: selState.heldCards,
         from: fromPos,
@@ -280,10 +313,14 @@ export default class Game {
         startTime: performance.now(),
         duration: ANIM_PLACE_MS,
         overlap: Math.min(baseOverlap, 12 * this.scale),
+        hideTarget,
       });
     }
 
     this.saveGame();
+
+    // Queue a flip animation if a card was revealed in the source column
+    const revealedFlip = this.findRevealedCard(oldState, this.gameState);
 
     if (Engine.checkWin(this.gameState)) {
       this.selection.setPhase("won");
@@ -296,7 +333,17 @@ export default class Game {
     if (dropTarget.type === "tableau" || dropTarget.type === "tableau-empty") {
       skipColumns.push(dropTarget.column);
     }
-    this.scheduleAutoMoves(false, skipColumns);
+
+    if (revealedFlip) {
+      // Enqueue flip immediately so the card is hidden during the move animation.
+      // The flip's startTime is already delayed to begin after the move finishes.
+      this.animations.enqueueFlip(revealedFlip);
+      this.animations.onAllComplete(() => {
+        this.performAutoMoves(false, skipColumns);
+      });
+    } else {
+      this.scheduleAutoMoves(false, skipColumns);
+    }
   }
 
   private scheduleAutoMoves(skipWaste = false, skipColumns: number[] = []): void {
@@ -328,12 +375,8 @@ export default class Game {
       return;
     }
 
-    this.pushUndo();
-    this.gameState = result;
-    this.selection.rebuildAndClamp(this.gameState);
-    this.saveGame();
-
-    const toPos = this.renderer.getTargetPosition(this.gameState, foundationTarget);
+    // Compute destination using the new state, but don't apply it yet
+    const toPos = this.renderer.getTargetPosition(result, foundationTarget);
 
     if (fromPos && toPos) {
       this.animations.enqueue({
@@ -346,16 +389,21 @@ export default class Game {
       });
     }
 
-    if (Engine.checkWin(this.gameState)) {
-      this.animations.onAllComplete(() => {
+    // Apply state only after animation completes
+    this.animations.onAllComplete(() => {
+      this.pushUndo();
+      this.gameState = result;
+      this.selection.rebuildAndClamp(this.gameState);
+      this.saveGame();
+
+      if (Engine.checkWin(this.gameState)) {
         this.selection.setPhase("won");
         this.winMenuIndex = 0;
-      });
-      return;
-    }
+        return;
+      }
 
-    // Chain: when this animation finishes, check for more auto-moves
-    this.animations.onAllComplete(() => this.performAutoMoves(skipWaste, skipColumns));
+      this.performAutoMoves(skipWaste, skipColumns);
+    });
   }
 
   private handleCenterLongClick(): void {
@@ -366,17 +414,49 @@ export default class Game {
 
     if (this.undoStack.length === 0) return;
 
-    this.gameState = this.undoStack.pop()!;
+    const previousState = this.undoStack.pop()!;
+    const currentState = this.gameState;
 
+    // If in holding or menu, snap out first
     if (phase === "holding") {
-      this.selection.exitHoldingMode(this.gameState);
+      this.selection.cancelHolding(this.gameState);
     } else if (phase === "menu") {
       this.selection.setPhase("browsing");
-      this.selection.rebuildAndClamp(this.gameState);
-    } else {
-      this.selection.rebuildAndClamp(this.gameState);
     }
 
+    // Try to animate the undo
+    if (this.renderer) {
+      const diff = Engine.findStateDiff(previousState, currentState);
+
+      if (diff) {
+        // Animate from current position back to previous position
+        const fromPos = this.renderer.getTargetPosition(currentState, diff.to);
+        const toPos = this.renderer.getTargetPosition(previousState, diff.from);
+
+        if (fromPos && toPos) {
+          const baseOverlap = 14 * this.scale;
+          this.animations.enqueue({
+            cards: diff.cards,
+            from: fromPos,
+            to: toPos,
+            startTime: performance.now(),
+            duration: ANIM_PLACE_MS,
+            overlap: diff.cards.length > 1 ? Math.min(baseOverlap, 12 * this.scale) : 0,
+          });
+
+          this.animations.onAllComplete(() => {
+            this.gameState = previousState;
+            this.selection.rebuildAndClamp(this.gameState);
+            this.saveGame();
+          });
+          return;
+        }
+      }
+    }
+
+    // Fallback: snap without animation
+    this.gameState = previousState;
+    this.selection.rebuildAndClamp(this.gameState);
     this.saveGame();
   }
 
@@ -386,6 +466,31 @@ export default class Game {
     const phase = this.selection.getPhase();
 
     if (phase === "holding") {
+      // Animate cursor back to the source card
+      if (this.renderer) {
+        const selState = this.selection.getState();
+        const currentTarget = this.selection.getCurrentTarget();
+        if (currentTarget && selState.heldFrom) {
+          const fromPos = this.renderer.getCursorCenter(
+            this.gameState,
+            selState,
+            currentTarget
+          );
+          this.selection.cancelHolding(this.gameState);
+          const newTarget = this.selection.getCurrentTarget();
+          if (fromPos && newTarget) {
+            const toPos = this.renderer.getCursorCenter(
+              this.gameState,
+              this.selection.getState(),
+              newTarget
+            );
+            if (toPos) {
+              this.renderer.animateCursor(fromPos, toPos, 150);
+            }
+          }
+          return;
+        }
+      }
       this.selection.cancelHolding(this.gameState);
       return;
     }
@@ -407,6 +512,10 @@ export default class Game {
     switch (item) {
       case "resume":
         this.selection.setPhase("browsing");
+        break;
+      case "undo":
+        this.selection.setPhase("browsing");
+        this.handleCenterLongClick();
         break;
       case "redeal":
         this.redeal();
@@ -545,6 +654,45 @@ export default class Game {
     }
   }
 
+  private findRevealedCard(
+    oldState: GameState,
+    newState: GameState
+  ): import("./AnimationManager").FlipAnimation | null {
+    if (!this.renderer) return null;
+
+    for (let col = 0; col < 7; col++) {
+      const oldCol = oldState.tableau[col];
+      const newCol = newState.tableau[col];
+
+      // A card was revealed if the column shrank and the new top card is face-up
+      // while the same card was face-down in the old state
+      if (newCol.length > 0 && newCol.length < oldCol.length) {
+        const newTop = newCol[newCol.length - 1];
+        const oldCard = oldCol[newCol.length - 1];
+
+        if (newTop.faceUp && oldCard && !oldCard.faceUp) {
+          const target: SelectableTarget = {
+            type: "tableau",
+            column: col,
+            cardIndex: newCol.length - 1,
+          };
+          const pos = this.renderer.getTargetPosition(newState, target);
+          if (pos) {
+            return {
+              card: newTop,
+              position: pos,
+              startTime: performance.now() + ANIM_PLACE_MS,
+              duration: ANIM_FLIP_MS,
+              hideTarget: target,
+            };
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
   private pushUndo(): void {
     this.undoStack.push(this.gameState);
     if (this.undoStack.length > MAX_UNDO_STACK) {
@@ -567,20 +715,20 @@ export default class Game {
 
     const selState = this.selection.getState();
     const activeAnims = this.animations.getActiveAnimations(now);
+    const activeFlips = this.animations.getActiveFlips(now);
+    const hiddenTargets = this.animations.getHiddenTargets();
 
-    this.renderer.render(this.gameState, selState, activeAnims);
+    this.renderer.render(this.gameState, selState, activeAnims, hiddenTargets, activeFlips);
 
     if (selState.phase === "menu") {
       this.renderer.renderMenu(MENU_ITEMS, this.menuIndex);
     } else if (selState.phase === "won") {
       this.renderer.renderWinOverlay(
-        this.gameState.score,
         WIN_ITEMS,
         this.winMenuIndex
       );
     } else if (selState.phase === "lost") {
       this.renderer.renderLostOverlay(
-        this.gameState.score,
         LOST_ITEMS,
         this.lostMenuIndex
       );
@@ -588,6 +736,21 @@ export default class Game {
 
     this.animationFrameId = requestAnimationFrame(this.update);
   };
+
+  resize(width: number, height: number): void {
+    this.canvasWidth = width;
+    this.canvasHeight = height;
+    this.scale = width / 314;
+
+    if (this.ctx) {
+      this.renderer = new Renderer(
+        this.ctx,
+        this.canvasWidth,
+        this.canvasHeight,
+        this.scale
+      );
+    }
+  }
 
   cleanup(): void {
     if (this.animationFrameId !== null) {

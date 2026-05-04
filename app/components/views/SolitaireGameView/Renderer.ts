@@ -11,8 +11,9 @@ import {
   FOUNDATION_ORDER,
   WinMenuItem,
   getColor,
+  targetsEqual,
 } from "./types";
-import type { InterpolatedAnimation } from "./AnimationManager";
+import type { InterpolatedAnimation, InterpolatedFlip } from "./AnimationManager";
 
 const FELT_COLOR = "#35654d";
 const CARD_WHITE = "#FFFFFF";
@@ -48,19 +49,27 @@ export class Renderer {
   private height: number;
   private scale: number;
   private layout: LayoutConfig;
+  private cursorAnim: {
+    from: Position;
+    to: Position;
+    startTime: number;
+    duration: number;
+  } | null = null;
   private recycleIcon: HTMLImageElement | null = null;
   private handCursor: HTMLImageElement | null = null;
+  private appleLogo: HTMLImageElement | null = null;
+  private suitImages: Record<string, HTMLImageElement> = {};
 
   constructor(
     ctx: CanvasRenderingContext2D,
     width: number,
     height: number,
-    scale: number
+    _scale: number
   ) {
     this.ctx = ctx;
     this.width = width;
     this.height = height;
-    this.scale = scale;
+    this.scale = height / 232;
     this.layout = this.computeLayout();
     this.loadAssets();
   }
@@ -77,22 +86,73 @@ export class Renderer {
     handImg.onload = () => {
       this.handCursor = handImg;
     };
+
+    const suitFiles: Record<string, { file: string; color: string }> = {
+      hearts: { file: "heart.svg", color: "#CC0000" },
+      diamonds: { file: "diamond.svg", color: "#CC0000" },
+      clubs: { file: "club.svg", color: "#000000" },
+      spades: { file: "spade.svg", color: "#000000" },
+    };
+
+    for (const [suit, { file, color }] of Object.entries(suitFiles)) {
+      this.loadColoredSvg(`/ipod/${file}`, color, (img) => {
+        this.suitImages[suit] = img;
+      });
+    }
+
+    this.loadColoredSvg("/ipod/apple.svg", "#FFFFFF", (img) => {
+      this.appleLogo = img;
+    });
+  }
+
+  private loadColoredSvg(
+    url: string,
+    fillColor: string,
+    onLoad: (img: HTMLImageElement) => void
+  ): void {
+    fetch(url)
+      .then((res) => res.text())
+      .then((svgText) => {
+        const colored = svgText.replace(/fill="#000000"/g, `fill="${fillColor}"`);
+        const blob = new Blob([colored], { type: "image/svg+xml" });
+        const blobUrl = URL.createObjectURL(blob);
+        const img = new Image();
+        img.onload = () => {
+          URL.revokeObjectURL(blobUrl);
+          onLoad(img);
+        };
+        img.src = blobUrl;
+      })
+      .catch(() => {});
   }
 
   private computeLayout(): LayoutConfig {
-    const cardWidth = Math.floor(this.width / 8.5);
-    const cardHeight = Math.floor(cardWidth * 1.4);
-    const topRowY = 4 * this.scale;
-    const tableauStartY = topRowY + cardHeight + 8 * this.scale;
-    const totalColumnWidth = cardWidth * 7;
-    const totalGaps = this.width - totalColumnWidth;
-    const columnSpacing = Math.floor(totalGaps / 8);
-    const columnStartX = columnSpacing;
+    // Scale based on height (the constrained axis) to maintain proportions
+    const refHeight = 232;
+    const heightScale = this.height / refHeight;
+
+    // Card height is ~22% of canvas height; width maintains card aspect ratio
+    const cardHeight = Math.floor(this.height * 0.22);
+    const cardWidth = Math.floor(cardHeight / 1.4);
+
+    // Content width: 7 cards + 8 gaps
+    const columnSpacing = Math.floor(cardWidth * 0.2);
+    const contentWidth = cardWidth * 7 + columnSpacing * 6;
+
+    // Center the content horizontally
+    const marginX = Math.floor((this.width - contentWidth) / 2);
+    const columnStartX = Math.max(marginX, columnSpacing);
+
+    const topRowY = Math.floor(4 * heightScale);
+    const tableauStartY = topRowY + cardHeight + Math.floor(8 * heightScale);
+
     const stockX = columnStartX;
     const wasteX = columnStartX + cardWidth + columnSpacing;
-    const foundationStartX =
-      this.width - 4 * cardWidth - 3 * columnSpacing - columnSpacing;
+
+    // Foundations aligned to the right edge of the content area
+    const contentRight = columnStartX + contentWidth;
     const foundationSpacing = cardWidth + columnSpacing;
+    const foundationStartX = contentRight - 4 * cardWidth - 3 * columnSpacing;
 
     return {
       cardWidth,
@@ -105,23 +165,29 @@ export class Renderer {
       wasteX,
       foundationStartX,
       foundationSpacing,
-      baseOverlap: 14 * this.scale,
-      faceDownOverlap: 8 * this.scale,
-      maxTableauHeight: this.height - tableauStartY - 2 * this.scale,
+      baseOverlap: Math.floor(14 * heightScale),
+      faceDownOverlap: Math.floor(8 * heightScale),
+      maxTableauHeight: this.height - tableauStartY - Math.floor(2 * heightScale),
     };
   }
 
   render(
     gameState: GameState,
     selectionState: SelectionState,
-    activeAnimations?: InterpolatedAnimation[]
+    activeAnimations?: InterpolatedAnimation[],
+    hiddenTargets?: SelectableTarget[],
+    activeFlips?: InterpolatedFlip[]
   ): void {
     this.drawBackground();
     this.drawStock(gameState, selectionState);
-    this.drawWaste(gameState.waste, selectionState);
-    this.drawFoundations(gameState.foundations, selectionState);
-    this.drawTableau(gameState.tableau, selectionState);
-    this.drawScore(gameState.score);
+    this.drawWaste(gameState.waste, selectionState, hiddenTargets);
+    this.drawFoundations(gameState.foundations, selectionState, hiddenTargets);
+    this.drawTableau(gameState.tableau, selectionState, hiddenTargets);
+
+    // Draw flip animations on top of the board
+    if (activeFlips && activeFlips.length > 0) {
+      this.drawFlips(activeFlips);
+    }
 
     // Draw in-flight animated cards on top of the board
     if (activeAnimations && activeAnimations.length > 0) {
@@ -131,9 +197,15 @@ export class Renderer {
     if (selectionState.phase === "browsing" || selectionState.phase === "holding") {
       const cursorTarget = selectionState.targets[selectionState.cursorIndex];
       if (cursorTarget) {
-        const cursorPos = this.getCursorCenter(gameState, selectionState, cursorTarget);
-        if (cursorPos) {
-          this.drawCursor(cursorPos.x, cursorPos.y);
+        // Check for cursor animation first
+        const animPos = this.getCursorAnimPosition(performance.now());
+        if (animPos) {
+          this.drawCursor(animPos.x, animPos.y);
+        } else {
+          const cursorPos = this.getCursorCenter(gameState, selectionState, cursorTarget);
+          if (cursorPos) {
+            this.drawCursor(cursorPos.x, cursorPos.y);
+          }
         }
       }
     }
@@ -148,21 +220,21 @@ export class Renderer {
     );
   }
 
-  renderWinOverlay(score: number, items: WinMenuItem[], selectedIndex: number): void {
+  renderWinOverlay(items: WinMenuItem[], selectedIndex: number): void {
     this.drawOverlay();
     this.drawMenuList(
       items.map(winMenuItemLabel),
       selectedIndex,
-      `You Win!  ${formatScore(score)}`
+      "You Win!"
     );
   }
 
-  renderLostOverlay(score: number, items: LostMenuItem[], selectedIndex: number): void {
+  renderLostOverlay(items: LostMenuItem[], selectedIndex: number): void {
     this.drawOverlay();
     this.drawMenuList(
       items.map(lostMenuItemLabel),
       selectedIndex,
-      `No More Moves  ${formatScore(score)}`
+      "No More Moves"
     );
   }
 
@@ -234,7 +306,11 @@ export class Renderer {
   }
 
   private drawBackground(): void {
-    this.ctx.fillStyle = FELT_COLOR;
+    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
+    gradient.addColorStop(0, "#2D5E3F");
+    gradient.addColorStop(0.5, "#1E4D30");
+    gradient.addColorStop(1, "#163D25");
+    this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
 
@@ -289,13 +365,25 @@ export class Renderer {
     }
   }
 
-  private drawWaste(waste: Card[], selectionState: SelectionState): void {
+  private drawWaste(
+    waste: Card[],
+    selectionState: SelectionState,
+    hiddenTargets?: SelectableTarget[]
+  ): void {
     const l = this.layout;
     if (waste.length === 0) return;
 
+    const isHidden = hiddenTargets?.some((t) => t.type === "waste");
+
+    if (isHidden) {
+      if (waste.length > 1) {
+        this.drawCard(waste[waste.length - 2], l.wasteX, l.topRowY, "none");
+      }
+      return;
+    }
+
     const topCard = waste[waste.length - 1];
 
-    // If the waste card is being held, show it with blue highlight at its source
     const isHeld =
       selectionState.phase === "holding" &&
       selectionState.heldFrom?.type === "waste";
@@ -309,7 +397,8 @@ export class Renderer {
 
   private drawFoundations(
     foundations: Card[][],
-    selectionState: SelectionState
+    selectionState: SelectionState,
+    hiddenTargets?: SelectableTarget[]
   ): void {
     const l = this.layout;
     for (let i = 0; i < 4; i++) {
@@ -321,13 +410,24 @@ export class Renderer {
         selectionState.heldFrom?.type === "foundation" &&
         (selectionState.heldFrom as { index: number }).index === i;
 
-      // Check if this foundation is the current drop target
+      // Check if the top card is being animated (hidden)
+      const isHidden = hiddenTargets?.some((t) =>
+        targetsEqual(t, { type: "foundation", index: i })
+      );
+
       const highlight = this.getHighlight(
         { type: "foundation", index: i },
         selectionState
       );
 
-      if (foundation.length === 0) {
+      if (isHidden && foundation.length > 0) {
+        // Show the card underneath while the top animates
+        if (foundation.length > 1) {
+          this.drawCard(foundation[foundation.length - 2], x, l.topRowY, highlight);
+        } else {
+          this.drawEmptyPile(x, l.topRowY, FOUNDATION_ORDER[i], highlight !== "none" ? highlight : undefined);
+        }
+      } else if (foundation.length === 0) {
         this.drawEmptyPile(x, l.topRowY, FOUNDATION_ORDER[i], highlight !== "none" ? highlight : undefined);
       } else {
         const topCard = foundation[foundation.length - 1];
@@ -339,7 +439,8 @@ export class Renderer {
 
   private drawTableau(
     tableau: Card[][],
-    selectionState: SelectionState
+    selectionState: SelectionState,
+    hiddenTargets?: SelectableTarget[]
   ): void {
     const l = this.layout;
 
@@ -386,6 +487,16 @@ export class Renderer {
         cursorTarget?.type === "tableau" &&
         cursorTarget.column === col;
 
+      // Check which card index starts being hidden by animation
+      const hiddenFromIndex = hiddenTargets
+        ? hiddenTargets.reduce((minIdx, t) => {
+            if (t.type === "tableau" && t.column === col) {
+              return Math.min(minIdx, t.cardIndex);
+            }
+            return minIdx;
+          }, Infinity)
+        : Infinity;
+
       // Draw all cards first (no individual highlights)
       let y = l.tableauStartY;
       const cardYPositions: number[] = [];
@@ -393,7 +504,12 @@ export class Renderer {
         cardYPositions.push(y);
         const card = column[i];
 
-        if (card.faceUp) {
+        // Skip cards that are currently being animated
+        const isAnimHidden = i >= hiddenFromIndex;
+
+        if (isAnimHidden) {
+          // Don't draw — the animation layer handles it
+        } else if (card.faceUp) {
           this.drawCard(card, x, y, "none");
         } else {
           this.drawCardBack(x, y);
@@ -436,13 +552,28 @@ export class Renderer {
     const l = this.layout;
     const ctx = this.ctx;
 
-    // Card body
-    ctx.fillStyle = CARD_WHITE;
+    // Drop shadow
+    ctx.save();
+    ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+    ctx.shadowBlur = 3 * this.scale;
+    ctx.shadowOffsetY = 1 * this.scale;
+
+    // White outer border
+    ctx.fillStyle = "#FFFFFF";
+    this.roundRect(x, y, l.cardWidth, l.cardHeight, CARD_RADIUS);
+    ctx.fill();
+    ctx.restore();
+
+    // Subtle white-to-gray gradient body
+    const gradient = ctx.createLinearGradient(x, y, x, y + l.cardHeight);
+    gradient.addColorStop(0, "#FFFFFF");
+    gradient.addColorStop(1, "#E8E8E8");
+    ctx.fillStyle = gradient;
     this.roundRect(x, y, l.cardWidth, l.cardHeight, CARD_RADIUS);
     ctx.fill();
 
-    // Card border
-    ctx.strokeStyle = CARD_BORDER;
+    // Thin inner stroke for definition
+    ctx.strokeStyle = "#AAAAAA";
     ctx.lineWidth = 1;
     this.roundRect(x, y, l.cardWidth, l.cardHeight, CARD_RADIUS);
     ctx.stroke();
@@ -450,26 +581,30 @@ export class Renderer {
     // Card content
     const color = getColor(card.suit);
     ctx.fillStyle = color === "red" ? "#CC0000" : "#000000";
-    const suitSymbol = SUIT_SYMBOLS[card.suit];
     const fontSize = Math.floor(10 * this.scale);
+    const smallSuitSize = Math.floor(6 * this.scale);
+    const largeSuitSize = Math.floor(12 * this.scale);
 
-    // Top-left rank + suit
+    // Top-left rank
     ctx.font = `bold ${fontSize}px sans-serif`;
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
     ctx.fillText(card.rank, x + 3 * this.scale, y + 2 * this.scale);
-    ctx.font = `${fontSize}px sans-serif`;
-    ctx.fillText(suitSymbol, x + 3 * this.scale, y + 2 * this.scale + fontSize);
+
+    // Small suit below rank
+    this.drawSuit(
+      card.suit,
+      x + 3 * this.scale + smallSuitSize / 2,
+      y + 2 * this.scale + fontSize + smallSuitSize / 2 + 1,
+      smallSuitSize
+    );
 
     // Center suit (larger)
-    const centerFontSize = Math.floor(16 * this.scale);
-    ctx.font = `${centerFontSize}px sans-serif`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(
-      suitSymbol,
+    this.drawSuit(
+      card.suit,
       x + l.cardWidth / 2,
-      y + l.cardHeight / 2
+      y + l.cardHeight / 2,
+      largeSuitSize
     );
 
     // Draw highlight overlay on top of the card
@@ -481,32 +616,64 @@ export class Renderer {
   private drawCardBack(x: number, y: number): void {
     const l = this.layout;
     const ctx = this.ctx;
+    const border = 2 * this.scale;
 
-    ctx.fillStyle = CARD_BACK_COLOR;
+    // Drop shadow
+    ctx.save();
+    ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+    ctx.shadowBlur = 3 * this.scale;
+    ctx.shadowOffsetY = 1 * this.scale;
+
+    // White border
+    ctx.fillStyle = "#FFFFFF";
     this.roundRect(x, y, l.cardWidth, l.cardHeight, CARD_RADIUS);
     ctx.fill();
+    ctx.restore();
 
-    ctx.strokeStyle = CARD_BORDER;
-    ctx.lineWidth = 1;
-    this.roundRect(x, y, l.cardWidth, l.cardHeight, CARD_RADIUS);
-    ctx.stroke();
+    // Blue gradient body (inset by border width)
+    const ix = x + border;
+    const iy = y + border;
+    const iw = l.cardWidth - border * 2;
+    const ih = l.cardHeight - border * 2;
+    const gradient = ctx.createLinearGradient(ix, iy, ix, iy + ih);
+    gradient.addColorStop(0, "#4A90D9");
+    gradient.addColorStop(1, "#1B5AAF");
+    ctx.fillStyle = gradient;
+    this.roundRect(ix, iy, iw, ih, Math.max(1, CARD_RADIUS - 1));
+    ctx.fill();
 
-    // Horizontal stripes
-    const stripeHeight = 2 * this.scale;
-    const stripeGap = 3 * this.scale;
-    const inset = 3 * this.scale;
-    ctx.fillStyle = CARD_BACK_STRIPE;
+    // Horizontal stripes (lighter blue)
+    const stripeHeight = 1.5 * this.scale;
+    const stripeGap = 2.5 * this.scale;
+    const stripeInset = 1 * this.scale;
+    ctx.fillStyle = "rgba(106, 171, 224, 0.3)";
+
+    ctx.save();
+    this.roundRect(ix, iy, iw, ih, Math.max(1, CARD_RADIUS - 1));
+    ctx.clip();
 
     for (
-      let sy = y + inset;
-      sy < y + l.cardHeight - inset;
+      let sy = iy + stripeInset;
+      sy < iy + ih - stripeInset;
       sy += stripeHeight + stripeGap
     ) {
-      const stripeW = l.cardWidth - inset * 2;
-      const stripeH = Math.min(stripeHeight, y + l.cardHeight - inset - sy);
+      const stripeW = iw - stripeInset * 2;
+      const stripeH = Math.min(stripeHeight, iy + ih - stripeInset - sy);
       if (stripeH > 0) {
-        ctx.fillRect(x + inset, sy, stripeW, stripeH);
+        ctx.fillRect(ix + stripeInset, sy, stripeW, stripeH);
       }
+    }
+    ctx.restore();
+
+    // Apple logo centered (814x1000 aspect ratio)
+    if (this.appleLogo) {
+      const logoH = ih * 0.34;
+      const logoW = logoH * (814 / 1000);
+      const lx = x + (l.cardWidth - logoW) / 2;
+      const ly = y + (l.cardHeight - logoH) / 2;
+      ctx.globalAlpha = 0.3;
+      ctx.drawImage(this.appleLogo, lx, ly, logoW, logoH);
+      ctx.globalAlpha = 1;
     }
   }
 
@@ -527,17 +694,13 @@ export class Renderer {
     ctx.setLineDash([]);
 
     if (suit) {
-      const suitSymbol =
-        SUIT_SYMBOLS[suit as keyof typeof SUIT_SYMBOLS] ?? "";
-      const fontSize = Math.floor(20 * this.scale);
-      ctx.font = `${fontSize}px sans-serif`;
-      ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(
-        suitSymbol,
+      const suitSize = Math.floor(22 * this.scale);
+      this.drawSuit(
+        suit,
         x + l.cardWidth / 2,
-        y + l.cardHeight / 2
+        y + l.cardHeight / 2,
+        suitSize,
+        0.2
       );
     }
 
@@ -546,7 +709,7 @@ export class Renderer {
     }
   }
 
-  private getCursorCenter(
+  getCursorCenter(
     gameState: GameState,
     selectionState: SelectionState,
     target: SelectableTarget
@@ -584,6 +747,33 @@ export class Renderer {
     return {
       x: pos.x + l.cardWidth / 2,
       y: pos.y + l.cardHeight / 2,
+    };
+  }
+
+  animateCursor(from: Position, to: Position, duration: number): void {
+    this.cursorAnim = {
+      from,
+      to,
+      startTime: performance.now(),
+      duration,
+    };
+  }
+
+  private getCursorAnimPosition(now: number): Position | null {
+    if (!this.cursorAnim) return null;
+
+    const elapsed = now - this.cursorAnim.startTime;
+    if (elapsed >= this.cursorAnim.duration) {
+      this.cursorAnim = null;
+      return null;
+    }
+
+    const rawT = Math.min(1, elapsed / this.cursorAnim.duration);
+    const t = 1 - Math.pow(1 - rawT, 3); // ease-out cubic
+
+    return {
+      x: this.cursorAnim.from.x + (this.cursorAnim.to.x - this.cursorAnim.from.x) * t,
+      y: this.cursorAnim.from.y + (this.cursorAnim.to.y - this.cursorAnim.from.y) * t,
     };
   }
 
@@ -646,18 +836,59 @@ export class Renderer {
     ctx.stroke();
   }
 
-  private drawScore(score: number): void {
+  private drawSuit(
+    suit: string,
+    x: number,
+    y: number,
+    size: number,
+    alpha = 1
+  ): void {
+    const img = this.suitImages[suit];
+    if (!img) {
+      // Fallback to unicode if image not loaded
+      const ctx = this.ctx;
+      const color = getColor(suit as any);
+      ctx.fillStyle = color === "red" ? "#CC0000" : "#000000";
+      const suitSymbol = SUIT_SYMBOLS[suit as keyof typeof SUIT_SYMBOLS] ?? "";
+      ctx.font = `${size}px sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const oldAlpha = ctx.globalAlpha;
+      ctx.globalAlpha = alpha;
+      ctx.fillText(suitSymbol, x, y);
+      ctx.globalAlpha = oldAlpha;
+      return;
+    }
+
+    const oldAlpha = this.ctx.globalAlpha;
+    this.ctx.globalAlpha = alpha;
+    const halfSize = size / 2;
+    this.ctx.drawImage(img, x - halfSize, y - halfSize, size, size);
+    this.ctx.globalAlpha = oldAlpha;
+  }
+
+
+  private drawFlips(flips: InterpolatedFlip[]): void {
+    const l = this.layout;
     const ctx = this.ctx;
-    const fontSize = Math.floor(10 * this.scale);
-    ctx.font = `bold ${fontSize}px sans-serif`;
-    ctx.fillStyle = SCORE_COLOR;
-    ctx.textAlign = "right";
-    ctx.textBaseline = "bottom";
-    ctx.fillText(
-      formatScore(score),
-      this.width - 4 * this.scale,
-      this.height - 3 * this.scale
-    );
+
+    for (const flip of flips) {
+      ctx.save();
+
+      // Scale horizontally around the card center
+      const centerX = flip.position.x + l.cardWidth / 2;
+      ctx.translate(centerX, 0);
+      ctx.scale(flip.scaleX, 1);
+      ctx.translate(-centerX, 0);
+
+      if (flip.showBack) {
+        this.drawCardBack(flip.position.x, flip.position.y);
+      } else {
+        this.drawCard(flip.card, flip.position.x, flip.position.y, "none");
+      }
+
+      ctx.restore();
+    }
   }
 
   private drawAnimations(animations: InterpolatedAnimation[]): void {
@@ -809,15 +1040,12 @@ function matchesTarget(a: SelectableTarget, b: SelectableTarget): boolean {
   }
 }
 
-function formatScore(score: number): string {
-  if (score >= 0) return `$${score}`;
-  return `-$${Math.abs(score)}`;
-}
-
 function menuItemLabel(item: MenuItem): string {
   switch (item) {
     case "resume":
       return "Resume";
+    case "undo":
+      return "Undo";
     case "redeal":
       return "Redeal";
     case "quit":

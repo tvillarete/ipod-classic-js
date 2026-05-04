@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useViewContext } from "@/hooks";
 import styled from "styled-components";
@@ -28,14 +28,27 @@ const SolitaireGame = () => {
   const dpr =
     typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
 
+  // Observe container size changes
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const width = containerRef.current.clientWidth;
-    const height = containerRef.current.clientHeight;
-    setDimensions({ width, height });
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+      const { width, height } = entry.contentRect;
+      setDimensions((prev) => {
+        if (prev.width === Math.floor(width) && prev.height === Math.floor(height)) {
+          return prev;
+        }
+        return { width: Math.floor(width), height: Math.floor(height) };
+      });
+    });
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
   }, []);
 
+  // Initialize game once
   useEffect(() => {
     if (
       dimensions.width === 0 ||
@@ -44,6 +57,8 @@ const SolitaireGame = () => {
     ) {
       return;
     }
+
+    if (gameRef.current) return;
 
     const context = canvasRef.current.getContext("2d");
     if (!context) return;
@@ -58,7 +73,19 @@ const SolitaireGame = () => {
       game.cleanup();
       gameRef.current = null;
     };
-  }, [dimensions, dpr, hideView]);
+  }, [dimensions.width > 0 && dimensions.height > 0, dpr, hideView]);
+
+  // Resize game when dimensions change (without re-creating)
+  useEffect(() => {
+    if (!gameRef.current || !canvasRef.current) return;
+    if (dimensions.width === 0 || dimensions.height === 0) return;
+
+    const ctx = canvasRef.current.getContext("2d");
+    if (!ctx) return;
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    gameRef.current.resize(dimensions.width, dimensions.height);
+  }, [dimensions, dpr]);
 
   return (
     <RootContainer ref={containerRef}>
