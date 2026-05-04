@@ -13,6 +13,12 @@ const GamesView = () => {
       viewId: "brickGame",
       preview: SplitScreenPreview.Games,
     },
+    {
+      type: "view",
+      label: "Solitaire",
+      viewId: "solitaireGame",
+      preview: SplitScreenPreview.Games,
+    },
   ];
 
   const [scrollIndex] = useScrollHandler("games", options);

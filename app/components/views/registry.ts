@@ -9,6 +9,7 @@ import ArtistView from "./ArtistView";
 import ArtistsView from "./ArtistsView";
 import BrickGameView from "./BrickGameView";
 import CoverFlowView from "./CoverFlowView";
+import SolitaireGameView from "./SolitaireGameView";
 import GamesView from "./GamesView";
 import HomeView from "./HomeView";
 import MusicView from "./MusicView";
@@ -43,6 +44,7 @@ export type ViewProps = {
   playlist: { id: string; inLibrary?: boolean };
   search: { initialQuery?: string };
   brickGame: undefined;
+  solitaireGame: undefined;
   coverFlow: undefined;
 };
 
@@ -177,6 +179,14 @@ export const VIEW_REGISTRY = {
     preview: SplitScreenPreview.Games,
     disableLongPress: true,
   } as ViewConfig<"brickGame">,
+
+  solitaireGame: {
+    component: SolitaireGameView,
+    type: "full",
+    title: "Solitaire",
+    preview: SplitScreenPreview.Games,
+    disableLongPress: true,
+  } as ViewConfig<"solitaireGame">,
 
   // CoverFlow View
   coverFlow: {
