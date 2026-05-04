@@ -52,7 +52,6 @@ export function deal(): GameState {
     waste: [],
     foundations: [[], [], [], []],
     tableau,
-    score: -52,
     stockPasses: 0,
   };
 }
@@ -203,7 +202,7 @@ export function moveCards(
 
     const newFoundations = state.foundations.map((f) => [...f]);
     newFoundations[to.index] = [...newFoundations[to.index], cards[0]];
-    newState = { ...newState, foundations: newFoundations, score: state.score + 5 };
+    newState = { ...newState, foundations: newFoundations };
   } else if (to.type === "tableau" || to.type === "tableau-empty") {
     const targetCol = to.type === "tableau" ? to.column : to.column;
     if (!canMoveToTableau(cards, state.tableau[targetCol])) return null;
@@ -479,4 +478,100 @@ function isSafeToAutoMove(card: Card, state: GameState): boolean {
   }
 
   return true;
+}
+
+/**
+ * Compares two game states and returns the cards that moved
+ * and their source/destination targets. Used for undo animation.
+ */
+export function findStateDiff(
+  oldState: GameState,
+  newState: GameState
+): { cards: Card[]; from: SelectableTarget; to: SelectableTarget } | null {
+  // Check if a foundation gained cards
+  for (let i = 0; i < 4; i++) {
+    const oldLen = oldState.foundations[i].length;
+    const newLen = newState.foundations[i].length;
+    if (newLen > oldLen) {
+      const cards = newState.foundations[i].slice(oldLen);
+      const from = findCardSource(oldState, newState, cards[0]);
+      return {
+        cards,
+        from: from ?? { type: "foundation", index: i },
+        to: { type: "foundation", index: i },
+      };
+    }
+  }
+
+  // Check if a tableau column gained cards
+  for (let col = 0; col < 7; col++) {
+    const oldLen = oldState.tableau[col].length;
+    const newLen = newState.tableau[col].length;
+    if (newLen > oldLen) {
+      const newCards = newState.tableau[col].slice(oldLen);
+      if (newCards.length > 0) {
+        const from = findCardSource(oldState, newState, newCards[0]);
+        return {
+          cards: newCards,
+          from: from ?? { type: "tableau", column: col, cardIndex: oldLen },
+          to: { type: "tableau", column: col, cardIndex: oldLen },
+        };
+      }
+    }
+  }
+
+  // Check if waste gained a card (stock draw)
+  if (
+    newState.waste.length > oldState.waste.length &&
+    newState.stock.length < oldState.stock.length
+  ) {
+    const card = newState.waste[newState.waste.length - 1];
+    return {
+      cards: [card],
+      from: { type: "stock" },
+      to: { type: "waste" },
+    };
+  }
+
+  return null;
+}
+
+function findCardSource(
+  oldState: GameState,
+  newState: GameState,
+  card: Card
+): SelectableTarget | null {
+  if (oldState.waste.length > newState.waste.length) {
+    const oldTop = oldState.waste[oldState.waste.length - 1];
+    if (oldTop.suit === card.suit && oldTop.rank === card.rank) {
+      return { type: "waste" };
+    }
+  }
+
+  for (let i = 0; i < 4; i++) {
+    if (oldState.foundations[i].length > newState.foundations[i].length) {
+      const oldTop =
+        oldState.foundations[i][oldState.foundations[i].length - 1];
+      if (oldTop.suit === card.suit && oldTop.rank === card.rank) {
+        return { type: "foundation", index: i };
+      }
+    }
+  }
+
+  for (let col = 0; col < 7; col++) {
+    if (oldState.tableau[col].length > newState.tableau[col].length) {
+      const oldCol = oldState.tableau[col];
+      for (let i = 0; i < oldCol.length; i++) {
+        if (
+          oldCol[i].faceUp &&
+          oldCol[i].suit === card.suit &&
+          oldCol[i].rank === card.rank
+        ) {
+          return { type: "tableau", column: col, cardIndex: i };
+        }
+      }
+    }
+  }
+
+  return null;
 }

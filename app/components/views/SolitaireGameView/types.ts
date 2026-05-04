@@ -28,7 +28,6 @@ export interface GameState {
   waste: Card[];
   foundations: Card[][]; // fixed order: hearts, diamonds, clubs, spades
   tableau: Card[][]; // 7 columns
-  score: number;
   stockPasses: number;
 }
 
@@ -41,7 +40,7 @@ export type SelectableTarget =
 
 export type GamePhase = "browsing" | "holding" | "menu" | "won" | "lost";
 
-export type MenuItem = "resume" | "redeal" | "quit";
+export type MenuItem = "resume" | "undo" | "redeal" | "quit";
 export type WinMenuItem = "newGame" | "quit";
 export type LostMenuItem = "redeal" | "quit";
 
