@@ -14,3 +14,9 @@ export const TOUCH_ANGLE_OFFSET_THRESHOLD = 23;
  * The threshold in pixels that the user must pan before we consider the input a pan.
  */
 export const PAN_THRESHOLD = 5;
+
+/**
+ * Touch inputs need a more forgiving threshold since fingers naturally drift
+ * more than a mouse cursor, causing accidental button presses during scrolling.
+ */
+export const TOUCH_PAN_THRESHOLD = 15;

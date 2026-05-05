@@ -32,6 +32,7 @@ import {
   ANGLE_OFFSET_THRESHOLD,
   PAN_THRESHOLD,
   TOUCH_ANGLE_OFFSET_THRESHOLD,
+  TOUCH_PAN_THRESHOLD,
 } from "./constants";
 
 type RootContainerProps = {
@@ -176,7 +177,10 @@ export const ClickWheel = () => {
       const deltaY = info.offset.y;
       const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
 
-      const isPressEvent = !hasScrolledRef.current && distance < PAN_THRESHOLD;
+      const panThreshold = isTouchRef.current
+        ? TOUCH_PAN_THRESHOLD
+        : PAN_THRESHOLD;
+      const isPressEvent = !hasScrolledRef.current && distance < panThreshold;
 
       if (isPressEvent) {
         handleWheelPress({
