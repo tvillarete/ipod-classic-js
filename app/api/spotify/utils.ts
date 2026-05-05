@@ -1,4 +1,3 @@
-import { deleteCookie, getCookie, setCookie } from "cookies-next/server";
 import { cookies } from "next/headers";
 import { SPOTIFY_TOKENS_COOKIE_NAME } from "@/utils/constants/api";
 
@@ -25,11 +24,13 @@ export const setSpotifyTokens = async (accessToken: string, refreshToken: string
     lastRefreshedTimestamp: Date.now(),
   });
 
-  await setCookie(SPOTIFY_TOKENS_COOKIE_NAME, value, { cookies });
+  const cookieStore = await cookies();
+  cookieStore.set(SPOTIFY_TOKENS_COOKIE_NAME, value);
 };
 
 export const getSpotifyTokens = async () => {
-  const raw = await getCookie(SPOTIFY_TOKENS_COOKIE_NAME, { cookies });
+  const cookieStore = await cookies();
+  const raw = cookieStore.get(SPOTIFY_TOKENS_COOKIE_NAME)?.value;
 
   if (!raw) {
     return {
@@ -48,7 +49,6 @@ export const getSpotifyTokens = async () => {
 };
 
 export const clearSpotifyTokens = async () => {
-  await deleteCookie(SPOTIFY_TOKENS_COOKIE_NAME, {
-    cookies,
-  });
+  const cookieStore = await cookies();
+  cookieStore.delete(SPOTIFY_TOKENS_COOKIE_NAME);
 };

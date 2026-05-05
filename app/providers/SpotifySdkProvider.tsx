@@ -1,4 +1,3 @@
-import { getCookie } from "cookies-next/client";
 import {
   useViewContext,
   useSettings,
@@ -27,6 +26,14 @@ interface Props {
   children: React.ReactNode;
 }
 
+const getClientCookie = (name: string): string | undefined => {
+  if (typeof document === "undefined") return undefined;
+  const match = document.cookie.match(
+    new RegExp("(?:^|; )" + name.replace(/([.$?*|{}()[\]\\/+^])/g, "\\$1") + "=([^;]*)")
+  );
+  return match ? decodeURIComponent(match[1]) : undefined;
+};
+
 export const SpotifySDKProvider = ({ children }: Props) => {
   const { showPopup, hideView } = useViewContext();
   const { setIsSpotifyAuthorized } = useSettings();
@@ -36,7 +43,7 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   const [isSdkReady, setIsSdkReady] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const cookieValue = getCookie(SPOTIFY_TOKENS_COOKIE_NAME);
+  const cookieValue = getClientCookie(SPOTIFY_TOKENS_COOKIE_NAME);
   let storedAccessToken: string | undefined;
   let storedRefreshToken: string | undefined;
   let tokenLastRefreshedTimestamp: string | undefined;

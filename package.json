@@ -14,8 +14,6 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.100.4",
-    "cookie": "^1.1.1",
-    "cookies-next": "^6.1.1",
     "he": "^1.2.0",
     "ios-haptics": "^0.1.4",
     "motion": "^12.38.0",
