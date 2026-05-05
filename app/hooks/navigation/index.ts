@@ -4,3 +4,4 @@ export { default as useKeyboardInput } from "./useKeyboardInput";
 export { default as useScrollHandler } from "./useScrollHandler";
 export { default as useOptionSelect } from "./useOptionSelect";
 export { default as useSelectableList } from "./useSelectableList";
+export { default as useScrollIntoView } from "./useScrollIntoView";

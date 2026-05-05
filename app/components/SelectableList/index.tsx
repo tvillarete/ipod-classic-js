@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 
 import { LoadingIndicator, LoadingScreen } from "@/components";
 import ErrorScreen from "@/components/ErrorScreen";
@@ -6,7 +6,7 @@ import { SplitScreenPreview } from "@/components/previews";
 import { ViewId, ViewProps } from "@/components/views/registry";
 import { PopupId, ActionSheetId } from "@/providers/ViewContextProvider";
 import { AnimatePresence, motion } from "motion/react";
-import { useTimeout } from "@/hooks";
+import { useScrollIntoView } from "@/hooks";
 import styled from "styled-components";
 
 import SelectableListItem from "./SelectableListItem";
@@ -110,6 +110,8 @@ interface Props {
   loading?: boolean;
   loadingNextItems?: boolean;
   emptyMessage?: string;
+  /** Custom renderer for each option. If omitted, uses the default SelectableListItem. */
+  renderItem?: (option: SelectableListOption, index: number, isActive: boolean) => React.ReactNode;
 }
 
 const SelectableList = ({
@@ -118,16 +120,11 @@ const SelectableList = ({
   loading,
   loadingNextItems,
   emptyMessage = "Nothing to see here",
+  renderItem,
 }: Props) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useTimeout(() => setIsMounted(true), 350);
-
   const fullOptions = useMemo(
     () => [
       ...options,
-      // Show a loading indicator when loading more items.
       ...getConditionalOption(loadingNextItems, {
         type: "action",
         label: (
@@ -141,26 +138,12 @@ const SelectableList = ({
     [options, loadingNextItems]
   );
 
-  /** Always make sure the selected item is within the screen's view. */
-  useEffect(() => {
-    // Delay "isMounted" so that the enter animation doesn't get interrupted.
-    // I was stuck on this for like 12 hours and was wondering why
-    // the animation wasn't finishing...
-    if (isMounted && containerRef.current && fullOptions.length) {
-      const { children } = containerRef.current;
-
-      // Make sure the pagination loading indicator is in view.
-      if (loadingNextItems) {
-        children[activeIndex + 1]?.scrollIntoView({
-          block: "nearest",
-        });
-      } else {
-        children[activeIndex]?.scrollIntoView({
-          block: "nearest",
-        });
-      }
-    }
-  }, [activeIndex, isMounted, fullOptions.length, loadingNextItems]);
+  const containerRef = useScrollIntoView({
+    activeIndex,
+    itemCount: fullOptions.length,
+    mountDelay: 350,
+    scrollNextItem: !!loadingNextItems,
+  });
 
   return (
     <AnimatePresence>
@@ -168,13 +151,18 @@ const SelectableList = ({
         <LoadingScreen backgroundColor="white" />
       ) : options.length > 0 ? (
         <Container ref={containerRef}>
-          {fullOptions.map((option, index) => (
-            <SelectableListItem
-              key={`option-${option.label}-${index}`}
-              option={option}
-              isActive={index === activeIndex}
-            />
-          ))}
+          {fullOptions.map((option, index) => {
+            const isActive = index === activeIndex;
+            return renderItem
+              ? renderItem(option, index, isActive)
+              : (
+                <SelectableListItem
+                  key={`option-${option.label}-${index}`}
+                  option={option}
+                  isActive={isActive}
+                />
+              );
+          })}
         </Container>
       ) : (
         <ErrorScreen showImage={false} message={emptyMessage} />

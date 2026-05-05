@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 
 import { popInAnimation } from "@/animation";
 import { SelectableListOption } from "@/components";
 import { motion } from "motion/react";
-import { useKeyboardInput, useMenuHideView, useOptionSelect, useScrollHandler } from "@/hooks";
+import { useKeyboardInput, useMenuHideView, useOptionSelect, useScrollHandler, useScrollIntoView } from "@/hooks";
 import { KeyboardInstance } from "@/providers/ViewContextProvider";
 import styled, { css } from "styled-components";
 import { Unit } from "@/utils/constants";
@@ -126,7 +126,6 @@ interface Props {
 const KeyboardInput = ({ viewStack, index, isHidden }: Props) => {
   const viewOptions = viewStack[index];
   useMenuHideView(viewOptions.id);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useKeyboardInput({
     initialValue: viewOptions.initialValue,
@@ -158,15 +157,10 @@ const KeyboardInput = ({ viewStack, index, isHidden }: Props) => {
 
   useOptionSelect({ id: viewOptions.id, options: listOptions, index: scrollIndex });
 
-  /** Always make sure the selected item is within the screen's view. */
-  useEffect(() => {
-    if (containerRef.current) {
-      const { children } = containerRef.current;
-      children[scrollIndex]?.scrollIntoView({
-        block: "nearest",
-      });
-    }
-  }, [scrollIndex]);
+  const containerRef = useScrollIntoView({
+    activeIndex: scrollIndex,
+    itemCount: listOptions.length,
+  });
 
   return (
     <RootContainer
