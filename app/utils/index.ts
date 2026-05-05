@@ -53,18 +53,6 @@ export const formatPlaybackTime = (seconds: number) => {
   return `${formattedMinutes}:${formattedSeconds}`;
 };
 
-/**
- *
- * [Client-side only] Returns the root URL of the app, depending on the environment
- */
-export const getRootAppUrl = () => {
-  const isDev = process.env.NODE_ENV === "development";
-
-  const protocol = isDev ? "http" : "https";
-  const rootUrl = isDev ? `127.0.0.1:3000` : process.env.VERCEL_BASE_URL;
-
-  return `${protocol}://${rootUrl}`;
-};
 
 /**
  * Extracts the song ID from queue options.

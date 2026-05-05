@@ -1,4 +1,3 @@
-import { getRootAppUrl } from "@/utils";
 import { API_URL } from "@/utils/constants/api";
 import { SELECTED_SERVICE_KEY } from "@/utils/service";
 
@@ -52,15 +51,11 @@ export const getRefreshedSpotifyTokens = async (
   }
 
   try {
-    const url = `${getRootAppUrl()}/ipod/api/spotify/refresh?refresh_token=${refreshToken}`;
-    const response = await fetch(url, {
-      credentials: "same-origin",
-      mode: "cors",
-    });
+    const url = `${API_URL}/spotify/refresh?refresh_token=${refreshToken}`;
+    const response = await fetch(url);
 
     if (!response.ok) {
       console.error("Error fetching refresh token:", {
-        url,
         status: response.status,
         statusText: response.statusText,
       });
