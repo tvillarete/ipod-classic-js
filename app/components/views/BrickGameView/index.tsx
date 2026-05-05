@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { useMenuHideView } from "@/hooks";
+import { useMenuHideView, useViewContext } from "@/hooks";
 import styled from "styled-components";
 
 import Game from "./Game";
@@ -26,6 +26,7 @@ const Canvas = styled.canvas`
 
 const BrickGame = () => {
   useMenuHideView("brickGame");
+  const { hideView } = useViewContext();
   const gameRef = useRef<Game | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -55,7 +56,7 @@ const BrickGame = () => {
 
     context.scale(dpr, dpr);
 
-    const game = new Game(dimensions.width, dimensions.height);
+    const game = new Game(dimensions.width, dimensions.height, hideView);
     game.init();
     gameRef.current = game;
 
@@ -63,7 +64,7 @@ const BrickGame = () => {
       game.cleanup();
       gameRef.current = null;
     };
-  }, [dimensions, dpr]);
+  }, [dimensions, dpr, hideView]);
 
   return (
     <RootContainer ref={containerRef}>

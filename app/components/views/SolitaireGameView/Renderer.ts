@@ -927,7 +927,7 @@ export class Renderer {
     const ctx = this.ctx;
     const itemHeight = 24 * this.scale;
     const titleHeight = 28 * this.scale;
-    const totalHeight = titleHeight + labels.length * itemHeight + 16 * this.scale;
+    const totalHeight = titleHeight + labels.length * itemHeight + 8 * this.scale;
     const menuWidth = 160 * this.scale;
     const startX = (this.width - menuWidth) / 2;
     const startY = (this.height - totalHeight) / 2;

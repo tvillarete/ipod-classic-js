@@ -114,30 +114,27 @@ export default class Game {
 
     if (phase === "won") {
       if (direction === "forward") {
-        this.winMenuIndex = (this.winMenuIndex + 1) % WIN_ITEMS.length;
+        this.winMenuIndex = Math.min(this.winMenuIndex + 1, WIN_ITEMS.length - 1);
       } else {
-        this.winMenuIndex =
-          (this.winMenuIndex - 1 + WIN_ITEMS.length) % WIN_ITEMS.length;
+        this.winMenuIndex = Math.max(this.winMenuIndex - 1, 0);
       }
       return;
     }
 
     if (phase === "lost") {
       if (direction === "forward") {
-        this.lostMenuIndex = (this.lostMenuIndex + 1) % LOST_ITEMS.length;
+        this.lostMenuIndex = Math.min(this.lostMenuIndex + 1, LOST_ITEMS.length - 1);
       } else {
-        this.lostMenuIndex =
-          (this.lostMenuIndex - 1 + LOST_ITEMS.length) % LOST_ITEMS.length;
+        this.lostMenuIndex = Math.max(this.lostMenuIndex - 1, 0);
       }
       return;
     }
 
     if (phase === "menu") {
       if (direction === "forward") {
-        this.menuIndex = (this.menuIndex + 1) % MENU_ITEMS.length;
+        this.menuIndex = Math.min(this.menuIndex + 1, MENU_ITEMS.length - 1);
       } else {
-        this.menuIndex =
-          (this.menuIndex - 1 + MENU_ITEMS.length) % MENU_ITEMS.length;
+        this.menuIndex = Math.max(this.menuIndex - 1, 0);
       }
       return;
     }
