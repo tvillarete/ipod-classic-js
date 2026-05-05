@@ -42,18 +42,10 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   let tokenLastRefreshedTimestamp: string | undefined;
 
   if (cookieValue) {
-    try {
-      const parsed = JSON.parse(cookieValue);
-      storedAccessToken = parsed.accessToken;
-      storedRefreshToken = parsed.refreshToken;
-      tokenLastRefreshedTimestamp = parsed.lastRefreshedTimestamp?.toString();
-    } catch {
-      // Handle legacy comma-delimited format during migration
-      const parts = cookieValue.split(",");
-      storedAccessToken = parts[0];
-      storedRefreshToken = parts[1];
-      tokenLastRefreshedTimestamp = parts[2];
-    }
+    const parsed = JSON.parse(cookieValue);
+    storedAccessToken = parsed.accessToken;
+    storedRefreshToken = parsed.refreshToken;
+    tokenLastRefreshedTimestamp = parsed.lastRefreshedTimestamp?.toString();
   }
 
   const [accessToken, setAccessToken] = useState<string | undefined>(

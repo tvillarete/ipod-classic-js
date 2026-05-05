@@ -37,7 +37,6 @@ export async function GET(req: NextRequest) {
 
     const accessToken = data.access_token;
     const refreshToken = data.refresh_token;
-    const tokenRefreshTimestamp = Date.now().toString();
 
     if (accessToken) {
       await setSpotifyTokens(accessToken, refreshToken);

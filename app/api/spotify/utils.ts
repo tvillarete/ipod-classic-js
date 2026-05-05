@@ -19,21 +19,6 @@ export const getSpotifyRedirectUri = () => {
   return `${getRootAppUrl()}/ipod`;
 };
 
-export const getSpotifyAuthorizationHeader = (
-  clientId?: string,
-  clientSecret?: string
-) => {
-  if (!clientId || !clientSecret) {
-    console.error(
-      "getSpotifyAuthorizationHeader: clientId or clientSecret is undefined"
-    );
-  }
-
-  return (
-    "Basic " + Buffer.from(clientId + ":" + clientSecret).toString("base64")
-  );
-};
-
 export const setSpotifyTokens = async (accessToken: string, refreshToken: string) => {
   const value = JSON.stringify({
     accessToken,
@@ -55,23 +40,12 @@ export const getSpotifyTokens = async () => {
     };
   }
 
-  try {
-    const parsed = JSON.parse(raw);
-    return {
-      storedAccessToken: parsed.accessToken as string | undefined,
-      storedRefreshToken: parsed.refreshToken as string | undefined,
-      lastRefreshedTimestamp: parsed.lastRefreshedTimestamp as number | undefined,
-    };
-  } catch {
-    // Handle legacy comma-delimited format during migration
-    const [storedAccessToken, storedRefreshToken, lastRefreshedTimestamp] =
-      raw.split(",");
-    return {
-      storedAccessToken,
-      storedRefreshToken,
-      lastRefreshedTimestamp: parseInt(lastRefreshedTimestamp ?? "") || undefined,
-    };
-  }
+  const parsed = JSON.parse(raw);
+  return {
+    storedAccessToken: parsed.accessToken as string | undefined,
+    storedRefreshToken: parsed.refreshToken as string | undefined,
+    lastRefreshedTimestamp: parsed.lastRefreshedTimestamp as number | undefined,
+  };
 };
 
 export const clearSpotifyTokens = async () => {
