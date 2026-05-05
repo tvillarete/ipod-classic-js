@@ -27,6 +27,7 @@ export const Shell = styled.div<{ $deviceTheme: DeviceThemeName }>`
     max-height: unset;
     border-radius: 0;
     -webkit-box-reflect: unset;
+    padding: ${Unit.XS};
   }
 
   @keyframes descend {
