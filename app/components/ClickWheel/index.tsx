@@ -28,7 +28,11 @@ import {
 } from "@/utils/events";
 import { useLongPressHandler } from "@/hooks/navigation/useLongPressHandler";
 import { Screen } from "@/utils/constants";
-import { ANGLE_OFFSET_THRESHOLD, PAN_THRESHOLD } from "./constants";
+import {
+  ANGLE_OFFSET_THRESHOLD,
+  PAN_THRESHOLD,
+  TOUCH_ANGLE_OFFSET_THRESHOLD,
+} from "./constants";
 
 type RootContainerProps = {
   $deviceTheme: DeviceThemeName;
@@ -121,6 +125,7 @@ export const ClickWheel = () => {
 
   const hasScrolledRef = useRef(false);
   const startPointRef = useRef({ x: 0, y: 0 });
+  const isTouchRef = useRef(false);
 
   const handleWheelPress = useCallback((point: { x: number; y: number }) => {
     // Menu button is handled by its own pointer event handlers (long press support)
@@ -148,10 +153,11 @@ export const ClickWheel = () => {
     const startAngleDeg = getAngleBetweenPoints(startPoint, centerPoint);
     const currentAngleDeg = getAngleBetweenPoints(currentPoint, centerPoint);
     const angleDelta = currentAngleDeg - startAngleDeg;
-    const direction = getScrollDirection(angleDelta);
-
-    // If the user has panned more than the angle offset threshold, we trigger a scroll event
-    const hasScrolled = Math.abs(angleDelta) > ANGLE_OFFSET_THRESHOLD;
+    const threshold = isTouchRef.current
+      ? TOUCH_ANGLE_OFFSET_THRESHOLD
+      : ANGLE_OFFSET_THRESHOLD;
+    const direction = getScrollDirection(angleDelta, threshold);
+    const hasScrolled = Math.abs(angleDelta) > threshold;
 
     if (hasScrolled) {
       // Mark that we actually scrolled during this pan gesture
@@ -189,6 +195,7 @@ export const ClickWheel = () => {
   );
 
   const handlePanStart = useCallback((event: PointerEvent) => {
+    isTouchRef.current = event.pointerType === "touch";
     startPointRef.current = {
       x: event.clientX,
       y: event.clientY,

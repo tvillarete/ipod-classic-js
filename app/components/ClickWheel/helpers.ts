@@ -1,4 +1,3 @@
-import { ANGLE_OFFSET_THRESHOLD } from "./constants";
 import { ScrollDirection } from "./sharedTypes";
 
 /**
@@ -51,10 +50,13 @@ export const checkIsPointWithinElement = (
   );
 };
 
-export const getScrollDirection = (angleDelta: number): ScrollDirection => {
+export const getScrollDirection = (
+  angleDelta: number,
+  threshold: number
+): ScrollDirection => {
   // Upon making a full 360 degree rotation, the delta between the two angles will be very high.
   // We reverse the check for this single scroll tick.
-  if (Math.abs(angleDelta) > ANGLE_OFFSET_THRESHOLD * 2) {
+  if (Math.abs(angleDelta) > threshold * 2) {
     return angleDelta > 0 ? "counter-clockwise" : "clockwise";
   }
 
