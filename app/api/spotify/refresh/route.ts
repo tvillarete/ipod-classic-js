@@ -1,21 +1,18 @@
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "@/utils/constants/api";
-import { NextRequest } from "next/server";
-import { setSpotifyTokens } from "@/api/spotify/utils";
+import { getSpotifyTokens, setSpotifyTokens } from "@/api/spotify/utils";
 
-export async function GET(req: NextRequest) {
-  const url = new URL(req.url ?? "");
-  const urlSearchParams = new URLSearchParams(url.search);
-  const refreshToken = urlSearchParams.get("refresh_token");
+export async function GET() {
+  const { storedRefreshToken } = await getSpotifyTokens();
 
-  if (!refreshToken) {
-    return new Response("refresh_token param was not provided", {
-      status: 400,
+  if (!storedRefreshToken) {
+    return new Response("No refresh token found in session", {
+      status: 401,
     });
   }
 
   const params = new URLSearchParams({
     grant_type: "refresh_token",
-    refresh_token: refreshToken,
+    refresh_token: storedRefreshToken,
   });
 
   const base64EncodedAuthorizationHeader = Buffer.from(

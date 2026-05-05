@@ -1,6 +1,5 @@
 "use client";
 import { memo, useCallback, useState } from "react";
-import * as SpotifyUtils from "@/utils/spotify";
 import {
   AudioPlayerProvider,
   SettingsContext,
@@ -23,13 +22,11 @@ import ViewContextProvider from "@/providers/ViewContextProvider";
 import { useRouter } from "next/navigation";
 import { GlobalStyles } from "@/components/Ipod/GlobalStyles";
 import Script from "next/script";
+import { API_URL } from "@/utils/constants/api";
+import { SELECTED_SERVICE_KEY } from "@/utils/service";
 
 type Props = {
   appleAccessToken: string;
-  /**
-   * Used when the user is redirected back from Spotify's OAuth flow.
-   * This is the code that is used to get the access token.
-   */
   spotifyCallbackCode?: string;
 };
 
@@ -38,12 +35,11 @@ const Ipod = ({ appleAccessToken, spotifyCallbackCode }: Props) => {
   const [queryClient] = useState(() => new QueryClient());
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleCheckSpotifyCallback = useCallback(
+  const handleSpotifyCallback = useCallback(
     async (code: string) => {
-      await SpotifyUtils.handleSpotifyCode(code);
-
+      await fetch(`${API_URL}/spotify/callback?code=${code}`);
+      localStorage.setItem(SELECTED_SERVICE_KEY, "spotify");
       setIsLoading(false);
-
       router.replace("/");
     },
     [router]
@@ -51,7 +47,7 @@ const Ipod = ({ appleAccessToken, spotifyCallbackCode }: Props) => {
 
   useEffectOnce(() => {
     if (spotifyCallbackCode) {
-      handleCheckSpotifyCallback(spotifyCallbackCode);
+      handleSpotifyCallback(spotifyCallbackCode);
       return;
     }
     setIsLoading(false);

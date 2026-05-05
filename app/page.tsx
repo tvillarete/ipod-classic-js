@@ -7,13 +7,12 @@ export default async function Page({
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const appleAccessToken = APPLE_DEVELOPER_TOKEN ?? "";
-
-  const { code: spotifyCode } = await searchParams;
+  const { code: spotifyCallbackCode } = await searchParams;
 
   return (
     <Ipod
-      spotifyCallbackCode={spotifyCode}
       appleAccessToken={appleAccessToken}
+      spotifyCallbackCode={spotifyCallbackCode}
     />
   );
 }

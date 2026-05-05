@@ -15,7 +15,6 @@ export const getRootAppUrl = () => {
 };
 
 export const getSpotifyRedirectUri = () => {
-  // Example: http://127.0.0.1:3000/ipod/callback
   return `${getRootAppUrl()}/ipod`;
 };
 

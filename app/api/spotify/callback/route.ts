@@ -2,18 +2,8 @@ import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "@/utils/constants/api"
 import { getSpotifyRedirectUri, setSpotifyTokens } from "@/api/spotify/utils";
 import { NextRequest } from "next/server";
 
-type SpotifyAuthApiResponse = {
-  access_token: string;
-  token_type: string;
-  scope: string;
-  expires_in: number;
-  refresh_token: string;
-};
-
 export async function GET(req: NextRequest) {
-  const url = new URL(req.url ?? "");
-  const urlSearchParams = new URLSearchParams(url.search);
-  const code = urlSearchParams.get("code");
+  const code = req.nextUrl.searchParams.get("code");
 
   if (!code) {
     return new Response("Error: code was not provided in query params", {
@@ -21,9 +11,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const spotifyRedirectUri = getSpotifyRedirectUri();
-
-  const base64EncodedAuthorizationHeader = Buffer.from(
+  const base64Auth = Buffer.from(
     `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`
   ).toString("base64");
 
@@ -31,34 +19,23 @@ export async function GET(req: NextRequest) {
     const response = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
       body: new URLSearchParams({
-        code: code as string,
-        redirect_uri: spotifyRedirectUri,
+        code,
+        redirect_uri: getSpotifyRedirectUri(),
         grant_type: "authorization_code",
       }),
       headers: {
-        Authorization: `Basic ${base64EncodedAuthorizationHeader}`,
+        Authorization: `Basic ${base64Auth}`,
         "Content-Type": "application/x-www-form-urlencoded",
       },
     });
-    const data: SpotifyAuthApiResponse = await response.json();
+    const data = await response.json();
 
-    const { access_token, refresh_token } = data;
-
-    if (access_token) {
-      await setSpotifyTokens(access_token, refresh_token);
-
-      return new Response(
-        JSON.stringify({
-          accessToken: access_token,
-          refreshToken: refresh_token,
-        }),
-        {
-          status: 200,
-        }
-      );
+    if (data.access_token) {
+      await setSpotifyTokens(data.access_token, data.refresh_token);
+      return new Response(null, { status: 200 });
     }
 
-    return new Response("Error: Somehow got here", {
+    return new Response("Error: failed to obtain access token from Spotify", {
       status: 500,
     });
   } catch (e) {

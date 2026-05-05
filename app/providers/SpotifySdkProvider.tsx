@@ -1,4 +1,4 @@
-import { getCookie, setCookie } from "cookies-next/client";
+import { getCookie } from "cookies-next/client";
 import {
   useViewContext,
   useSettings,
@@ -130,21 +130,9 @@ export const SpotifySDKProvider = ({ children }: Props) => {
       return undefined;
     }
 
-    const {
-      accessToken: updatedAccessToken,
-      refreshToken: updatedRefreshToken,
-    } = await SpotifyUtils.getRefreshedSpotifyTokens(storedRefreshToken);
+    const { accessToken: updatedAccessToken } =
+      await SpotifyUtils.getRefreshedSpotifyTokens();
 
-    if (updatedAccessToken && updatedRefreshToken) {
-      setCookie(
-        SPOTIFY_TOKENS_COOKIE_NAME,
-        JSON.stringify({
-          accessToken: updatedAccessToken,
-          refreshToken: updatedRefreshToken,
-          lastRefreshedTimestamp: Date.now(),
-        })
-      );
-    }
     setAccessToken(updatedAccessToken);
     return updatedAccessToken;
   }, [storedRefreshToken]);
