@@ -13,8 +13,8 @@ import { useAudioPlayer, useEventListener, useViewContext } from "@/hooks";
 
 const getSkipCount = (event: Event): number => {
   const velocity =
-    event instanceof CustomEvent<ScrollEventDetail>
-      ? event.detail?.velocity ?? 0
+    event instanceof CustomEvent
+      ? (event as CustomEvent<ScrollEventDetail>).detail?.velocity ?? 0
       : 0;
 
   let skip = 1;
