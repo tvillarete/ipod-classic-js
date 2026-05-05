@@ -33,7 +33,9 @@ import {
   PAN_THRESHOLD,
   TOUCH_ANGLE_OFFSET_THRESHOLD,
   TOUCH_PAN_THRESHOLD,
+  VELOCITY_TIMEOUT_MS,
 } from "./constants";
+import { ScrollDirection } from "./sharedTypes";
 
 type RootContainerProps = {
   $deviceTheme: DeviceThemeName;
@@ -128,6 +130,10 @@ export const ClickWheel = () => {
   const startPointRef = useRef({ x: 0, y: 0 });
   const isTouchRef = useRef(false);
 
+  const lastScrollTimeRef = useRef(0);
+  const velocityRef = useRef(0);
+  const lastDirectionRef = useRef<ScrollDirection | null>(null);
+
   const handleWheelPress = useCallback((point: { x: number; y: number }) => {
     // Menu button is handled by its own pointer event handlers (long press support)
     // so we exclude it from the pan gesture system
@@ -161,13 +167,29 @@ export const ClickWheel = () => {
     const hasScrolled = Math.abs(angleDelta) > threshold;
 
     if (hasScrolled) {
-      // Mark that we actually scrolled during this pan gesture
       hasScrolledRef.current = true;
-
-      // Reset the start point to the current point to begin tracking the next scroll
       startPointRef.current = currentPoint;
 
-      dispatchScrollEvent(direction);
+      const now = performance.now();
+      const timeSinceLastTick = now - lastScrollTimeRef.current;
+      const directionChanged = direction !== lastDirectionRef.current;
+
+      if (
+        directionChanged ||
+        lastScrollTimeRef.current === 0 ||
+        timeSinceLastTick > VELOCITY_TIMEOUT_MS
+      ) {
+        velocityRef.current = 0;
+      } else {
+        const rawVelocity = 1000 / timeSinceLastTick;
+        velocityRef.current =
+          (15 * velocityRef.current + rawVelocity) / 16;
+      }
+
+      lastScrollTimeRef.current = now;
+      lastDirectionRef.current = direction;
+
+      dispatchScrollEvent(direction, velocityRef.current);
     }
   }, []);
 
@@ -189,8 +211,10 @@ export const ClickWheel = () => {
         });
       }
 
-      // Reset scroll tracking for the next pan gesture
-      // Use a timeout to prevent click events from firing immediately after pan
+      velocityRef.current = 0;
+      lastScrollTimeRef.current = 0;
+      lastDirectionRef.current = null;
+
       setTimeout(() => {
         hasScrolledRef.current = false;
       }, 50);

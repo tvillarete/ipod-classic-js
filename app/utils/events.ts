@@ -28,12 +28,12 @@ export type IpodEvent = `${BaseEventContext}${BaseEventAction}` | `idle`;
 /** Create a type-safe custom event for the iPod */
 export const createIpodEvent = (eventName: IpodEvent) => new Event(eventName);
 
+export type ScrollEventDetail = { velocity: number };
+
 const backClickEvent = createIpodEvent("backwardclick");
-const backwardScrollEvent = createIpodEvent("backwardscroll");
 const centerClickEvent = createIpodEvent("centerclick");
 const centerLongClickEvent = createIpodEvent("centerlongclick");
 const forwardClickEvent = createIpodEvent("forwardclick");
-const forwardScrollEvent = createIpodEvent("forwardscroll");
 const idleEvent = createIpodEvent("idle");
 const menuClickEvent = createIpodEvent("menuclick");
 const menuLongPressEvent = createIpodEvent("menulongpress");
@@ -49,16 +49,27 @@ export const dispatchCenterClickEvent = () =>
 export const dispatchCenterLongClickEvent = () =>
   window.dispatchEvent(centerLongClickEvent);
 
-export const dispatchForwardScrollEvent = () =>
-  window.dispatchEvent(forwardScrollEvent);
+export const dispatchForwardScrollEvent = (velocity = 0) =>
+  window.dispatchEvent(
+    new CustomEvent<ScrollEventDetail>("forwardscroll", {
+      detail: { velocity },
+    })
+  );
 
-export const dispatchBackwardScrollEvent = () =>
-  window.dispatchEvent(backwardScrollEvent);
+export const dispatchBackwardScrollEvent = (velocity = 0) =>
+  window.dispatchEvent(
+    new CustomEvent<ScrollEventDetail>("backwardscroll", {
+      detail: { velocity },
+    })
+  );
 
-export const dispatchScrollEvent = (direction: ScrollDirection) =>
+export const dispatchScrollEvent = (
+  direction: ScrollDirection,
+  velocity = 0
+) =>
   direction === "clockwise"
-    ? dispatchForwardScrollEvent()
-    : dispatchBackwardScrollEvent();
+    ? dispatchForwardScrollEvent(velocity)
+    : dispatchBackwardScrollEvent(velocity);
 
 export const dispatchWheelClickEvent = () =>
   window.dispatchEvent(wheelClickEvent);

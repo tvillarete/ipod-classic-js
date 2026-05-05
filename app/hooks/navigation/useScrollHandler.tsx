@@ -5,10 +5,26 @@ import { SelectableListOption } from "@/components";
 import { ViewId } from "@/components/views/registry";
 import { PopupId, ActionSheetId } from "@/providers/ViewContextProvider";
 import useHapticFeedback from "@/hooks/useHapticFeedback";
-import { IpodEvent } from "@/utils/events";
+import { IpodEvent, ScrollEventDetail } from "@/utils/events";
+import { VELOCITY_SKIP_THRESHOLDS } from "@/components/ClickWheel/constants";
 import * as Utils from "@/utils";
 
 import { useAudioPlayer, useEventListener, useViewContext } from "@/hooks";
+
+const getSkipCount = (event: Event): number => {
+  const velocity =
+    event instanceof CustomEvent<ScrollEventDetail>
+      ? event.detail?.velocity ?? 0
+      : 0;
+
+  let skip = 1;
+  for (const tier of VELOCITY_SKIP_THRESHOLDS) {
+    if (velocity >= tier.minVelocity) {
+      skip = tier.skip;
+    }
+  }
+  return skip;
+};
 
 /** Gets the initial index for the scroll position. If there is a selected option,
  * this will initialize our initial scroll position at the selectedOption  */
@@ -66,48 +82,58 @@ const useScrollHandler = (
 
   const debouncedUpdatePreview = useDebouncedCallback(updatePreview, 750);
 
-  const handleForwardScroll = useCallback(() => {
-    if (isActive) {
-      triggerHaptics(true);
-    }
+  const handleForwardScroll = useCallback(
+    (event: Event) => {
+      if (isActive) {
+        triggerHaptics(true);
+      }
 
-    setIndex((prevIndex) => {
-      if (prevIndex < options.length - 1 && isActive) {
-        debouncedUpdatePreview(prevIndex + 1);
+      const skip = getSkipCount(event);
 
-        // Trigger near-end-of-list callback when we're halfway through the current list.
-        const nextIndex = prevIndex + 1;
-        if (nextIndex === Math.round(options.length / 2)) {
-          onNearEndOfList?.(options.length);
+      setIndex((prevIndex) => {
+        if (prevIndex < options.length - 1 && isActive) {
+          const nextIndex = Math.min(prevIndex + skip, options.length - 1);
+          debouncedUpdatePreview(nextIndex);
+
+          if (nextIndex >= Math.round(options.length / 2)) {
+            onNearEndOfList?.(options.length);
+          }
+
+          return nextIndex;
         }
 
-        return nextIndex;
+        return prevIndex;
+      });
+    },
+    [
+      debouncedUpdatePreview,
+      isActive,
+      onNearEndOfList,
+      options.length,
+      triggerHaptics,
+    ]
+  );
+
+  const handleBackwardScroll = useCallback(
+    (event: Event) => {
+      if (isActive) {
+        triggerHaptics(true);
       }
 
-      return prevIndex;
-    });
-  }, [
-    debouncedUpdatePreview,
-    isActive,
-    onNearEndOfList,
-    options.length,
-    triggerHaptics,
-  ]);
+      const skip = getSkipCount(event);
 
-  const handleBackwardScroll = useCallback(() => {
-    if (isActive) {
-      triggerHaptics(true);
-    }
+      setIndex((prevIndex) => {
+        if (prevIndex > 0 && isActive) {
+          const nextIndex = Math.max(prevIndex - skip, 0);
+          debouncedUpdatePreview(nextIndex);
+          return nextIndex;
+        }
 
-    setIndex((prevIndex) => {
-      if (prevIndex > 0 && isActive) {
-        debouncedUpdatePreview(prevIndex - 1);
-        return prevIndex - 1;
-      }
-
-      return prevIndex;
-    });
-  }, [debouncedUpdatePreview, isActive, triggerHaptics]);
+        return prevIndex;
+      });
+    },
+    [debouncedUpdatePreview, isActive, triggerHaptics]
+  );
 
   /** Parses the selected option for a new view to show or song to play. */
   const handleCenterClick = useCallback(async () => {

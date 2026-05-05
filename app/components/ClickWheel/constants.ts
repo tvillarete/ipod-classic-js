@@ -20,3 +20,21 @@ export const PAN_THRESHOLD = 5;
  * more than a mouse cursor, causing accidental button presses during scrolling.
  */
 export const TOUCH_PAN_THRESHOLD = 15;
+
+/**
+ * If no scroll tick fires within this window, velocity resets to zero.
+ * Matches Rockbox's WHEEL_FAST_OFF_TIMEOUT (250ms).
+ */
+export const VELOCITY_TIMEOUT_MS = 250;
+
+/**
+ * Velocity-to-skip mapping thresholds (velocity units: ticks/second).
+ * At moderate spin (~6-7 ticks/sec) we start skipping 2-4 items.
+ * At fast spin (~12+ ticks/sec) we skip up to 8 items per tick.
+ */
+export const VELOCITY_SKIP_THRESHOLDS = [
+  { minVelocity: 0, skip: 1 },
+  { minVelocity: 6, skip: 3 },
+  { minVelocity: 10, skip: 5 },
+  { minVelocity: 14, skip: 8 },
+];
