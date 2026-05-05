@@ -8,8 +8,7 @@ import SelectableList, {
 import {
   useEffectOnce,
   useKeyboardInput,
-  useMenuHideView,
-  useScrollHandler,
+  useSelectableList,
   useSettings,
 } from "@/hooks";
 import { useFetchSearchResults } from "@/hooks/utils/useDataFetcher";
@@ -17,7 +16,6 @@ import { APP_URL } from "@/utils/constants/api";
 import { pluralize } from "@/utils/strings";
 
 const SearchView = () => {
-  useMenuHideView("search");
   const { isAuthorized } = useSettings();
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -123,7 +121,7 @@ const SearchView = () => {
     }
   });
 
-  const [scrollIndex] = useScrollHandler("search", options);
+  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "search", options });
 
   return isAuthorized ? (
     <SelectableList

@@ -1,5 +1,5 @@
 import { SelectableList, SelectableListOption } from "@/components";
-import { useMenuHideView, useScrollHandler } from "@/hooks";
+import { useSelectableList } from "@/hooks";
 import styled from "styled-components";
 import { Unit } from "@/utils/constants";
 import { APP_URL } from "@/utils/constants/api";
@@ -40,7 +40,6 @@ const ListContainer = styled.div`
 `;
 
 const AboutView = () => {
-  useMenuHideView("about");
   const options: SelectableListOption[] = [
     {
       type: "link",
@@ -59,7 +58,7 @@ const AboutView = () => {
     },
   ];
 
-  const [scrollIndex] = useScrollHandler("about", options);
+  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "about", options });
 
   return (
     <Container>

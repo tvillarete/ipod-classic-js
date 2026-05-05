@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import SelectableList, {
   SelectableListOption,
 } from "@/components/SelectableList";
-import { useMenuHideView, useScrollHandler } from "@/hooks";
+import { useSelectableList } from "@/hooks";
 import * as Utils from "@/utils";
 
 interface Props {
@@ -11,8 +11,6 @@ interface Props {
 }
 
 const SongsView = ({ songs }: Props) => {
-  useMenuHideView("songs");
-
   const options: SelectableListOption[] = useMemo(
     () =>
       songs.map((song) => ({
@@ -30,7 +28,7 @@ const SongsView = ({ songs }: Props) => {
     [songs]
   );
 
-  const [scrollIndex] = useScrollHandler("songs", options);
+  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "songs", options });
 
   return (
     <SelectableList

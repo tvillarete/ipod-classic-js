@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import {
   useEventListener,
   useMenuHideView,
+  useOptionSelect,
   useScrollHandler,
   useViewContext,
 } from "@/hooks";
@@ -121,6 +122,8 @@ const ActionSheet = ({ viewStack, index, isHidden }: Props) => {
     options,
     selectedOption
   );
+
+  useOptionSelect({ id: viewOptions.id, options, index: scrollIndex });
 
   return (
     <RootContainer

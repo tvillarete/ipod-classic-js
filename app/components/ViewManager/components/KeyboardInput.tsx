@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { popInAnimation } from "@/animation";
 import { SelectableListOption } from "@/components";
 import { motion } from "motion/react";
-import { useKeyboardInput, useMenuHideView, useScrollHandler } from "@/hooks";
+import { useKeyboardInput, useMenuHideView, useOptionSelect, useScrollHandler } from "@/hooks";
 import { KeyboardInstance } from "@/providers/ViewContextProvider";
 import styled, { css } from "styled-components";
 import { Unit } from "@/utils/constants";
@@ -155,6 +155,8 @@ const KeyboardInput = ({ viewStack, index, isHidden }: Props) => {
   }, [handleSelect]);
 
   const [scrollIndex] = useScrollHandler(viewOptions.id, listOptions);
+
+  useOptionSelect({ id: viewOptions.id, options: listOptions, index: scrollIndex });
 
   /** Always make sure the selected item is within the screen's view. */
   useEffect(() => {

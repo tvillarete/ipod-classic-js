@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import SelectableList, {
   SelectableListOption,
 } from "@/components/SelectableList";
-import { useMenuHideView, useScrollHandler } from "@/hooks";
+import { useSelectableList } from "@/hooks";
 import * as Utils from "@/utils";
 import { useFetchPlaylist } from "@/hooks/utils/useDataFetcher";
 
@@ -14,7 +14,6 @@ interface Props {
 }
 
 const PlaylistView = ({ id, inLibrary = false }: Props) => {
-  useMenuHideView("playlist");
   const { data: playlist, isLoading } = useFetchPlaylist({
     id,
     inLibrary,
@@ -37,7 +36,7 @@ const PlaylistView = ({ id, inLibrary = false }: Props) => {
     [playlist]
   );
 
-  const [scrollIndex] = useScrollHandler("playlist", options);
+  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "playlist", options });
 
   return (
     <SelectableList

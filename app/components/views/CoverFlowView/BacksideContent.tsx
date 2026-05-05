@@ -4,7 +4,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 import SelectableList, {
   SelectableListOption,
 } from "@/components/SelectableList";
-import { useEventListener, useScrollHandler, useViewContext } from "@/hooks";
+import { useEventListener, useSelectableList, useViewContext } from "@/hooks";
 import styled from "styled-components";
 
 import { IpodEvent } from "@/utils/events";
@@ -76,7 +76,11 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
     [album]
   );
 
-  const [scrollIndex] = useScrollHandler("coverFlow", options);
+  const { activeIndex: scrollIndex } = useSelectableList({
+    viewId: "coverFlow",
+    options,
+    hideOnMenu: false,
+  });
 
   const handleSelect = useCallback(() => {
     setPlayingAlbum(true);

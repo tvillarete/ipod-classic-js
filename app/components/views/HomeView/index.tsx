@@ -9,7 +9,7 @@ import {
   useAudioPlayer,
   useEventListener,
   useMusicKit,
-  useScrollHandler,
+  useSelectableList,
   useSettings,
   useSpotifySDK,
   useViewContext,
@@ -83,7 +83,7 @@ const HomeView = () => {
     [isAuthorized, isOffline, nowPlayingItem, signInWithApple, signInWithSpotify]
   );
 
-  const [scrollIndex] = useScrollHandler("home", options);
+  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "home", options });
 
   const handleIdleState = useCallback(() => {
     const activeView = viewStack[viewStack.length - 1];

@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import {
   useEventListener,
   useMenuHideView,
+  useOptionSelect,
   useScrollHandler,
   useViewContext,
 } from "@/hooks";
@@ -122,6 +123,8 @@ const Popup = ({ viewStack, index, isHidden }: Props) => {
   }, [viewOptions.listOptions]);
 
   const [scrollIndex] = useScrollHandler(viewOptions.id, listOptions);
+
+  useOptionSelect({ id: viewOptions.id, options: listOptions, index: scrollIndex });
 
   useEventListener<IpodEvent>("centerclick", () => {
     hideView();

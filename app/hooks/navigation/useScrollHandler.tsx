@@ -7,9 +7,8 @@ import { PopupId, ActionSheetId } from "@/providers/ViewContextProvider";
 import useHapticFeedback from "@/hooks/useHapticFeedback";
 import { IpodEvent, ScrollEventDetail } from "@/utils/events";
 import { VELOCITY_SKIP_THRESHOLDS } from "@/components/ClickWheel/constants";
-import * as Utils from "@/utils";
 
-import { useAudioPlayer, useEventListener, useViewContext } from "@/hooks";
+import { useEventListener, useViewContext } from "@/hooks";
 
 const getSkipCount = (event: Event): number => {
   const velocity =
@@ -42,8 +41,6 @@ const getInitIndex = (
     }
   }
 
-  // Always default to 0 if there isn't a selectedOption
-  // or if the selectedOption wasn't found in the list of options.
   return 0;
 };
 
@@ -61,9 +58,7 @@ const useScrollHandler = (
   onNearEndOfList?: (currentLength: number) => void
 ): [number] => {
   const { triggerHaptics } = useHapticFeedback();
-  const { showView, showPopup, showActionSheet, viewStack, setPreview } =
-    useViewContext();
-  const { play, nowPlayingItem } = useAudioPlayer();
+  const { viewStack, setPreview } = useViewContext();
   const [index, setIndex] = useState(getInitIndex(options, selectedOption));
   /** Only fire events on the top-most view. */
   const isActive = viewStack[viewStack.length - 1].id === id;
@@ -135,85 +130,6 @@ const useScrollHandler = (
     [debouncedUpdatePreview, isActive, triggerHaptics]
   );
 
-  /** Parses the selected option for a new view to show or song to play. */
-  const handleCenterClick = useCallback(async () => {
-    const option = options[index];
-    if (!isActive || !option) return;
-    triggerHaptics();
-
-    switch (option.type) {
-      case "song":
-        // Check if the selected song is already the currently playing song
-        const songId = Utils.getSongIdFromQueueOptions(
-          option.queueOptions,
-          option.queueOptions.startPosition
-        );
-
-        const isSameSong = nowPlayingItem && songId === nowPlayingItem.id;
-
-        // If it's the same song, just navigate to Now Playing view
-        // (unless we're in CoverFlow, which handles its own now playing view)
-        // Otherwise, play the song
-        if (isSameSong && id !== "coverFlow") {
-          showView("nowPlaying");
-        } else if (!isSameSong) {
-          await play(option.queueOptions);
-
-          if (option.showNowPlayingView) {
-            showView("nowPlaying");
-          }
-        }
-        break;
-      case "link":
-        window.open(option.url, "_blank");
-        break;
-      case "view":
-        showView(option.viewId, option.props, option.headerTitle);
-        break;
-      case "action":
-        option.onSelect();
-        break;
-      case "popup":
-        showPopup({
-          id: option.popupId,
-          title: option.title,
-          description: option.description,
-          listOptions: option.listOptions,
-        });
-        break;
-      case "actionSheet":
-        showActionSheet({
-          id: option.id,
-          listOptions: option.listOptions,
-        });
-        break;
-    }
-  }, [
-    options,
-    index,
-    isActive,
-    triggerHaptics,
-    nowPlayingItem,
-    id,
-    showView,
-    showPopup,
-    showActionSheet,
-    play,
-  ]);
-
-  const handleCenterLongClick = useCallback(async () => {
-    const option = options[index];
-
-    if (!isActive || !option) return;
-
-    if (option.longPressOptions) {
-      showActionSheet({
-        id: "media-action-sheet",
-        listOptions: option.longPressOptions,
-      });
-    }
-  }, [index, isActive, options, showActionSheet]);
-
   /** If the list length changes and the index is larger, reset the index to 0. */
   useEffect(() => {
     if (options.length && index > options.length - 1) {
@@ -226,8 +142,6 @@ const useScrollHandler = (
     debouncedUpdatePreview(index);
   }, [index, debouncedUpdatePreview]);
 
-  useEventListener<IpodEvent>("centerclick", handleCenterClick);
-  useEventListener<IpodEvent>("centerlongclick", handleCenterLongClick);
   useEventListener<IpodEvent>("forwardscroll", handleForwardScroll);
   useEventListener<IpodEvent>("backwardscroll", handleBackwardScroll);
 

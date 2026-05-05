@@ -4,7 +4,7 @@ import AuthPrompt from "@/components/AuthPrompt";
 import SelectableList, {
   SelectableListOption,
 } from "@/components/SelectableList";
-import { useMenuHideView, useScrollHandler, useSettings } from "@/hooks";
+import { useSelectableList, useSettings } from "@/hooks";
 import * as Utils from "@/utils";
 
 import { useFetchAlbums } from "@/hooks/utils/useDataFetcher";
@@ -16,7 +16,6 @@ interface Props {
 
 const AlbumsView = ({ albums, inLibrary = true }: Props) => {
   const { isAuthorized, isOffline } = useSettings();
-  useMenuHideView("albums");
 
   const {
     data: fetchedAlbums,
@@ -51,12 +50,11 @@ const AlbumsView = ({ albums, inLibrary = true }: Props) => {
     }
   }, [fetchNextPage, isFetchingNextPage]);
 
-  const [scrollIndex] = useScrollHandler(
-    "albums",
+  const { activeIndex: scrollIndex } = useSelectableList({
+    viewId: "albums",
     options,
-    undefined,
-    handleNearEndOfList
-  );
+    onNearEndOfList: handleNearEndOfList,
+  });
 
   return isAuthorized && !isOffline ? (
     <SelectableList

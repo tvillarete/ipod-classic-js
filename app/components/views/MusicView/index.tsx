@@ -6,15 +6,13 @@ import SelectableList, {
 import { SplitScreenPreview } from "@/components/previews";
 import {
   useAudioPlayer,
-  useMenuHideView,
-  useScrollHandler,
+  useSelectableList,
   useSettings,
 } from "@/hooks";
 
 const MusicView = () => {
   const { isAppleAuthorized } = useSettings();
   const { nowPlayingItem } = useAudioPlayer();
-  useMenuHideView("music");
 
   const options: SelectableListOption[] = useMemo(() => {
     const arr: SelectableListOption[] = [
@@ -62,7 +60,7 @@ const MusicView = () => {
     return arr;
   }, [isAppleAuthorized, nowPlayingItem]);
 
-  const [scrollIndex] = useScrollHandler("music", options);
+  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "music", options });
 
   return <SelectableList options={options} activeIndex={scrollIndex} />;
 };

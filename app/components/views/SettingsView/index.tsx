@@ -7,9 +7,8 @@ import SelectableList, {
 import { SplitScreenPreview } from "@/components/previews";
 import {
   useAudioPlayer,
-  useMenuHideView,
   useMusicKit,
-  useScrollHandler,
+  useSelectableList,
   useSettings,
   useSpotifySDK,
 } from "@/hooks";
@@ -30,7 +29,6 @@ const getThemeLabel = (theme: (typeof THEMES)[number]) => {
 };
 
 const SettingsView = () => {
-  useMenuHideView("settings");
   const {
     isAuthorized,
     isAppleAuthorized,
@@ -262,7 +260,7 @@ const SettingsView = () => {
     ]
   );
 
-  const [scrollIndex] = useScrollHandler("settings", options);
+  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "settings", options });
 
   return <SelectableList options={options} activeIndex={scrollIndex} />;
 };

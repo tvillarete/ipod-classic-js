@@ -2,10 +2,9 @@ import SelectableList, {
   SelectableListOption,
 } from "@/components/SelectableList";
 import { SplitScreenPreview } from "@/components/previews";
-import { useMenuHideView, useScrollHandler } from "@/hooks";
+import { useSelectableList } from "@/hooks";
 
 const GamesView = () => {
-  useMenuHideView("games");
   const options: SelectableListOption[] = [
     {
       type: "view",
@@ -21,7 +20,7 @@ const GamesView = () => {
     },
   ];
 
-  const [scrollIndex] = useScrollHandler("games", options);
+  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "games", options });
 
   return <SelectableList options={options} activeIndex={scrollIndex} />;
 };
