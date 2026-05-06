@@ -22,6 +22,7 @@ const ANIM_DRAW_MS = 150;
 const ANIM_DEAL_CARD_MS = 120;
 const ANIM_DEAL_STAGGER_MS = 30;
 const SAVE_KEY = "ipodSolitaireSaveState";
+const WINS_KEY = "ipodSolitaireWins";
 
 export default class Game {
   private canvas: HTMLCanvasElement | null;
@@ -48,6 +49,7 @@ export default class Game {
   }> = [];
   private initialized: boolean = false;
   private loadedFromSave: boolean = false;
+  private winCount: number = 0;
 
   constructor(canvasWidth: number, canvasHeight: number, onQuit: () => void) {
     this.canvasWidth = canvasWidth;
@@ -64,6 +66,8 @@ export default class Game {
     if (!this.loadGame()) {
       this.gameState = Engine.deal();
     }
+
+    this.winCount = this.loadWinCount();
   }
 
   init(): void {
@@ -279,7 +283,7 @@ export default class Game {
     if (dropTarget.type === "foundation") {
       toPos = this.renderer.getTargetPosition(this.gameState, dropTarget);
     } else if (dropTarget.type === "tableau" || dropTarget.type === "tableau-empty") {
-      const col = dropTarget.type === "tableau" ? dropTarget.column : dropTarget.column;
+      const col = dropTarget.column;
       const column = this.gameState.tableau[col];
       // The placed cards are at the end of the column; first placed card index
       const firstPlacedIndex = column.length - selState.heldCards.length;
@@ -298,7 +302,7 @@ export default class Game {
       if (dropTarget.type === "foundation") {
         hideTarget = dropTarget;
       } else if (dropTarget.type === "tableau" || dropTarget.type === "tableau-empty") {
-        const col = dropTarget.type === "tableau" ? dropTarget.column : dropTarget.column;
+        const col = dropTarget.column;
         const column = this.gameState.tableau[col];
         hideTarget = { type: "tableau", column: col, cardIndex: column.length - selState.heldCards.length };
       }
@@ -320,6 +324,8 @@ export default class Game {
     const revealedFlip = this.findRevealedCard(oldState, this.gameState);
 
     if (Engine.checkWin(this.gameState)) {
+      this.winCount++;
+      this.saveWinCount();
       this.selection.setPhase("won");
       this.winMenuIndex = 0;
       return;
@@ -394,6 +400,8 @@ export default class Game {
       this.saveGame();
 
       if (Engine.checkWin(this.gameState)) {
+        this.winCount++;
+        this.saveWinCount();
         this.selection.setPhase("won");
         this.winMenuIndex = 0;
         return;
@@ -530,6 +538,7 @@ export default class Game {
         this.redeal();
         break;
       case "quit":
+        this.clearSave();
         this.onQuit();
         break;
     }
@@ -542,6 +551,7 @@ export default class Game {
         this.redeal();
         break;
       case "quit":
+        this.clearSave();
         this.onQuit();
         break;
     }
@@ -630,7 +640,14 @@ export default class Game {
         undoStack?: GameState[];
       };
 
-      if (!data.gameState || !Array.isArray(data.gameState.tableau)) {
+      if (!data.gameState || !isValidGameState(data.gameState)) {
+        this.clearSave();
+        return false;
+      }
+
+      // Don't restore a completed board — clear the stale save and deal fresh
+      if (Engine.checkWin(data.gameState)) {
+        this.clearSave();
         return false;
       }
 
@@ -646,6 +663,25 @@ export default class Game {
   private clearSave(): void {
     try {
       localStorage.removeItem(SAVE_KEY);
+    } catch {
+      // Silently ignore
+    }
+  }
+
+  private loadWinCount(): number {
+    try {
+      const raw = localStorage.getItem(WINS_KEY);
+      if (!raw) return 0;
+      const n = parseInt(raw, 10);
+      return isNaN(n) ? 0 : n;
+    } catch {
+      return 0;
+    }
+  }
+
+  private saveWinCount(): void {
+    try {
+      localStorage.setItem(WINS_KEY, String(this.winCount));
     } catch {
       // Silently ignore
     }
@@ -718,11 +754,12 @@ export default class Game {
     this.renderer.render(this.gameState, selState, activeAnims, hiddenTargets, activeFlips);
 
     if (selState.phase === "menu") {
-      this.renderer.renderMenu(MENU_ITEMS, this.menuIndex);
+      this.renderer.renderMenu(MENU_ITEMS, this.menuIndex, this.winCount);
     } else if (selState.phase === "won") {
       this.renderer.renderWinOverlay(
         WIN_ITEMS,
-        this.winMenuIndex
+        this.winMenuIndex,
+        this.winCount
       );
     } else if (selState.phase === "lost") {
       this.renderer.renderLostOverlay(
@@ -763,4 +800,33 @@ export default class Game {
     this.eventListeners = [];
     this.initialized = false;
   }
+}
+
+function isValidGameState(state: unknown): state is import("./types").GameState {
+  if (!state || typeof state !== "object") return false;
+  const s = state as Record<string, unknown>;
+
+  if (!Array.isArray(s.stock)) return false;
+  if (!Array.isArray(s.waste)) return false;
+  if (!Array.isArray(s.foundations) || s.foundations.length !== 4) return false;
+  if (!Array.isArray(s.tableau) || s.tableau.length !== 7) return false;
+  if (typeof s.stockPasses !== "number") return false;
+
+  const isCardArray = (arr: unknown): boolean =>
+    Array.isArray(arr) &&
+    (arr as unknown[]).every(
+      (c) =>
+        c !== null &&
+        typeof c === "object" &&
+        typeof (c as Record<string, unknown>).suit === "string" &&
+        typeof (c as Record<string, unknown>).rank === "string" &&
+        typeof (c as Record<string, unknown>).faceUp === "boolean"
+    );
+
+  if (!isCardArray(s.stock)) return false;
+  if (!isCardArray(s.waste)) return false;
+  if (!(s.foundations as unknown[]).every(isCardArray)) return false;
+  if (!(s.tableau as unknown[]).every(isCardArray)) return false;
+
+  return true;
 }

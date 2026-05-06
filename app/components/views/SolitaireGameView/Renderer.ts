@@ -121,6 +121,9 @@ export class Renderer {
           URL.revokeObjectURL(blobUrl);
           onLoad(img);
         };
+        img.onerror = () => {
+          URL.revokeObjectURL(blobUrl);
+        };
         img.src = blobUrl;
       })
       .catch(() => {});
@@ -211,21 +214,25 @@ export class Renderer {
     }
   }
 
-  renderMenu(items: MenuItem[], selectedIndex: number): void {
+  renderMenu(items: MenuItem[], selectedIndex: number, winCount: number): void {
     this.drawOverlay();
+    const subtitle = winCount === 1 ? "1 win" : `${winCount} wins`;
     this.drawMenuList(
       items.map(menuItemLabel),
       selectedIndex,
-      "Paused"
+      "Paused",
+      subtitle
     );
   }
 
-  renderWinOverlay(items: WinMenuItem[], selectedIndex: number): void {
+  renderWinOverlay(items: WinMenuItem[], selectedIndex: number, winCount: number): void {
     this.drawOverlay();
+    const subtitle = winCount === 1 ? "1 win total" : `${winCount} wins total`;
     this.drawMenuList(
       items.map(winMenuItemLabel),
       selectedIndex,
-      "You Win!"
+      "You Win!",
+      subtitle
     );
   }
 
@@ -408,7 +415,7 @@ export class Renderer {
       const isHeld =
         selectionState.phase === "holding" &&
         selectionState.heldFrom?.type === "foundation" &&
-        (selectionState.heldFrom as { index: number }).index === i;
+        selectionState.heldFrom.index === i;
 
       // Check if the top card is being animated (hidden)
       const isHidden = hiddenTargets?.some((t) =>
@@ -477,8 +484,8 @@ export class Renderer {
       const heldFromThisCol =
         selectionState.phase === "holding" &&
         selectionState.heldFrom?.type === "tableau" &&
-        (selectionState.heldFrom as { column: number }).column === col
-          ? (selectionState.heldFrom as { cardIndex: number }).cardIndex
+        selectionState.heldFrom.column === col
+          ? selectionState.heldFrom.cardIndex
           : -1;
 
       // In holding mode: is this column the current drop target?
@@ -922,12 +929,14 @@ export class Renderer {
   private drawMenuList(
     labels: string[],
     selectedIndex: number,
-    title: string
+    title: string,
+    subtitle?: string
   ): void {
     const ctx = this.ctx;
     const itemHeight = 24 * this.scale;
     const titleHeight = 28 * this.scale;
-    const totalHeight = titleHeight + labels.length * itemHeight + 8 * this.scale;
+    const subtitleHeight = subtitle ? 18 * this.scale : 0;
+    const totalHeight = titleHeight + subtitleHeight + labels.length * itemHeight + 8 * this.scale;
     const menuWidth = 160 * this.scale;
     const startX = (this.width - menuWidth) / 2;
     const startY = (this.height - totalHeight) / 2;
@@ -949,9 +958,21 @@ export class Renderer {
       startY + titleHeight / 2
     );
 
+    // Subtitle (e.g. win count)
+    if (subtitle) {
+      const subtitleFontSize = Math.floor(9 * this.scale);
+      ctx.font = `${subtitleFontSize}px sans-serif`;
+      ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+      ctx.fillText(
+        subtitle,
+        this.width / 2,
+        startY + titleHeight + subtitleHeight / 2
+      );
+    }
+
     // Items
     const itemFontSize = Math.floor(11 * this.scale);
-    const itemStartY = startY + titleHeight;
+    const itemStartY = startY + titleHeight + subtitleHeight;
 
     for (let i = 0; i < labels.length; i++) {
       const itemY = itemStartY + i * itemHeight;
