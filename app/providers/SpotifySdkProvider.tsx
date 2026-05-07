@@ -4,7 +4,7 @@ import {
   useInterval,
   useEffectOnce,
 } from "@/hooks";
-import { useState, useRef, useCallback, useEffect, createContext } from "react";
+import { useState, useRef, useCallback, useEffect, createContext, useMemo } from "react";
 import * as SpotifyUtils from "@/utils/spotify";
 import { SPOTIFY_TOKENS_COOKIE_NAME } from "@/utils/constants/api";
 
@@ -13,7 +13,6 @@ export interface SpotifySDKState {
   isSdkReady: boolean;
   spotifyPlayer?: Spotify.Player;
   accessToken?: string;
-  refreshToken?: string;
   deviceId?: string;
   hasError: boolean;
   refreshAccessToken: () => Promise<string | undefined>;
@@ -43,21 +42,29 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   const [isSdkReady, setIsSdkReady] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const cookieValue = getClientCookie(SPOTIFY_TOKENS_COOKIE_NAME);
-  let storedAccessToken: string | undefined;
-  let storedRefreshToken: string | undefined;
-  let tokenLastRefreshedTimestamp: string | undefined;
-
-  if (cookieValue) {
-    const parsed = JSON.parse(cookieValue);
-    storedAccessToken = parsed.accessToken;
-    storedRefreshToken = parsed.refreshToken;
-    tokenLastRefreshedTimestamp = parsed.lastRefreshedTimestamp?.toString();
-  }
+  const { storedAccessToken, tokenLastRefreshedTimestamp } = useMemo(() => {
+    try {
+      const cookieValue = getClientCookie(SPOTIFY_TOKENS_COOKIE_NAME);
+      if (!cookieValue) return {};
+      const parsed = JSON.parse(cookieValue);
+      return {
+        storedAccessToken: parsed.accessToken as string | undefined,
+        tokenLastRefreshedTimestamp: parsed.lastRefreshedTimestamp?.toString() as string | undefined,
+      };
+    } catch {
+      return {};
+    }
+  }, []);
 
   const [accessToken, setAccessToken] = useState<string | undefined>(
     storedAccessToken
   );
+
+  // Keep a ref so the Spotify SDK's getOAuthToken callback always reads the latest token
+  const accessTokenRef = useRef<string | undefined>(storedAccessToken);
+  useEffect(() => {
+    accessTokenRef.current = accessToken;
+  }, [accessToken]);
 
   const handleUnsupportedAccountError = useCallback(() => {
     showPopup({
@@ -84,14 +91,15 @@ export const SpotifySDKProvider = ({ children }: Props) => {
         const player = new window.Spotify.Player({
           name: "iPod.js",
           getOAuthToken: async (cb) => {
-            if (!accessToken) {
+            const token = accessTokenRef.current;
+            if (!token) {
               console.error(
                 "handleConnectToSpotify: Access token was not provided"
               );
               return;
             }
 
-            cb(accessToken);
+            cb(token);
           },
         });
 
@@ -128,21 +136,25 @@ export const SpotifySDKProvider = ({ children }: Props) => {
         setHasError(true);
       }
     }
-  }, [handleUnsupportedAccountError, setIsSpotifyAuthorized, accessToken]);
+  }, [handleUnsupportedAccountError, setIsSpotifyAuthorized]);
 
   const handleRefreshTokens = useCallback(async (): Promise<
     string | undefined
   > => {
-    if (!storedRefreshToken) {
+    try {
+      const { accessToken: updatedAccessToken } =
+        await SpotifyUtils.getRefreshedSpotifyTokens();
+
+      if (updatedAccessToken) {
+        setAccessToken(updatedAccessToken);
+      }
+      return updatedAccessToken;
+    } catch (error) {
+      console.error("Failed to refresh Spotify tokens:", error);
+      setHasError(true);
       return undefined;
     }
-
-    const { accessToken: updatedAccessToken } =
-      await SpotifyUtils.getRefreshedSpotifyTokens();
-
-    setAccessToken(updatedAccessToken);
-    return updatedAccessToken;
-  }, [storedRefreshToken]);
+  }, []);
 
   // Refresh the access token every 55 minutes.
   useInterval(handleRefreshTokens, 3300000, !accessToken);
@@ -154,13 +166,15 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   }, [handleConnectToSpotify, isSdkReady, accessToken, isPlayerConnected]);
 
   const handleMount = useCallback(async () => {
-    const timestamp = Number(tokenLastRefreshedTimestamp);
-    if (SpotifyUtils.checkShouldRefreshSpotifyTokens(timestamp)) {
-      await handleRefreshTokens();
+    if (storedAccessToken) {
+      const timestamp = Number(tokenLastRefreshedTimestamp);
+      if (SpotifyUtils.checkShouldRefreshSpotifyTokens(timestamp)) {
+        await handleRefreshTokens();
+      }
     }
 
     setIsSdkReady(true);
-  }, [handleRefreshTokens, tokenLastRefreshedTimestamp]);
+  }, [handleRefreshTokens, storedAccessToken, tokenLastRefreshedTimestamp]);
 
   useEffectOnce(() => {
     if (window.Spotify) {

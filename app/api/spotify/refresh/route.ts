@@ -20,20 +20,27 @@ export async function GET() {
   ).toString("base64");
 
   try {
-    const response = await fetch(
-      `https://accounts.spotify.com/api/token?${params.toString()}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${base64EncodedAuthorizationHeader}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
-    );
+    const response = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      body: params,
+      headers: {
+        Authorization: `Basic ${base64EncodedAuthorizationHeader}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return new Response(`Spotify token refresh failed: ${errorText}`, {
+        status: response.status,
+      });
+    }
+
     const data = await response.json();
 
     const accessToken = data.access_token;
-    const refreshToken = data.refresh_token;
+    // Spotify only returns a new refresh token sometimes — preserve the existing one if absent
+    const refreshToken = data.refresh_token ?? storedRefreshToken;
 
     if (accessToken) {
       await setSpotifyTokens(accessToken, refreshToken);
@@ -52,7 +59,8 @@ export async function GET() {
       status: 500,
     });
   } catch (error) {
-    return new Response(`Could not refresh token: ${error}`, {
+    console.error("Unexpected error during Spotify token refresh:", error);
+    return new Response("Could not refresh token", {
       status: 500,
     });
   }
