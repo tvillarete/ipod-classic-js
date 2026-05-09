@@ -1,6 +1,8 @@
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "@/utils/constants/api";
 import { getSpotifyTokens, setSpotifyTokens } from "@/api/spotify/utils";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const { storedRefreshToken } = await getSpotifyTokens();
 
