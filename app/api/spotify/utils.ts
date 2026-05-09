@@ -17,6 +17,8 @@ export const getSpotifyRedirectUri = () => {
   return `${getRootAppUrl()}/ipod`;
 };
 
+const COOKIE_MAX_AGE = 30 * 24 * 60 * 60; // 30 days
+
 export const setSpotifyTokens = async (accessToken: string, refreshToken: string) => {
   const value = JSON.stringify({
     accessToken,
@@ -25,7 +27,10 @@ export const setSpotifyTokens = async (accessToken: string, refreshToken: string
   });
 
   const cookieStore = await cookies();
-  cookieStore.set(SPOTIFY_TOKENS_COOKIE_NAME, value);
+  cookieStore.set(SPOTIFY_TOKENS_COOKIE_NAME, value, {
+    path: "/",
+    maxAge: COOKIE_MAX_AGE,
+  });
 };
 
 export const getSpotifyTokens = async () => {

@@ -1,5 +1,8 @@
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "@/utils/constants/api";
 import { getSpotifyTokens, setSpotifyTokens } from "@/api/spotify/utils";
+import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
 
 export const dynamic = 'force-dynamic';
 
@@ -7,9 +10,11 @@ export async function GET() {
   const { storedRefreshToken } = await getSpotifyTokens();
 
   if (!storedRefreshToken) {
-    return new Response("No refresh token found in session", {
-      status: 401,
-    });
+    console.error("[spotify/refresh] No refresh token found in cookie");
+    return NextResponse.json(
+      { error: "No refresh token found in session" },
+      { status: 401 }
+    );
   }
 
   const params = new URLSearchParams({
@@ -33,37 +38,42 @@ export async function GET() {
 
     if (!response.ok) {
       const errorText = await response.text();
-      return new Response(`Spotify token refresh failed: ${errorText}`, {
-        status: response.status,
-      });
+      console.error(
+        `[spotify/refresh] Spotify rejected refresh: ${response.status} — ${errorText}`
+      );
+      return NextResponse.json(
+        { error: `Spotify token refresh failed: ${errorText}` },
+        { status: response.status }
+      );
     }
 
     const data = await response.json();
 
     const accessToken = data.access_token;
-    // Spotify only returns a new refresh token sometimes — preserve the existing one if absent
     const refreshToken = data.refresh_token ?? storedRefreshToken;
 
     if (accessToken) {
       await setSpotifyTokens(accessToken, refreshToken);
 
-      return new Response(
-        JSON.stringify({
-          accessToken,
-        }),
+      return NextResponse.json(
+        { accessToken },
         {
           status: 200,
+          headers: { "Cache-Control": "no-store" },
         }
       );
     }
 
-    return new Response(`Unable to refresh access token`, {
-      status: 500,
-    });
+    console.error("[spotify/refresh] Spotify returned OK but no access_token in body");
+    return NextResponse.json(
+      { error: "Unable to refresh access token" },
+      { status: 500 }
+    );
   } catch (error) {
-    console.error("Unexpected error during Spotify token refresh:", error);
-    return new Response("Could not refresh token", {
-      status: 500,
-    });
+    console.error("[spotify/refresh] Unexpected error:", error);
+    return NextResponse.json(
+      { error: "Could not refresh token" },
+      { status: 500 }
+    );
   }
 }

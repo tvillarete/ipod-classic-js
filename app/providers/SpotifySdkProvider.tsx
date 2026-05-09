@@ -141,16 +141,20 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   const handleRefreshTokens = useCallback(async (): Promise<
     string | undefined
   > => {
+    console.log("[spotify] Attempting token refresh…");
     try {
       const { accessToken: updatedAccessToken } =
         await SpotifyUtils.getRefreshedSpotifyTokens();
 
       if (updatedAccessToken) {
+        console.log("[spotify] Token refresh succeeded");
         setAccessToken(updatedAccessToken);
+      } else {
+        console.warn("[spotify] Token refresh returned no access token");
       }
       return updatedAccessToken;
     } catch (error) {
-      console.error("Failed to refresh Spotify tokens:", error);
+      console.error("[spotify] Failed to refresh tokens:", error);
       setHasError(true);
       return undefined;
     }
@@ -168,9 +172,17 @@ export const SpotifySDKProvider = ({ children }: Props) => {
   const handleMount = useCallback(async () => {
     if (storedAccessToken) {
       const timestamp = Number(tokenLastRefreshedTimestamp);
-      if (SpotifyUtils.checkShouldRefreshSpotifyTokens(timestamp)) {
+      const needsRefresh = SpotifyUtils.checkShouldRefreshSpotifyTokens(timestamp);
+      console.log("[spotify] Mount:", {
+        hasStoredToken: true,
+        tokenAgeMin: timestamp ? Math.round((Date.now() - timestamp) / 60000) : "unknown",
+        needsRefresh,
+      });
+      if (needsRefresh) {
         await handleRefreshTokens();
       }
+    } else {
+      console.log("[spotify] Mount: no stored token found in cookie");
     }
 
     setIsSdkReady(true);

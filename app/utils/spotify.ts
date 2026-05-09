@@ -24,21 +24,30 @@ export const checkShouldRefreshSpotifyTokens = (
 
 export const getRefreshedSpotifyTokens = async (): Promise<TokenResponse> => {
   try {
-    const response = await fetch(`${API_URL}/spotify/refresh`);
+    const response = await fetch(`${API_URL}/spotify/refresh`, {
+      cache: "no-store",
+      credentials: "same-origin",
+    });
 
     if (!response.ok) {
-      console.error("Error fetching refresh token:", {
+      const body = await response.text().catch(() => "");
+      console.error("[spotify] Refresh failed:", {
         status: response.status,
         statusText: response.statusText,
+        body,
       });
 
       return {};
     }
     const { accessToken } = await response.json();
 
+    if (!accessToken) {
+      console.error("[spotify] Refresh response OK but missing accessToken");
+    }
+
     return { accessToken };
   } catch (error) {
-    console.error("Uncaught error during refresh token fetching", { error });
+    console.error("[spotify] Uncaught error during refresh:", error);
 
     return {};
   }
