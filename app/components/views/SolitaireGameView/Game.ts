@@ -250,7 +250,7 @@ export default class Game {
     }
 
     this.saveGame();
-    this.scheduleAutoMoves(true);
+    this.scheduleAutoMoves(false);
   }
 
   private handlePlaceCards(): void {

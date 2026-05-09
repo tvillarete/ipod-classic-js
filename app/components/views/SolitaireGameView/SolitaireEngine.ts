@@ -453,7 +453,21 @@ export function findAutoMoveCard(
   return null;
 }
 
+function isGuaranteedWin(state: GameState): boolean {
+  if (state.stock.length > 0 || state.waste.length > 0) return false;
+
+  for (const column of state.tableau) {
+    for (const card of column) {
+      if (!card.faceUp) return false;
+    }
+  }
+
+  return true;
+}
+
 function isSafeToAutoMove(card: Card, state: GameState): boolean {
+  if (isGuaranteedWin(state)) return true;
+
   const rankVal = getRankValue(card.rank);
 
   // Aces, 2s, and 3s are always safe
