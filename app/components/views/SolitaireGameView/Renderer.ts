@@ -604,7 +604,7 @@ export class Renderer {
     this.drawSuit(
       card.suit,
       rankX + rankWidth + 1 * this.scale + smallSuitSize / 2,
-      rankY + fontSize / 2,
+      rankY + fontSize * 0.45,
       smallSuitSize
     );
 
