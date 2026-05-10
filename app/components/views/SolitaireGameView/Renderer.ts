@@ -589,20 +589,22 @@ export class Renderer {
     const color = getColor(card.suit);
     ctx.fillStyle = color === "red" ? "#CC0000" : "#000000";
     const fontSize = Math.floor(10 * this.scale);
-    const smallSuitSize = Math.floor(6 * this.scale);
+    const smallSuitSize = Math.floor(9 * this.scale);
     const largeSuitSize = Math.floor(12 * this.scale);
 
-    // Top-left rank
+    // Top-left rank + suit side by side so suit is visible when cards overlap
     ctx.font = `bold ${fontSize}px sans-serif`;
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
-    ctx.fillText(card.rank, x + 3 * this.scale, y + 2 * this.scale);
+    const rankX = x + 3 * this.scale;
+    const rankY = y + 2 * this.scale;
+    ctx.fillText(card.rank, rankX, rankY);
+    const rankWidth = ctx.measureText(card.rank).width;
 
-    // Small suit below rank
     this.drawSuit(
       card.suit,
-      x + 3 * this.scale + smallSuitSize / 2,
-      y + 2 * this.scale + fontSize + smallSuitSize / 2 + 1,
+      rankX + rankWidth + 1 * this.scale + smallSuitSize / 2,
+      rankY + fontSize / 2,
       smallSuitSize
     );
 
