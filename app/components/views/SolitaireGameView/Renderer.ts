@@ -599,12 +599,14 @@ export class Renderer {
     const rankX = x + 3 * this.scale;
     const rankY = y + 2 * this.scale;
     ctx.fillText(card.rank, rankX, rankY);
-    const rankWidth = ctx.measureText(card.rank).width;
+    const metrics = ctx.measureText(card.rank);
+    const textCenterY = rankY +
+      (metrics.actualBoundingBoxDescent - metrics.actualBoundingBoxAscent) / 2;
 
     this.drawSuit(
       card.suit,
-      rankX + rankWidth + 1 * this.scale + smallSuitSize / 2,
-      rankY + fontSize * 0.45,
+      rankX + metrics.width + 1 * this.scale + smallSuitSize / 2,
+      textCenterY,
       smallSuitSize
     );
 
