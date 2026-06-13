@@ -37,7 +37,7 @@
     "@types/spotify-web-playback-sdk": "^0.1.19",
     "@types/styled-components": "^5.1.36",
     "@typescript/native-preview": "^7.0.0-dev.20260421.2",
-    "esbuild": "^0.28.0",
+    "esbuild": "^0.28.1",
     "eslint": "9",
     "eslint-config-next": "^16.2.4",
     "eslint-import-resolver-node": "^0.3.10",
