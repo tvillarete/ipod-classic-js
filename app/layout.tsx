@@ -70,7 +70,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://js-cdn.music.apple.com" crossOrigin="" />
       </head>
       <body>
-        <SerwistProvider swUrl="/ipod/sw.js" options={{ scope: "/ipod" }}>
+        <SerwistProvider swUrl="/ipod/sw.js" options={{ scope: "/ipod/" }}>
           <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
         </SerwistProvider>
       </body>
