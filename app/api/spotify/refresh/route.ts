@@ -1,4 +1,4 @@
-import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "@/utils/constants/api";
+import { getSpotifyClientId, getSpotifyClientSecret } from "@/utils/constants/api";
 import { getSpotifyTokens, setSpotifyTokens } from "@/api/spotify/utils";
 import { NextResponse } from "next/server";
 
@@ -20,8 +20,11 @@ export async function GET() {
     refresh_token: storedRefreshToken,
   });
 
+  const clientId = await getSpotifyClientId();
+  const clientSecret = await getSpotifyClientSecret();
+
   const base64EncodedAuthorizationHeader = Buffer.from(
-    `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`
+    `${clientId}:${clientSecret}`
   ).toString("base64");
 
   try {

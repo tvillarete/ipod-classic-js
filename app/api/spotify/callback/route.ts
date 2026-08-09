@@ -1,4 +1,4 @@
-import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "@/utils/constants/api";
+import { getSpotifyClientId, getSpotifyClientSecret } from "@/utils/constants/api";
 import { getSpotifyRedirectUri, setSpotifyTokens } from "@/api/spotify/utils";
 import { NextRequest } from "next/server";
 
@@ -11,8 +11,11 @@ export async function GET(req: NextRequest) {
     });
   }
 
+  const clientId = await getSpotifyClientId();
+  const clientSecret = await getSpotifyClientSecret();
+
   const base64Auth = Buffer.from(
-    `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`
+    `${clientId}:${clientSecret}`
   ).toString("base64");
 
   try {
