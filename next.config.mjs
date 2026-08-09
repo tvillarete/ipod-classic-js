@@ -1,4 +1,3 @@
-import { withSerwist } from "@serwist/turbopack";
 import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const analyzer = withBundleAnalyzer({
@@ -19,4 +18,4 @@ const nextConfig = {
   },
 };
 
-export default withSerwist(analyzer(nextConfig));
+export default analyzer(nextConfig);

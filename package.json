@@ -5,7 +5,7 @@
   "packageManager": "pnpm@10.30.3",
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next dev",
-    "build": "next build",
+    "build": "next build && serwist build",
     "bundle-report": "ANALYZE=true pnpm build",
     "start": "vercel dev",
     "start:prod": "vercel env pull && next start",
@@ -27,7 +27,8 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.3.0",
-    "@serwist/turbopack": "^9.5.7",
+    "@serwist/cli": "^9.5.12",
+    "@serwist/next": "^9.5.12",
     "@types/he": "^1.2.3",
     "@types/musickit-js": "^1.0.11",
     "@types/node": "^20.19.39",
