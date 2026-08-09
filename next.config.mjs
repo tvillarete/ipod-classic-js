@@ -1,4 +1,7 @@
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 import withBundleAnalyzer from "@next/bundle-analyzer";
+
+initOpenNextCloudflareForDev();
 
 const analyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",

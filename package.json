@@ -7,10 +7,11 @@
     "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build && serwist build",
     "bundle-report": "ANALYZE=true pnpm build",
-    "start": "vercel dev",
-    "start:prod": "vercel env pull && next start",
     "lint": "eslint .",
-    "type-check": "tsgo"
+    "type-check": "tsgo",
+    "preview": "pnpm build && opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "cf-deploy": "pnpm build && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.100.4",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.3.0",
+    "@opennextjs/cloudflare": "^1.20.2",
     "@serwist/cli": "^9.5.12",
     "@serwist/next": "^9.5.12",
     "@types/he": "^1.2.3",
@@ -48,7 +50,8 @@
     "eslint-plugin-unused-imports": "^4.4.1",
     "prettier": "^3.8.3",
     "serwist": "^9.5.7",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "wrangler": "^4.120.0"
   },
   "browserslist": [
     "last 2 Chrome versions",
