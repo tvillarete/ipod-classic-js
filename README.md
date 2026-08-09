@@ -33,6 +33,7 @@ Create a `.env.local` file:
 SPOTIFY_CLIENT_ID=your_spotify_client_id
 SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 APPLE_DEVELOPER_TOKEN=your_apple_developer_token
+SITE_URL=your_production_domain
 ```
 
 ### Spotify
@@ -47,9 +48,21 @@ APPLE_DEVELOPER_TOKEN=your_apple_developer_token
 2. Create a MusicKit identifier and generate a private key
 3. Create a developer token (JWT). See the [Apple Music JWT Generator](https://github.com/tvillarete/apple-music-jwt-generator) for help
 
+## Deployment
+
+Deployed on [Cloudflare Workers](https://workers.cloudflare.com/) via [OpenNext](https://opennext.js.org/cloudflare).
+
+```bash
+pnpm build                        # Next.js + Serwist service worker
+npx opennextjs-cloudflare build   # Bundle for Cloudflare Workers
+npx opennextjs-cloudflare deploy  # Deploy to production
+```
+
+Set production secrets with `npx wrangler secret put <NAME>` for `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `APPLE_DEVELOPER_TOKEN`, and `SITE_URL`.
+
 ## Built With
 
-Next.js, React, TypeScript, Styled Components, Motion. Deployed on Vercel.
+Next.js, React, TypeScript, Styled Components, Motion.
 
 ## License
 

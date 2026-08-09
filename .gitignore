@@ -36,3 +36,6 @@ yarn-error.log*
 .node_repl_history
 .next
 .env*.local
+.open-next
+.dev.vars
+.wrangler
