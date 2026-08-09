@@ -1,11 +1,11 @@
 import { Suspense } from "react";
 import { Ipod } from "@/components/Ipod";
-import { APPLE_DEVELOPER_TOKEN } from "@/utils/constants/api";
+import { getAppleDeveloperToken } from "@/utils/constants/api";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
-export default function Page() {
-  const appleAccessToken = APPLE_DEVELOPER_TOKEN ?? "";
+export default async function Page() {
+  const appleAccessToken = (await getAppleDeveloperToken()) ?? "";
 
   return (
     <Suspense>

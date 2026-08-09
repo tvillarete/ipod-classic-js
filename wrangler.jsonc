@@ -23,5 +23,22 @@
 		// Enable image optimization
 		// see https://opennext.js.org/cloudflare/howtos/image
 		"binding": "IMAGES"
-	}
+	},
+	"secrets_store_secrets": [
+		{
+			"binding": "SPOTIFY_CLIENT_ID",
+			"store_id": "7a6d5ee5bc7e423689d27f9b512b6ada",
+			"secret_name": "SPOTIFY_CLIENT_ID"
+		},
+		{
+			"binding": "SPOTIFY_CLIENT_SECRET",
+			"store_id": "7a6d5ee5bc7e423689d27f9b512b6ada",
+			"secret_name": "SPOTIFY_CLIENT_SECRET"
+		},
+		{
+			"binding": "APPLE_DEVELOPER_TOKEN",
+			"store_id": "7a6d5ee5bc7e423689d27f9b512b6ada",
+			"secret_name": "APPLE_DEVELOPER_TOKEN"
+		}
+	]
 }
