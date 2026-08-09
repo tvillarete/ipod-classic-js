@@ -14,6 +14,9 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  experimental: {
+    useTypeScriptCli: true,
+  },
 };
 
 export default withSerwist(analyzer(nextConfig));
