@@ -28,6 +28,11 @@ export const MusicKitProvider = ({
 
     setHasError(false);
     try {
+      if (!token) {
+        setHasDevToken(false);
+        return;
+      }
+
       if (!window.MusicKit) {
         throw new Error("MusicKit was unable to mount");
       }

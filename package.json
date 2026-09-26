@@ -4,14 +4,15 @@
   "private": true,
   "packageManager": "pnpm@10.30.3",
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "dev": "node scripts/ensure-dev-secrets.js && NODE_OPTIONS='--inspect' next dev",
     "build": "next build && serwist build",
     "bundle-report": "ANALYZE=true pnpm build",
     "lint": "eslint .",
     "type-check": "tsgo",
     "preview": "pnpm build && opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "cf-deploy": "pnpm build && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "sync-dev-vars": "node scripts/sync-dev-vars.js"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.100.4",
