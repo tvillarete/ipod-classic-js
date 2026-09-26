@@ -21,32 +21,43 @@ pnpm install
 pnpm dev
 ```
 
+On first run, you'll be prompted to enter values for each secret (Spotify credentials, Apple Developer Token). These are stored in a local Cloudflare Secrets Store managed by Wrangler.
+
 Visit **[http://127.0.0.1:3000/ipod](http://127.0.0.1:3000/ipod)** to start.
 
 > Use `127.0.0.1` instead of `localhost`. Spotify's redirect URIs require it.
 
-## Configuration
+## Secrets
 
-Create a `.env.local` file:
+This project uses [Cloudflare Secrets Store](https://developers.cloudflare.com/secrets-store/) for managing secrets in both production and local development.
+
+### First-time setup
+
+Running `pnpm dev` will automatically detect missing secrets and prompt you for values. You can also run the setup manually:
 
 ```bash
-SPOTIFY_CLIENT_ID=your_spotify_client_id
-SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
-APPLE_DEVELOPER_TOKEN=your_apple_developer_token
-SITE_URL=your_production_domain
+pnpm sync-dev-vars
 ```
 
-### Spotify
+You'll need the following values:
 
-1. Create an app in the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
-2. Add `http://127.0.0.1:3000/ipod` as a redirect URI (must be `127.0.0.1`, not `localhost`)
-3. Copy your Client ID and Client Secret
+| Secret | How to get it |
+|---|---|
+| `SPOTIFY_CLIENT_ID` | Create an app in the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) |
+| `SPOTIFY_CLIENT_SECRET` | Same Spotify app — copy the Client Secret |
+| `APPLE_DEVELOPER_TOKEN` | See the [Apple Music JWT Generator](https://github.com/tvillarete/apple-music-jwt-generator) |
 
-### Apple Music
+### Spotify redirect URI
 
-1. Join the [Apple Developer Program](https://developer.apple.com/programs/)
-2. Create a MusicKit identifier and generate a private key
-3. Create a developer token (JWT). See the [Apple Music JWT Generator](https://github.com/tvillarete/apple-music-jwt-generator) for help
+Add `http://127.0.0.1:3000/ipod` as a redirect URI in your Spotify app settings. Must be `127.0.0.1`, not `localhost`.
+
+### Updating secrets
+
+To update local secret values at any time:
+
+```bash
+pnpm sync-dev-vars
+```
 
 ## Deployment
 
@@ -58,7 +69,7 @@ npx opennextjs-cloudflare build   # Bundle for Cloudflare Workers
 npx opennextjs-cloudflare deploy  # Deploy to production
 ```
 
-Set production secrets with `npx wrangler secret put <NAME>` for `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `APPLE_DEVELOPER_TOKEN`, and `SITE_URL`.
+Production secrets are managed in the [Cloudflare Secrets Store](https://developers.cloudflare.com/secrets-store/) via the dashboard or `wrangler secrets-store` CLI.
 
 ## Built With
 
