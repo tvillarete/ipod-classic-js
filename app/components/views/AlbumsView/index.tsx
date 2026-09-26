@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from "react";
 
 import AuthPrompt from "@/components/AuthPrompt";
-import SelectableList, {
-  SelectableListOption,
-} from "@/components/SelectableList";
-import { useSelectableList, useSettings } from "@/hooks";
+import { SelectableListOption } from "@/components/SelectableList";
+import SelectableListView from "@/components/SelectableListView";
+import { SplitScreenPreview } from "@/components/previews";
+import { defineView } from "@/components/views/defineView";
+import { useSettings } from "@/hooks";
 import * as Utils from "@/utils";
-
 import { useFetchAlbums } from "@/hooks/utils/useDataFetcher";
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
   inLibrary?: boolean;
 }
 
-const AlbumsView = ({ albums, inLibrary = true }: Props) => {
+const _AlbumsView = ({ albums, inLibrary = true }: Props) => {
   const { isAuthorized, isOffline } = useSettings();
 
   const {
@@ -23,7 +23,6 @@ const AlbumsView = ({ albums, inLibrary = true }: Props) => {
     isFetchingNextPage,
     isLoading,
   } = useFetchAlbums({
-    // Don't fetch if we're passed an initial array of albums
     lazy: !!albums,
   });
 
@@ -50,23 +49,25 @@ const AlbumsView = ({ albums, inLibrary = true }: Props) => {
     }
   }, [fetchNextPage, isFetchingNextPage]);
 
-  const { activeIndex: scrollIndex } = useSelectableList({
-    viewId: "albums",
-    options,
-    onNearEndOfList: handleNearEndOfList,
-  });
+  if (!isAuthorized || isOffline) return <AuthPrompt />;
 
-  return isAuthorized && !isOffline ? (
-    <SelectableList
+  return (
+    <SelectableListView
+      viewId="albums"
+      options={options}
       loading={isLoading}
       loadingNextItems={isFetchingNextPage}
-      options={options}
-      activeIndex={scrollIndex}
+      onNearEndOfList={handleNearEndOfList}
       emptyMessage="No albums"
     />
-  ) : (
-    <AuthPrompt />
   );
 };
 
-export default AlbumsView;
+export const AlbumsView = Object.assign(_AlbumsView, {
+  viewConfig: defineView({
+    component: _AlbumsView,
+    type: "full",
+    title: "Albums",
+    preview: SplitScreenPreview.Music,
+  }),
+});

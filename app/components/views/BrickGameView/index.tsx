@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
+import { SplitScreenPreview } from "@/components/previews";
+import { defineView } from "@/components/views/defineView";
 import { useMenuHideView, useViewContext } from "@/hooks";
 import styled from "styled-components";
 
@@ -24,7 +26,7 @@ const Canvas = styled.canvas`
   object-fit: fill;
 `;
 
-const BrickGame = () => {
+const _BrickGame = () => {
   useMenuHideView("brickGame");
   const { hideView } = useViewContext();
   const gameRef = useRef<Game | null>(null);
@@ -84,4 +86,12 @@ const BrickGame = () => {
   );
 };
 
-export default BrickGame;
+export const BrickGameView = Object.assign(_BrickGame, {
+  viewConfig: defineView({
+    component: _BrickGame,
+    type: "full",
+    title: "Brick",
+    preview: SplitScreenPreview.Games,
+    disableLongPress: true,
+  }),
+});

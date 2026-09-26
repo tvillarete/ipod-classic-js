@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from "react";
 
 import AuthPrompt from "@/components/AuthPrompt";
-import SelectableList, {
-  SelectableListOption,
-} from "@/components/SelectableList";
-import { useSelectableList, useSettings } from "@/hooks";
+import { SelectableListOption } from "@/components/SelectableList";
+import SelectableListView from "@/components/SelectableListView";
+import { SplitScreenPreview } from "@/components/previews";
+import { defineView } from "@/components/views/defineView";
+import { useSettings } from "@/hooks";
 import * as Utils from "@/utils";
-
 import { useFetchPlaylists } from "@/hooks/utils/useDataFetcher";
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
   inLibrary?: boolean;
 }
 
-const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
+const _PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
   const { isAuthorized, isOffline } = useSettings();
   const {
     data: fetchedPlaylists,
@@ -43,9 +43,6 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
     );
   }, [fetchedPlaylists?.pages, inLibrary, playlists]);
 
-  // If accessing PlaylistsView from the SearchView, and there is no data cached,
-  // 'isQueryLoading' will be true. To prevent an infinite loading screen in these
-  // cases, we'll check if we have any 'options'
   const isLoading = !options.length && isQueryLoading;
 
   const handleNearEndOfList = useCallback(() => {
@@ -54,23 +51,27 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
     }
   }, [fetchNextPage, isFetchingNextPage]);
 
-  const { activeIndex: scrollIndex } = useSelectableList({
-    viewId: "playlists",
-    options,
-    onNearEndOfList: handleNearEndOfList,
-  });
+  if (!isAuthorized || isOffline) {
+    return <AuthPrompt message="Sign in to view your playlists" />;
+  }
 
-  return isAuthorized && !isOffline ? (
-    <SelectableList
-      activeIndex={scrollIndex}
-      emptyMessage="No saved playlists"
+  return (
+    <SelectableListView
+      viewId="playlists"
+      options={options}
       loading={isLoading}
       loadingNextItems={isFetchingNextPage}
-      options={options}
+      onNearEndOfList={handleNearEndOfList}
+      emptyMessage="No saved playlists"
     />
-  ) : (
-    <AuthPrompt message="Sign in to view your playlists" />
   );
 };
 
-export default PlaylistsView;
+export const PlaylistsView = Object.assign(_PlaylistsView, {
+  viewConfig: defineView({
+    component: _PlaylistsView,
+    type: "full",
+    title: "Playlists",
+    preview: SplitScreenPreview.Music,
+  }),
+});

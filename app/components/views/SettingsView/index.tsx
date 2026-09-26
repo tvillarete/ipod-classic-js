@@ -1,14 +1,13 @@
 import { useCallback, useMemo } from "react";
 
+import { defineView } from "@/components/views/defineView";
 import { getConditionalOption } from "@/components/SelectableList";
-import SelectableList, {
-  SelectableListOption,
-} from "@/components/SelectableList";
+import { SelectableListOption } from "@/components/SelectableList";
+import SelectableListView from "@/components/SelectableListView";
 import { SplitScreenPreview } from "@/components/previews";
 import {
   useAudioPlayer,
   useMusicKit,
-  useSelectableList,
   useSettings,
   useSpotifySDK,
 } from "@/hooks";
@@ -28,7 +27,7 @@ const getThemeLabel = (theme: (typeof THEMES)[number]) => {
   return theme.charAt(0).toUpperCase() + theme.slice(1);
 };
 
-const SettingsView = () => {
+const _SettingsView = () => {
   const {
     isAuthorized,
     isAppleAuthorized,
@@ -260,9 +259,15 @@ const SettingsView = () => {
     ]
   );
 
-  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "settings", options });
-
-  return <SelectableList options={options} activeIndex={scrollIndex} />;
+  return <SelectableListView viewId="settings" options={options} />;
 };
 
-export default SettingsView;
+export const SettingsView = Object.assign(_SettingsView, {
+  viewConfig: defineView({
+    component: _SettingsView,
+    type: "split",
+    title: "Settings",
+    isSplitScreen: true,
+    preview: SplitScreenPreview.Settings,
+  }),
+});

@@ -1,21 +1,21 @@
 import React, { useCallback, useMemo, useState } from "react";
 
+import { defineView } from "@/components/views/defineView";
+import { SplitScreenPreview } from "@/components/previews";
 import AuthPrompt from "@/components/AuthPrompt";
 import { getConditionalOption } from "@/components/SelectableList";
-import SelectableList, {
-  SelectableListOption,
-} from "@/components/SelectableList";
+import { SelectableListOption } from "@/components/SelectableList";
+import SelectableListView from "@/components/SelectableListView";
 import {
   useEffectOnce,
   useKeyboardInput,
-  useSelectableList,
   useSettings,
 } from "@/hooks";
 import { useFetchSearchResults } from "@/hooks/utils/useDataFetcher";
 import { APP_URL } from "@/utils/constants/api";
 import { pluralize } from "@/utils/strings";
 
-const SearchView = () => {
+const _SearchView = () => {
   const { isAuthorized } = useSettings();
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -121,13 +121,11 @@ const SearchView = () => {
     }
   });
 
-  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "search", options });
-
   return isAuthorized ? (
-    <SelectableList
-      loading={isFetching}
+    <SelectableListView
+      viewId="search"
       options={options}
-      activeIndex={scrollIndex}
+      loading={isFetching}
       emptyMessage="No results"
     />
   ) : (
@@ -135,4 +133,11 @@ const SearchView = () => {
   );
 };
 
-export default SearchView;
+export const SearchView = Object.assign(_SearchView, {
+  viewConfig: defineView({
+    component: _SearchView,
+    type: "full",
+    title: "Search",
+    preview: SplitScreenPreview.Music,
+  }),
+});

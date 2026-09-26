@@ -1,4 +1,6 @@
 import { SelectableList, SelectableListOption } from "@/components";
+import { defineView } from "@/components/views/defineView";
+import { SplitScreenPreview } from "@/components/previews";
 import { useSelectableList } from "@/hooks";
 import styled from "styled-components";
 import { Unit } from "@/utils/constants";
@@ -39,7 +41,7 @@ const ListContainer = styled.div`
   flex: 1;
 `;
 
-const AboutView = () => {
+const _AboutView = () => {
   const options: SelectableListOption[] = [
     {
       type: "link",
@@ -80,4 +82,11 @@ const AboutView = () => {
   );
 };
 
-export default AboutView;
+export const AboutView = Object.assign(_AboutView, {
+  viewConfig: defineView({
+    component: _AboutView,
+    type: "full",
+    title: "About",
+    preview: SplitScreenPreview.Settings,
+  }),
+});

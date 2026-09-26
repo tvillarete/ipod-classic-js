@@ -1,5 +1,6 @@
 import { fade } from "@/animation";
-import { CoverFlowView, Header } from "@/components";
+import { Header } from "@/components";
+import { CoverFlowView } from "@/components/views/CoverFlowView";
 import { AnimatePresence, motion } from "motion/react";
 import { ViewInstance } from "@/providers/ViewContextProvider";
 import styled from "styled-components";

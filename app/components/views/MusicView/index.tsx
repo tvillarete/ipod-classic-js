@@ -1,16 +1,15 @@
 import React, { useMemo } from "react";
 
-import SelectableList, {
-  SelectableListOption,
-} from "@/components/SelectableList";
+import { defineView } from "@/components/views/defineView";
+import { SelectableListOption } from "@/components/SelectableList";
+import SelectableListView from "@/components/SelectableListView";
 import { SplitScreenPreview } from "@/components/previews";
 import {
   useAudioPlayer,
-  useSelectableList,
   useSettings,
 } from "@/hooks";
 
-const MusicView = () => {
+const _MusicView = () => {
   const { isAppleAuthorized } = useSettings();
   const { nowPlayingItem } = useAudioPlayer();
 
@@ -60,9 +59,16 @@ const MusicView = () => {
     return arr;
   }, [isAppleAuthorized, nowPlayingItem]);
 
-  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "music", options });
-
-  return <SelectableList options={options} activeIndex={scrollIndex} />;
+  return <SelectableListView viewId="music" options={options} />;
 };
 
-export default MusicView;
+export const MusicView = Object.assign(_MusicView, {
+  viewConfig: defineView({
+    component: _MusicView,
+    type: "split",
+    title: "Music",
+    isSplitScreen: true,
+    preview: SplitScreenPreview.Music,
+  }),
+});
+

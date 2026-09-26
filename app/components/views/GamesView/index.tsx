@@ -1,10 +1,9 @@
-import SelectableList, {
-  SelectableListOption,
-} from "@/components/SelectableList";
+import { defineView } from "@/components/views/defineView";
+import { SelectableListOption } from "@/components/SelectableList";
+import SelectableListView from "@/components/SelectableListView";
 import { SplitScreenPreview } from "@/components/previews";
-import { useSelectableList } from "@/hooks";
 
-const GamesView = () => {
+const _GamesView = () => {
   const options: SelectableListOption[] = [
     {
       type: "view",
@@ -20,9 +19,16 @@ const GamesView = () => {
     },
   ];
 
-  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "games", options });
-
-  return <SelectableList options={options} activeIndex={scrollIndex} />;
+  return <SelectableListView viewId="games" options={options} />;
 };
 
-export default GamesView;
+export const GamesView = Object.assign(_GamesView, {
+  viewConfig: defineView({
+    component: _GamesView,
+    type: "split",
+    title: "Games",
+    isSplitScreen: true,
+    preview: SplitScreenPreview.Games,
+  }),
+});
+

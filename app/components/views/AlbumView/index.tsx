@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 
-import SelectableList, {
-  SelectableListOption,
-} from "@/components/SelectableList";
-import { useSelectableList } from "@/hooks";
+import { SelectableListOption } from "@/components/SelectableList";
+import SelectableListView from "@/components/SelectableListView";
+import { SplitScreenPreview } from "@/components/previews";
+import { defineView } from "@/components/views/defineView";
 import * as Utils from "@/utils";
 import { useFetchAlbum } from "@/hooks/utils/useDataFetcher";
 
@@ -13,8 +13,7 @@ interface Props {
   inLibrary?: boolean;
 }
 
-const AlbumView = ({ id, inLibrary = false }: Props) => {
-
+const _AlbumView = ({ id, inLibrary = false }: Props) => {
   const { data: album, isLoading } = useFetchAlbum({
     id,
     inLibrary,
@@ -35,16 +34,21 @@ const AlbumView = ({ id, inLibrary = false }: Props) => {
     [album]
   );
 
-  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "album", options });
-
   return (
-    <SelectableList
-      loading={isLoading}
+    <SelectableListView
+      viewId="album"
       options={options}
-      activeIndex={scrollIndex}
+      loading={isLoading}
       emptyMessage="No saved songs"
     />
   );
 };
 
-export default AlbumView;
+export const AlbumView = Object.assign(_AlbumView, {
+  viewConfig: defineView({
+    component: _AlbumView,
+    type: "full",
+    title: "Album",
+    preview: SplitScreenPreview.Music,
+  }),
+});

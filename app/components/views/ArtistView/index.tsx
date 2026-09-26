@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 
-import SelectableList, {
-  SelectableListOption,
-} from "@/components/SelectableList";
-import { useSelectableList } from "@/hooks";
+import { SelectableListOption } from "@/components/SelectableList";
+import SelectableListView from "@/components/SelectableListView";
+import { SplitScreenPreview } from "@/components/previews";
+import { defineView } from "@/components/views/defineView";
 import * as Utils from "@/utils";
 import { useFetchArtistAlbums } from "@/hooks/utils/useDataFetcher";
 
@@ -13,11 +13,12 @@ interface Props {
   inLibrary?: boolean;
 }
 
-const ArtistView = ({ id, inLibrary = false }: Props) => {
+const _ArtistView = ({ id, inLibrary = false }: Props) => {
   const { data: albums, isLoading } = useFetchArtistAlbums({
     id,
     inLibrary,
   });
+
   const options: SelectableListOption[] = useMemo(
     () =>
       albums?.map(
@@ -35,16 +36,21 @@ const ArtistView = ({ id, inLibrary = false }: Props) => {
     [albums, inLibrary]
   );
 
-  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "artist", options });
-
   return (
-    <SelectableList
-      loading={isLoading}
+    <SelectableListView
+      viewId="artist"
       options={options}
-      activeIndex={scrollIndex}
+      loading={isLoading}
       emptyMessage="No albums by this artist"
     />
   );
 };
 
-export default ArtistView;
+export const ArtistView = Object.assign(_ArtistView, {
+  viewConfig: defineView({
+    component: _ArtistView,
+    type: "full",
+    title: "Artist",
+    preview: SplitScreenPreview.Music,
+  }),
+});

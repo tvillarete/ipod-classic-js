@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { SplitScreenPreview } from "@/components/previews";
+import { defineView } from "@/components/views/defineView";
 import { useViewContext } from "@/hooks";
 import styled from "styled-components";
 
@@ -18,7 +20,7 @@ const Canvas = styled.canvas`
   object-fit: fill;
 `;
 
-const SolitaireGame = () => {
+const _SolitaireGame = () => {
   const { hideView } = useViewContext();
   const gameRef = useRef<Game | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -105,4 +107,12 @@ const SolitaireGame = () => {
   );
 };
 
-export default SolitaireGame;
+export const SolitaireGameView = Object.assign(_SolitaireGame, {
+  viewConfig: defineView({
+    component: _SolitaireGame,
+    type: "full",
+    title: "Solitaire",
+    preview: SplitScreenPreview.Games,
+    disableLongPress: true,
+  }),
+});

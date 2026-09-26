@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 
-import SelectableList, {
-  SelectableListOption,
-} from "@/components/SelectableList";
-import { useSelectableList } from "@/hooks";
+import { SelectableListOption } from "@/components/SelectableList";
+import SelectableListView from "@/components/SelectableListView";
+import { SplitScreenPreview } from "@/components/previews";
+import { defineView } from "@/components/views/defineView";
 import * as Utils from "@/utils";
 import { useFetchPlaylist } from "@/hooks/utils/useDataFetcher";
 
@@ -13,7 +13,7 @@ interface Props {
   inLibrary?: boolean;
 }
 
-const PlaylistView = ({ id, inLibrary = false }: Props) => {
+const _PlaylistView = ({ id, inLibrary = false }: Props) => {
   const { data: playlist, isLoading } = useFetchPlaylist({
     id,
     inLibrary,
@@ -36,16 +36,21 @@ const PlaylistView = ({ id, inLibrary = false }: Props) => {
     [playlist]
   );
 
-  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "playlist", options });
-
   return (
-    <SelectableList
-      loading={isLoading}
+    <SelectableListView
+      viewId="playlist"
       options={options}
-      activeIndex={scrollIndex}
+      loading={isLoading}
       emptyMessage="No songs in this playlist"
     />
   );
 };
 
-export default PlaylistView;
+export const PlaylistView = Object.assign(_PlaylistView, {
+  viewConfig: defineView({
+    component: _PlaylistView,
+    type: "full",
+    title: "Playlist",
+    preview: SplitScreenPreview.Music,
+  }),
+});

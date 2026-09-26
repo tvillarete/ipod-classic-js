@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from "react";
 
 import AuthPrompt from "@/components/AuthPrompt";
-import SelectableList, {
-  SelectableListOption,
-} from "@/components/SelectableList";
-import { useSelectableList, useSettings } from "@/hooks";
+import { SelectableListOption } from "@/components/SelectableList";
+import SelectableListView from "@/components/SelectableListView";
+import { SplitScreenPreview } from "@/components/previews";
+import { defineView } from "@/components/views/defineView";
+import { useSettings } from "@/hooks";
 import * as Utils from "@/utils";
-
 import { useFetchArtists } from "@/hooks/utils/useDataFetcher";
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
   showImages?: boolean;
 }
 
-const ArtistsView = ({
+const _ArtistsView = ({
   artists,
   inLibrary = true,
   showImages = false,
@@ -50,9 +50,6 @@ const ArtistsView = ({
     );
   }, [artists, fetchedArtists, inLibrary, showImages]);
 
-  // If accessing ArtistsView from the SearchView, and there is no data cached,
-  // 'isQueryLoading' will be true. To prevent an infinite loading screen in these
-  // cases, we'll check if we have any 'options'
   const isLoading = !options.length && isQueryLoading;
 
   const handleNearEndOfList = useCallback(() => {
@@ -61,23 +58,27 @@ const ArtistsView = ({
     }
   }, [fetchNextPage, isFetchingNextPage]);
 
-  const { activeIndex: scrollIndex } = useSelectableList({
-    viewId: "artists",
-    options,
-    onNearEndOfList: handleNearEndOfList,
-  });
+  if (!isAuthorized || isOffline) {
+    return <AuthPrompt message="Sign in to view your artists" />;
+  }
 
-  return isAuthorized && !isOffline ? (
-    <SelectableList
+  return (
+    <SelectableListView
+      viewId="artists"
+      options={options}
       loading={isLoading}
       loadingNextItems={isFetchingNextPage}
-      options={options}
-      activeIndex={scrollIndex}
+      onNearEndOfList={handleNearEndOfList}
       emptyMessage="No saved artists"
     />
-  ) : (
-    <AuthPrompt message="Sign in to view your artists" />
   );
 };
 
-export default ArtistsView;
+export const ArtistsView = Object.assign(_ArtistsView, {
+  viewConfig: defineView({
+    component: _ArtistsView,
+    type: "full",
+    title: "Artists",
+    preview: SplitScreenPreview.Music,
+  }),
+});

@@ -16,8 +16,8 @@ import {
  * - If view requires props: [props, headerTitle?]
  * - If view has no props: [props?, headerTitle?]
  */
-type ShowViewArgs<TViewId extends ViewId> = ViewProps[TViewId] extends undefined
-  ? [props?: undefined, headerTitle?: string]
+type ShowViewArgs<TViewId extends ViewId> = {} extends ViewProps[TViewId]
+  ? [props?: ViewProps[TViewId], headerTitle?: string]
   : [props: ViewProps[TViewId], headerTitle?: string];
 
 export interface ViewContextHook {

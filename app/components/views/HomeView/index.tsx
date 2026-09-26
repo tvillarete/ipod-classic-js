@@ -1,15 +1,14 @@
 import { useCallback, useMemo } from "react";
 
+import { defineView } from "@/components/views/defineView";
 import { getConditionalOption } from "@/components/SelectableList";
-import SelectableList, {
-  SelectableListOption,
-} from "@/components/SelectableList";
+import { SelectableListOption } from "@/components/SelectableList";
+import SelectableListView from "@/components/SelectableListView";
 import { SplitScreenPreview } from "@/components/previews";
 import {
   useAudioPlayer,
   useEventListener,
   useMusicKit,
-  useSelectableList,
   useSettings,
   useSpotifySDK,
   useViewContext,
@@ -20,7 +19,7 @@ const strings = {
   nowPlaying: "Now Playing",
 };
 
-const HomeView = () => {
+const _HomeView = () => {
   const { isAuthorized, isOffline } = useSettings();
   const { signIn: signInWithApple, isConfigured: isMkConfigured } =
     useMusicKit();
@@ -83,8 +82,6 @@ const HomeView = () => {
     [isAuthorized, isOffline, nowPlayingItem, signInWithApple, signInWithSpotify]
   );
 
-  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "home", options });
-
   const handleIdleState = useCallback(() => {
     const activeView = viewStack[viewStack.length - 1];
 
@@ -102,7 +99,15 @@ const HomeView = () => {
 
   useEventListener<IpodEvent>("idle", handleIdleState);
 
-  return <SelectableList options={options} activeIndex={scrollIndex} />;
+  return <SelectableListView viewId="home" options={options} />;
 };
 
-export default HomeView;
+export const HomeView = Object.assign(_HomeView, {
+  viewConfig: defineView({
+    component: _HomeView,
+    type: "split",
+    title: "iPod.js",
+    isSplitScreen: true,
+  }),
+});
+

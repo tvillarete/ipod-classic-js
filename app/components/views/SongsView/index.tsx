@@ -1,16 +1,16 @@
 import { useMemo } from "react";
 
-import SelectableList, {
-  SelectableListOption,
-} from "@/components/SelectableList";
-import { useSelectableList } from "@/hooks";
+import { SelectableListOption } from "@/components/SelectableList";
+import SelectableListView from "@/components/SelectableListView";
+import { SplitScreenPreview } from "@/components/previews";
+import { defineView } from "@/components/views/defineView";
 import * as Utils from "@/utils";
 
 interface Props {
   songs: MediaApi.Song[];
 }
 
-const SongsView = ({ songs }: Props) => {
+const _SongsView = ({ songs }: Props) => {
   const options: SelectableListOption[] = useMemo(
     () =>
       songs.map((song) => ({
@@ -28,15 +28,20 @@ const SongsView = ({ songs }: Props) => {
     [songs]
   );
 
-  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "songs", options });
-
   return (
-    <SelectableList
+    <SelectableListView
+      viewId="songs"
       options={options}
-      activeIndex={scrollIndex}
       emptyMessage="No songs to show"
     />
   );
 };
 
-export default SongsView;
+export const SongsView = Object.assign(_SongsView, {
+  viewConfig: defineView({
+    component: _SongsView,
+    type: "full",
+    title: "Songs",
+    preview: SplitScreenPreview.Music,
+  }),
+});

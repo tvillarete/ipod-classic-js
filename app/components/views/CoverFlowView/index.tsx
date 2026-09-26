@@ -2,6 +2,8 @@ import React, { useCallback } from "react";
 
 import AuthPrompt from "@/components/AuthPrompt";
 import LoadingScreen from "@/components/LoadingScreen";
+import { SplitScreenPreview } from "@/components/previews";
+import { defineView } from "@/components/views/defineView";
 import { useEventListener, useSettings, useViewContext } from "@/hooks";
 import styled from "styled-components";
 
@@ -14,7 +16,7 @@ const Container = styled.div`
   flex: 1;
 `;
 
-const CoverFlowView = () => {
+const _CoverFlowView = () => {
   const { hideView } = useViewContext();
   const { isAuthorized } = useSettings();
   const { data, isLoading } = useFetchAlbums({
@@ -44,4 +46,11 @@ const CoverFlowView = () => {
   );
 };
 
-export default CoverFlowView;
+export const CoverFlowView = Object.assign(_CoverFlowView, {
+  viewConfig: defineView({
+    component: _CoverFlowView,
+    type: "coverFlow",
+    title: "Cover Flow",
+    preview: SplitScreenPreview.Music,
+  }),
+});
