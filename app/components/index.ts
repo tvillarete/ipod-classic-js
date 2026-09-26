@@ -1,6 +1,5 @@
 export * from "./SelectableList";
 export * from "./icons";
-export * from "./views";
 export * from "./previews";
 export * from "./ClickWheel";
 
@@ -14,4 +13,5 @@ export { default as LoadingIndicator } from "./LoadingIndicator";
 export { default as LoadingScreen } from "./LoadingScreen";
 export { default as NowPlaying } from "./NowPlaying";
 export { default as SelectableList } from "./SelectableList";
+export { default as SelectableListView } from "./SelectableListView";
 export { default as ViewManager } from "./ViewManager";
