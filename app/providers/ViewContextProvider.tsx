@@ -4,26 +4,9 @@ import { SelectableListOption } from "@/components/SelectableList";
 import { SplitScreenPreview } from "@/components/previews";
 import { ViewId, ViewProps, VIEW_REGISTRY } from "@/components/views/registry";
 
-/**
- * Known popup IDs used throughout the app.
- */
-export type PopupId =
-  | "spotifyNotSupported"
-  | "spotifyNonPremium"
-  | "musicProviderError";
-
-/**
- * Known action sheet IDs used throughout the app.
- */
-export type ActionSheetId =
-  | "media-action-sheet"
-  | "signin-popup"
-  | "device-theme-action-sheet"
-  | "service-type-action-sheet"
-  | "sign-out-popup"
-  | "shuffle-mode-action-sheet"
-  | "repeat-mode-action-sheet"
-  | "haptics-action-sheet";
+export const generatePopupId = () => `popup-${crypto.randomUUID()}`;
+export const generateActionSheetId = () =>
+  `action-sheet-${crypto.randomUUID()}`;
 
 /**
  * Screen view instance - references a view in the registry
@@ -42,7 +25,7 @@ export type ScreenViewInstance<TViewId extends ViewId = ViewId> = {
  */
 export type ActionSheetInstance = {
   type: "actionSheet";
-  id: ActionSheetId;
+  id: string;
   listOptions: SelectableListOption[];
   headerTitle?: string;
   onClose?: (..._args: any[]) => void;
@@ -53,10 +36,11 @@ export type ActionSheetInstance = {
  */
 export type PopupInstance = {
   type: "popup";
-  id: PopupId;
+  id: string;
   title: string;
   description?: string;
-  listOptions: SelectableListOption[];
+  listOptions?: SelectableListOption[];
+  defaultSelectedIndex?: number;
   onClose?: (..._args: any[]) => void;
 };
 

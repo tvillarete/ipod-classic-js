@@ -49,16 +49,17 @@ const _AlbumsView = ({ albums, inLibrary = true }: Props) => {
     }
   }, [fetchNextPage, isFetchingNextPage]);
 
-  if (!isAuthorized || isOffline) return <AuthPrompt />;
-
   return (
     <SelectableListView
       viewId="albums"
-      options={options}
-      loading={isLoading}
+      options={!isAuthorized || isOffline ? [] : options}
+      loading={isAuthorized && !isOffline && isLoading}
       loadingNextItems={isFetchingNextPage}
       onNearEndOfList={handleNearEndOfList}
       emptyMessage="No albums"
+      emptyContent={
+        !isAuthorized || isOffline ? <AuthPrompt /> : undefined
+      }
     />
   );
 };

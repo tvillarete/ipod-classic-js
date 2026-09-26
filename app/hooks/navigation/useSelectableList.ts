@@ -1,13 +1,11 @@
 import { SelectableListOption } from "@/components";
-import { ViewId } from "@/components/views/registry";
-import { PopupId, ActionSheetId } from "@/providers/ViewContextProvider";
 
 import useMenuHideView from "./useMenuHideView";
 import useScrollHandler from "./useScrollHandler";
 import useOptionSelect from "./useOptionSelect";
 
 interface UseSelectableListOptions {
-  viewId: ViewId | PopupId | ActionSheetId | "keyboard";
+  viewId: string;
   options: SelectableListOption[];
   selectedOption?: SelectableListOption;
   onNearEndOfList?: (currentLength: number) => void;

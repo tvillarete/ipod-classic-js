@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef } from "react";
 
 import { SelectableListOption } from "@/components";
 import { ViewId } from "@/components/views/registry";
-import { PopupId, ActionSheetId } from "@/providers/ViewContextProvider";
 import useHapticFeedback from "@/hooks/useHapticFeedback";
 import * as Utils from "@/utils";
 
@@ -10,7 +9,7 @@ import { useAudioPlayer, useEventListener, useViewContext } from "@/hooks";
 import { IpodEvent } from "@/utils/events";
 
 interface UseOptionSelectOptions {
-  id: ViewId | PopupId | ActionSheetId | "keyboard" | string;
+  id: ViewId | "keyboard" | string;
   options: SelectableListOption[];
   index: number;
 }
@@ -72,15 +71,14 @@ const useOptionSelect = ({ id, options, index }: UseOptionSelectOptions) => {
         break;
       case "popup":
         showPopup({
-          id: option.popupId,
           title: option.title,
           description: option.description,
           listOptions: option.listOptions,
+          defaultSelectedIndex: option.defaultSelectedIndex,
         });
         break;
       case "actionSheet":
         showActionSheet({
-          id: option.id,
           listOptions: option.listOptions,
         });
         break;
@@ -94,7 +92,6 @@ const useOptionSelect = ({ id, options, index }: UseOptionSelectOptions) => {
 
     if (option.longPressOptions) {
       showActionSheet({
-        id: "media-action-sheet",
         listOptions: option.longPressOptions,
       });
     }

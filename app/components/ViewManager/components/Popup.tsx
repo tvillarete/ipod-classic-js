@@ -122,7 +122,11 @@ const Popup = ({ viewStack, index, isHidden }: Props) => {
         ];
   }, [viewOptions.listOptions]);
 
-  const [scrollIndex] = useScrollHandler(viewOptions.id, listOptions);
+  const defaultSelected = viewOptions.defaultSelectedIndex != null
+    ? listOptions[viewOptions.defaultSelectedIndex]
+    : undefined;
+
+  const [scrollIndex] = useScrollHandler(viewOptions.id, listOptions, defaultSelected);
 
   useOptionSelect({ id: viewOptions.id, options: listOptions, index: scrollIndex });
 

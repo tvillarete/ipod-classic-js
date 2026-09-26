@@ -9,6 +9,8 @@ import {
   ActionSheetInstance,
   PopupInstance,
   KeyboardInstance,
+  generatePopupId,
+  generateActionSheetId,
 } from "@/providers/ViewContextProvider";
 
 /**
@@ -27,9 +29,9 @@ export interface ViewContextHook {
     ...args: ShowViewArgs<TViewId>
   ) => void;
   /** Show an action sheet overlay */
-  showActionSheet: (options: Omit<ActionSheetInstance, "type">) => void;
+  showActionSheet: (options: Omit<ActionSheetInstance, "type" | "id">) => void;
   /** Show a popup overlay */
-  showPopup: (options: Omit<PopupInstance, "type">) => void;
+  showPopup: (options: Omit<PopupInstance, "type" | "id">) => void;
   /** Show keyboard overlay */
   showKeyboard: (options: Omit<KeyboardInstance, "type">) => void;
   /** Given an id, remove the view from the stack (otherwise, pop the top view). */
@@ -107,9 +109,10 @@ export const useViewContext = (): ViewContextHook => {
   );
 
   const showActionSheet = useCallback(
-    (options: Omit<ActionSheetInstance, "type">) => {
+    (options: Omit<ActionSheetInstance, "type" | "id">) => {
       const viewInstance: ActionSheetInstance = {
         type: "actionSheet",
+        id: generateActionSheetId(),
         ...options,
       };
 
@@ -122,9 +125,10 @@ export const useViewContext = (): ViewContextHook => {
   );
 
   const showPopup = useCallback(
-    (options: Omit<PopupInstance, "type">) => {
+    (options: Omit<PopupInstance, "type" | "id">) => {
       const viewInstance: PopupInstance = {
         type: "popup",
+        id: generatePopupId(),
         ...options,
       };
 

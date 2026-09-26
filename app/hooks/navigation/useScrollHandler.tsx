@@ -3,7 +3,6 @@ import { useDebouncedCallback } from "use-debounce";
 
 import { SelectableListOption } from "@/components";
 import { ViewId } from "@/components/views/registry";
-import { PopupId, ActionSheetId } from "@/providers/ViewContextProvider";
 import useHapticFeedback from "@/hooks/useHapticFeedback";
 import { IpodEvent, ScrollEventDetail } from "@/utils/events";
 import { VELOCITY_SKIP_THRESHOLDS } from "@/components/ClickWheel/constants";
@@ -47,7 +46,7 @@ const getInitIndex = (
 /** Accepts a list of options and will maintain a scroll index capped at the list's length. */
 const useScrollHandler = (
   /** This should match the view's ID (screen view, popup, action sheet, or keyboard). */
-  id: ViewId | PopupId | ActionSheetId | "keyboard",
+  id: ViewId | "keyboard" | string,
   /** A list of all scrollable items. Used to cap the scrolling to the last element. */
   options: SelectableListOption[] = [],
   selectedOption?: SelectableListOption,

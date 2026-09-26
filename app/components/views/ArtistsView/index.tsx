@@ -58,18 +58,19 @@ const _ArtistsView = ({
     }
   }, [fetchNextPage, isFetchingNextPage]);
 
-  if (!isAuthorized || isOffline) {
-    return <AuthPrompt message="Sign in to view your artists" />;
-  }
-
   return (
     <SelectableListView
       viewId="artists"
-      options={options}
-      loading={isLoading}
+      options={!isAuthorized || isOffline ? [] : options}
+      loading={isAuthorized && !isOffline && isLoading}
       loadingNextItems={isFetchingNextPage}
       onNearEndOfList={handleNearEndOfList}
       emptyMessage="No saved artists"
+      emptyContent={
+        !isAuthorized || isOffline
+          ? <AuthPrompt message="Sign in to view your artists" />
+          : undefined
+      }
     />
   );
 };

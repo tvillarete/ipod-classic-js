@@ -9,7 +9,9 @@ import {
   useAudioPlayer,
   useMusicKit,
   useSettings,
+  useSignInOptions,
   useSpotifySDK,
+  useViewContext,
 } from "@/hooks";
 
 const THEMES = ["silver", "black", "u2"] as const;
@@ -42,14 +44,12 @@ const _SettingsView = () => {
     setHapticsEnabled,
   } = useSettings();
   const { setShuffleMode, setRepeatMode } = useAudioPlayer();
-  const {
-    signIn: signInWithApple,
-    signOut: signOutApple,
-    isConfigured: isMkConfigured,
-  } = useMusicKit();
+  const { signIn: signInWithApple, signOut: signOutApple } = useMusicKit();
   const { signOut: signOutSpotify, signIn: signInWithSpotify } =
     useSpotifySDK();
+  const signInOptions = useSignInOptions();
   const { reset } = useAudioPlayer();
+  const { showPopup } = useViewContext();
 
   const createResetHandler = useCallback(
     (handler: () => void | Promise<void>) => () => {
@@ -57,6 +57,18 @@ const _SettingsView = () => {
       handler();
     },
     [reset]
+  );
+
+  const createSignOutHandler = useCallback(
+    (serviceName: string, handler: () => void | Promise<void>) => async () => {
+      reset();
+      await handler();
+      showPopup({
+        title: "Signed Out",
+        description: `You have been signed out of ${serviceName}.`,
+      });
+    },
+    [reset, showPopup]
   );
 
   const themeOptions: SelectableListOption[] = useMemo(
@@ -91,39 +103,23 @@ const _SettingsView = () => {
     [service, createResetHandler, signInWithApple, signInWithSpotify]
   );
 
-  const signInOptions: SelectableListOption[] = useMemo(
-    () => [
-      ...getConditionalOption(isMkConfigured, {
-        type: "action",
-        label: SERVICE_LABELS.apple,
-        onSelect: signInWithApple,
-      }),
-      {
-        type: "action",
-        label: SERVICE_LABELS.spotify,
-        onSelect: signInWithSpotify,
-      },
-    ],
-    [isMkConfigured, signInWithApple, signInWithSpotify]
-  );
-
   const signOutOptions: SelectableListOption[] = useMemo(
     () => [
       ...getConditionalOption(isAppleAuthorized, {
         type: "action",
         label: SERVICE_LABELS.apple,
-        onSelect: createResetHandler(signOutApple),
+        onSelect: createSignOutHandler(SERVICE_LABELS.apple, signOutApple),
       }),
       ...getConditionalOption(isSpotifyAuthorized, {
         type: "action",
         label: SERVICE_LABELS.spotify,
-        onSelect: createResetHandler(signOutSpotify),
+        onSelect: createSignOutHandler(SERVICE_LABELS.spotify, signOutSpotify),
       }),
     ],
     [
       isAppleAuthorized,
       isSpotifyAuthorized,
-      createResetHandler,
+      createSignOutHandler,
       signOutApple,
       signOutSpotify,
     ]
@@ -140,7 +136,6 @@ const _SettingsView = () => {
       /** Add an option to select between services signed into more than one. */
       ...getConditionalOption(isAuthorized && !isOffline, {
         type: "actionSheet",
-        id: "service-type-action-sheet",
         label: "Choose service",
         listOptions: serviceOptions,
         preview: SplitScreenPreview.Service,
@@ -148,7 +143,6 @@ const _SettingsView = () => {
       /** Add shuffle mode options */
       ...getConditionalOption(isAuthorized, {
         type: "actionSheet",
-        id: "shuffle-mode-action-sheet",
         label: "Shuffle",
         listOptions: [
           {
@@ -175,7 +169,6 @@ const _SettingsView = () => {
       /** Add repeat mode options */
       ...getConditionalOption(isAuthorized, {
         type: "actionSheet",
-        id: "repeat-mode-action-sheet",
         label: "Repeat",
         listOptions: [
           {
@@ -201,14 +194,12 @@ const _SettingsView = () => {
       }),
       {
         type: "actionSheet",
-        id: "device-theme-action-sheet",
         label: "Device theme",
         listOptions: themeOptions,
         preview: SplitScreenPreview.Theme,
       },
       {
         type: "actionSheet",
-        id: "haptics-action-sheet",
         label: "Haptic feedback",
         listOptions: [
           {
@@ -226,18 +217,15 @@ const _SettingsView = () => {
         ],
         preview: SplitScreenPreview.Settings,
       },
-      /** Show the sign in option if not signed into any service. */
-      ...getConditionalOption(!isAuthorized && !isOffline, {
+      ...getConditionalOption(!!signInOptions, {
         type: "actionSheet",
-        id: "signin-popup",
         label: "Sign in",
-        listOptions: signInOptions,
+        listOptions: signInOptions ?? [],
         preview: SplitScreenPreview.Music,
       }),
       /** Show the signout option for any services that are authenticated. */
       ...getConditionalOption(isAuthorized && !isOffline, {
         type: "actionSheet",
-        id: "sign-out-popup",
         label: "Sign out",
         listOptions: signOutOptions,
         preview: SplitScreenPreview.Service,

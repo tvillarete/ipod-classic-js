@@ -53,7 +53,6 @@ export const useSpotifySDK = ({
       window.location.href = `/ipod/api/spotify/login`;
     } else if (!state.isPlayerConnected) {
       showPopup({
-        id: "spotifyNotSupported",
         title: "Spotify Not Supported",
         description: "Spotify was unable to mount on this browser :(",
         listOptions: [

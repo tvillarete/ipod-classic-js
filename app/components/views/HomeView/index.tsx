@@ -8,9 +8,7 @@ import { SplitScreenPreview } from "@/components/previews";
 import {
   useAudioPlayer,
   useEventListener,
-  useMusicKit,
-  useSettings,
-  useSpotifySDK,
+  useSignInOptions,
   useViewContext,
 } from "@/hooks";
 import { IpodEvent } from "@/utils/events";
@@ -20,12 +18,9 @@ const strings = {
 };
 
 const _HomeView = () => {
-  const { isAuthorized, isOffline } = useSettings();
-  const { signIn: signInWithApple, isConfigured: isMkConfigured } =
-    useMusicKit();
   const { nowPlayingItem } = useAudioPlayer();
-  const { signIn: signInWithSpotify } = useSpotifySDK();
   const { showView, viewStack } = useViewContext();
+  const signInOptions = useSignInOptions();
 
   const options: SelectableListOption[] = useMemo(
     () => [
@@ -53,23 +48,10 @@ const _HomeView = () => {
         viewId: "settings",
         preview: SplitScreenPreview.Settings,
       },
-      // Show the sign in buttons if the user is not logged in and online.
-      ...getConditionalOption(!isAuthorized && !isOffline, {
+      ...getConditionalOption(!!signInOptions, {
         type: "actionSheet",
-        id: "signin-popup",
         label: "Sign in",
-        listOptions: [
-          {
-            type: "action",
-            label: "Apple Music",
-            onSelect: signInWithApple,
-          },
-          {
-            type: "action",
-            label: "Spotify",
-            onSelect: signInWithSpotify,
-          },
-        ],
+        listOptions: signInOptions ?? [],
         preview: SplitScreenPreview.Music,
       }),
       ...getConditionalOption(!!nowPlayingItem, {
@@ -79,7 +61,7 @@ const _HomeView = () => {
         preview: SplitScreenPreview.NowPlaying,
       }),
     ],
-    [isAuthorized, isOffline, nowPlayingItem, signInWithApple, signInWithSpotify]
+    [signInOptions, nowPlayingItem]
   );
 
   const handleIdleState = useCallback(() => {
@@ -110,4 +92,3 @@ export const HomeView = Object.assign(_HomeView, {
     isSplitScreen: true,
   }),
 });
-

@@ -121,15 +121,18 @@ const _SearchView = () => {
     }
   });
 
-  return isAuthorized ? (
+  return (
     <SelectableListView
       viewId="search"
-      options={options}
-      loading={isFetching}
+      options={isAuthorized ? options : []}
+      loading={isAuthorized && isFetching}
       emptyMessage="No results"
+      emptyContent={
+        !isAuthorized
+          ? <AuthPrompt message="Sign in to search" />
+          : undefined
+      }
     />
-  ) : (
-    <AuthPrompt message="Sign in to search" />
   );
 };
 

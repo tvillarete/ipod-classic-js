@@ -2,16 +2,14 @@ import SelectableList, {
   SelectableListOption,
 } from "@/components/SelectableList";
 import { useSelectableList } from "@/hooks";
-import { ViewId } from "@/components/views/registry";
-import { PopupId, ActionSheetId } from "@/providers/ViewContextProvider";
-
-type ListViewId = ViewId | PopupId | ActionSheetId | "keyboard";
+type ListViewId = string;
 
 interface SelectableListViewProps {
   viewId: ListViewId;
   options: SelectableListOption[];
   loading?: boolean;
   emptyMessage?: string;
+  emptyContent?: React.ReactNode;
   onNearEndOfList?: () => void;
   loadingNextItems?: boolean;
   renderItem?: (
@@ -26,6 +24,7 @@ const SelectableListView = ({
   options,
   loading,
   emptyMessage,
+  emptyContent,
   onNearEndOfList,
   loadingNextItems,
   renderItem,
@@ -43,6 +42,7 @@ const SelectableListView = ({
       options={options}
       activeIndex={activeIndex}
       emptyMessage={emptyMessage}
+      emptyContent={emptyContent}
       renderItem={renderItem}
     />
   );

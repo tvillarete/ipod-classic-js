@@ -68,7 +68,6 @@ export const SpotifySDKProvider = ({ children }: Props) => {
 
   const handleUnsupportedAccountError = useCallback(() => {
     showPopup({
-      id: "spotifyNonPremium",
       title: "Unable to sign in",
       description:
         "Spotify requires a Premium account to play music on the web",

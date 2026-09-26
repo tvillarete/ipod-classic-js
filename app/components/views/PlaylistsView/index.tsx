@@ -51,18 +51,19 @@ const _PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
     }
   }, [fetchNextPage, isFetchingNextPage]);
 
-  if (!isAuthorized || isOffline) {
-    return <AuthPrompt message="Sign in to view your playlists" />;
-  }
-
   return (
     <SelectableListView
       viewId="playlists"
-      options={options}
-      loading={isLoading}
+      options={!isAuthorized || isOffline ? [] : options}
+      loading={isAuthorized && !isOffline && isLoading}
       loadingNextItems={isFetchingNextPage}
       onNearEndOfList={handleNearEndOfList}
       emptyMessage="No saved playlists"
+      emptyContent={
+        !isAuthorized || isOffline
+          ? <AuthPrompt message="Sign in to view your playlists" />
+          : undefined
+      }
     />
   );
 };

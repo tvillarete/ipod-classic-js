@@ -36,7 +36,6 @@ export const useMusicKit = (): MusicKitHook => {
 
     if (hasError) {
       showPopup({
-        id: "musicProviderError",
         title: "Music Provider Error",
         description:
           "Apple Music was unable to mount. Try reloading or feel free to file bug report 🐞",
